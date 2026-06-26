@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StillUnemployed.com — Still Unemployed?</title>
+  <meta name="description" content="The job board I wish I'd had. Every role is opened and verified by a human (me). No ghost listings, no AI slop, just jobs I'd actually apply to.">
+  <link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+
+<!-- =========================================================================
+     Homepage hero. Rebuilt verbatim from the Manus export; the dc-runtime
+     ({{ }} bindings + <sc-if>/<sc-for>) was removed and reimplemented in
+     plain JS (js/home.js). The desktop layout is a fixed 1440x900 stage that
+     js/home.js scales to fit; the mobile (<=640px) layout is a full-screen
+     image hero whose overlay header / bottom nav / sticky "open" note /
+     below-fold panel are injected by js/home.js, exactly as the original did.
+     ========================================================================= -->
+
+<div data-screen-label="Hero" style="position: relative; width: 1440px; height: 900px; margin: 0 auto; overflow: hidden; background: #F4EEE2; font-family: 'Archivo', system-ui, sans-serif; color: #2C2118;">
+
+  <!-- top bar -->
+  <div style="position: absolute; top: 0; left: 0; right: 0; height: 110px; z-index: 30;">
+    <!-- founder card (opens About modal) -->
+    <div id="founder-card" style="position: absolute; top: 28px; left: 56px; display: flex; align-items: center; gap: 12px; background: #5C4033; border-radius: 16px; padding: 9px 14px 9px 9px; cursor: pointer; box-shadow: 0 6px 18px rgba(44,33,24,0.16);">
+      <div style="width: 66px; height: 42px; border-radius: 11px; overflow: hidden; flex: none;">
+        <img src="assets/e5348f9c-b1f5-4c21-935c-08c0364b61a9.jpg" alt="Nic" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 16%; transform: scale(1.55); transform-origin: 50% 26%;">
+      </div>
+      <div style="line-height: 1.2;">
+        <div style="font-size: 14px; font-weight: 700; color: #F4EEE2;">Nic, the founder</div>
+        <div style="font-size: 11px; font-weight: 500; color: #E8D9C5; margin-top: 2px;">Currently at Instagram making 6 figures</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-left: 2px;"><path d="M8 10l4 4 4-4" stroke="#F4EEE2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </div>
+
+    <!-- center nav -->
+    <div style="position: absolute; top: 24px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px;">
+      <a href="./index.html" class="postit" style="--r: -3deg; background: #EDE93B; color: #1f1c14; font-family: 'Indie Flower', cursive; font-weight: 400; font-size: 21px; letter-spacing: 0.01em; padding: 10px 20px; cursor: pointer; text-decoration: none; display: inline-block;">Home</a>
+      <a href="./jobs.html" class="postit" style="--r: 2.5deg; background: #EDE93B; color: #1f1c14; font-family: 'Indie Flower', cursive; font-weight: 400; font-size: 21px; letter-spacing: 0.01em; padding: 10px 20px; cursor: pointer; text-decoration: none; display: inline-block;">Jobs</a>
+      <a href="https://jobhuntrecipe.com/p/jobs-ghost-more-than-hinge-issue-1" target="_blank" rel="noopener" class="postit" style="--r: -2deg; background: #EDE93B; color: #1f1c14; font-family: 'Indie Flower', cursive; font-weight: 400; font-size: 21px; letter-spacing: 0.01em; padding: 10px 20px; cursor: pointer; text-decoration: none;">Advice</a>
+    </div>
+  </div>
+
+  <!-- launch month beta tag (top-right) -->
+  <div style="position: absolute; top: 26px; right: 58px; z-index: 31; transform: rotate(5deg); filter: drop-shadow(2px 6px 11px rgba(44,33,24,0.26));">
+    <div style="position: relative; background: linear-gradient(158deg, #ECDBB6 0%, #DFC795 100%); width: 132px; padding: 16px 18px 17px 30px; box-sizing: border-box; clip-path: polygon(20px 0, 100% 0, 100% 100%, 0 100%, 0 20px); border-radius: 0 9px 9px 9px;">
+      <div style="position: absolute; top: 8px; left: 8px; width: 10px; height: 10px; border-radius: 50%; background: #F4EEE2; box-shadow: inset 0 0 0 2px #B79B72;"></div>
+      <div style="font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 30px; line-height: 0.92; color: #2C2118;"><span style="background: linear-gradient(transparent 56%, #F4E04D 56%); padding: 0 2px;">Beta</span></div>
+    </div>
+  </div>
+
+  <!-- headline -->
+  <div style="position: absolute; left: 56px; top: 210px; z-index: 20;">
+    <div style="font-family: 'Playfair Display', serif; font-weight: 900; font-size: 190px; line-height: 0.86; letter-spacing: -0.02em; color: #2C2118;">Still<div style="font-style: italic; font-weight: 800; font-size: 93px; letter-spacing: 0; color: #7A4A2C; margin-top: 6px;">Unemployed?</div></div>
+  </div>
+
+  <!-- truth about job boards -->
+  <div style="position: absolute; left: 60px; top: 556px; width: 566px; z-index: 20;">
+    <!-- folder -->
+    <div style="filter: drop-shadow(0 18px 30px rgba(44,33,24,0.16));">
+      <!-- tab -->
+      <div style="width: 296px; height: 33px; background: linear-gradient(180deg, #ECDAB4 0%, #E4D0A6 100%); border-radius: 13px 22px 0 0; display: flex; align-items: center; padding: 0 20px; box-sizing: border-box; position: relative; left: 6px;">
+        <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.13em; text-transform: uppercase; color: #8A6A45; white-space: nowrap;">Jobs Ghost More Than Hinge</div>
+      </div>
+      <!-- body -->
+      <div style="position: relative; background: linear-gradient(165deg, #ECDBB6 0%, #E3CEA2 100%); border-radius: 2px 18px 18px 18px; padding: 22px 32px 24px;">
+        <div class="stat-extra" hidden>
+          <div style="display: flex; gap: 10px; margin-bottom: 14px;">
+            <div style="width: 46px; height: 46px; border-radius: 11px; background: #2C2118; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#E8DCC6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l18 0"></path><path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16"></path><path d="M9 8l1 0"></path><path d="M9 12l1 0"></path><path d="M9 16l1 0"></path><path d="M14 8l1 0"></path><path d="M14 12l1 0"></path><path d="M14 16l1 0"></path></svg></div>
+            <div style="width: 46px; height: 46px; border-radius: 11px; background: #2C2118; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#E8DCC6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l18 0"></path><path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16"></path><path d="M9 8l1 0"></path><path d="M9 12l1 0"></path><path d="M9 16l1 0"></path><path d="M14 8l1 0"></path><path d="M14 12l1 0"></path><path d="M14 16l1 0"></path></svg></div>
+            <div style="width: 46px; height: 46px; border-radius: 11px; background: #2C2118; display: flex; align-items: center; justify-content: center; flex: none;"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#E8DCC6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l18 0"></path><path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16"></path><path d="M9 8l1 0"></path><path d="M9 12l1 0"></path><path d="M9 16l1 0"></path><path d="M14 8l1 0"></path><path d="M14 12l1 0"></path><path d="M14 16l1 0"></path></svg></div>
+            <div style="width: 46px; height: 46px; border-radius: 11px; border: 1.6px dashed #B79B72; display: flex; align-items: center; justify-content: center; flex: none; box-sizing: border-box;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B79B72" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 9h.01"></path><path d="M14 9h.01"></path><path d="M12 3a7 7 0 0 1 7 7v1l1 0a2 2 0 1 1 0 4l-1 0v3l2 3h-10a6 6 0 0 1 -6 -5.775l0 -.226l-1 0a2 2 0 0 1 0 -4l1 0v-1a7 7 0 0 1 7 -7z"></path><path d="M11 14h2a1 1 0 0 0 -2 0z"></path></svg></div>
+            <div style="width: 46px; height: 46px; border-radius: 11px; border: 1.6px dashed #B79B72; display: flex; align-items: center; justify-content: center; flex: none; box-sizing: border-box;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B79B72" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 9h.01"></path><path d="M14 9h.01"></path><path d="M12 3a7 7 0 0 1 7 7v1l1 0a2 2 0 1 1 0 4l-1 0v3l2 3h-10a6 6 0 0 1 -6 -5.775l0 -.226l-1 0a2 2 0 0 1 0 -4l1 0v-1a7 7 0 0 1 7 -7z"></path><path d="M11 14h2a1 1 0 0 0 -2 0z"></path></svg></div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 26px;">
+          <div style="font-family: 'Archivo Black', sans-serif; font-weight: 900; font-size: 104px; line-height: 0.86; letter-spacing: -0.03em; color: #2C2118; flex: none;">40%</div>
+          <div style="font-size: 20px; line-height: 1.38; color: #2C2118; font-weight: 500; max-width: 270px;">of companies admit they posted <strong style="font-weight: 800;">fake jobs</strong> in the past year.<span class="stat-extra" hidden> That's <strong style="font-weight: 800;">2 in 5</strong>.</span></div>
+        </div>
+        <div class="stat-extra" hidden style="font-size: 13px; color: #8A6A45; margin-top: 12px;">Source: ResumeBuilder.com, 2024 (survey of 1,641 hiring managers)</div>
+        <div id="stat-toggle" style="position: absolute; bottom: 14px; right: 16px; width: 34px; height: 34px; border-radius: 50%; background: #2C2118; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 3px 7px rgba(44,33,24,0.28);">
+          <svg id="stat-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" style="transition: transform .25s ease;"><path d="M6 9l6 6 6-6" stroke="#F4E9C9" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- human-checked line -->
+    <div style="display: flex; align-items: center; gap: 11px; margin-top: 24px;">
+      <div style="width: 24px; height: 24px; border-radius: 50%; border: 2px solid #E8502E; display: flex; align-items: center; justify-content: center; flex: none;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="#E8502E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </div>
+      <div style="font-size: 18.5px; font-weight: 800; color: #2C2118;">Every role is checked by (me) a human.</div>
+    </div>
+
+  </div>
+
+  <!-- primary CTA removed -->
+
+  <!-- hero image card -->
+  <div style="position: absolute; right: 40px; top: 132px; width: 720px; height: 700px; border-radius: 36px; overflow: hidden; background: #E8D9C5; z-index: 15;">
+    <img class="hero-img" data-idx="0" src="assets/91002467-455d-45f7-9f12-89c4ae6b82d0.png" alt="Featured role" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 46%; opacity: 1; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.16) brightness(1.02) contrast(1.02);">
+    <img class="hero-img" data-idx="1" src="assets/570b933e-56ad-4fda-9ce2-902a6392b3c8.png" alt="Featured role" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 80%; opacity: 0; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.16) brightness(1.02) contrast(1.02);">
+    <img class="hero-img" data-idx="2" src="assets/8af3d15a-98a3-4770-94ec-aaf0fe8c9e59.png" alt="Featured role" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 52% 31%; opacity: 0; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.16) brightness(1.02) contrast(1.02);">
+    <img class="hero-img" data-idx="3" src="assets/f933acb5-4f29-44b1-b79b-9528b317e244.png" alt="Featured role" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 41%; opacity: 0; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.16) brightness(1.02) contrast(1.02);">
+    <div style="position: absolute; inset: 0; mix-blend-mode: multiply; background: linear-gradient(150deg, rgba(150,110,70,0.20) 0%, rgba(150,110,70,0.06) 45%, rgba(92,64,51,0.16) 100%);"></div>
+    <div style="position: absolute; inset: 0; mix-blend-mode: soft-light; background: rgba(232,150,80,0.22);"></div>
+    <!-- prev -->
+    <div id="hero-prev" style="position: absolute; left: 22px; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; border-radius: 50%; background: rgba(44,33,24,0.74); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 4; box-shadow: 0 6px 16px rgba(44,33,24,0.3);">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#F4EEE2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </div>
+    <!-- next -->
+    <div id="hero-next" style="position: absolute; right: 22px; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; border-radius: 50%; background: rgba(44,33,24,0.74); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 4; box-shadow: 0 6px 16px rgba(44,33,24,0.3);">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="#F4EEE2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </div>
+    <!-- dots -->
+    <div id="hero-dots" style="position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); display: flex; gap: 8px; z-index: 4;">
+      <div data-dot="0" style="width: 22px; height: 8px; border-radius: 999px; background: #F4EEE2;"></div>
+      <div data-dot="1" style="width: 8px; height: 8px; border-radius: 999px; background: rgba(244,238,226,0.5);"></div>
+      <div data-dot="2" style="width: 8px; height: 8px; border-radius: 999px; background: rgba(244,238,226,0.5);"></div>
+      <div data-dot="3" style="width: 8px; height: 8px; border-radius: 999px; background: rgba(244,238,226,0.5);"></div>
+    </div>
+  </div>
+
+  <!-- per-image CTA: post-it peeling off the photo's top-right edge -->
+  <a id="hero-cta" href="./jobs.html?theme=social" class="postit" style="--r: -4deg; position: absolute; right: 58px; top: 158px; z-index: 25; display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; background: #EDE93B; color: #1f1c14; font-family: 'Indie Flower', cursive; font-size: 21px; font-weight: 400; padding: 13px 22px; cursor: pointer; text-decoration: none;">
+    <span id="hero-cta-text">Find Social Jobs Here</span>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#1f1c14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+  </a>
+
+  <!-- About modal (hidden until founder card clicked) -->
+  <div id="about-modal" hidden style="position: absolute; inset: 0; z-index: 100; background: rgba(44,33,24,0.58); display: flex; align-items: center; justify-content: center;">
+    <div id="about-modal-card" style="width: 600px; background: #F4EEE2; border-radius: 26px; overflow: hidden; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4);">
+      <!-- close X -->
+      <div class="modal-close" style="position: absolute; top: 18px; right: 18px; width: 38px; height: 38px; border-radius: 50%; background: rgba(244,238,226,0.92); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 3; box-shadow: 0 2px 8px rgba(44,33,24,0.18);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.2" stroke-linecap="round"></path></svg>
+      </div>
+      <!-- banner photo -->
+      <div style="width: 100%; height: 264px; background: #E8D9C5; overflow: hidden;">
+        <img src="assets/e5348f9c-b1f5-4c21-935c-08c0364b61a9.jpg" alt="Nic, the founder, on SiriusXM" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; filter: saturate(1.04) brightness(1.02);">
+      </div>
+      <!-- body -->
+      <div style="padding: 32px 44px 40px;">
+        <div style="font-family: 'Archivo Black', sans-serif; font-weight: 900; font-size: 32px; line-height: 1.06; letter-spacing: -0.02em; color: #2C2118; width: 300px;">Hey, I'm Nic. I built this.</div>
+        <div style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 16px;">I sent <strong style="font-weight: 800; color: #2C2118;">1,500 applications</strong> and got ghosted more times than I can count. Seven months later, <strong style="font-weight: 800; color: #2C2118;">Instagram</strong> said yes. <strong style="font-weight: 800; color: #2C2118;">StillUnemployed</strong> is the board I wish I'd had. Every role here is <strong style="font-weight: 800; color: #2C2118;">opened and verified by a human</strong>, and that human is me. No ghost listings, no AI slop, just jobs I'd <strong style="font-weight: 800; color: #2C2118;">actually apply to</strong>.</div>
+        <div style="display: flex; align-items: center; gap: 9px; margin-top: 20px;">
+          <div style="width: 20px; height: 20px; border-radius: 50%; background: #E8502E; display: flex; align-items: center; justify-content: center; flex: none;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="#F4EEE2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </div>
+          <div style="font-size: 13px; font-weight: 600; color: #6f6253; letter-spacing: 0.01em;">Content Specialist at Instagram · Class of 2025</div>
+        </div>
+        <a href="https://NicholasAlexis.com" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 11px; background: #5C4033; color: #F4EEE2; font-size: 16px; font-weight: 700; padding: 15px 26px; border-radius: 14px; cursor: pointer; margin-top: 24px; box-shadow: 0 10px 24px rgba(44,33,24,0.22); text-decoration: none;">
+          View My Portfolio
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#F4EEE2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </a>
+      </div>
+      <!-- newsletter note: closed "open" tab -->
+      <div id="nl-tab" class="notetab" style="--nr: 3deg; position: absolute; bottom: 22px; right: 24px; z-index: 6; display: inline-flex; align-items: center; gap: 9px; cursor: pointer; transform: rotate(3deg); white-space: nowrap;">
+        <svg width="34" height="30" viewBox="0 0 34 30" fill="none" style="flex: none; overflow: visible;"><path d="M3 7 C 6 22, 17 29, 29 25" stroke="#C2552F" stroke-width="2.4" stroke-linecap="round"></path><path d="M24.5 20 L30 25 L23 27.5" stroke="#C2552F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <div class="envbob" style="position: relative; width: 80px; height: 58px; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 13px, rgba(96,130,170,0.34) 13px 14px); background-position: 0 9px; border-radius: 3px; box-shadow: 2px 4px 8px rgba(44,33,24,0.26); flex: none; overflow: hidden;">
+          <div style="position: absolute; top: 0; bottom: 0; left: 13px; width: 1px; background: rgba(214,80,46,0.4);"></div>
+          <div style="position: absolute; top: 0; right: 0; width: 22px; height: 22px; background: #E6D6B2; clip-path: polygon(100% 0, 0 0, 100% 100%); border-top-right-radius: 3px;"></div>
+          <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 20px; color: #2A2118;">open</span>
+        </div>
+      </div>
+      <!-- newsletter note: opened lined-paper note (hidden until tab clicked) -->
+      <div id="nl-note" hidden style="position: absolute; bottom: 22px; right: 22px; z-index: 7; transform: rotate(-2deg); transform-origin: bottom right;">
+        <div style="position: relative; width: 272px; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 23px, rgba(96,130,170,0.32) 23px 24.5px); background-position: 0 19px; border-radius: 3px; padding: 18px 18px 15px; box-shadow: 3px 8px 20px rgba(44,33,24,0.32); box-sizing: border-box; transform-origin: bottom right; animation: noteUnfold .34s cubic-bezier(.2,.9,.3,1.25) both;">
+          <div style="position: absolute; top: 0; left: 18px; bottom: 0; width: 1px; background: rgba(214,80,46,0.4);"></div>
+          <div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 72px; height: 18px; background: rgba(228,202,128,0.6); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>
+          <div id="nl-close" style="position: absolute; top: -10px; right: -10px; width: 26px; height: 26px; border-radius: 50%; background: #2C2118; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.32); z-index: 3;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#F4EFE6" stroke-width="2.6" stroke-linecap="round"></path></svg></div>
+          <div style="font-family: 'Indie Flower', cursive; font-size: 17px; line-height: 24px; color: #2A2118; padding-left: 10px;">I also have the exact recipe I followed to get a job at Instagram. It's my free newsletter, no em-dashes, and easy to unsub from!</div>
+          <a href="https://JobHuntRecipe.com" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 7px; margin: 10px 0 2px 10px; padding: 8px 15px; background: #F2E14B; color: #2A2118; font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 16px; text-decoration: none; transform: rotate(-1.5deg); box-shadow: 2px 3px 7px rgba(44,33,24,0.22);">Get the recipe<svg width="17" height="17" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M5 12h14M13 6l6 6-6 6" stroke="#2A2118" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
+          <div style="font-family: 'Indie Flower', cursive; font-size: 15px; color: #6F5E45; text-align: right; line-height: 24px;">- Nic</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="js/home.js" defer></script>
+</body>
+</html>

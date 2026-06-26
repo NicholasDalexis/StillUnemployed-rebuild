@@ -1,0 +1,11 @@
+# Scratch screenshots & local test artifacts — never commit or deploy.
+# (Root-level PNGs only; real site images in assets/ are kept.)
+/*.png
+/.marker_test
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+
+# Node (only if ever added)
+node_modules/

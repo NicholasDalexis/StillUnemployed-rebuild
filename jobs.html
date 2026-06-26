@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StillUnemployed.com — Roles I'd actually apply to</title>
+  <meta name="description" content="Every role here is opened and verified by a human (me). No ghost listings, no AI slop, just jobs I'd actually apply to.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Black Ops One powers the WW2 "Change Look?" theme label (falls back to Archivo Black) -->
+  <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Pre-apply the saved "Change Look?" theme before paint to avoid a color flash -->
+  <script>
+    (function () {
+      try {
+        var v = localStorage.getItem('su_look');
+        if (v === 'cod' || v === 'girly') {
+          document.documentElement.setAttribute('data-su-look', v);
+          document.addEventListener('DOMContentLoaded', function () {
+            document.body.className = 'theme-' + v;
+            var b = document.getElementById('board');
+            if (b) b.className = 'board ' + v;
+          });
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <!-- The board is rendered by js/app.js from jobs-data.json, reproducing the exact
+       markup the original Manus template produced. Edit jobs-data.json to add/remove roles. -->
+  <div data-screen-label="Jobs" class="board" id="board" style="min-height: 100vh; font-family: 'Poppins', system-ui, sans-serif; color: #2C2118; padding-bottom: 90px;"></div>
+
+  <!-- Modals / popups get appended here at runtime -->
+  <div id="overlay-root"></div>
+
+  <script src="js/app.js" defer></script>
+</body>
+</html>

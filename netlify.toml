@@ -1,0 +1,5 @@
+# StillUnemployed.com — static site, no build step.
+# Netlify just serves the repo root as-is.
+[build]
+  publish = "."
+  command = ""
