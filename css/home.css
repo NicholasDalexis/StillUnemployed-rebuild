@@ -485,6 +485,22 @@ body { margin: 0; background: #F4EEE2; }
   transform: perspective(720px) rotateX(32deg) rotate(var(--r, 0deg)) translateY(-5px) scale(1.025);
   box-shadow: 0 30px 36px -10px rgba(44,33,24,0.38);
 }
+/* Top-nav + hero-CTA post-it links. ALL visual styling lives in this class, not
+   in inline styles, so a Netlify link-rewrite (or anything else) can never mangle
+   inline styles on these anchors again. The anchors keep only a quote-free --r. */
+.nav-postit {
+  background: #EDE93B;
+  color: #1f1c14;
+  font-family: 'Indie Flower', cursive;
+  font-weight: 400;
+  font-size: 21px;
+  letter-spacing: 0.01em;
+  padding: 10px 20px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+.nav-postit:hover { text-decoration: none; }
 .notetab { transition: transform .15s ease; }
 .notetab:hover { transform: rotate(var(--nr,0deg)) scale(1.06); }
 .envbob { animation: envbob 1.9s ease-in-out infinite; transform-origin: center; }
@@ -618,9 +634,6 @@ div[data-screen-label="Hero"] { transform-origin: top center; flex: none; }
     #m-founder-card img { width: 60px; height: 40px; border-radius: 10px; object-fit: cover; flex: none; }
     #m-founder-card .fc-t1 { font-size: 13px; font-weight: 700; color: #2A2118; }
     #m-founder-card .fc-t2 { font-size: 10.5px; font-weight: 500; color: #6F5E45; margin-top: 2px; }
-    /* Nav + hero-CTA post-its: a stray !important rule was flattening these to underlined links; force the post-it look back. */
-    a.postit { text-decoration: none !important; padding: 10px 20px !important; display: inline-block !important; }
-    #hero-cta { display: inline-flex !important; padding: 13px 22px !important; }
     /* About modal: fit small screens */
     div[data-screen-label="Hero"] > div[style*="z-index: 100"] { position: fixed !important; }
     div[data-screen-label="Hero"] > div[style*="z-index: 100"] > div[style*="width: 600px"] { width: 92vw !important; max-width: 92vw !important; }
