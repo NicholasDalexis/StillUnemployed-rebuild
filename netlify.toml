@@ -3,3 +3,27 @@
 [build]
   publish = "."
   command = ""
+
+# Why fixes kept "not showing" before: the browser/CDN served cached OLD
+# html/css/js, so deploys looked like they did nothing. Force these to
+# revalidate on every load, so what you deploy is always what you see.
+# (Fonts/images in /assets keep normal caching since they don't change.)
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
