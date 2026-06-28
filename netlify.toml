@@ -4,6 +4,8 @@
   publish = "."
   command = ""
 
+# Shipped Jun 28 2026: fully disable Netlify post-processing (belt + suspenders
+# to the class-based nav fix, so future quoted inline styles can never break).
 # THE REAL FIX. Netlify post-processing was rewriting internal links
 # (href="./index.html" -> "/") and re-serializing those <a> tags with
 # single quotes + backslash-escaped inner quotes, which broke the inline
