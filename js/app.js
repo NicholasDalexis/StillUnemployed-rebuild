@@ -31,6 +31,22 @@
     return String(s == null ? '' : s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
   };
 
+  // Report endpoint: Google Apps Script web app that logs "Job link broken" and
+  // "I applied" taps into the StillUnemployed Reports sheet. Empty string keeps the
+  // feature a safe no-op until the deployed /exec URL is dropped in below.
+  var REPORT_URL = 'https://script.google.com/macros/s/AKfycbx_ct-QHSXxYeE2m7_e8XIsBojGPFP1he0b9-YMad6qVera8i2OAfj8XQb5VncAKGpU/exec';
+  function postReport(action, co, link) {
+    if (!REPORT_URL) return;
+    try {
+      fetch(REPORT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: action, company: co || '', link: link || '', page: location.href })
+      });
+    } catch (e) { /* fire-and-forget; never block the UI */ }
+  }
+
   // =========================================================================
   // Logic — ported 1:1 from the Manus DCLogic Component.
   // =========================================================================
@@ -51,6 +67,7 @@
       modalOpen: false,
       feedbackOpen: false,
       feedbackCo: '',
+      feedbackLink: '',
       // "Change Look?" visual theme: 'original' | 'cod' (WW2) | 'girly'.
       // Loaded from localStorage so the choice sticks across reloads + pages.
       look: loadLook(),
@@ -775,7 +792,7 @@
                 '</div>' +
                 '<div style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 15px; color: #2A2118; margin-top: 12px;">I applied!</div>' +
               '</div>' +
-              '<div data-act="closeFeedback" class="fbopt" style="flex: 1; cursor: pointer; background: #ECDBB7; border-radius: 6px; padding: 22px 14px 18px; text-align: center; transform: rotate(1.6deg); box-shadow: 2px 4px 9px rgba(44,33,24,0.16);">' +
+              '<div data-act="reportBroken" class="fbopt" style="flex: 1; cursor: pointer; background: #ECDBB7; border-radius: 6px; padding: 22px 14px 18px; text-align: center; transform: rotate(1.6deg); box-shadow: 2px 4px 9px rgba(44,33,24,0.16);">' +
                 '<div style="width: 40px; height: 40px; border-radius: 50%; background: #D8502E; display: flex; align-items: center; justify-content: center; margin: 0 auto;">' +
                   '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 7H6.5a3.5 3.5 0 0 0 0 7H9M15 7h2.5a3.5 3.5 0 0 1 0 7H15M9 10.5h2M4 4l16 16" stroke="#F4EEE2" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
                 '</div>' +
@@ -853,7 +870,14 @@
           case 'openModal': self.setState({ modalOpen: true }); break;
           case 'closeModal': self.setState({ modalOpen: false }); break;
           case 'closeFeedback': self.setState({ feedbackOpen: false }); break;
-          case 'markApplied': self.setState({ feedbackOpen: false }); break;
+          case 'markApplied':
+            postReport('applied', self.state.feedbackCo, self.state.feedbackLink);
+            self.setState({ feedbackOpen: false });
+            break;
+          case 'reportBroken':
+            postReport('broken', self.state.feedbackCo, self.state.feedbackLink);
+            self.setState({ feedbackOpen: false });
+            break;
           case 'stop': e.stopPropagation(); break;
 
           case 'toggleSavedOnly': self.setState({ savedOnly: !self.state.savedOnly }); break;
@@ -906,7 +930,7 @@
             // anchor handles the actual navigation (target=_blank); we only
             // fire the feedback popup, mirroring card.onApply.
             e.stopPropagation();
-            self.setState({ feedbackOpen: true, feedbackCo: el.getAttribute('data-co') });
+            self.setState({ feedbackOpen: true, feedbackCo: el.getAttribute('data-co'), feedbackLink: el.getAttribute('data-link') || el.getAttribute('href') || '' });
             break;
           }
 
@@ -918,7 +942,7 @@
             if (ns === 'open' || ns === 'closing') return;
             e.stopPropagation();
             window.open(el.getAttribute('data-link'), '_blank', 'noopener');
-            self.setState({ feedbackOpen: true, feedbackCo: el.getAttribute('data-co') });
+            self.setState({ feedbackOpen: true, feedbackCo: el.getAttribute('data-co'), feedbackLink: el.getAttribute('data-link') || el.getAttribute('href') || '' });
             break;
           }
         }
