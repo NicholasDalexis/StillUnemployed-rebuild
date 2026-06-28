@@ -4,6 +4,14 @@
   publish = "."
   command = ""
 
+# THE REAL FIX. Netlify post-processing was rewriting internal links
+# (href="./index.html" -> "/") and re-serializing those <a> tags with
+# single quotes + backslash-escaped inner quotes, which broke the inline
+# styles on Home/Jobs/CTA. Advice's link is external so it was left alone.
+# Turn ALL post-processing off so deploys serve our files byte-for-byte.
+[build.processing]
+  skip_processing = true
+
 # Why fixes kept "not showing" before: the browser/CDN served cached OLD
 # html/css/js, so deploys looked like they did nothing. Force these to
 # revalidate on every load, so what you deploy is always what you see.
