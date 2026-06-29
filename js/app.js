@@ -973,8 +973,24 @@
       });
     },
 
+    // Reorder once per page load so the board never feels static: a recency-
+    // weighted shuffle. Newest-added jobs (lower in the sheet) and featured picks
+    // trend toward the top, but a random jitter reshuffles the order on every
+    // reload. Filters/search keep this order; only a reload re-rolls it.
+    shuffleFresh: function (jobs) {
+      var n = jobs.length;
+      return jobs
+        .map(function (j, idx) {
+          var recency = n > 1 ? idx / (n - 1) : 1;          // 0 = oldest row, 1 = newest row
+          var score = recency * 0.55 + (j.pick ? 0.5 : 0) + Math.random();
+          return { j: j, k: score };
+        })
+        .sort(function (a, b) { return b.k - a.k; })
+        .map(function (x) { return x.j; });
+    },
+
     init: function (jobs) {
-      this.jobs = jobs;
+      this.jobs = this.shuffleFresh(jobs);
       this.bindEvents();
       this.render();
     }
