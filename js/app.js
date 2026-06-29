@@ -930,6 +930,7 @@
             // anchor handles the actual navigation (target=_blank); we only
             // fire the feedback popup, mirroring card.onApply.
             e.stopPropagation();
+            postReport('click', el.getAttribute('data-co'), el.getAttribute('data-link') || el.getAttribute('href') || '');
             self.setState({ feedbackOpen: true, feedbackCo: el.getAttribute('data-co'), feedbackLink: el.getAttribute('data-link') || el.getAttribute('href') || '' });
             break;
           }
@@ -942,6 +943,7 @@
             if (ns === 'open' || ns === 'closing') return;
             e.stopPropagation();
             window.open(el.getAttribute('data-link'), '_blank', 'noopener');
+            postReport('click', el.getAttribute('data-co'), el.getAttribute('data-link') || el.getAttribute('href') || '');
             self.setState({ feedbackOpen: true, feedbackCo: el.getAttribute('data-co'), feedbackLink: el.getAttribute('data-link') || el.getAttribute('href') || '' });
             break;
           }
