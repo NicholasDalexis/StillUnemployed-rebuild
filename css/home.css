@@ -586,7 +586,7 @@ div[data-screen-label="Hero"] { transform-origin: top center; flex: none; }
     }
     /* ---- nav tabs pinned at bottom ---- */
     #m-nav-bottom {
-      position: absolute !important; bottom: 22px; left: 0; right: 0; z-index: 25;
+      position: absolute !important; bottom: 50px; left: 0; right: 0; z-index: 25;
       display: flex !important; justify-content: center; gap: 12px; padding: 0 16px;
     }
     #m-nav-bottom a {
