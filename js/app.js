@@ -272,7 +272,6 @@
       }
       if (this.state.ws !== 'Any' && j.style !== this.state.ws) return false;
       if (this.state.st !== 'all' && j.state !== this.state.st) return false;
-      if (this.state.fr === 'Recently added' && !j._recent) return false;
       if (this.state.pr !== 'Any') {
         var t = this.payTier(j.pay);
         var want = this.state.pr === 'Under $80K' ? 'low' : (this.state.pr === '$80–99K' ? 'mid' : 'high');
@@ -359,9 +358,14 @@
       var shown = base.filter(function (j) { return cat === 'all' || j.ind === cat; });
       if (this.state.savedOnly) shown = shown.filter(function (j) { return !!self.state.saved[j.link]; });
 
-      // lead with a 100K+ role so the first card always carries a note
-      var hiIdx = shown.findIndex(function (j) { return self.payTier(j.pay) === 'high'; });
-      if (hiIdx > 0) { var moved = shown.splice(hiIdx, 1)[0]; shown.unshift(moved); }
+      if (this.state.fr === 'Recently added') {
+        // "Recently added" is a SORT, not a filter: show ALL roles, newest (highest sheet row) first
+        shown = shown.slice().sort(function (a, b) { return (b._idx || 0) - (a._idx || 0); });
+      } else {
+        // lead with a 100K+ role so the first card always carries a note
+        var hiIdx = shown.findIndex(function (j) { return self.payTier(j.pay) === 'high'; });
+        if (hiIdx > 0) { var moved = shown.splice(hiIdx, 1)[0]; shown.unshift(moved); }
+      }
 
       return { base: base, shown: shown };
     },
@@ -993,13 +997,13 @@
     // reload. Filters/search keep this order; only a reload re-rolls it.
     shuffleFresh: function (jobs) {
       var n = jobs.length;
-      // "Recently added" = newest N rows by sheet order. No date field exists, so row
-      // position is the recency signal (new jobs are appended at the bottom of the sheet).
-      var RECENT_COUNT = 12;
+      // Tag each job with its original sheet position (_idx). No date field exists yet, so
+      // row order is the recency signal — new jobs are appended at the bottom, so a higher
+      // _idx = more recently added. Powers the "Recently added" sort (show all, newest first).
       return jobs
         .map(function (j, idx) {
-          var recency = n > 1 ? idx / (n - 1) : 1;          // 0 = oldest row, 1 = newest row
-          j._recent = idx >= n - RECENT_COUNT;              // tag the freshest roles
+          j._idx = idx;                                     // 0 = oldest row, n-1 = newest
+          var recency = n > 1 ? idx / (n - 1) : 1;
           var score = recency * 0.55 + (j.pick ? 0.5 : 0) + Math.random();
           return { j: j, k: score };
         })
