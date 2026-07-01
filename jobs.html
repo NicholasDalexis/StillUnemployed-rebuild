@@ -40,6 +40,10 @@
     .site-footer span { opacity: .9; }
     .site-footer a { color: #6F5E45; text-decoration: none; margin: 0 9px; border-bottom: 1px solid rgba(111,94,69,.4); }
     .site-footer a:hover { color: #2C2118; border-color: #2C2118; }
+    /* Board header subtitle: shown on desktop, hidden on mobile for a cleaner hero (board goes mobile at 700px) */
+    @media (max-width: 700px) {
+      .board-subtitle { display: none; }
+    }
   </style>
   <footer class="site-footer">
     <span>&copy; 2026 Elevate Media Technologies LLC</span> &nbsp;&middot;&nbsp;

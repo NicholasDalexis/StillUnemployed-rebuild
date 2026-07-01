@@ -59,6 +59,7 @@
       ws: 'Any',
       st: 'all',
       pr: 'Any',
+      fr: 'Any',
       theme: new URLSearchParams(location.search).get('theme'),
       saved: loadSaved(),
       savedOnly: false,
@@ -271,6 +272,7 @@
       }
       if (this.state.ws !== 'Any' && j.style !== this.state.ws) return false;
       if (this.state.st !== 'all' && j.state !== this.state.st) return false;
+      if (this.state.fr === 'Recently added' && !j._recent) return false;
       if (this.state.pr !== 'Any') {
         var t = this.payTier(j.pay);
         var want = this.state.pr === 'Under $80K' ? 'low' : (this.state.pr === '$80–99K' ? 'mid' : 'high');
@@ -417,6 +419,13 @@
         var active = self.state.pr === p;
         var st = pillBase + (active ? 'background:#2A2118; color:#F4E9C9;' : ('background:' + ACC + '; color:' + ACC_INK + ';'));
         return '<div data-act="pr" data-val="' + esc(p) + '" style="' + st + '">' + esc(p) + '</div>';
+      }).join('');
+
+      // ---- freshness pills ("Recently added") ----
+      var freshHtml = ['Any', 'Recently added'].map(function (f) {
+        var active = self.state.fr === f;
+        var st = pillBase + (active ? 'background:#2A2118; color:#F4E9C9;' : ('background:' + ACC + '; color:' + ACC_INK + ';'));
+        return '<div data-act="fr" data-val="' + esc(f) + '" style="' + st + '">' + esc(f) + '</div>';
       }).join('');
 
       // ---- per-card decoration computation (ported verbatim) ----
@@ -580,7 +589,7 @@
 
       var curCat = this.catList().find(function (c) { return c.match === self.state.cat; }) || this.catList()[0];
       var catBtnLabel = this.state.cat === 'all' ? 'all roles' : curCat.label;
-      var filterCount = (this.state.ws !== 'Any' ? 1 : 0) + (this.state.st !== 'all' ? 1 : 0) + (this.state.pr !== 'Any' ? 1 : 0);
+      var filterCount = (this.state.ws !== 'Any' ? 1 : 0) + (this.state.st !== 'all' ? 1 : 0) + (this.state.pr !== 'Any' ? 1 : 0) + (this.state.fr !== 'Any' ? 1 : 0);
 
       var btnBase = "display:inline-flex; align-items:center; gap:7px; padding:9px 15px; border-radius:4px; font-family:'Indie Flower',cursive; font-size:18px; font-weight:700; cursor:pointer; white-space:nowrap; box-shadow:1px 2px 6px rgba(44,33,24,0.16);";
       var catBtnStyle = btnBase + 'transform:rotate(-2deg);' + (this.state.openPanel === 'cat' || this.state.cat !== 'all'
@@ -598,6 +607,7 @@
       if (this.state.theme && this.themeDefs[this.state.theme]) chips.push({ label: this.themeDefs[this.state.theme].label, act: 'chipTheme' });
       if (this.state.ws !== 'Any') chips.push({ label: this.state.ws, act: 'chipWs' });
       if (this.state.pr !== 'Any') chips.push({ label: this.state.pr, act: 'chipPr' });
+      if (this.state.fr !== 'Any') chips.push({ label: this.state.fr, act: 'chipFr' });
       if (this.state.st !== 'all') chips.push({ label: this.state.st, act: 'chipSt' });
 
       var chipsHtml = chips.map(function (chip) {
@@ -646,7 +656,7 @@
           '<div style="position: relative;">' +
             '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 22px; color: ' + (girly ? '#D6277E' : '#C2552F') + '; transform: rotate(-2deg); display: inline-block;">★ StillUnemployed.com</div>' +
             '<h1 style="font-family: \'Archivo Black\', \'Archivo\', sans-serif; font-weight: 900; font-size: 66px; line-height: 0.95; letter-spacing: -0.03em; color: ' + boardInk + '; margin: 8px 0 0; max-width: 760px;">Roles I\'d <span style="-webkit-box-decoration-break: clone; box-decoration-break: clone; padding: 0 .12em; background: linear-gradient(98deg, transparent 1.5%, ' + HLC + ' 1.5% 98.5%, transparent 98.5%); background-repeat: no-repeat; background-size: 100% 62%; background-position: 0 80%;">actually</span> apply to.</h1>' +
-            '<div style="font-family: \'Indie Flower\', cursive; font-size: 22px; color: ' + subInk + '; margin-top: 14px; transform: rotate(-0.6deg);">every single one opened &amp; checked by a human (me) updated weekly →</div>' +
+            '<div class="board-subtitle" style="font-family: \'Indie Flower\', cursive; font-size: 22px; color: ' + subInk + '; margin-top: 14px; transform: rotate(-0.6deg);">every single one opened &amp; checked by a human (me) updated weekly →</div>' +
           '</div>' +
           '<div style="display: flex; align-items: flex-start; gap: 12px; flex: none;">' +
             '<div data-act="openLook" class="tab" style="' + changeLookBtnStyle + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M4 7l5-3 6 3 5-3v13l-5 3-6-3-5 3V7z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path><path d="M9 4v13M15 7v13" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path></svg>Need a change?</div>' +
@@ -675,7 +685,9 @@
       if (this.state.openPanel === 'filters') {
         out += '<div style="position: absolute; right: 0; top: calc(100% + 12px); width: 320px; background: #FBF6E9; border: 1.5px dashed #CDB88C; border-radius: 6px; box-shadow: 4px 8px 22px -8px rgba(44,33,24,0.4); padding: 18px 18px 20px; transform: rotate(0.6deg);">' +
           '<div data-act="toggleFilters" style="position: absolute; top: 12px; right: 12px; width: 26px; height: 26px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.6" stroke-linecap="round"></path></svg></div>' +
-          '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118;">how do you wanna work?</div>' +
+          '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118;">how fresh?</div>' +
+          '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px;">' + freshHtml + '</div>' +
+          '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 18px;">how do you wanna work?</div>' +
           '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px;">' + workStylesHtml + '</div>' +
           '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 18px;">what\'s the pay?</div>' +
           '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px;">' + pricesHtml + '</div>' +
@@ -890,15 +902,17 @@
           case 'pickGirly': self.setLook('girly'); break;
           case 'toggleCat': self.setState({ openPanel: self.state.openPanel === 'cat' ? null : 'cat' }); break;
           case 'toggleFilters': self.setState({ openPanel: self.state.openPanel === 'filters' ? null : 'filters' }); break;
-          case 'clearAll': self.setState({ ws: 'Any', st: 'all', pr: 'Any', theme: null }); break;
+          case 'clearAll': self.setState({ ws: 'Any', st: 'all', pr: 'Any', fr: 'Any', theme: null }); break;
 
           case 'cat': self.setState({ cat: el.getAttribute('data-val'), openPanel: null }); break;
           case 'ws': self.setState({ ws: el.getAttribute('data-val') }); break;
           case 'pr': self.setState({ pr: el.getAttribute('data-val') }); break;
+          case 'fr': self.setState({ fr: el.getAttribute('data-val') }); break;
 
           case 'chipTheme': self.setState({ theme: null }); break;
           case 'chipWs': self.setState({ ws: 'Any' }); break;
           case 'chipPr': self.setState({ pr: 'Any' }); break;
+          case 'chipFr': self.setState({ fr: 'Any' }); break;
           case 'chipSt': self.setState({ st: 'all' }); break;
 
           case 'toggleSave':
@@ -979,9 +993,13 @@
     // reload. Filters/search keep this order; only a reload re-rolls it.
     shuffleFresh: function (jobs) {
       var n = jobs.length;
+      // "Recently added" = newest N rows by sheet order. No date field exists, so row
+      // position is the recency signal (new jobs are appended at the bottom of the sheet).
+      var RECENT_COUNT = 12;
       return jobs
         .map(function (j, idx) {
           var recency = n > 1 ? idx / (n - 1) : 1;          // 0 = oldest row, 1 = newest row
+          j._recent = idx >= n - RECENT_COUNT;              // tag the freshest roles
           var score = recency * 0.55 + (j.pick ? 0.5 : 0) + Math.random();
           return { j: j, k: score };
         })
@@ -1093,7 +1111,7 @@
 
   // ---- boot: try the live Google Sheet first, fall back to jobs-data.json ----
   function boot() {
-    fetch(SHEET_CSV_URL, { cache: 'no-cache' })
+    fetch(SHEET_CSV_URL + '&_=' + Date.now(), { cache: 'no-cache' })  // &_=ts busts Google's server-side gviz cache so the board always sees the live sheet
       .then(function (r) { if (!r.ok) throw new Error('sheet ' + r.status); return r.text(); })
       .then(function (text) {
         var jobs = rowsToJobs(parseCSV(text));

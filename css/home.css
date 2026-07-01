@@ -639,7 +639,7 @@ div[data-screen-label="Hero"] { transform-origin: top center; flex: none; }
     div[data-screen-label="Hero"] > div[style*="z-index: 100"] > div[style*="width: 600px"] { width: 92vw !important; max-width: 92vw !important; }
     /* ---- sticky note overlay ---- */
     #m-sticky {
-      position: absolute !important; bottom: 92px; right: 16px; z-index: 30;
+      position: absolute !important; bottom: 124px; right: 16px; z-index: 30;
       width: 92px; height: 66px;
       cursor: pointer;
       transform: rotate(-4deg);
