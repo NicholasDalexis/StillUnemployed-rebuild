@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>StillUnemployed.com — Roles I'd actually apply to</title>
-  <meta name="description" content="Every role here is opened and verified by a human (me). No ghost listings, no AI slop, just jobs I'd actually apply to.">
+  <meta name="description" content="Roles here are opened and checked by a human (me). No AI slop, just jobs I'd actually apply to.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Black Ops One powers the WW2 "Change Look?" theme label (falls back to Archivo Black) -->
@@ -15,7 +15,7 @@
     (function () {
       try {
         var v = localStorage.getItem('su_look');
-        if (v === 'cod' || v === 'girly') {
+        if (v === 'cod' || v === 'girly' || v === 'poker' || v === 'mermaid') {
           document.documentElement.setAttribute('data-su-look', v);
           document.addEventListener('DOMContentLoaded', function () {
             document.body.className = 'theme-' + v;
@@ -26,6 +26,8 @@
       } catch (e) {}
     })();
   </script>
+  <!-- First-party analytics: defer keeps document order, so this runs BEFORE js/app.js -->
+  <script src="js/analytics.js?v=an2" defer></script>
 </head>
 <body>
   <!-- The board is rendered by js/app.js from jobs-data.json, reproducing the exact

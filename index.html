@@ -4,10 +4,201 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>StillUnemployed.com — Still Unemployed?</title>
-  <meta name="description" content="The job board I wish I'd had. Every role is opened and verified by a human (me). No ghost listings, no AI slop, just jobs I'd actually apply to.">
-  <link rel="stylesheet" href="css/home.css">
+  <meta name="description" content="The job board I wish I'd had. Roles are opened and checked by a human (me). No AI slop, just jobs I'd actually apply to.">
+  <link rel="stylesheet" href="css/home.css?v=nh2">
+  <!-- First-party analytics: defer keeps document order, so this runs BEFORE js/home.js -->
+  <script src="js/analytics.js?v=an2" defer></script>
 </head>
 <body>
+
+<!-- =========================================================================
+     NEW DESKTOP/TABLET HOMEPAGE (Jul 2026) — ported verbatim from the Claude
+     Design project "StillUnemployed.com" / MAIN FILE (isHome screen,
+     1440x1392). Shows at >640px only (home.css #nh-stage rules). The ORIGINAL
+     hero below stays untouched and now serves ONLY the <=640px mobile
+     experience. The dc-runtime bindings are reimplemented in js/home.js
+     (nh-* ids). Per the Netlify postmortem, anchors carry classes, never
+     quoted inline styles.
+     ========================================================================= -->
+<div id="nh-stage">
+<div id="hero-desktop" style="position: relative; width: 1440px; height: 1392px; margin: 0 auto; overflow: hidden; background-color: #EFE6D4; background-image: radial-gradient(rgba(120,92,54,0.07) 1px, transparent 1.7px), radial-gradient(rgba(120,92,54,0.05) 1px, transparent 1.7px), radial-gradient(150% 90% at 50% 0%, rgba(255,247,232,0.75), transparent 55%); background-size: 9px 9px, 9px 9px, 100% 100%; background-position: 0 0, 4.5px 4.5px, 0 0; font-family: 'Archivo', system-ui, sans-serif; color: #2C2118;">
+
+  <!-- top bar -->
+  <div style="position: absolute; top: 0; left: 0; right: 0; height: 110px; z-index: 30;">
+    <div style="position: absolute; top: 24px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px;">
+      <a href="./index.html" class="postit nav-postit" style="--r: -3deg;">Home</a>
+      <a href="./jobs.html" class="postit nav-postit" style="--r: 2.5deg;">Jobs</a>
+      <a href="https://jobhuntrecipe.com/p/jobs-ghost-more-than-hinge-issue-1" target="_blank" rel="noopener" class="postit nav-postit" style="--r: -2deg;">Advice</a>
+    </div>
+  </div>
+
+  <!-- eyebrow -->
+  <div style="position: absolute; left: 60px; top: 150px; z-index: 22; font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 23px; color: #C2552F; transform: rotate(-2deg);">★ StillUnemployed.com</div>
+
+  <!-- headline -->
+  <div style="position: absolute; left: 56px; top: 176px; z-index: 20;">
+    <div style="font-family: 'Playfair Display', serif; font-weight: 900; font-size: 142px; line-height: 0.84; letter-spacing: -0.02em; color: #2C2118;">Still</div>
+    <div style="position: relative; display: inline-block; margin-top: 4px;">
+      <div style="font-family: 'Playfair Display', serif; font-style: italic; font-weight: 800; font-size: 70px; letter-spacing: 0; color: #7A4A2C;">Unemployed?</div>
+      <svg width="430" height="26" viewBox="0 0 430 26" fill="none" style="position: absolute; left: 4px; bottom: -12px;"><path d="M6 15 C 110 5, 250 5, 380 12 C 400 13, 415 15, 424 19" stroke="#E8502E" stroke-width="4.5" stroke-linecap="round"></path></svg>
+    </div>
+  </div>
+
+  <!-- rubber stamp overlapping headline -->
+  <div style="position: absolute; left: 452px; top: 196px; z-index: 24; transform: rotate(-11deg);">
+    <div style="display: inline-flex; align-items: center; gap: 7px; border: 3px solid #C0402A; color: #C0402A; border-radius: 6px; padding: 7px 12px; font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: .12em; opacity: 0.82; box-shadow: 0 0 0 2px rgba(192,64,42,0.16);">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.4"></circle><path d="M8.3 12.2l2.4 2.4 4.9-5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      Human Verified
+    </div>
+  </div>
+
+  <!-- torn subhead strip -->
+  <div style="position: absolute; left: 60px; top: 452px; width: 520px; z-index: 21; background: #FCFAF3; padding: 20px 26px 24px; box-shadow: 3px 7px 16px rgba(44,33,24,0.16); transform: rotate(-0.7deg); clip-path: polygon(0 6%, 4% 0, 30% 5%, 52% 0, 74% 6%, 100% 2%, 99% 96%, 72% 100%, 46% 95%, 22% 100%, 2% 96%);">
+    <div style="font-family: 'Poppins', sans-serif; font-size: 20px; line-height: 1.5; color: #3A3026; font-weight: 500;">A real human <strong style="font-weight: 700; color: #2C2118;">(me)</strong> opens and checks the jobs before we add them. No dead job links. No AI slop. Just roles I would apply to myself.</div>
+  </div>
+
+  <!-- CTA row -->
+  <div style="position: absolute; left: 60px; top: 606px; z-index: 23; display: flex; align-items: center; gap: 26px;">
+    <a href="./jobs.html" class="postit nh-browse" style="--r: -2.5deg;">Browse the board
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#1f1c14" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </a>
+    <div id="nh-open-story" class="brklink" style="font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 22px; color: #6F5E45; cursor: pointer; transition: color .15s;">read Nic's story →</div>
+  </div>
+
+  <!-- back polaroid (peeking) -->
+  <div class="hoverlift" style="position: absolute; right: 74px; top: 128px; width: 250px; z-index: 14; background: #FBF7EE; padding: 12px 12px 40px; box-shadow: 0 16px 30px rgba(44,33,24,0.24); transform: rotate(7deg);">
+    <div style="width: 100%; height: 300px; overflow: hidden; background: #E8D9C5;"><img id="nh-grad" src="assets/grad-1.jpg" alt="Nic on grad day" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 24%; filter: saturate(1.02) sepia(0.08);"></div>
+    <div style="font-family: 'Indie Flower', cursive; font-size: 14px; color: #6F5E45; text-align: center; margin-top: 8px; line-height: 1.3;">Me on grad day before knowing how HARD the job market would be</div>
+  </div>
+
+  <!-- washi tape corners -->
+  <div style="position: absolute; right: 452px; top: 150px; width: 108px; height: 30px; background: rgba(232,203,140,0.62); transform: rotate(-24deg); z-index: 19; box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>
+  <div style="position: absolute; right: 96px; top: 158px; width: 108px; height: 30px; background: rgba(232,203,140,0.62); transform: rotate(20deg); z-index: 19; box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>
+
+  <!-- main polaroid: rotating images -->
+  <div class="hoverlift" style="position: absolute; right: 118px; top: 168px; width: 470px; z-index: 16; background: #FCFAF3; padding: 16px 16px 60px; box-shadow: 0 22px 44px rgba(44,33,24,0.30); transform: rotate(-2.4deg);">
+    <div style="position: relative; width: 100%; height: 468px; overflow: hidden; background: #E8D9C5;">
+      <img src="assets/social-media.png" alt="Social Media roles" class="nh-img" data-idx="0" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 46%; opacity: 1; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.14) contrast(1.02);">
+      <img src="assets/cat-copy.png" alt="Copywriting roles" class="nh-img" data-idx="1" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 80%; opacity: 0; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.14) contrast(1.02);">
+      <img src="assets/cat-brand.png" alt="Branding roles" class="nh-img" data-idx="2" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 52% 31%; opacity: 0; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.14) contrast(1.02);">
+      <img src="assets/creative-tech.png" alt="Creative Tech roles" class="nh-img" data-idx="3" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 34%; opacity: 0; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.14) contrast(1.02);">
+      <img src="assets/cat-growth.png" alt="Marketing roles" class="nh-img" data-idx="4" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 41%; opacity: 0; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.14) contrast(1.02);">
+      <div style="position: absolute; inset: 0; mix-blend-mode: multiply; background: linear-gradient(150deg, rgba(150,110,70,0.16) 0%, rgba(150,110,70,0.04) 45%, rgba(92,64,51,0.14) 100%);"></div>
+      <div id="nh-prev" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; background: rgba(44,33,24,0.72); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 4;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#F4EEE2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </div>
+      <div id="nh-next" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; background: rgba(44,33,24,0.72); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 4;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="#F4EEE2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </div>
+      <div id="nh-dots" style="position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; gap: 8px; z-index: 4;">
+        <div data-dot="0" style="width: 22px; height: 8px; border-radius: 999px; background: #F4EEE2;"></div>
+        <div data-dot="1" style="width: 8px; height: 8px; border-radius: 999px; background: rgba(244,238,226,0.5);"></div>
+        <div data-dot="2" style="width: 8px; height: 8px; border-radius: 999px; background: rgba(244,238,226,0.5);"></div>
+        <div data-dot="3" style="width: 8px; height: 8px; border-radius: 999px; background: rgba(244,238,226,0.5);"></div>
+        <div data-dot="4" style="width: 8px; height: 8px; border-radius: 999px; background: rgba(244,238,226,0.5);"></div>
+      </div>
+    </div>
+    <div style="font-family: 'Indie Flower', cursive; font-size: 24px; color: #2A2118; text-align: center; margin-top: 12px;">exhibit A: it's rough out there.</div>
+  </div>
+
+  <!-- per-image CTA post-it peeling off the polaroid -->
+  <a id="nh-cta" href="./jobs.html?theme=social" class="postit nh-cta-postit" style="--r: 4deg;"><span id="nh-cta-text">Find Social Jobs Here</span>
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#1f1c14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+  </a>
+
+  <!-- ============ PROOF BAND ============ -->
+  <!-- founder mini card -->
+  <div id="nh-founder" class="hoverlift" style="position: absolute; left: 56px; top: 800px; width: 468px; z-index: 20; background: #5C4033; border-radius: 4px; padding: 24px 28px 26px; cursor: pointer; transform: rotate(1.2deg); box-shadow: 3px 8px 20px rgba(44,33,24,0.26);">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="width: 58px; height: 58px; border-radius: 50%; overflow: hidden; flex: none; box-shadow: 0 0 0 3px #F4EEE2;"><img src="assets/home-founder-nic.jpg" alt="Nic" style="width: 100%; height: 100%; object-fit: cover; object-position: 30% 30%; transform: scale(1.5);"></div>
+      <div style="font-family: 'Indie Flower', cursive; font-size: 20px; color: #E8D9C5; line-height: 1.15;">hey, I'm Nic.<br>I built this.</div>
+    </div>
+    <div style="font-family: 'Poppins', sans-serif; font-size: 15px; line-height: 1.5; color: #F1E7D8; margin-top: 14px;">I sent <strong style="color: #fff; font-weight: 700;">1,500 applications</strong> and got ghosted for 7 months. Then Instagram offered me 6 figures.</div>
+    <div style="font-family: 'Indie Flower', cursive; font-size: 18px; color: #F2E14B; margin-top: 12px;">read my story →</div>
+  </div>
+
+  <!-- newsletter note -->
+  <div style="position: absolute; left: 916px; top: 800px; width: 468px; z-index: 20;">
+    <div style="position: relative; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 27px, rgba(96,130,170,0.30) 27px 28.5px); background-position: 0 22px; border-radius: 3px; padding: 22px 22px 20px; box-shadow: 3px 8px 20px rgba(44,33,24,0.2); transform: rotate(-1.4deg);">
+      <div style="position: absolute; top: 0; left: 22px; bottom: 0; width: 1px; background: rgba(214,80,46,0.4);"></div>
+      <div style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(-2.5deg); width: 120px; height: 26px; background: rgba(228,202,128,0.55); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>
+      <div style="font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 22px; color: #2A2118; padding-left: 12px; line-height: 1.25;">P.S. want the exact recipe?</div>
+      <div style="font-family: 'Indie Flower', cursive; font-size: 18px; color: #6F5E45; padding-left: 12px; line-height: 28px; margin-top: 2px;">the free newsletter on how I actually landed the job. no em-dashes, easy unsub.</div>
+      <a href="https://JobHuntRecipe.com" target="_blank" rel="noopener" class="postit nh-recipe-btn" style="--r: -2deg;">Get the recipe
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#2A2118" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- ============ FEATURED ROLES ============ -->
+  <div style="position: absolute; left: 60px; top: 1096px; z-index: 20; display: flex; align-items: center; gap: 16px;">
+    <div style="font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 30px; color: #2C2118;">fresh on the board this week</div>
+    <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M3 11 C 20 5, 40 5, 54 10" stroke="#C2552F" stroke-width="3" stroke-linecap="round"></path><path d="M47 5 L56 10 L48 16" stroke="#C2552F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+  </div>
+  <a href="./jobs.html" class="postit nh-seeall" style="--r: 3deg;">see all <span id="nh-total">59</span> roles →</a>
+
+  <div id="nh-featured" style="position: absolute; left: 56px; right: 56px; top: 1148px; z-index: 20; display: flex; gap: 34px;"></div>
+
+  <!-- About modal -->
+  <div id="nh-modal" hidden style="position: absolute; inset: 0; z-index: 100; background: rgba(44,33,24,0.58); display: flex; align-items: center; justify-content: center;">
+    <div id="nh-modal-card" style="width: 588px; background: #FCFAF3; border-radius: 5px; overflow: visible; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.8deg); font-family: 'Archivo', sans-serif;">
+      <div style="position: absolute; top: -13px; left: 66px; width: 122px; height: 30px; background: rgba(228,202,128,0.72); transform: rotate(-4deg); box-shadow: 0 2px 5px rgba(44,33,24,0.14); z-index: 5;"></div>
+      <div style="position: absolute; top: -12px; right: 62px; width: 122px; height: 30px; background: rgba(228,202,128,0.72); transform: rotate(3.5deg); box-shadow: 0 2px 5px rgba(44,33,24,0.14); z-index: 5;"></div>
+      <div class="nh-modal-close" style="position: absolute; top: 20px; right: 20px; width: 38px; height: 38px; border-radius: 50%; background: rgba(252,250,243,0.94); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 8; box-shadow: 0 2px 8px rgba(44,33,24,0.2);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.2" stroke-linecap="round"></path></svg>
+      </div>
+      <div style="padding: 16px 16px 0;">
+        <div style="position: relative; height: 244px; overflow: hidden; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(44,33,24,0.06);">
+          <img src="assets/home-founder-nic.jpg" alt="Nic, the founder, on SiriusXM" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; filter: saturate(1.04) brightness(1.02);">
+          <div style="position: absolute; bottom: 14px; left: 14px; display: inline-flex; align-items: center; gap: 6px; border: 2.6px solid #FFFFFF; color: #FFFFFF; border-radius: 5px; padding: 5px 10px; font-family: 'Archivo', sans-serif; font-weight: 900; font-size: 11.5px; letter-spacing: 0.14em; transform: rotate(-3deg); box-shadow: 0 2px 10px rgba(0,0,0,0.28);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.4"></circle><path d="M8.3 12.2l2.4 2.4 4.9-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            THE REAL ONE
+          </div>
+        </div>
+      </div>
+      <div style="padding: 22px 42px 40px;">
+        <div style="font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 23px; color: #D8502E; transform: rotate(-1.5deg); display: block;">hey stranger,</div>
+        <div style="position: relative; display: block; margin-top: 4px;">
+          <div style="font-family: 'Archivo Black', sans-serif; font-weight: 900; font-size: 32px; line-height: 1.06; letter-spacing: -0.02em; color: #2C2118; width: 300px;">Hey, I'm Nic. I built this.</div>
+          <svg width="220" height="12" viewBox="0 0 220 12" fill="none" style="position: absolute; left: 4px; bottom: -8px;"><path d="M3 7 C 55 2, 120 2, 217 6" stroke="#F2C231" stroke-width="4" stroke-linecap="round"></path></svg>
+        </div>
+        <div style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 18px;">I sent <strong style="font-weight: 800; color: #2C2118;">1,500 applications</strong> and got ghosted more times than I can count. Seven months later, <strong style="font-weight: 800; color: #2C2118;">Instagram</strong> said yes. <strong style="font-weight: 800; color: #2C2118;">StillUnemployed</strong> is the board I wish I'd had. Roles here are <strong style="font-weight: 800; color: #2C2118;">opened and verified by a human</strong>, and that human is me. No AI slop, just jobs I'd <strong style="font-weight: 800; color: #2C2118;">actually apply to</strong>.</div>
+        <div style="display: inline-flex; align-items: center; gap: 8px; background: #F2E14B; padding: 7px 13px 7px 9px; margin-top: 20px; transform: rotate(-1.5deg); box-shadow: 2px 3px 7px rgba(44,33,24,0.18);">
+          <div style="width: 20px; height: 20px; border-radius: 50%; background: #2E7D52; display: flex; align-items: center; justify-content: center; flex: none;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="#F4EEE2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </div>
+          <div style="font-family: 'Archivo', sans-serif; font-size: 12.5px; font-weight: 800; color: #2A2118; letter-spacing: 0.01em;">Content Specialist at Instagram · Class of 2025</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px; margin-top: 24px; flex-wrap: wrap;">
+          <a href="https://NicholasAlexis.com" target="_blank" rel="noopener" class="nh-portfolio-btn">View My Portfolio
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#F4EEE2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </a>
+          <div style="font-family: 'Indie Flower', cursive; font-size: 22px; color: #6F5E45; transform: rotate(-2deg);">- Nic</div>
+        </div>
+      </div>
+      <div id="nh-nl-tab" class="notetab" style="--nr: 3deg; position: absolute; bottom: 22px; right: 24px; z-index: 6; display: inline-flex; align-items: center; gap: 9px; cursor: pointer; transform: rotate(3deg); white-space: nowrap;">
+        <svg width="34" height="30" viewBox="0 0 34 30" fill="none" style="flex: none; overflow: visible;"><path d="M3 7 C 6 22, 17 29, 29 25" stroke="#C2552F" stroke-width="2.4" stroke-linecap="round"></path><path d="M24.5 20 L30 25 L23 27.5" stroke="#C2552F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <div class="envbob" style="position: relative; width: 80px; height: 58px; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 13px, rgba(96,130,170,0.34) 13px 14px); background-position: 0 9px; border-radius: 3px; box-shadow: 2px 4px 8px rgba(44,33,24,0.26); flex: none; overflow: hidden;">
+          <div style="position: absolute; top: 0; bottom: 0; left: 13px; width: 1px; background: rgba(214,80,46,0.4);"></div>
+          <div style="position: absolute; top: 0; right: 0; width: 22px; height: 22px; background: #E6D6B2; clip-path: polygon(100% 0, 0 0, 100% 100%); border-top-right-radius: 3px;"></div>
+          <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 20px; color: #2A2118;">open</span>
+        </div>
+      </div>
+      <div id="nh-nl-note" hidden style="position: absolute; bottom: 22px; right: 22px; z-index: 7; transform: rotate(-2deg); transform-origin: bottom right;">
+        <div style="position: relative; width: 272px; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 23px, rgba(96,130,170,0.32) 23px 24.5px); background-position: 0 19px; border-radius: 3px; padding: 18px 18px 15px; box-shadow: 3px 8px 20px rgba(44,33,24,0.32); box-sizing: border-box; transform-origin: bottom right; animation: noteUnfold .34s cubic-bezier(.2,.9,.3,1.25) both;">
+          <div style="position: absolute; top: 0; left: 18px; bottom: 0; width: 1px; background: rgba(214,80,46,0.4);"></div>
+          <div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 72px; height: 18px; background: rgba(228,202,128,0.6); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>
+          <div id="nh-nl-close" style="position: absolute; top: -10px; right: -10px; width: 26px; height: 26px; border-radius: 50%; background: #2C2118; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.32); z-index: 3;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#F4EFE6" stroke-width="2.6" stroke-linecap="round"></path></svg></div>
+          <div style="font-family: 'Indie Flower', cursive; font-size: 17px; line-height: 24px; color: #2A2118; padding-left: 10px;">I also have the exact recipe I followed to get a job at Instagram. It's my free newsletter, no em-dashes, and easy to unsub from!</div>
+          <a href="https://JobHuntRecipe.com" target="_blank" rel="noopener" class="nh-note-recipe">Get the recipe<svg width="17" height="17" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M5 12h14M13 6l6 6-6 6" stroke="#2A2118" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
+          <div style="font-family: 'Indie Flower', cursive; font-size: 15px; color: #6F5E45; text-align: right; line-height: 24px;">- Nic</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
 
 <!-- =========================================================================
      Homepage hero. Rebuilt verbatim from the Manus export; the dc-runtime
@@ -90,7 +281,7 @@
       <div style="width: 24px; height: 24px; border-radius: 50%; border: 2px solid #E8502E; display: flex; align-items: center; justify-content: center; flex: none;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="#E8502E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
       </div>
-      <div style="font-size: 18.5px; font-weight: 800; color: #2C2118;">Every role is checked by (me) a human.</div>
+      <div style="font-size: 18.5px; font-weight: 800; color: #2C2118;">Roles are checked by (me) a human.</div>
     </div>
 
   </div>
@@ -102,7 +293,8 @@
     <img class="hero-img" data-idx="0" src="assets/91002467-455d-45f7-9f12-89c4ae6b82d0.png" alt="Featured role" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 46%; opacity: 1; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.16) brightness(1.02) contrast(1.02);">
     <img class="hero-img" data-idx="1" src="assets/570b933e-56ad-4fda-9ce2-902a6392b3c8.png" alt="Featured role" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 80%; opacity: 0; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.16) brightness(1.02) contrast(1.02);">
     <img class="hero-img" data-idx="2" src="assets/8af3d15a-98a3-4770-94ec-aaf0fe8c9e59.png" alt="Featured role" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 52% 31%; opacity: 0; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.16) brightness(1.02) contrast(1.02);">
-    <img class="hero-img" data-idx="3" src="assets/f933acb5-4f29-44b1-b79b-9528b317e244.png" alt="Featured role" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 41%; opacity: 0; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.16) brightness(1.02) contrast(1.02);">
+    <img class="hero-img" data-idx="3" src="assets/creative-tech.png" alt="Creative Tech roles" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 34%; opacity: 0; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.16) brightness(1.02) contrast(1.02);">
+    <img class="hero-img" data-idx="4" src="assets/f933acb5-4f29-44b1-b79b-9528b317e244.png" alt="Featured role" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 41%; opacity: 0; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.16) brightness(1.02) contrast(1.02);">
     <div style="position: absolute; inset: 0; mix-blend-mode: multiply; background: linear-gradient(150deg, rgba(150,110,70,0.20) 0%, rgba(150,110,70,0.06) 45%, rgba(92,64,51,0.16) 100%);"></div>
     <div style="position: absolute; inset: 0; mix-blend-mode: soft-light; background: rgba(232,150,80,0.22);"></div>
     <!-- prev -->
@@ -119,6 +311,7 @@
       <div data-dot="1" style="width: 8px; height: 8px; border-radius: 999px; background: rgba(244,238,226,0.5);"></div>
       <div data-dot="2" style="width: 8px; height: 8px; border-radius: 999px; background: rgba(244,238,226,0.5);"></div>
       <div data-dot="3" style="width: 8px; height: 8px; border-radius: 999px; background: rgba(244,238,226,0.5);"></div>
+      <div data-dot="4" style="width: 8px; height: 8px; border-radius: 999px; background: rgba(244,238,226,0.5);"></div>
     </div>
   </div>
 
@@ -142,7 +335,7 @@
       <!-- body -->
       <div style="padding: 32px 44px 40px;">
         <div style="font-family: 'Archivo Black', sans-serif; font-weight: 900; font-size: 32px; line-height: 1.06; letter-spacing: -0.02em; color: #2C2118; width: 300px;">Hey, I'm Nic. I built this.</div>
-        <div style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 16px;">I sent <strong style="font-weight: 800; color: #2C2118;">1,500 applications</strong> and got ghosted more times than I can count. Seven months later, <strong style="font-weight: 800; color: #2C2118;">Instagram</strong> said yes. <strong style="font-weight: 800; color: #2C2118;">StillUnemployed</strong> is the board I wish I'd had. Every role here is <strong style="font-weight: 800; color: #2C2118;">opened and verified by a human</strong>, and that human is me. No ghost listings, no AI slop, just jobs I'd <strong style="font-weight: 800; color: #2C2118;">actually apply to</strong>.</div>
+        <div style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 16px;">I sent <strong style="font-weight: 800; color: #2C2118;">1,500 applications</strong> and got ghosted more times than I can count. Seven months later, <strong style="font-weight: 800; color: #2C2118;">Instagram</strong> said yes. <strong style="font-weight: 800; color: #2C2118;">StillUnemployed</strong> is the board I wish I'd had. Roles here are <strong style="font-weight: 800; color: #2C2118;">opened and verified by a human</strong>, and that human is me. No AI slop, just jobs I'd <strong style="font-weight: 800; color: #2C2118;">actually apply to</strong>.</div>
         <div style="display: flex; align-items: center; gap: 9px; margin-top: 20px;">
           <div style="width: 20px; height: 20px; border-radius: 50%; background: #E8502E; display: flex; align-items: center; justify-content: center; flex: none;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="#F4EEE2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
@@ -192,6 +385,6 @@
   <a href="./terms.html">Terms</a>
 </footer>
 
-<script src="js/home.js" defer></script>
+<script src="js/home.js?v=nh3" defer></script>
 </body>
 </html>

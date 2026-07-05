@@ -391,9 +391,63 @@ body { margin: 0; background: #EFE6D4; }
       background-size: 10px 10px, 10px 10px, 100% 100%;
       background-position: 0 0, 5px 5px, 0 0;
     }
+    .board.poker {
+      /* burgundy velvet pool-table felt: dot texture + a warm top sheen + bottom vignette */
+      background-color: #4F0F1C;
+      background-image:
+        radial-gradient(rgba(244,222,173,0.055) 1px, transparent 1.7px),
+        radial-gradient(rgba(244,222,173,0.035) 1px, transparent 1.7px),
+        radial-gradient(120% 85% at 50% 0%, rgba(255,206,130,0.13), transparent 55%),
+        radial-gradient(140% 90% at 50% 100%, rgba(0,0,0,0.38), transparent 62%);
+      background-size: 9px 9px, 9px 9px, 100% 100%, 100% 100%;
+      background-position: 0 0, 4.5px 4.5px, 0 0, 0 0;
+    }
+    .board.mermaid {
+      /* deep ocean: plankton dots + drifting sun-caustics + refracted light + depth gradient */
+      background-color: #9FDCEB;
+      background-image:
+        radial-gradient(rgba(12,74,92,0.10) 1px, transparent 1.7px),
+        radial-gradient(rgba(12,74,92,0.06) 1px, transparent 1.7px),
+        radial-gradient(55% 42% at 22% 14%, rgba(255,255,255,0.55), transparent 60%),
+        radial-gradient(50% 38% at 80% 26%, rgba(206,244,255,0.42), transparent 62%),
+        repeating-linear-gradient(115deg, rgba(255,255,255,0.18) 0 2px, transparent 2px 17px),
+        repeating-linear-gradient(63deg, rgba(255,255,255,0.10) 0 1.5px, transparent 1.5px 26px),
+        linear-gradient(180deg, #CDEFF6 0%, #86D2E6 45%, #3E9FC0 100%);
+      background-size: 10px 10px, 10px 10px, 150% 130%, 140% 120%, 100% 100%, 100% 100%, 100% 100%;
+      background-position: 0 0, 5px 5px, 0% 0%, 100% 0%, 0 0, 0 0, 0 0;
+      animation: mermaidDrift 16s ease-in-out infinite alternate;
+    }
+    @keyframes mermaidDrift {
+      from { background-position: 0 0, 5px 5px, 0% 0%,  100% 0%, 0 0,    0 0,     0 0; }
+      to   { background-position: 0 0, 5px 5px, 14% 8%, 86% 12%, 60px 0, -40px 0, 0 0; }
+    }
+    @media (prefers-reduced-motion: reduce) { .board.mermaid { animation: none; } }
     /* keep the page gutter behind the board matching the active theme */
-    body.theme-cod   { background: #283026 !important; }
-    body.theme-girly { background: #FBD7E8 !important; }
+    body.theme-cod     { background: #283026 !important; }
+    body.theme-girly   { background: #FBD7E8 !important; }
+    body.theme-poker   { background: #4F0F1C !important; }
+    body.theme-mermaid { background: #6FC7DE !important; }
+    /* Card text limits (Jul 2 2026): a long company or role can no longer stretch
+       its whole row and leave neighbor cards with dead space. Both clamp to 2
+       lines with an ellipsis; the full text stays in the job popup + title attr. */
+    .card-co   { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-role { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    /* Tracker nav post-it: class-styled (never inline styles on anchors — Netlify
+       mangles quoted inline styles). Colors come from CSS vars the JS sets on the
+       nav row per the active "Change Look?" theme. */
+    .nav-postit-tracker {
+      --r: -2.5deg;
+      background: var(--su-nav-bg, #EDE93B);
+      color: var(--su-nav-ink, #1f1c14);
+      font-family: 'Indie Flower', cursive;
+      font-size: 21px;
+      letter-spacing: 0.01em;
+      padding: 10px 20px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
     .postit {
       text-decoration: none;
       transform: perspective(720px) rotate(var(--r, 0deg));

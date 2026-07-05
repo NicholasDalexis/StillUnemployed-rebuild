@@ -47,6 +47,30 @@
     } catch (e) { /* fire-and-forget; never block the UI */ }
   }
 
+  // "I applied" ALSO logs the job into the on-device application Tracker
+  // (localStorage key su_tracker, read by tracker.html). Rows dedupe by link so a
+  // double-tap never double-logs. Purely additive — the POST above is untouched.
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function trackerLog(co, link, role) {
+    try {
+      var rows = JSON.parse(localStorage.getItem('su_tracker') || '[]');
+      if (!Array.isArray(rows)) rows = [];
+      if (link && rows.some(function (r) { return r && r.link === link; })) return;
+      var d = new Date();
+      rows.unshift({
+        id: 'su-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+        company: co || '',
+        role: role || '',
+        link: link || '',
+        source: 'StillUnemployed',
+        dateApplied: d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()),
+        status: 'Applied',
+        notes: ''
+      });
+      localStorage.setItem('su_tracker', JSON.stringify(rows));
+    } catch (e) { /* tracker is a bonus; never block the confirm flow */ }
+  }
+
   // =========================================================================
   // Logic — ported 1:1 from the Manus DCLogic Component.
   // =========================================================================
@@ -69,7 +93,7 @@
       feedbackOpen: false,
       feedbackCo: '',
       feedbackLink: '',
-      // "Change Look?" visual theme: 'original' | 'cod' (WW2) | 'girly'.
+      // "Change Look?" visual theme: 'original' | 'cod' (WW2) | 'girly' | 'poker' | 'mermaid'.
       // Loaded from localStorage so the choice sticks across reloads + pages.
       look: loadLook(),
       lookOpen: false
@@ -79,13 +103,20 @@
     THEMES: {
       cod:      { acc:'#555B38', accInk:'#EDE7CF', cls:'cod',   ink:'#E9E3D2', sub:'#AEB29B', pay:'#AEB29B', show:'#AEB29B', navBg:'#5C6B3A', navInk:'#EDE7CF', hl:'rgba(120,140,75,0.92)', hiCard:'linear-gradient(160deg,#5C6440 0%,#4B5234 100%)', hiInk:'#F1E9D8', hiApply:'#FFFFFF', hiStamp:'#FFFFFF', payHi:'linear-gradient(160deg,#5C6440,#4B5234)' },
       girly:    { acc:'#E84B9C', accInk:'#FFF3FA', cls:'girly', ink:'#2A0E1E', sub:'#8A2B5E', pay:'#8A2B5E', show:'#8A2B5E', navBg:'#F25CA2', navInk:'#FFFFFF', hl:'rgba(233,59,146,0.92)', hiCard:'linear-gradient(160deg,#FF77BC 0%,#F23E98 100%)', hiInk:'#3A0E26', hiApply:'#3A0E26', hiStamp:'#3A0E26', payHi:'linear-gradient(160deg,#FF77BC,#F23E98)' },
-      original: { acc:'#F2E14B', accInk:'#2A2118', cls:'',      ink:'#2A2118', sub:'#6F5E45', pay:'#9C8367', show:'#7A6650', navBg:'#EDE93B', navInk:'#1f1c14', hl:'rgba(238,224,70,0.95)', hiCard:'linear-gradient(160deg,#F6E85F 0%,#EFDB3D 100%)', hiInk:'#2A2118', hiApply:'#D8502E', hiStamp:'#3A2A1B', payHi:'linear-gradient(160deg,#F6E85F,#EFDB3D)' }
+      original: { acc:'#F2E14B', accInk:'#2A2118', cls:'',      ink:'#2A2118', sub:'#6F5E45', pay:'#9C8367', show:'#7A6650', navBg:'#EDE93B', navInk:'#1f1c14', hl:'rgba(238,224,70,0.95)', hiCard:'linear-gradient(160deg,#F6E85F 0%,#EFDB3D 100%)', hiInk:'#2A2118', hiApply:'#D8502E', hiStamp:'#3A2A1B', payHi:'linear-gradient(160deg,#F6E85F,#EFDB3D)' },
+      // poker + mermaid extend the shape with optional card overrides (lowCard/midCard/baseInk/
+      // baseApply/baseStamp) and a featured-pick treatment (pickCard/pickInk/pickApply/pickStamp/
+      // pickBadge). render() falls back to the original values when a key is absent.
+      // Casino (poker): salary tiers by top-of-range — <$80K white, $80-99K green, $100K+ black.
+      poker:    { acc:'#D4AF37', accInk:'#2A1810', cls:'poker', ink:'#F2E4C8', sub:'#D9B989', pay:'#D9B989', show:'#D9B989', navBg:'#D4AF37', navInk:'#2A1810', hl:'rgba(31,107,58,0.92)', hiCard:'linear-gradient(160deg,#26262B 0%,#101014 100%)', hiInk:'#E9D9A6', hiApply:'#D4AF37', hiStamp:'#D4AF37', payHi:'linear-gradient(160deg,#26262B,#101014)', lowCard:'linear-gradient(160deg,#FFFFFF 0%,#F1ECDE 100%)', midCard:'linear-gradient(160deg,#1F6B3A 0%,#155229 100%)', midInk:'#EAF6E4', midApply:'#FFD98A', midStamp:'#F2E7C8', baseInk:'#23242C', baseApply:'#C0303A', baseStamp:'#23242C', pickCard:'linear-gradient(160deg,#26262B 0%,#101014 100%)', pickInk:'#E9D9A6', pickApply:'#D4AF37', pickStamp:'#D4AF37', pickBadge:'#D4AF37' },
+      mermaid:  { acc:'#FF7E67', accInk:'#4A160D', cls:'mermaid', ink:'#0E4A5C', sub:'#1B6B7D', pay:'#1B6B7D', show:'#1B6B7D', navBg:'#0E4A5C', navInk:'#E9FBFF', hl:'rgba(255,126,103,0.85)', hiCard:'linear-gradient(160deg,#177287 0%,#0E4A5C 100%)', hiInk:'#F2FBFA', hiApply:'#FFC7B8', hiStamp:'#EAF7F4', payHi:'linear-gradient(160deg,#177287,#0E4A5C)', lowCard:'linear-gradient(160deg,#FFFFFF 0%,#EAF6F6 55%,#F5EEF7 100%)', midCard:'linear-gradient(160deg,#FDFEFF 0%,#DFF2F1 55%,#F0E7F4 100%)', baseInk:'#0E4A5C', baseApply:'#D9553C', baseStamp:'#0E4A5C', pickCard:'linear-gradient(160deg,#177287 0%,#0E4A5C 100%)', pickInk:'#F2FBFA', pickApply:'#FFC7B8', pickStamp:'#EAF7F4', pickBadge:'#D9553C' }
     },
 
     themeDefs: {
       social: { label: 'Social & adjacent', cats: ['Social'], kw: ['social', 'community'] },
       copy: { label: 'Copywriting & content', cats: ['Content & Copy'], kw: ['copy', 'content', 'writer', 'sheditor'] },
       brand: { label: 'Branding', cats: ['Brand & Marketing'], kw: ['brand'] },
+      creativetech: { label: 'Creative Tech', cats: ['Creative Tech'], kw: ['creative', 'tech', 'ai', 'technologist'] },
       marketing: { label: 'Marketing & growth', cats: ['Growth & CRM', 'PR & Partnerships'], kw: ['marketing', 'growth', 'crm', 'lifecycle', 'audience', 'affiliate', 'partnership'] }
     },
 
@@ -215,6 +246,122 @@
       ] }
     ],
 
+    // ---- poker doodle poses (chips + a card corner). Same object-part format as
+    //      GIRLY, plus 'rect'/'ellipse' elements and a 'dash' stroke-dasharray used
+    //      for the chips' edge rings. Rendered by richDoodleEl(). ----
+    POKER: [
+      // single red chip
+      { w: 46, vb: '0 0 64 64', pos: { top: '-50px', left: '30%' }, parts: [
+        { e: 'circle', cx: 32, cy: 32, r: 24, fill: '#C0303A', stroke: '#7E1F26', sw: 2 },
+        { e: 'circle', cx: 32, cy: 32, r: 19.5, fill: 'none', stroke: '#F6EFE2', sw: 5, dash: '8.5 8.8' },
+        { e: 'circle', cx: 32, cy: 32, r: 11, fill: '#F6EFE2', stroke: '#7E1F26', sw: 1.4 },
+        { e: 'text', x: 32, y: 33, s: 11, t: '$', fill: '#7E1F26' }
+      ] },
+      // stacked chip cluster (green stack, gold on top, stray red)
+      { w: 56, vb: '0 0 72 64', pos: { top: '-46px', right: '-18px' }, parts: [
+        { e: 'ellipse', cx: 30, cy: 50, rx: 21, ry: 7.5, fill: '#155229', stroke: '#0C3318', sw: 2 },
+        { e: 'ellipse', cx: 30, cy: 43, rx: 21, ry: 7.5, fill: '#1F6B3A', stroke: '#0C3318', sw: 2 },
+        { e: 'ellipse', cx: 30, cy: 36, rx: 21, ry: 7.5, fill: '#D4AF37', stroke: '#8C6D1A', sw: 2 },
+        { e: 'ellipse', cx: 30, cy: 36, rx: 11, ry: 4, fill: '#F2E7C8', stroke: '#8C6D1A', sw: 1.2 },
+        { e: 'ellipse', cx: 58, cy: 53, rx: 11, ry: 4.5, fill: '#C0303A', stroke: '#7E1F26', sw: 1.6 }
+      ] },
+      // A-spades playing-card corner
+      { w: 40, vb: '0 0 64 80', pos: { top: '-52px', right: '28%' }, parts: [
+        { e: 'rect', x: 10, y: 6, wd: 44, ht: 62, rx: 6, fill: '#FFFFFF', stroke: '#23242C', sw: 2.2 },
+        { e: 'text', x: 20, y: 19, s: 15, t: 'A', fill: '#23242C' },
+        { e: 'path', d: 'M32 30 C 27 38 22 41 22 46 C 22 50 26 52 30 50 C 29 54 27 56 25 58 L 39 58 C 37 56 35 54 34 50 C 38 52 42 50 42 46 C 42 41 37 38 32 30 Z', fill: '#23242C' }
+      ] },
+      // black VIP chip, gold ring
+      { w: 42, vb: '0 0 64 64', pos: { left: '-18px', top: '24px' }, parts: [
+        { e: 'circle', cx: 32, cy: 32, r: 24, fill: '#1B1B22', stroke: '#000000', sw: 2 },
+        { e: 'circle', cx: 32, cy: 32, r: 19.5, fill: 'none', stroke: '#D4AF37', sw: 5, dash: '8.5 8.8' },
+        { e: 'circle', cx: 32, cy: 32, r: 11, fill: '#D4AF37', stroke: '#8C6D1A', sw: 1.4 },
+        { e: 'text', x: 32, y: 33, s: 9, t: '100', fill: '#1B1B22' }
+      ] },
+      // leaning chip pair (green + red)
+      { w: 50, vb: '0 0 72 64', pos: { bottom: '20px', right: '-24px' }, parts: [
+        { e: 'circle', cx: 26, cy: 36, r: 20, fill: '#1F6B3A', stroke: '#0C3318', sw: 2 },
+        { e: 'circle', cx: 26, cy: 36, r: 16, fill: 'none', stroke: '#EAF6E4', sw: 4.4, dash: '7 7.6' },
+        { e: 'circle', cx: 26, cy: 36, r: 9, fill: '#EAF6E4', stroke: '#0C3318', sw: 1.2 },
+        { e: 'circle', cx: 52, cy: 44, r: 14, fill: '#C0303A', stroke: '#7E1F26', sw: 1.8 },
+        { e: 'circle', cx: 52, cy: 44, r: 11, fill: 'none', stroke: '#F6EFE2', sw: 3.4, dash: '5 5.8' },
+        { e: 'circle', cx: 52, cy: 44, r: 6, fill: '#F6EFE2', stroke: '#7E1F26', sw: 1 }
+      ] },
+      // gold high-roller chip
+      { w: 44, vb: '0 0 64 64', pos: { top: '-46px', left: '38%' }, parts: [
+        { e: 'circle', cx: 32, cy: 32, r: 24, fill: '#D4AF37', stroke: '#8C6D1A', sw: 2 },
+        { e: 'circle', cx: 32, cy: 32, r: 19.5, fill: 'none', stroke: '#2A1810', sw: 5, dash: '8.5 8.8' },
+        { e: 'circle', cx: 32, cy: 32, r: 11, fill: '#2A1810', stroke: '#8C6D1A', sw: 1.4 },
+        { e: 'text', x: 32, y: 33, s: 10, t: '♠', fill: '#D4AF37' }
+      ] }
+    ],
+
+    // ---- mermaid doodle poses (tail fins, shells, starfish, bubbles). Same
+    //      object-part format as POKER. Rendered by richDoodleEl(). ----
+    MERMAID: [
+      // mermaid tail fluke
+      { w: 46, vb: '0 0 64 64', pos: { top: '-50px', left: '30%' }, parts: [
+        { e: 'path', d: 'M32 50 C 20 44 12 30 15 12 C 22 22 28 27 32 31 C 36 27 42 22 49 12 C 52 30 44 44 32 50 Z', fill: '#177287', stroke: '#0E4A5C', sw: 2 },
+        { e: 'path', d: 'M26 40 C 28 33 30 28 31 25', fill: 'none', stroke: '#0E4A5C', sw: 1.6 },
+        { e: 'path', d: 'M38 40 C 36 33 34 28 33 25', fill: 'none', stroke: '#0E4A5C', sw: 1.6 }
+      ] },
+      // scallop shell
+      { w: 44, vb: '0 0 64 64', pos: { top: '-46px', right: '-16px' }, parts: [
+        { e: 'path', d: 'M32 54 L 14 34 A 19 19 0 0 1 50 34 Z', fill: '#F8E3DA', stroke: '#C97A62', sw: 2.2 },
+        { e: 'path', d: 'M32 54 L 21 26', fill: 'none', stroke: '#C97A62', sw: 1.6 },
+        { e: 'path', d: 'M32 54 L 32 21', fill: 'none', stroke: '#C97A62', sw: 1.6 },
+        { e: 'path', d: 'M32 54 L 43 26', fill: 'none', stroke: '#C97A62', sw: 1.6 }
+      ] },
+      // starfish
+      { w: 42, vb: '0 0 64 64', pos: { top: '-46px', right: '30%' }, parts: [
+        { e: 'path', d: 'M32 8 L38 24 L55 25 L42 36 L47 53 L32 43 L17 53 L22 36 L9 25 L26 24 Z', fill: '#FF7E67', stroke: '#D9553C', sw: 2 },
+        { e: 'circle', cx: 32, cy: 30, r: 1.6, fill: '#D9553C' },
+        { e: 'circle', cx: 27, cy: 35, r: 1.6, fill: '#D9553C' },
+        { e: 'circle', cx: 37, cy: 35, r: 1.6, fill: '#D9553C' }
+      ] },
+      // bubble cluster drifting up
+      { w: 40, vb: '0 0 64 90', pos: { left: '-16px', top: '22px' }, parts: [
+        { e: 'circle', cx: 30, cy: 66, r: 10, fill: 'rgba(255,255,255,0.85)', stroke: '#5FB4CC', sw: 1.8 },
+        { e: 'circle', cx: 42, cy: 46, r: 7, fill: 'rgba(255,255,255,0.85)', stroke: '#5FB4CC', sw: 1.8 },
+        { e: 'circle', cx: 28, cy: 30, r: 5, fill: 'rgba(255,255,255,0.85)', stroke: '#5FB4CC', sw: 1.6 },
+        { e: 'circle', cx: 40, cy: 16, r: 3.5, fill: 'rgba(255,255,255,0.85)', stroke: '#5FB4CC', sw: 1.4 },
+        { e: 'path', d: 'M25 63 A 6 6 0 0 1 30 58', fill: 'none', stroke: '#BFE8F2', sw: 1.8 }
+      ] },
+      // little conch spiral
+      { w: 38, vb: '0 0 64 64', pos: { bottom: '20px', right: '-20px' }, parts: [
+        { e: 'path', d: 'M18 46 A 15 15 0 1 1 46 38 A 11 11 0 1 0 28 32 A 6 6 0 1 1 37 36', fill: 'none', stroke: '#C97A62', sw: 2.6 },
+        { e: 'path', d: 'M18 46 L 12 54', fill: 'none', stroke: '#C97A62', sw: 2.6 }
+      ] },
+      // ridged clam with a pearl
+      { w: 46, vb: '0 0 64 64', pos: { top: '-46px', left: '20%' }, parts: [
+        { e: 'path', d: 'M10 28 A 22 18 0 0 1 54 28 A 22 9 0 0 0 10 28 Z', fill: '#FBE7DD', stroke: '#C97A62', sw: 2 },
+        { e: 'path', d: 'M18 27 L 20 21', fill: 'none', stroke: '#C97A62', sw: 1.4 },
+        { e: 'path', d: 'M26 26 L 27 19', fill: 'none', stroke: '#C97A62', sw: 1.4 },
+        { e: 'path', d: 'M32 26 L 32 18', fill: 'none', stroke: '#C97A62', sw: 1.4 },
+        { e: 'path', d: 'M38 26 L 39 19', fill: 'none', stroke: '#C97A62', sw: 1.4 },
+        { e: 'path', d: 'M46 27 L 44 21', fill: 'none', stroke: '#C97A62', sw: 1.4 },
+        { e: 'circle', cx: 32, cy: 31, r: 3.4, fill: '#FFFFFF', stroke: '#9FD9E8', sw: 1.2 }
+      ] },
+      // sand dollar
+      { w: 38, vb: '0 0 64 64', pos: { top: '-42px', right: '-14px' }, parts: [
+        { e: 'circle', cx: 32, cy: 32, r: 18, fill: '#F3E9D8', stroke: '#C9AE86', sw: 2 },
+        { e: 'path', d: 'M32 20 L 32 32 M32 32 L 41 41 M32 32 L 23 41 M32 32 L 45 29 M32 32 L 19 29', fill: 'none', stroke: '#C9AE86', sw: 1.4 },
+        { e: 'circle', cx: 32, cy: 32, r: 2, fill: '#C9AE86' }
+      ] },
+      // swaying seaweed
+      { w: 34, vb: '0 0 48 72', pos: { bottom: '16px', left: '-14px' }, parts: [
+        { e: 'path', d: 'M18 68 C 10 54 26 48 16 34 C 8 22 22 16 18 4', fill: 'none', stroke: '#1F8A5B', sw: 3 },
+        { e: 'path', d: 'M27 68 C 33 56 21 50 31 38 C 37 28 27 22 31 12', fill: 'none', stroke: '#2AA36B', sw: 2.6 }
+      ] },
+      // coral scallop
+      { w: 40, vb: '0 0 64 64', pos: { bottom: '18px', left: '30%' }, parts: [
+        { e: 'path', d: 'M32 52 L 16 34 A 17 17 0 0 1 48 34 Z', fill: '#FBD9CE', stroke: '#E08A6E', sw: 2.2 },
+        { e: 'path', d: 'M32 52 L 23 28', fill: 'none', stroke: '#E08A6E', sw: 1.5 },
+        { e: 'path', d: 'M32 52 L 32 25', fill: 'none', stroke: '#E08A6E', sw: 1.5 },
+        { e: 'path', d: 'M32 52 L 41 28', fill: 'none', stroke: '#E08A6E', sw: 1.5 }
+      ] }
+    ],
+
     shortCat: function (ind) {
       return ({
         'Brand & Marketing': 'Brand',
@@ -284,12 +431,24 @@
       var saved = Object.assign({}, this.state.saved);
       if (saved[key]) delete saved[key]; else saved[key] = true;
       try { localStorage.setItem('su_saved_jobs', JSON.stringify(saved)); } catch (e) {}
+      // analytics (js/analytics.js): log SAVES only, not unsaves — additive no-op without it
+      if (saved[key] && typeof window.suTrack === 'function') {
+        var sj = null;
+        for (var si = 0; si < this.jobs.length; si++) {
+          if (this.jobs[si].link === key) { sj = this.jobs[si]; break; }
+        }
+        window.suTrack('save', sj ? sj.co : '', sj ? sj.role : '', key);
+      }
       this.setState({ saved: saved });
     },
 
     // apply a "Change Look?" theme, close the modal, and persist site-wide
     setLook: function (look) {
-      if (look !== 'cod' && look !== 'girly') look = 'original';
+      if (look !== 'cod' && look !== 'girly' && look !== 'poker' && look !== 'mermaid') look = 'original';
+      // analytics: look change — company = new look, role = previous look (additive)
+      if (look !== this.state.look && typeof window.suTrack === 'function') {
+        window.suTrack('look', look, this.state.look, '');
+      }
       try { localStorage.setItem('su_look', look); } catch (e) {}
       this.setState({ look: look, lookOpen: false });
     },
@@ -350,6 +509,32 @@
       return '<div class="doodle" style="' + styl + '">' + svg + '</div>';
     },
 
+    // shared renderer for the object-part decal tables (POKER / MERMAID): girly's
+    // part format plus 'rect' (x/y/wd/ht/rx) and 'ellipse' (cx/cy/rx/ry) elements
+    // and an optional 'dash' stroke-dasharray (the poker chips' edge rings).
+    richDoodleEl: function (table, idx, shadow) {
+      var D = table[((idx % table.length) + table.length) % table.length];
+      var vb = D.vb || '0 0 64 90';
+      var vbp = vb.split(' ').map(Number);
+      var h = Math.round(D.w * vbp[3] / vbp[2]);
+      var kids = D.parts.map(function (p) {
+        var dash = p.dash ? ' stroke-dasharray="' + p.dash + '"' : '';
+        if (p.e === 'circle') return '<circle cx="' + p.cx + '" cy="' + p.cy + '" r="' + p.r + '" fill="' + (p.fill || 'none') + '" stroke="' + (p.stroke || 'none') + '" stroke-width="' + (p.sw || 0) + '"' + dash + '></circle>';
+        if (p.e === 'ellipse') return '<ellipse cx="' + p.cx + '" cy="' + p.cy + '" rx="' + p.rx + '" ry="' + p.ry + '" fill="' + (p.fill || 'none') + '" stroke="' + (p.stroke || 'none') + '" stroke-width="' + (p.sw || 0) + '"' + dash + '></ellipse>';
+        if (p.e === 'rect') return '<rect x="' + p.x + '" y="' + p.y + '" width="' + p.wd + '" height="' + p.ht + '" rx="' + (p.rx || 0) + '" fill="' + (p.fill || 'none') + '" stroke="' + (p.stroke || 'none') + '" stroke-width="' + (p.sw || 0) + '"' + dash + '></rect>';
+        if (p.e === 'text') return '<text x="' + p.x + '" y="' + p.y + '" fill="' + (p.fill || '#2A2118') + '" font-size="' + (p.s || 13) + '" font-weight="800" font-family="Archivo, sans-serif" text-anchor="middle" dominant-baseline="central">' + esc(p.t) + '</text>';
+        return '<path d="' + p.d + '" fill="' + (p.fill || 'none') + '" stroke="' + (p.stroke || 'none') + '" stroke-width="' + (p.sw || 0) + '"' + dash + ' stroke-linejoin="round" stroke-linecap="round"></path>';
+      }).join('');
+      var svg = '<svg width="' + D.w + '" height="' + h + '" viewBox="' + vb + '" style="overflow:visible; filter:drop-shadow(' + shadow + ');">' + kids + '</svg>';
+      var styl = 'position:absolute; pointer-events:none; z-index:4;';
+      ['top', 'left', 'right', 'bottom'].forEach(function (k) { if (D.pos[k] != null) styl += ' ' + k + ':' + D.pos[k] + ';'; });
+      return '<div class="doodle" style="' + styl + '">' + svg + '</div>';
+    },
+
+    pokerDoodleEl: function (idx) { return this.richDoodleEl(this.POKER, idx, '0 3px 3px rgba(0,0,0,0.35)'); },
+
+    mermaidDoodleEl: function (idx) { return this.richDoodleEl(this.MERMAID, idx, '0 2px 2px rgba(10,70,90,0.25)'); },
+
     // ---- the big one: compute everything needed to render (ports renderVals) ----
     computeShown: function () {
       var self = this;
@@ -388,6 +573,8 @@
       var look = this.state.look;
       var cod = look === 'cod';
       var girly = look === 'girly';
+      var poker = look === 'poker';
+      var mermaid = look === 'mermaid';
       var P = this.THEMES[look] || this.THEMES.original;
       var ACC = P.acc, ACC_INK = P.accInk;
       var boardCls = P.cls, boardInk = P.ink, subInk = P.sub, payKeyInk = P.pay,
@@ -450,15 +637,16 @@
         var saved = !!self.state.saved[key];
         var tier = self.payTier(j.pay);
         var rot = rots[k % rots.length];
-        // high-pay cards take their ink/bg/apply/stamp from the active theme palette
-        var ink = (tier === 'high') ? P.hiInk : '#3A2A1B';
+        // high-pay cards take their ink/bg/apply/stamp from the active theme palette;
+        // poker/mermaid also override the sub-$100K cards (white playing card / pearl)
+        var ink = (tier === 'high') ? P.hiInk : (tier === 'mid' && P.midInk) ? P.midInk : (P.baseInk || '#3A2A1B');
         var bg = tier === 'low'
-          ? 'linear-gradient(160deg,#ECDEC6 0%,#E0D0B2 100%)'
+          ? (P.lowCard || 'linear-gradient(160deg,#ECDEC6 0%,#E0D0B2 100%)')
           : tier === 'mid'
-          ? 'linear-gradient(160deg,#E0CBA2 0%,#D3BB8C 100%)'
+          ? (P.midCard || 'linear-gradient(160deg,#E0CBA2 0%,#D3BB8C 100%)')
           : P.hiCard;
-        var applyColor = (tier === 'high') ? P.hiApply : '#D8502E';
-        var stampColor = (tier === 'high') ? P.hiStamp : '#3A2A1B';
+        var applyColor = (tier === 'high') ? P.hiApply : (tier === 'mid' && P.midApply) ? P.midApply : (P.baseApply || '#D8502E');
+        var stampColor = (tier === 'high') ? P.hiStamp : (tier === 'mid' && P.midStamp) ? P.midStamp : (P.baseStamp || '#3A2A1B');
         var gStamp = (tier === 'high') ? '#FFFFFF' : '#C24A78'; // girly heart-stamp color
         var hasNote = !!noteFor[k];
         var slot = k % 6;
@@ -466,6 +654,13 @@
         var tape = !hasNote && slot === 2;
         var doodleOn = !hasNote && slot === 4;
         var pick = !!j.pick;
+        // featured picks get the theme's VIP card when it defines one
+        // (poker = black + gold casino card, mermaid = deep-sea teal + pearl)
+        if (pick && P.pickCard) {
+          bg = P.pickCard; ink = P.pickInk;
+          applyColor = P.pickApply; stampColor = P.pickStamp;
+        }
+        var pickBadgeColor = P.pickBadge || '#D8502E';
         var pinPalette = ['#3E7BBF', '#C9A23A', '#7A9A4E'];
         var pinColor = pinPalette[k % 3];
 
@@ -491,9 +686,9 @@
 
         var doodleHtml = '';
         if (shown.length <= 2) {
-          doodleHtml = cod ? self.codDoodleEl(1) : (girly ? self.girlyDoodleEl(0) : self.doodleEl(13));
+          doodleHtml = cod ? self.codDoodleEl(1) : (girly ? self.girlyDoodleEl(0) : (poker ? self.pokerDoodleEl(0) : (mermaid ? self.mermaidDoodleEl(0) : self.doodleEl(13))));
         } else if (doodleOn) {
-          doodleHtml = cod ? self.codDoodleEl(Math.floor(k / 6)) : (girly ? self.girlyDoodleEl(Math.floor(k / 6)) : self.doodleEl(k));
+          doodleHtml = cod ? self.codDoodleEl(Math.floor(k / 6)) : (girly ? self.girlyDoodleEl(Math.floor(k / 6)) : (poker ? self.pokerDoodleEl(Math.floor(k / 6)) : (mermaid ? self.mermaidDoodleEl(Math.floor(k / 6)) : self.doodleEl(k))));
         }
 
         var pinStyle = 'position:absolute; top:-9px; left:50%; transform:translateX(-50%); width:17px; height:17px; ' +
@@ -536,7 +731,7 @@
         // tape
         if (tape) html += '<div style="position: absolute; top: -11px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 84px; height: 24px; background: rgba(228,202,128,0.6); border-left: 1px dashed rgba(255,255,255,.5); border-right: 1px dashed rgba(255,255,255,.5); box-shadow: 0 1px 2px rgba(0,0,0,.1); z-index: 3;"></div>';
         // pick badge
-        if (pick) html += '<div style="position: absolute; top: -17px; left: -10px; transform: rotate(-13deg); font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 24px; color: #D8502E; z-index: 4; white-space: nowrap;">pick! ★</div>';
+        if (pick) html += '<div style="position: absolute; top: -17px; left: -10px; transform: rotate(-13deg); font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 24px; color: ' + pickBadgeColor + '; z-index: 4; white-space: nowrap;">pick! ★</div>';
 
         // bookmark button
         html += '<div data-act="toggleSave" data-link="' + esc(j.link) + '" class="bmbtn" style="position: absolute; top: 14px; right: 14px; z-index: 5; cursor: pointer; display: flex; align-items: center; justify-content: center; flex: none;">' +
@@ -545,9 +740,9 @@
 
         // company + role
         html += '<div style="display: flex; align-items: flex-start; gap: 10px; padding-right: 30px;">' +
-            '<div style="font-family: \'Archivo Black\', \'Archivo\', sans-serif; font-weight: 900; font-size: 23px; line-height: 1.13; letter-spacing: -0.4px;"><span style="">' + esc(j.co) + '</span></div>' +
+            '<div class="card-co" title="' + esc(j.co) + '" style="font-family: \'Archivo Black\', \'Archivo\', sans-serif; font-weight: 900; font-size: 23px; line-height: 1.13; letter-spacing: -0.4px;"><span style="">' + esc(j.co) + '</span></div>' +
           '</div>' +
-          '<div style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16.5px; margin-top: 9px; line-height: 1.3;">' + esc(j.role) + '</div>' +
+          '<div class="card-role" title="' + esc(j.role) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16.5px; margin-top: 9px; line-height: 1.3;">' + esc(j.role) + '</div>' +
           '<div style="flex: 1; min-height: 18px;"></div>' +
           '<div style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.4px;">' + esc(j.pay) + '</div>' +
           '<div style="font-size: 14.5px; opacity: 0.85; line-height: 1.5; font-family: \'Poppins\', sans-serif; margin-top: 5px;">' + esc(metaTop) + '</div>';
@@ -647,9 +842,13 @@
           '</div>' +
           '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex: none; margin-left: 2px;"><path d="M9 6l6 6-6 6" stroke="#6F5E45" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
         '</div>' +
-        '<div style="position: absolute; top: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px;">' +
+        // the row div carries the theme nav colors as CSS vars so class-styled
+        // anchors recolor with the look too
+        '<div style="position: absolute; top: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px; --su-nav-bg: ' + navBg + '; --su-nav-ink: ' + navInk + ';">' +
           '<a href="./index.html" class="postit" style="--r: -3deg; background: ' + navBg + '; color: ' + navInk + '; font-family: \'Indie Flower\', cursive; font-size: 21px; letter-spacing: 0.01em; padding: 10px 20px; cursor: pointer; text-decoration: none; display: inline-block;">Home</a>' +
           '<a href="./jobs.html" class="postit" style="--r: 2.5deg; background: ' + navBg + '; color: ' + navInk + '; font-family: \'Indie Flower\', cursive; font-size: 21px; letter-spacing: 0.01em; padding: 10px 20px; cursor: pointer; text-decoration: none; display: inline-block;">Jobs</a>' +
+          // Tracker tab removed Jul 3 2026 (Nic) — tracker.html + tracker.js + trackerLog() stay
+          // in the repo but unlinked, so there's no UI way to reach it while we rework it.
           '<a href="https://jobhuntrecipe.com/p/jobs-ghost-more-than-hinge-issue-1" target="_blank" rel="noopener" class="postit" style="--r: -2deg; background: ' + navBg + '; color: ' + navInk + '; font-family: \'Indie Flower\', cursive; font-size: 21px; letter-spacing: 0.01em; padding: 10px 20px; cursor: pointer; text-decoration: none;">Advice</a>' +
         '</div>' +
       '</div>';
@@ -660,7 +859,7 @@
           '<div style="position: relative;">' +
             '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 22px; color: ' + (girly ? '#D6277E' : '#C2552F') + '; transform: rotate(-2deg); display: inline-block;">★ StillUnemployed.com</div>' +
             '<h1 style="font-family: \'Archivo Black\', \'Archivo\', sans-serif; font-weight: 900; font-size: 66px; line-height: 0.95; letter-spacing: -0.03em; color: ' + boardInk + '; margin: 8px 0 0; max-width: 760px;">Roles I\'d <span style="-webkit-box-decoration-break: clone; box-decoration-break: clone; padding: 0 .12em; background: linear-gradient(98deg, transparent 1.5%, ' + HLC + ' 1.5% 98.5%, transparent 98.5%); background-repeat: no-repeat; background-size: 100% 62%; background-position: 0 80%;">actually</span> apply to.</h1>' +
-            '<div class="board-subtitle" style="font-family: \'Indie Flower\', cursive; font-size: 22px; color: ' + subInk + '; margin-top: 14px; transform: rotate(-0.6deg);">every single one opened &amp; checked by a human (me) updated weekly →</div>' +
+            '<div class="board-subtitle" style="font-family: \'Indie Flower\', cursive; font-size: 22px; color: ' + subInk + '; margin-top: 14px; transform: rotate(-0.6deg);">opened &amp; checked by a human (me) · updated weekly →</div>' +
           '</div>' +
           '<div style="display: flex; align-items: flex-start; gap: 12px; flex: none;">' +
             '<div data-act="openLook" class="tab" style="' + changeLookBtnStyle + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M4 7l5-3 6 3 5-3v13l-5 3-6-3-5 3V7z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path><path d="M9 4v13M15 7v13" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path></svg>Need a change?</div>' +
@@ -706,8 +905,8 @@
       // salary color key
       out += '<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 16px;">' +
         '<span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + payKeyInk + ';">pay key →</span>' +
-        '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: linear-gradient(160deg,#ECDEC6,#E0D0B2); box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">under $80K</span></div>' +
-        '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: linear-gradient(160deg,#E0CBA2,#D3BB8C); box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$80–99K</span></div>' +
+        '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.lowCard || 'linear-gradient(160deg,#ECDEC6,#E0D0B2)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">under $80K</span></div>' +
+        '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.midCard || 'linear-gradient(160deg,#E0CBA2,#D3BB8C)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$80–99K</span></div>' +
         '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + P.payHi + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$100K+</span></div>' +
       '</div>';
 
@@ -777,7 +976,7 @@
             '</div>' +
             '<div style="padding: 32px 44px 40px;">' +
               '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 32px; line-height: 1.06; letter-spacing: -0.02em; color: #2C2118; width: 300px;">Hey, I\'m Nic. I built this.</div>' +
-              '<div style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 16px;">I sent 1,500 applications and got ghosted more times than I can count. Seven months later, Instagram said yes. StillUnemployed is the board I wish I\'d had. Every role here is opened and verified by a human, and that human is me. No ghost listings, no AI slop, just jobs I\'d actually apply to.</div>' +
+              '<div style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 16px;">I sent 1,500 applications and got ghosted more times than I can count. Seven months later, Instagram said yes. StillUnemployed is the board I wish I\'d had. Roles here are opened and verified by a human, and that human is me. No AI slop, just jobs I\'d actually apply to.</div>' +
               '<div style="display: flex; align-items: center; gap: 9px; margin-top: 20px;">' +
                 '<div style="width: 20px; height: 20px; border-radius: 50%; background: #E8502E; display: flex; align-items: center; justify-content: center; flex: none;">' +
                   '<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="#F4EEE2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
@@ -829,9 +1028,10 @@
             '</div>' +
             '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 27px; color: #2A2118; line-height: 1.1; transform: rotate(-1deg);">change the look?</div>' +
             '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #6F5E45; margin-top: 6px;">pick a vibe for the board ↓</div>' +
-            '<div style="display: flex; gap: 14px; margin-top: 22px;">' +
+            // flex-wrap so the 5 options break into two scrapbook rows (3 + 2)
+            '<div style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: 22px;">' +
               // --- WW2 themed ---
-              '<div data-act="pickCod" class="fbopt" style="flex: 1; cursor: pointer; position: relative; background: #555B38; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(-2deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
+              '<div data-act="pickCod" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #555B38; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(-2deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
                 '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 54px; height: 16px; background: rgba(228,202,128,0.5); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
                 '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
                   '<div style="display: inline-flex; align-items: center; gap: 6px; border: 2.4px solid #FFFFFF; color: #FFFFFF; border-radius: 4px; padding: 5px 9px; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .14em; opacity: .92; transform: rotate(-9deg); box-shadow: 0 0 0 1.5px rgba(255,255,255,0.16); background: rgba(255,255,255,0.04);">' +
@@ -842,7 +1042,7 @@
                 '<div style="font-family: \'Black Ops One\', \'Archivo Black\', sans-serif; font-size: 16px; color: #FFFFFF; letter-spacing: 0.6px; line-height: 1; text-transform: uppercase; text-shadow: 0 1px 1px rgba(0,0,0,0.28);">WW2 Themed</div>' +
               '</div>' +
               // --- Original ---
-              '<div data-act="pickOriginal" class="fbopt" style="flex: 1; cursor: pointer; position: relative; background: #F2E14B; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.6deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
+              '<div data-act="pickOriginal" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #F2E14B; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.6deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
                 '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 54px; height: 16px; background: rgba(228,202,128,0.55); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
                 '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
                   '<div style="display: inline-flex; align-items: center; gap: 5px; border: 1.8px solid #3A2A1B; color: #3A2A1B; border-radius: 4px; padding: 4px 8px; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; opacity: .72; transform: rotate(-4deg);">' +
@@ -853,7 +1053,7 @@
                 '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #2A2118; letter-spacing: -0.3px; line-height: 1.05;">Original version</div>' +
               '</div>' +
               // --- For the girlies ---
-              '<div data-act="pickGirly" class="fbopt" style="flex: 1; cursor: pointer; position: relative; background: #EFAEC4; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(-1.4deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
+              '<div data-act="pickGirly" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #EFAEC4; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(-1.4deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
                 '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 54px; height: 16px; background: rgba(228,202,128,0.5); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
                 '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
                   '<div style="display: inline-flex; align-items: center; gap: 5px; border: 2.4px solid #C24A78; color: #C24A78; border-radius: 14px; padding: 4px 10px; font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 13px; opacity: .9; transform: rotate(-7deg);">' +
@@ -863,6 +1063,28 @@
                   '</div>' +
                 '</div>' +
                 '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #5A2638; letter-spacing: -0.3px; line-height: 1.05;">For the girlies</div>' +
+              '</div>' +
+              // --- Casino (poker) ---
+              '<div data-act="pickPoker" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #4A0E18; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.8deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
+                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(2.5deg); width: 54px; height: 16px; background: rgba(228,202,128,0.5); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
+                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
+                  '<div style="display: inline-flex; align-items: center; gap: 6px; border: 2.2px solid #D4AF37; color: #D4AF37; border-radius: 4px; padding: 5px 9px; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .12em; opacity: .95; transform: rotate(-7deg);">' +
+                    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="10" fill="none" stroke="#D4AF37" stroke-width="1.7" stroke-dasharray="4.5 4.7"></circle><circle cx="12" cy="12" r="4.5" fill="#D4AF37"></circle></svg>' +
+                    'Human Verified' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #E9D9A6; letter-spacing: -0.3px; line-height: 1.05;">Casino</div>' +
+              '</div>' +
+              // --- Mermaidcore ---
+              '<div data-act="pickMermaid" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #BFE8F2; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(-1.8deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
+                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(-2.5deg); width: 54px; height: 16px; background: rgba(228,202,128,0.5); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
+                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
+                  '<div style="display: inline-flex; align-items: center; gap: 5px; border: 2.2px solid #0E4A5C; color: #0E4A5C; border-radius: 14px; padding: 4px 10px; font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 13px; opacity: .92; transform: rotate(-6deg);">' +
+                    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M12 20 L5 13 A 7 7 0 0 1 19 13 Z" fill="#0E4A5C"></path><path d="M12 20 L8.5 11 M12 20 L15.5 11" stroke="#BFE8F2" stroke-width="1.4" stroke-linecap="round"></path></svg>' +
+                    'Human Verified' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #0E4A5C; letter-spacing: -0.3px; line-height: 1.05;">Mermaidcore</div>' +
               '</div>' +
             '</div>' +
             '<div data-act="closeLook" style="margin-top: 18px; text-align: center; font-family: \'Indie Flower\', cursive; font-size: 19px; color: #8A7558; cursor: pointer;">keep it as is →</div>' +
@@ -882,14 +1104,29 @@
         if (!el) return;
         var act = el.getAttribute('data-act');
 
+        // analytics (js/analytics.js): filter taps — additive; the switch below is untouched
+        if (typeof window.suTrack === 'function') {
+          if (act === 'cat') window.suTrack('filter', 'category', el.getAttribute('data-val') || '', '');
+          else if (act === 'ws') window.suTrack('filter', 'workstyle', el.getAttribute('data-val') || '', '');
+          else if (act === 'pr') window.suTrack('filter', 'pay', el.getAttribute('data-val') || '', '');
+          else if (act === 'fr') window.suTrack('filter', 'freshness', el.getAttribute('data-val') || '', '');
+        }
+
         switch (act) {
           case 'openModal': self.setState({ modalOpen: true }); break;
           case 'closeModal': self.setState({ modalOpen: false }); break;
           case 'closeFeedback': self.setState({ feedbackOpen: false }); break;
-          case 'markApplied':
+          case 'markApplied': {
             postReport('applied', self.state.feedbackCo, self.state.feedbackLink);
+            // also drop the application into the on-device Tracker (tracker.html)
+            var tj = null;
+            for (var ti = 0; ti < self.jobs.length; ti++) {
+              if (self.jobs[ti].link === self.state.feedbackLink) { tj = self.jobs[ti]; break; }
+            }
+            trackerLog(self.state.feedbackCo, self.state.feedbackLink, tj ? tj.role : '');
             self.setState({ feedbackOpen: false });
             break;
+          }
           case 'reportBroken':
             postReport('broken', self.state.feedbackCo, self.state.feedbackLink);
             self.setState({ feedbackOpen: false });
@@ -904,6 +1141,8 @@
           case 'pickOriginal': self.setLook('original'); break;
           case 'pickCod': self.setLook('cod'); break;
           case 'pickGirly': self.setLook('girly'); break;
+          case 'pickPoker': self.setLook('poker'); break;
+          case 'pickMermaid': self.setLook('mermaid'); break;
           case 'toggleCat': self.setState({ openPanel: self.state.openPanel === 'cat' ? null : 'cat' }); break;
           case 'toggleFilters': self.setState({ openPanel: self.state.openPanel === 'filters' ? null : 'filters' }); break;
           case 'clearAll': self.setState({ ws: 'Any', st: 'all', pr: 'Any', fr: 'Any', theme: null }); break;
@@ -974,6 +1213,14 @@
           self._searchFocused = true;
           self._searchCaret = e.target.selectionStart;
           self.setState({ q: e.target.value });
+          // analytics: log the query once it settles (1.5s debounce) — additive
+          clearTimeout(self._qTimer);
+          self._qTimer = setTimeout(function () {
+            var q = String(self.state.q || '').trim();
+            if (!q || q === self._qLast) return;
+            self._qLast = q;
+            if (typeof window.suTrack === 'function') window.suTrack('search', 'search', q.slice(0, 60), '');
+          }, 1500);
         }
       });
       document.addEventListener('focusin', function (e) {
@@ -986,6 +1233,8 @@
       // state <select> (delegated change)
       document.addEventListener('change', function (e) {
         if (e.target && e.target.id === 'su-state') {
+          // analytics: state filter — additive
+          if (typeof window.suTrack === 'function') window.suTrack('filter', 'state', e.target.value, '');
           self.setState({ st: e.target.value });
         }
       });
@@ -1014,6 +1263,10 @@
     init: function (jobs) {
       this.jobs = this.shuffleFresh(jobs);
       this.bindEvents();
+      // analytics: a ?theme= content preset (theme-chip) counts as an applied filter — additive
+      if (this.state.theme && this.themeDefs[this.state.theme] && typeof window.suTrack === 'function') {
+        window.suTrack('filter', 'theme', this.state.theme, '');
+      }
       this.render();
     }
   };
@@ -1025,7 +1278,7 @@
   function loadLook() {
     try {
       var v = localStorage.getItem('su_look');
-      return (v === 'cod' || v === 'girly') ? v : 'original';
+      return (v === 'cod' || v === 'girly' || v === 'poker' || v === 'mermaid') ? v : 'original';
     } catch (e) { return 'original'; }
   }
 
@@ -1042,7 +1295,7 @@
   // URL: docs.google.com/spreadsheets/d/<SHEET_ID>/edit).
   // =========================================================================
   var SHEET_ID = '1DRfkDn_OIVlnx06xFaNpNbusXl49jvM26oJsl-qq2nU';
-  var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv';
+  var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv&headers=1';
 
   // derive the 2-letter state (or "Remote") from a "City, ST" location string
   function deriveState(loc) {
@@ -1093,12 +1346,19 @@
       if (act.indexOf('dead') !== -1 || act === 'inactive' || act === 'no') continue; // hide retired jobs
       var loc = get(cells, iLoc);
       jobs.push({
-        co: co, role: role, link: get(cells, iLink), loc: loc, state: deriveState(loc),
+        co: co, role: role, link: safeUrl(get(cells, iLink)), loc: loc, state: deriveState(loc),
         style: get(cells, iType), ind: get(cells, iCat), pay: get(cells, iPay),
         exp: get(cells, iExp), pick: get(cells, iPick).toLowerCase() === 'featured'
       });
     }
     return jobs;
+  }
+
+  // Security: only let http(s) job links reach the DOM. Blocks a malicious sheet
+  // row (e.g. a "javascript:" or "data:" link) from injecting a script/redirect.
+  function safeUrl(u) {
+    u = String(u == null ? '' : u).trim();
+    return /^https?:\/\//i.test(u) ? u : '';
   }
 
   function showLoadError() {

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tracker — StillUnemployed.com</title>
+  <meta name="description" content="Every job you apply to, one place, no spreadsheet. Lives in your browser — no login, no backend.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Pre-apply the saved "Change Look?" theme before paint to avoid a color flash -->
+  <script>
+    (function () {
+      try {
+        var v = localStorage.getItem('su_look');
+        if (v === 'cod' || v === 'girly' || v === 'poker' || v === 'mermaid') {
+          document.documentElement.setAttribute('data-su-look', v);
+          document.addEventListener('DOMContentLoaded', function () {
+            document.body.className = 'theme-' + v;
+            var b = document.getElementById('board');
+            if (b) b.className = 'board ' + v;
+          });
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <!-- First-party analytics: defer keeps document order, so this runs BEFORE js/tracker.js -->
+  <script src="js/analytics.js?v=an2" defer></script>
+</head>
+<body>
+  <!-- The tracker is rendered by js/tracker.js from localStorage (su_tracker).
+       Nothing here ever leaves the browser: no backend, no login. -->
+  <div data-screen-label="Tracker" class="board" id="board" style="min-height: 100vh; font-family: 'Poppins', system-ui, sans-serif; color: #2C2118; padding-bottom: 90px;"></div>
+
+  <style>
+    /* ---- Tracker page styles. Theme colors arrive via CSS vars that js/tracker.js
+           sets on #board from the active "Change Look?" palette. Anchors are ALWAYS
+           class-styled (Netlify mangles quoted inline styles on anchors). ---- */
+
+    /* nav post-its (class-styled twins of the board's inline-styled ones) */
+    .trk-nav-a {
+      background: var(--su-nav-bg, #EDE93B);
+      color: var(--su-nav-ink, #1f1c14);
+      font-family: 'Indie Flower', cursive;
+      font-size: 21px;
+      letter-spacing: 0.01em;
+      padding: 10px 20px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .trk-nav-a.r1 { --r: -3deg; }
+    .trk-nav-a.r2 { --r: 2.5deg; }
+    .trk-nav-a.r3 { --r: -2.5deg; }
+    .trk-nav-a.r4 { --r: 2deg; }
+
+    .trk-wrap { max-width: 1080px; margin: 0 auto; padding: 30px 40px 0; box-sizing: border-box; }
+
+    .trk-star {
+      font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 22px;
+      color: var(--trk-star, #C2552F); transform: rotate(-2deg); display: inline-block;
+    }
+    .trk-h1 {
+      font-family: 'Archivo Black', 'Archivo', sans-serif; font-weight: 900;
+      font-size: 62px; line-height: 0.95; letter-spacing: -0.03em;
+      color: var(--trk-ink, #2A2118); margin: 8px 0 0; max-width: 760px;
+    }
+    .trk-hlspan {
+      -webkit-box-decoration-break: clone; box-decoration-break: clone; padding: 0 .12em;
+      background: linear-gradient(98deg, transparent 1.5%, var(--trk-hl, rgba(238,224,70,0.95)) 1.5% 98.5%, transparent 98.5%);
+      background-repeat: no-repeat; background-size: 100% 62%; background-position: 0 80%;
+    }
+    .trk-tag {
+      font-family: 'Indie Flower', cursive; font-size: 22px;
+      color: var(--trk-sub, #6F5E45); margin-top: 14px; transform: rotate(-0.6deg);
+    }
+
+    /* summary pills + export */
+    .trk-pills { display: flex; flex-wrap: wrap; align-items: stretch; gap: 14px; margin-top: 30px; }
+    .trk-pill {
+      background: #FBF6E9; border: 1.5px solid #E0CFA8; border-radius: 6px;
+      padding: 10px 18px 8px; box-shadow: 2px 4px 9px rgba(44,33,24,0.14);
+      min-width: 92px; box-sizing: border-box;
+    }
+    .trk-pill b { font-family: 'Archivo Black', 'Archivo', sans-serif; font-weight: 900; font-size: 26px; display: block; color: #2A2118; letter-spacing: -0.02em; }
+    .trk-pill span { font-family: 'Indie Flower', cursive; font-size: 16px; color: #6F5E45; white-space: nowrap; }
+    .trk-pill.p1 { transform: rotate(-1.4deg); }
+    .trk-pill.p2 { transform: rotate(1deg); }
+    .trk-pill.p3 { transform: rotate(-0.8deg); border-color: #9DC3A8; }
+    .trk-pill.p4 { transform: rotate(1.2deg); }
+    .trk-pill.p5 { transform: rotate(-1deg); }
+    .trk-export {
+      margin-left: auto; align-self: center; display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 19px;
+      background: #E7D2A8; color: #3A2A1B; border: none; border-radius: 2px;
+      padding: 11px 17px; cursor: pointer; transform: rotate(2deg);
+      box-shadow: 2px 4px 9px rgba(44,33,24,0.2); white-space: nowrap;
+    }
+    .trk-export:hover { filter: brightness(1.03); }
+
+    /* add-row form */
+    .trk-form {
+      background: #FBF6E9; border: 1.5px dashed #CDB88C; border-radius: 6px;
+      box-shadow: 2px 4px 11px rgba(44,33,24,0.10); padding: 14px 18px 18px;
+      margin-top: 26px; transform: rotate(-0.4deg);
+    }
+    .trk-form-label { font-family: 'Indie Flower', cursive; font-size: 18px; color: #A8825F; margin-bottom: 10px; }
+    .trk-form-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .trk-input {
+      flex: 1 1 180px; min-width: 0; font-family: 'Indie Flower', cursive; font-size: 19px;
+      padding: 10px 12px; border: 1.5px solid #E0CFA8; border-radius: 5px;
+      background: #FFFDF5; color: #2C2118; outline: none; box-sizing: border-box;
+    }
+    .trk-input:focus { border-color: #A8825F; }
+    .trk-addbtn {
+      flex: none; font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 19px;
+      padding: 10px 20px; border: none; border-radius: 4px;
+      background: var(--trk-acc, #F2E14B); color: var(--trk-accink, #2A2118);
+      cursor: pointer; box-shadow: 2px 4px 9px rgba(44,33,24,0.2); transform: rotate(-1.5deg);
+      transition: transform .14s;
+    }
+    .trk-addbtn:hover { transform: rotate(0deg) scale(1.04); }
+
+    /* application rows — little index cards */
+    .trk-list { display: flex; flex-direction: column; gap: 18px; margin-top: 30px; padding: 4px 4px 0; }
+    .trk-row {
+      background: #FBF6E9; border-radius: 4px; box-shadow: 3px 6px 13px rgba(44,33,24,0.15);
+      padding: 15px 18px; display: grid;
+      grid-template-columns: minmax(180px, 1.2fr) 74px 148px minmax(160px, 1fr) 30px;
+      gap: 14px; align-items: center; transform: rotate(-0.35deg);
+      transition: opacity .5s ease, transform .3s ease;
+    }
+    .trk-row:nth-child(even) { transform: rotate(0.4deg); }
+    .trk-row.deleting { opacity: 0.35; }
+    .trk-row.deleting .trk-co,
+    .trk-row.deleting .trk-role { text-decoration: line-through; }
+    .trk-co { font-family: 'Archivo Black', 'Archivo', sans-serif; font-weight: 900; font-size: 18px; color: #2A2118; letter-spacing: -0.3px; line-height: 1.15; }
+    .trk-role { font-family: 'Archivo', sans-serif; font-weight: 600; font-size: 14px; color: #3A2A1B; margin-top: 3px; line-height: 1.3; }
+    .trk-src { font-family: 'Indie Flower', cursive; font-size: 14px; color: #A8916B; margin-top: 3px; }
+    .trk-linka {
+      font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 13px;
+      color: #C2552F; text-decoration: none; border-bottom: 1px solid rgba(194,85,47,0.4); white-space: nowrap;
+    }
+    .trk-linka:hover { color: #B23A1E; border-color: #B23A1E; }
+    .trk-date { font-family: 'Indie Flower', cursive; font-size: 17px; color: #6F5E45; white-space: nowrap; }
+    .trk-status {
+      font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 13px;
+      padding: 9px 8px; border-radius: 5px; border: 1.5px solid rgba(44,33,24,0.18);
+      cursor: pointer; outline: none; width: 100%; box-sizing: border-box;
+    }
+    /* status colors: interviews warm, Offer green, Rejected muted red, Ghosted gray */
+    .st-applied  { background: #F6EFDC; color: #3A2A1B; }
+    .st-int      { background: #F7D98C; color: #5A3A08; border-color: #D8B25B; }
+    .st-offer    { background: #2E7D52; color: #F4EEE2; border-color: #1F5C3A; }
+    .st-rejected { background: #E3B4A8; color: #6E241B; border-color: #C6907F; }
+    .st-ghosted  { background: #D9D4C8; color: #57524A; border-color: #B7B1A2; }
+    .trk-notes {
+      font-family: 'Indie Flower', cursive; font-size: 17px; color: #2C2118;
+      background: transparent; border: none; border-bottom: 1.5px dashed #CDB88C;
+      outline: none; padding: 4px 2px; width: 100%; box-sizing: border-box; min-width: 0;
+    }
+    .trk-notes:focus { border-bottom-color: #A8825F; }
+    .trk-del {
+      width: 28px; height: 28px; border-radius: 50%; background: rgba(44,33,24,0.06);
+      color: #B23A1E; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: transform .14s ease;
+    }
+    .trk-del:hover { transform: scale(1.18) rotate(-8deg); background: rgba(178,58,30,0.12); }
+
+    /* empty state — handwritten note */
+    .trk-empty {
+      width: 520px; max-width: 100%; margin: 44px auto 0;
+      background-color: #FCFAF3;
+      background-image: repeating-linear-gradient(180deg, transparent 0 31px, rgba(96,130,170,0.30) 31px 32.5px);
+      background-position: 0 26px; border-radius: 3px;
+      box-shadow: 4px 12px 30px rgba(44,33,24,0.24);
+      padding: 36px 40px 32px; transform: rotate(-1deg); box-sizing: border-box;
+      border-left: 3px solid rgba(214,80,46,0.35);
+    }
+    .trk-empty-title { font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 30px; line-height: 32px; color: #2A2118; }
+    .trk-empty-hint { font-family: 'Indie Flower', cursive; font-size: 20px; line-height: 32px; color: #6F5E45; margin-top: 6px; }
+
+    .site-footer { text-align: center; padding: 26px 16px 46px; font-family: 'Poppins', system-ui, sans-serif; font-size: 13px; color: #6F5E45; }
+    .site-footer span { opacity: .9; }
+    .site-footer a { color: #6F5E45; text-decoration: none; margin: 0 9px; border-bottom: 1px solid rgba(111,94,69,.4); }
+    .site-footer a:hover { color: #2C2118; border-color: #2C2118; }
+    /* footer legibility on the dark poker felt */
+    body.theme-poker .site-footer, body.theme-poker .site-footer a { color: #D9B989; }
+    body.theme-cod .site-footer, body.theme-cod .site-footer a { color: #AEB29B; }
+
+    /* mobile: stack the row cards (page is new — simple responsive, no legacy constraints) */
+    @media (max-width: 700px) {
+      .trk-wrap { padding: 20px 16px 0; }
+      .trk-h1 { font-size: 40px !important; }
+      .trk-pills { gap: 10px; }
+      .trk-pill { flex: 1 1 40%; min-width: 0; }
+      .trk-export { margin-left: 0; flex: 1 1 100%; justify-content: center; }
+      .trk-row { grid-template-columns: 1fr 88px; row-gap: 10px; }
+      .trk-main { grid-column: 1 / 2; }
+      .trk-date { grid-column: 2 / 3; text-align: right; }
+      .trk-status { grid-column: 1 / 2; }
+      .trk-del { grid-column: 2 / 3; justify-self: end; }
+      .trk-notes { grid-column: 1 / -1; }
+    }
+  </style>
+
+  <footer class="site-footer">
+    <span>&copy; 2026 Elevate Media Technologies LLC</span> &nbsp;&middot;&nbsp;
+    <a href="./privacy.html">Privacy Policy</a>
+    <a href="./terms.html">Terms of Service</a>
+  </footer>
+
+  <script src="js/tracker.js" defer></script>
+</body>
+</html>
