@@ -10,3 +10,6 @@ Thumbs.db
 # Node (only if ever added)
 node_modules/
 j/
+
+# throwaway local font/render test scratch
+_fonttest.mjs

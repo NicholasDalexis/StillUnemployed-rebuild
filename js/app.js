@@ -199,28 +199,31 @@
     return (h2 >>> 0).toString(36) + (h1 >>> 0).toString(36);
   }
 
-  // ---- Share a job: share the per-job link whose preview IS the Post-it card (Open Graph) ----
+  // current live theme, mapped to the 3 looks we generate share cards for (archived
+  // looks fall back to original). Keeps the shared link's preview matching the card
+  // the viewer is actually looking at.
+  function suShareTheme() {
+    var t = '';
+    try { t = localStorage.getItem('su_look') || ''; } catch (e) {}
+    return (t === 'poker' || t === 'girly') ? t : 'original';
+  }
+
+  // ---- Share a job: hand out ONLY the per-job link. Its Open Graph preview IS the
+  // themed Post-it card (served static by /j/<theme>/<slug>.html). No PNG attachment —
+  // a second, un-clickable image is just noise; the link's own thumbnail does the job. ----
   function suShareJob(job) {
     if (!job) return;
-    var deep = location.origin + '/j/' + suSlug(job.link || '') + '.html';
-    var text = 'Look at this job I found on StillUnemployed — ' + (job.role || '') + (job.co ? ' at ' + job.co : '');
+    var deep = location.origin + '/j/' + suShareTheme() + '/' + suSlug(job.link || '') + '.html';
+    var role = job.role || 'this role';
+    var text = "Thought you'd love this one. " + role + (job.co ? ' at ' + job.co : '') + ' — found it on StillUnemployed.com, check it out:';
     var title = (job.co || 'StillUnemployed') + (job.role ? ' — ' + job.role : '');
-    suMakePng(job, function (blob) {
-      try {
-        if (blob && navigator.canShare) {
-          var file = new File([blob], 'stillunemployed.png', { type: 'image/png' });
-          if (navigator.canShare({ files: [file] })) {
-            navigator.share({ files: [file], title: title, text: text, url: deep }).catch(function () {});
-            return;
-          }
-        }
-        if (navigator.share) { navigator.share({ title: title, text: text, url: deep }).catch(function () {}); return; }
-      } catch (e) {}
-      // desktop fallback: copy the link (no forced download)
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(deep).then(function () { suToast('Link copied — paste it anywhere!'); }, function () { window.prompt('Copy this link:', deep); });
-      } else { window.prompt('Copy this link:', deep); }
-    });
+    try {
+      if (navigator.share) { navigator.share({ title: title, text: text, url: deep }).catch(function () {}); return; }
+    } catch (e) {}
+    // desktop fallback: copy the link (no forced download, no PNG)
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(deep).then(function () { suToast('Link copied — paste it anywhere!'); }, function () { window.prompt('Copy this link:', deep); });
+    } else { window.prompt('Copy this link:', deep); }
   }
 
   // ---- Theme analytics: dwell time + a "do you like this look?" vote ----
