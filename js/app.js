@@ -147,6 +147,82 @@
     } catch (e) { /* never block the UI */ }
   }
 
+  // ---- tiny toast (e.g. "Thanks — we'll look at it ASAP.") ----
+  function suToast(msg) {
+    try {
+      var t = document.createElement('div');
+      t.textContent = msg;
+      t.style.cssText = 'position:fixed;left:50%;bottom:26px;transform:translateX(-50%) rotate(-1deg);z-index:2147483200;' +
+        "background:#2C2118;color:#F6E24B;font-family:'Indie Flower','Comic Sans MS',cursive;font-size:17px;padding:11px 20px;" +
+        'border-radius:10px;box-shadow:2px 6px 18px rgba(44,33,24,0.35);max-width:88vw;text-align:center;' +
+        'animation:suCcIn .3s cubic-bezier(.2,.9,.3,1.25) both;';
+      document.body.appendChild(t);
+      setTimeout(function () { t.style.transition = 'opacity .4s'; t.style.opacity = '0'; setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 420); }, 2400);
+    } catch (e) {}
+  }
+
+  // ---- Share: draw the job as a Post-it PNG (canvas, no library), hand the blob to a callback ----
+  function suMakePng(job, cb) {
+    try {
+      var S = 2, W = 560, H = 360, cv = document.createElement('canvas');
+      cv.width = W * S; cv.height = H * S; var ctx = cv.getContext('2d'); ctx.scale(S, S);
+      function rr(x, y, w, h, r) { ctx.beginPath(); if (ctx.roundRect) { ctx.roundRect(x, y, w, h, r); } else { ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); } }
+      ctx.fillStyle = '#EDE6D4'; ctx.fillRect(0, 0, W, H);
+      ctx.save(); ctx.translate(W / 2, H / 2); ctx.rotate(-0.02); ctx.translate(-W / 2, -H / 2);
+      ctx.shadowColor = 'rgba(44,33,24,0.25)'; ctx.shadowBlur = 22; ctx.shadowOffsetY = 10;
+      ctx.fillStyle = '#F6E24B'; rr(34, 34, W - 68, H - 68, 10); ctx.fill(); ctx.shadowColor = 'transparent';
+      ctx.fillStyle = '#2C2118'; ctx.textBaseline = 'top';
+      ctx.font = "900 30px 'Archivo Black', Archivo, sans-serif";
+      ctx.fillText(String(job.co || '').slice(0, 26), 58, 66);
+      ctx.font = "600 18px Archivo, sans-serif"; ctx.fillStyle = '#3A2E20';
+      ctx.fillText(String(job.role || '').slice(0, 40), 58, 106);
+      ctx.font = "900 34px 'Archivo Black', Archivo, sans-serif"; ctx.fillStyle = '#2C2118';
+      if (job.pay) ctx.fillText(String(job.pay), 58, 150);
+      ctx.font = "500 16px Archivo, sans-serif"; ctx.fillStyle = '#4A3B28';
+      ctx.fillText([job.loc, job.type, job.exp].filter(Boolean).join('  ·  ').slice(0, 48), 58, 200);
+      ctx.font = "700 20px 'Indie Flower', cursive"; ctx.fillStyle = '#B23A1E';
+      ctx.fillText('★ stillunemployed.com', 58, H - 96);
+      ctx.font = "700 14px 'Indie Flower', cursive"; ctx.fillStyle = '#6F5E45';
+      ctx.fillText('roles I\'d actually apply to', 58, H - 70);
+      ctx.restore();
+      cv.toBlob(function (blob) { cb(blob); }, 'image/png');
+    } catch (e) { cb(null); }
+  }
+
+  // deterministic short slug from the apply link — MUST match scripts/gen-share.mjs slugOf()
+  function suSlug(str) {
+    str = String(str || '');
+    var h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+    for (var i = 0; i < str.length; i++) { var c = str.charCodeAt(i); h1 = Math.imul(h1 ^ c, 2654435761); h2 = Math.imul(h2 ^ c, 1597334677); }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return (h2 >>> 0).toString(36) + (h1 >>> 0).toString(36);
+  }
+
+  // ---- Share a job: share the per-job link whose preview IS the Post-it card (Open Graph) ----
+  function suShareJob(job) {
+    if (!job) return;
+    var deep = location.origin + '/j/' + suSlug(job.link || '') + '.html';
+    var text = 'Look at this job I found on StillUnemployed — ' + (job.role || '') + (job.co ? ' at ' + job.co : '');
+    var title = (job.co || 'StillUnemployed') + (job.role ? ' — ' + job.role : '');
+    suMakePng(job, function (blob) {
+      try {
+        if (blob && navigator.canShare) {
+          var file = new File([blob], 'stillunemployed.png', { type: 'image/png' });
+          if (navigator.canShare({ files: [file] })) {
+            navigator.share({ files: [file], title: title, text: text, url: deep }).catch(function () {});
+            return;
+          }
+        }
+        if (navigator.share) { navigator.share({ title: title, text: text, url: deep }).catch(function () {}); return; }
+      } catch (e) {}
+      // desktop fallback: copy the link (no forced download)
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(deep).then(function () { suToast('Link copied — paste it anywhere!'); }, function () { window.prompt('Copy this link:', deep); });
+      } else { window.prompt('Copy this link:', deep); }
+    });
+  }
+
   // ---- Theme analytics: dwell time + a "do you like this look?" vote ----
   // Logs how long each look is used (theme_time) and a 👍/👎 vote (themevote) via
   // suTrack, so both respect the admin/non-prod exclusion. The vote pops once per
@@ -1230,6 +1306,56 @@
         '</div>';
       }
 
+      // Job detail popup (TL;DR + Apply + share-in-corner). Opened by clicking a card.
+      if (this.state.detailOpen) {
+        var _P = this.THEMES[this.state.look] || this.THEMES.original;
+        var dj = null;
+        for (var di = 0; di < this.jobs.length; di++) { if (this.jobs[di].link === this.state.detailLink) { dj = this.jobs[di]; break; } }
+        if (dj) {
+          var dmeta = [dj.loc, dj.style, dj.exp].filter(Boolean).join(' · ');
+          var tld = dj.tldr || dj.desc || '';
+          var bl = '';
+          if (tld) {
+            var raw = String(tld);
+            var bp = raw.split(/[\n••]/).map(function (s) { return s.trim().replace(/^[-*]\s*/, ''); }).filter(function (s) { return s.length > 3; });
+            if (bp.length < 2) bp = raw.split('. ').map(function (s) { return s.trim(); }).filter(function (s) { return s.length > 3; });
+            bl = bp.slice(0, 4).map(function (b) { return '<li style="margin: 7px 0;">' + esc(b) + '</li>'; }).join('');
+          }
+          var _applyC = (_P.hiApply && _P.hiApply.toUpperCase() !== '#FFFFFF') ? _P.hiApply : '#D8502E';
+          var _arrow = '<svg width="30" height="15" viewBox="0 0 28 14" fill="none" style="overflow: visible; margin-left: 5px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+          out += '<div data-act="closeDetail" style="position: fixed; inset: 0; z-index: 214; background: rgba(44,33,24,0.58); display: flex; align-items: center; justify-content: center; padding: 24px;">' +
+            '<div data-act="stop" style="position: relative; width: 410px; max-width: 100%; box-sizing: border-box; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 32px, rgba(96,130,170,0.20) 32px 33px); background-position: 0 92px; border-radius: 4px; box-shadow: 5px 18px 44px rgba(44,33,24,0.34); transform: rotate(-1deg); padding: 30px 30px 26px 48px;">' +
+              // red left margin line + tape
+              '<div style="position: absolute; top: 0; bottom: 0; left: 36px; width: 1.5px; background: rgba(214,80,46,0.4);"></div>' +
+              '<div style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(-2.5deg); width: 120px; height: 28px; background: rgba(228,202,128,0.6); border-left: 1px dashed rgba(255,255,255,.5); border-right: 1px dashed rgba(255,255,255,.5); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>' +
+              // share + close (corner)
+              '<div data-act="detailShare" data-link="' + esc(dj.link) + '" title="Share with a friend" style="position: absolute; top: 14px; right: 50px; cursor: pointer; color: #5C4033;">' +
+                '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"></circle><circle cx="6" cy="12" r="2.6"></circle><circle cx="18" cy="19" r="2.6"></circle><path d="M8.6 13.4l6.9 4M15.5 6.6l-6.9 4"></path></svg>' +
+              '</div>' +
+              '<div data-act="closeDetail" style="position: absolute; top: 11px; right: 13px; width: 27px; height: 27px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
+                '<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.4" stroke-linecap="round"></path></svg>' +
+              '</div>' +
+              // header
+              '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 24px; color: #2C2118; line-height: 1.12; padding-right: 66px;">' + esc(dj.co) + '</div>' +
+              '<div style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16px; color: #3A2E20; margin-top: 4px;">' + esc(dj.role) + '</div>' +
+              (dj.pay ? '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 20px; color: #2C2118; margin-top: 10px;">' + esc(dj.pay) + '</div>' : '') +
+              (dmeta ? '<div style="font-family: \'Archivo\', sans-serif; font-size: 13.5px; color: #6F5E45; margin-top: 5px;">' + esc(dmeta) + '</div>' : '') +
+              // TL;DR label (handwritten + swoosh)
+              '<div style="position: relative; display: inline-block; margin-top: 20px;">' +
+                '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 23px; color: #2C2118;">TL;DR</div>' +
+                '<svg width="74" height="9" viewBox="0 0 74 9" fill="none" style="position: absolute; left: 0; bottom: -5px;"><path d="M2 5 C 22 1, 50 1, 72 4" stroke="#F2C231" stroke-width="3.5" stroke-linecap="round"></path></svg>' +
+              '</div>' +
+              (bl ? '<ul style="margin: 12px 0 0; padding-left: 20px; font-size: 14.5px; color: #3a3026; line-height: 1.55;">' + bl + '</ul>'
+                  : '<div style="margin-top: 9px; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #6F5E45; line-height: 1.5;">a quick 3–4 bullet summary is coming to every role. for now, hit apply for the full listing →</div>') +
+              // apply (card-style text link + hand-drawn arrow)
+              '<div style="margin-top: 22px; text-align: right;">' +
+                '<span data-act="detailApply" data-link="' + esc(dj.link) + '" data-co="' + esc(dj.co) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 21px; color: ' + _applyC + '; display: inline-flex; align-items: center; cursor: pointer;">apply' + _arrow + '</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }
+      }
+
       // "Change Look?" popup (markup + copy ported verbatim from MAIN FILE)
       if (this.state.lookOpen) {
         out += '<div data-act="closeLook" style="position: fixed; inset: 0; z-index: 210; background: rgba(44,33,24,0.58); display: flex; align-items: center; justify-content: center; padding: 24px;">' +
@@ -1322,7 +1448,22 @@
           case 'reportBroken':
             postReport('broken', self.state.feedbackCo, self.state.feedbackLink);
             self.setState({ feedbackOpen: false });
+            suToast('Thanks — we\'ll look at it ASAP.');
             break;
+          case 'closeDetail': self.setState({ detailOpen: false }); break;
+          case 'detailShare': {
+            var sl = el.getAttribute('data-link'), sj = null;
+            for (var si = 0; si < self.jobs.length; si++) { if (self.jobs[si].link === sl) { sj = self.jobs[si]; break; } }
+            suShareJob(sj);
+            break;
+          }
+          case 'detailApply': {
+            var dl = el.getAttribute('data-link'), dc = el.getAttribute('data-co');
+            if (dl) window.open(dl, '_blank', 'noopener');
+            postReport('click', dc, dl);
+            self.setState({ detailOpen: false, feedbackOpen: true, feedbackCo: dc, feedbackLink: dl });
+            break;
+          }
           case 'stop': e.stopPropagation(); break;
 
           case 'toggleSavedOnly': self.setState({ savedOnly: !self.state.savedOnly }); break;
@@ -1376,24 +1517,19 @@
           }
 
           case 'apply': {
-            // anchor handles the actual navigation (target=_blank); we only
-            // fire the feedback popup, mirroring card.onApply.
-            e.stopPropagation();
-            postReport('click', el.getAttribute('data-co'), el.getAttribute('data-link') || el.getAttribute('href') || '');
-            self.setState({ feedbackOpen: true, feedbackCo: el.getAttribute('data-co'), feedbackLink: el.getAttribute('data-link') || el.getAttribute('href') || '' });
+            // now opens the TL;DR detail popup; real navigation happens from detailApply
+            e.preventDefault(); e.stopPropagation();
+            self.setState({ detailOpen: true, detailLink: el.getAttribute('data-link') || el.getAttribute('href') || '' });
             break;
           }
 
           case 'openJob': {
-            // clicking the card body: open link in a new tab + feedback popup,
-            // unless a note on this card is open/closing (mirrors openJob guard).
+            // clicking the card body opens the TL;DR detail popup (unless a note is open/closing)
             var id3 = Number(el.getAttribute('data-id'));
             var ns = self.state.openNotes[id3];
             if (ns === 'open' || ns === 'closing') return;
             e.stopPropagation();
-            window.open(el.getAttribute('data-link'), '_blank', 'noopener');
-            postReport('click', el.getAttribute('data-co'), el.getAttribute('data-link') || el.getAttribute('href') || '');
-            self.setState({ feedbackOpen: true, feedbackCo: el.getAttribute('data-co'), feedbackLink: el.getAttribute('data-link') || el.getAttribute('href') || '' });
+            self.setState({ detailOpen: true, detailLink: el.getAttribute('data-link') });
             break;
           }
         }
@@ -1440,6 +1576,24 @@
               var k = localStorage.key(i);
               if (k && k.indexOf('su_tv_') === 0) localStorage.removeItem(k);
             }
+          }
+        } catch (e) {}
+        // deep link: ?job=<b64 apply-link> → scroll to + highlight that card (from a shared link)
+        try {
+          var _jp = new URLSearchParams(location.search).get('job');
+          if (_jp) {
+            var _wanted = decodeURIComponent(escape(atob(decodeURIComponent(_jp))));
+            setTimeout(function () {
+              var cards = document.querySelectorAll('.note[data-link]');
+              for (var ci = 0; ci < cards.length; ci++) {
+                if (cards[ci].getAttribute('data-link') === _wanted) {
+                  cards[ci].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  cards[ci].style.outline = '3px solid #D8502E'; cards[ci].style.outlineOffset = '3px';
+                  (function (c) { setTimeout(function () { c.style.outline = ''; }, 2800); })(cards[ci]);
+                  break;
+                }
+              }
+            }, 900);
           }
         } catch (e) {}
         initThemeTracking(self.state.look);
@@ -1537,13 +1691,14 @@
   // map sheet rows -> the job objects the board expects; keep only Active rows
   function rowsToJobs(rows) {
     if (!rows || !rows.length) return [];
-    var COLS = ['Company', 'Job Title', 'Link', 'Location', 'Type', 'Salary', 'Years of Experience', 'Category', 'Description', 'Pick', 'Active/Dead'];
+    var COLS = ['Company', 'Job Title', 'Link', 'Location', 'Type', 'Salary', 'Years of Experience', 'Category', 'Description', 'TL;DR', 'Pick', 'Active/Dead'];
     var head = rows[0].map(function (h) { return String(h).trim().toLowerCase(); });
     var hasHeader = head.indexOf('company') !== -1 && head.indexOf('job title') !== -1;
     function col(name) { return hasHeader ? head.indexOf(name.toLowerCase()) : COLS.indexOf(name); }
     var iCo = col('Company'), iRole = col('Job Title'), iLink = col('Link'),
         iLoc = col('Location'), iType = col('Type'), iPay = col('Salary'),
         iExp = col('Years of Experience'), iCat = col('Category'),
+        iDesc = col('Description'), iTldr = col('TL;DR'),
         iPick = col('Pick'), iAct = col('Active/Dead');
     var get = function (cells, k) { return (k >= 0 && cells[k] != null) ? String(cells[k]).trim() : ''; };
     var jobs = [];
@@ -1557,7 +1712,8 @@
       jobs.push({
         co: co, role: role, link: safeUrl(get(cells, iLink)), loc: loc, state: deriveState(loc),
         style: get(cells, iType), ind: get(cells, iCat), pay: get(cells, iPay),
-        exp: get(cells, iExp), pick: get(cells, iPick).toLowerCase() === 'featured'
+        exp: get(cells, iExp), desc: get(cells, iDesc), tldr: get(cells, iTldr),
+        pick: get(cells, iPick).toLowerCase() === 'featured'
       });
     }
     return jobs;

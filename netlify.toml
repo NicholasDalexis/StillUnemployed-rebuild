@@ -2,7 +2,8 @@
 # Netlify just serves the repo root as-is.
 [build]
   publish = "."
-  command = ""
+  # Generate the static per-job share pages + Post-it OG images from the live sheet.
+  command = "node scripts/gen-share.mjs"
 
 # Shipped Jun 28 2026: fully disable Netlify post-processing (belt + suspenders
 # to the class-based nav fix, so future quoted inline styles can never break).
