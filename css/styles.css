@@ -533,3 +533,17 @@ body { margin: 0; background: #EFE6D4; }
     .board span[style*="rgb(156, 131, 103)"] { display: none !important; }
     .board div[style*="rgb(92, 64, 51)"] { display: none !important; }
   }
+
+/* Change-look picker: 2-across + smaller cards on mobile (desktop keeps 3-across / 3+2) */
+@media (max-width: 560px){
+  /* only 3 themes now: full-width stacked cards so the badge + title each fit one line */
+  .look-grid{ grid-template-columns: 1fr !important; gap: 12px !important; }
+  .look-grid > div{ min-height: 118px !important; padding: 18px 16px 18px !important; }
+  .look-grid > div > div:last-child{ font-size: 16px !important; white-space: nowrap !important; }
+}
+
+/* Hide the "pay key →" label on mobile (keep the color swatches + numbers) */
+@media (max-width: 560px){ .pay-key-label{ display: none !important; } }
+
+/* First-card DECOR always anchored far-left so it never overlaps the "Showing X of X" label */
+.note-first .doodle { left: 4px !important; right: auto !important; }

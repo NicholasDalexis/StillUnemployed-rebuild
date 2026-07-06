@@ -35,8 +35,21 @@
   // "I applied" taps into the StillUnemployed Reports sheet. Empty string keeps the
   // feature a safe no-op until the deployed /exec URL is dropped in below.
   var REPORT_URL = 'https://script.google.com/macros/s/AKfycbx_ct-QHSXxYeE2m7_e8XIsBojGPFP1he0b9-YMad6qVera8i2OAfj8XQb5VncAKGpU/exec';
+  // Mirror analytics.js's exclusion so admin (Nic's own testing) + non-prod hosts
+  // (localhost / previews) DON'T fire click/applied/broken events — a "broken" tap
+  // also triggers Nic's dead-link email, so his own clicks must be suppressed too.
+  // Keep the host list in sync with analytics.js PROD_HOSTS.
+  function reportExcluded() {
+    try { if (localStorage.getItem('su_admin') === '1') return true; } catch (e) {}
+    var h = location.hostname;
+    return (h !== 'stillunemployed.com' && h !== 'www.stillunemployed.com');
+  }
   function postReport(action, co, link) {
     if (!REPORT_URL) return;
+    if (reportExcluded()) {                    // admin / localhost: log, don't POST (no sheet row, no email)
+      try { console.debug('[su] report suppressed (admin/non-prod):', action, co, link); } catch (e) {}
+      return;
+    }
     try {
       fetch(REPORT_URL, {
         method: 'POST',
@@ -45,6 +58,165 @@
         body: JSON.stringify({ action: action, company: co || '', link: link || '', page: location.href })
       });
     } catch (e) { /* fire-and-forget; never block the UI */ }
+  }
+
+  // Short, celebratory confetti burst on "I applied!" — self-contained (no library),
+  // one-shot canvas that removes itself. Respects prefers-reduced-motion. Runs ~1.1s.
+  // THEME-AWARE: the particle style matches the active "Change Look?" theme —
+  //   original = confetti rectangles · poker (Casino) = casino chips ·
+  //   mermaid = fish scales + water droplets · girly = pink hearts · cod (WW2) = grain kernels.
+  var CONFETTI_THEMES = {
+    original: { shape: 'rect',  colors: ['#D8502E', '#E9B949', '#2E9E5B', '#3E7CB1', '#C74BAF', '#F4EEE2'] },
+    poker:    { shape: 'chip',  colors: ['#D8323C', '#16181D', '#1F6B3A', '#F4EEE2', '#E9C46A'] },
+    mermaid:  { shape: 'scale', colors: ['#2E9E8F', '#58C4B0', '#8FE3D6', '#BDECE4', '#7FB6E0'] },
+    girly:    { shape: 'heart', colors: ['#FF77BC', '#F23E98', '#FFC1E3', '#E84B9C', '#FFFFFF'] },
+    cod:      { shape: 'grain', colors: ['#C8A24A', '#A9852F', '#8A6D2B', '#D8C48A', '#6B5A2A'] }
+  };
+  function suDrawParticle(ctx, shape, p) {
+    ctx.fillStyle = p.color;
+    if (shape === 'rect') {
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+    } else if (shape === 'chip') {
+      var R = p.w;
+      ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.fill();
+      ctx.lineCap = 'butt'; ctx.strokeStyle = 'rgba(255,255,255,0.92)'; ctx.lineWidth = Math.max(2, R * 0.3);
+      for (var s = 0; s < 6; s++) { var a = (s / 6) * Math.PI * 2; ctx.beginPath(); ctx.arc(0, 0, R, a, a + 0.34); ctx.stroke(); }
+      ctx.beginPath(); ctx.arc(0, 0, R * 0.55, 0, Math.PI * 2); ctx.strokeStyle = 'rgba(255,255,255,0.8)'; ctx.lineWidth = Math.max(1, R * 0.14); ctx.stroke();
+    } else if (shape === 'scale') {
+      ctx.beginPath(); ctx.arc(0, 0, p.w, Math.PI, 2 * Math.PI); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 1; ctx.stroke();
+    } else if (shape === 'heart') {
+      var s2 = p.w;
+      ctx.beginPath();
+      ctx.moveTo(0, s2 * 0.32);
+      ctx.bezierCurveTo(s2 * 0.5, -s2 * 0.42, s2 * 1.1, s2 * 0.36, 0, s2);
+      ctx.bezierCurveTo(-s2 * 1.1, s2 * 0.36, -s2 * 0.5, -s2 * 0.42, 0, s2 * 0.32);
+      ctx.closePath(); ctx.fill();
+    } else if (shape === 'grain') {
+      ctx.beginPath(); ctx.ellipse(0, 0, p.w * 0.42, p.w, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.22)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0, -p.w * 0.78); ctx.lineTo(0, p.w * 0.78); ctx.stroke();
+    }
+  }
+  function suConfetti() {
+    try {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var look = 'original';
+      try { look = localStorage.getItem('su_look') || 'original'; } catch (e) {}
+      var cfg = CONFETTI_THEMES[look] || CONFETTI_THEMES.original;
+      var shape = cfg.shape, colors = cfg.colors;
+      var cv = document.createElement('canvas');
+      cv.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:99999;';
+      cv.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(cv);
+      var ctx = cv.getContext('2d');
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var W = window.innerWidth, H = window.innerHeight;
+      cv.width = W * dpr; cv.height = H * dpr; ctx.scale(dpr, dpr);
+      var N = Math.min(140, Math.round(W / 9)), parts = [];
+      var cx = W / 2, cy = H * 0.42;
+      // round shapes (chip/scale/heart/grain) use w as a radius, so keep them a touch smaller.
+      var round = (shape !== 'rect');
+      for (var i = 0; i < N; i++) {
+        var ang = Math.random() * Math.PI * 2, sp = 5 + Math.random() * 9;
+        parts.push({
+          x: cx + (Math.random() - 0.5) * 60, y: cy + (Math.random() - 0.5) * 20,
+          vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp - 3,
+          w: round ? (5 + Math.random() * 4) : (5 + Math.random() * 6),
+          h: 8 + Math.random() * 7,
+          rot: Math.random() * Math.PI, vr: (Math.random() - 0.5) * 0.4,
+          color: colors[(Math.random() * colors.length) | 0]
+        });
+      }
+      var t0 = Date.now(), DUR = 1100;
+      (function frame() {
+        var el = Date.now() - t0;
+        ctx.clearRect(0, 0, W, H);
+        for (var j = 0; j < parts.length; j++) {
+          var p = parts[j];
+          p.vy += 0.32; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, 1 - el / DUR);
+          ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+          suDrawParticle(ctx, shape, p);
+          ctx.restore();
+        }
+        if (el < DUR) requestAnimationFrame(frame);
+        else if (cv.parentNode) cv.parentNode.removeChild(cv);
+      })();
+    } catch (e) { /* never block the UI */ }
+  }
+
+  // ---- Theme analytics: dwell time + a "do you like this look?" vote ----
+  // Logs how long each look is used (theme_time) and a 👍/👎 vote (themevote) via
+  // suTrack, so both respect the admin/non-prod exclusion. The vote pops once per
+  // theme per visitor, after they switch to a non-default look and scroll past 10 jobs.
+  var THEME_T0 = 0, THEME_CUR = '';
+  function logThemeTime() {
+    if (!THEME_CUR || !THEME_T0) return;
+    var secs = Math.round((Date.now() - THEME_T0) / 1000);
+    THEME_T0 = Date.now();
+    if (secs < 2 || secs > 86400) return;                 // ignore blips + absurd spans
+    try { if (typeof window.suTrack === 'function') window.suTrack('theme_time', THEME_CUR, String(secs), ''); } catch (e) {}
+  }
+  function initThemeTracking(currentLook) {
+    THEME_CUR = currentLook || 'original';
+    THEME_T0 = Date.now();
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') logThemeTime();
+      else THEME_T0 = Date.now();
+    });
+    window.addEventListener('pagehide', logThemeTime);
+  }
+  var _voteArmed = false, _voteLook = '', _voteShown = false, _voteTick = 0;
+  function armThemeVote(look) {
+    _voteArmed = false; _voteShown = false;
+    if (look === 'original') return;                      // only the fun themes ask
+    try { if (localStorage.getItem('su_tv_' + look) === '1') return; } catch (e) {}  // once per theme
+    _voteArmed = true; _voteLook = look;
+  }
+  function onThemeScroll() {
+    if (!_voteArmed || _voteShown) return;
+    var now = Date.now(); if (now - _voteTick < 250) return; _voteTick = now;         // throttle
+    var cards = document.querySelectorAll('.note[data-act="openJob"]');
+    if (cards.length < 10) return;
+    if (cards[9].getBoundingClientRect().bottom < 0) showThemeVote(_voteLook);         // 10 cards scrolled past
+  }
+  function showThemeVote(look) {
+    if (_voteShown) return;
+    _voteShown = true; _voteArmed = false;
+    try { localStorage.setItem('su_tv_' + look, '1'); } catch (e) {}
+    var box = document.createElement('div');
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-label', 'Theme feedback');
+    box.style.cssText = 'position:fixed;left:50%;bottom:20px;transform:translateX(-50%) rotate(-1.2deg);z-index:2147482000;' +
+      'background:#FBF7EC;color:#2C2118;border:1.5px solid #E4D6B4;border-radius:12px;box-shadow:2px 8px 22px rgba(44,33,24,0.28);' +
+      "padding:11px 18px 13px;font-family:'Indie Flower','Comic Sans MS',cursive;display:flex;flex-direction:column;align-items:center;gap:8px;max-width:90vw;" +
+      'animation:suCcIn .3s cubic-bezier(.2,.9,.3,1.25) both;';
+    var msg = document.createElement('div'); msg.style.cssText = 'font-size:17px;white-space:nowrap;'; msg.textContent = 'Do you like this look?';
+    var row = document.createElement('div'); row.style.cssText = 'display:flex;gap:12px;';
+    var up = document.createElement('button'); up.type = 'button'; up.textContent = '👍';
+    var dn = document.createElement('button'); dn.type = 'button'; dn.textContent = '👎';
+    var bstyle = 'cursor:pointer;border:1.5px solid #E4D6B4;background:#F6EFDD;border-radius:10px;font-size:19px;padding:3px 16px;line-height:1;';
+    up.style.cssText = bstyle; dn.style.cssText = bstyle;
+    function close() { if (box.parentNode) box.parentNode.removeChild(box); }
+    up.addEventListener('click', function () {
+      try { if (typeof window.suTrack === 'function') window.suTrack('themevote', look, 'up', ''); } catch (e) {}
+      suConfetti();                                       // theme-aware burst
+      msg.textContent = 'yay 🎉'; row.style.display = 'none';
+      setTimeout(close, 1300);
+    });
+    dn.addEventListener('click', function () {
+      try { if (typeof window.suTrack === 'function') window.suTrack('themevote', look, 'down', ''); } catch (e) {}
+      box.innerHTML = '';
+      var t = document.createElement('div'); t.style.cssText = 'font-size:15px;max-width:210px;text-align:center;line-height:1.35;';
+      t.innerHTML = 'no worries — tap <b>&ldquo;Need a change?&rdquo;</b> up top to switch anytime →';
+      box.appendChild(t);
+      setTimeout(close, 3400);
+    });
+    row.appendChild(up); row.appendChild(dn);
+    box.appendChild(msg); box.appendChild(row);
+    document.body.appendChild(box);
   }
 
   // "I applied" ALSO logs the job into the on-device application Tracker
@@ -69,6 +241,15 @@
       });
       localStorage.setItem('su_tracker', JSON.stringify(rows));
     } catch (e) { /* tracker is a bonus; never block the confirm flow */ }
+  }
+
+  // US states (name + 2-letter code) so a state search also surfaces remote-anywhere roles.
+  var SU_STATES = { 'al':1,'alabama':1,'ak':1,'alaska':1,'az':1,'arizona':1,'ar':1,'arkansas':1,'ca':1,'california':1,'co':1,'colorado':1,'ct':1,'connecticut':1,'de':1,'delaware':1,'fl':1,'florida':1,'ga':1,'georgia':1,'hi':1,'hawaii':1,'id':1,'idaho':1,'il':1,'illinois':1,'in':1,'indiana':1,'ia':1,'iowa':1,'ks':1,'kansas':1,'ky':1,'kentucky':1,'la':1,'louisiana':1,'me':1,'maine':1,'md':1,'maryland':1,'ma':1,'massachusetts':1,'mi':1,'michigan':1,'mn':1,'minnesota':1,'ms':1,'mississippi':1,'mo':1,'missouri':1,'mt':1,'montana':1,'ne':1,'nebraska':1,'nv':1,'nevada':1,'nh':1,'new hampshire':1,'nj':1,'new jersey':1,'nm':1,'new mexico':1,'ny':1,'new york':1,'nc':1,'north carolina':1,'nd':1,'north dakota':1,'oh':1,'ohio':1,'ok':1,'oklahoma':1,'or':1,'oregon':1,'pa':1,'pennsylvania':1,'ri':1,'rhode island':1,'sc':1,'south carolina':1,'sd':1,'south dakota':1,'tn':1,'tennessee':1,'tx':1,'texas':1,'ut':1,'utah':1,'vt':1,'vermont':1,'va':1,'virginia':1,'wa':1,'washington':1,'wv':1,'west virginia':1,'wi':1,'wisconsin':1,'wy':1,'wyoming':1,'dc':1,'washington dc':1,'district of columbia':1 };
+  function suIsStateQuery(q) {
+    if (!q) return false;
+    if (SU_STATES[q]) return true;                          // exact state name or 2-letter code
+    if (q.length >= 3) { for (var s in SU_STATES) { if (s.length > 2 && s.indexOf(q) === 0) return true; } }  // prefix like "cali", "penn"
+    return false;
   }
 
   // =========================================================================
@@ -103,7 +284,7 @@
     THEMES: {
       cod:      { acc:'#555B38', accInk:'#EDE7CF', cls:'cod',   ink:'#E9E3D2', sub:'#AEB29B', pay:'#AEB29B', show:'#AEB29B', navBg:'#5C6B3A', navInk:'#EDE7CF', hl:'rgba(120,140,75,0.92)', hiCard:'linear-gradient(160deg,#5C6440 0%,#4B5234 100%)', hiInk:'#F1E9D8', hiApply:'#FFFFFF', hiStamp:'#FFFFFF', payHi:'linear-gradient(160deg,#5C6440,#4B5234)' },
       girly:    { acc:'#E84B9C', accInk:'#FFF3FA', cls:'girly', ink:'#2A0E1E', sub:'#8A2B5E', pay:'#8A2B5E', show:'#8A2B5E', navBg:'#F25CA2', navInk:'#FFFFFF', hl:'rgba(233,59,146,0.92)', hiCard:'linear-gradient(160deg,#FF77BC 0%,#F23E98 100%)', hiInk:'#3A0E26', hiApply:'#3A0E26', hiStamp:'#3A0E26', payHi:'linear-gradient(160deg,#FF77BC,#F23E98)' },
-      original: { acc:'#F2E14B', accInk:'#2A2118', cls:'',      ink:'#2A2118', sub:'#6F5E45', pay:'#9C8367', show:'#7A6650', navBg:'#EDE93B', navInk:'#1f1c14', hl:'rgba(238,224,70,0.95)', hiCard:'linear-gradient(160deg,#F6E85F 0%,#EFDB3D 100%)', hiInk:'#2A2118', hiApply:'#D8502E', hiStamp:'#3A2A1B', payHi:'linear-gradient(160deg,#F6E85F,#EFDB3D)' },
+      original: { acc:'#F2E14B', accInk:'#2A2118', cls:'',      ink:'#2A2118', sub:'#6F5E45', pay:'#9C8367', show:'#3A2A1B', navBg:'#EDE93B', navInk:'#1f1c14', hl:'rgba(238,224,70,0.95)', hiCard:'linear-gradient(160deg,#F6E85F 0%,#EFDB3D 100%)', hiInk:'#2A2118', hiApply:'#D8502E', hiStamp:'#3A2A1B', payHi:'linear-gradient(160deg,#F6E85F,#EFDB3D)' },
       // poker + mermaid extend the shape with optional card overrides (lowCard/midCard/baseInk/
       // baseApply/baseStamp) and a featured-pick treatment (pickCard/pickInk/pickApply/pickStamp/
       // pickBadge). render() falls back to the original values when a key is absent.
@@ -163,7 +344,7 @@
         ['p','M12 45 L7 44'], ['p','M12 48 L7 50'],
         ['p','M28 47 L26 54'], ['p','M34 47 L35 53']
       ] },
-      { w: 52, pos: { top: '-40px', right: '-14px' }, parts: [
+      { w: 52, pos: { top: '-40px', left: '-14px' }, parts: [
         ['r',8,46,40,15,4],
         ['r',20,37,17,11,3],
         ['p','M35 42 L60 39'],
@@ -415,7 +596,16 @@
         if (j.state === 'NY') hay += ' nyc';
         if (hay.indexOf('san francisco') !== -1) hay += ' sf bay area';
         if (hay.indexOf('los angeles') !== -1) hay += ' la';
-        if (hay.indexOf(q) === -1) return false;
+        if (hay.indexOf(q) === -1) {
+          // A remote-from-ANYWHERE role (just "Remote", no fixed city/state) shows up for
+          // ANY state search — you can do it from anywhere. A "New York · Remote" role has
+          // a state attached, so it stays tied to that state and won't flood other searches.
+          var loc = (j.loc || '').toLowerCase();
+          var locNoRemote = loc.replace(/remote/g, '').replace(/[^a-z]+/g, ' ')
+            .replace(/\b(us|usa|united states|anywhere|nationwide)\b/g, '').replace(/\s+/g, ' ').trim();
+          var remoteAnywhere = loc.indexOf('remote') !== -1 && locNoRemote.length === 0;
+          if (!(remoteAnywhere && suIsStateQuery(q))) return false;
+        }
       }
       if (this.state.ws !== 'Any' && j.style !== this.state.ws) return false;
       if (this.state.st !== 'all' && j.state !== this.state.st) return false;
@@ -444,10 +634,14 @@
 
     // apply a "Change Look?" theme, close the modal, and persist site-wide
     setLook: function (look) {
-      if (look !== 'cod' && look !== 'girly' && look !== 'poker' && look !== 'mermaid') look = 'original';
+      // WW2 (cod) + Mermaid ARCHIVED for launch: not selectable, fall back to original. Theme code kept.
+      if (look !== 'girly' && look !== 'poker') look = 'original';
       // analytics: look change — company = new look, role = previous look (additive)
-      if (look !== this.state.look && typeof window.suTrack === 'function') {
-        window.suTrack('look', look, this.state.look, '');
+      if (look !== this.state.look) {
+        if (typeof window.suTrack === 'function') window.suTrack('look', look, this.state.look, '');
+        logThemeTime();                       // record dwell on the look they're leaving
+        THEME_CUR = look; THEME_T0 = Date.now();
+        armThemeVote(look);                   // may prompt "do you like this look?" after 10 cards
       }
       try { localStorage.setItem('su_look', look); } catch (e) {}
       this.setState({ look: look, lookOpen: false });
@@ -546,11 +740,10 @@
       if (this.state.fr === 'Recently added') {
         // "Recently added" is a SORT, not a filter: show ALL roles, newest (highest sheet row) first
         shown = shown.slice().sort(function (a, b) { return (b._idx || 0) - (a._idx || 0); });
-      } else {
-        // lead with a 100K+ role so the first card always carries a note
-        var hiIdx = shown.findIndex(function (j) { return self.payTier(j.pay) === 'high'; });
-        if (hiIdx > 0) { var moved = shown.splice(hiIdx, 1)[0]; shown.unshift(moved); }
       }
+      // ALWAYS lead with a 100K+ role so the first card carries the signature décor (all sort modes)
+      var hiIdx = shown.findIndex(function (j) { return self.payTier(j.pay) === 'high'; });
+      if (hiIdx > 0) { var moved = shown.splice(hiIdx, 1)[0]; shown.unshift(moved); }
 
       return { base: base, shown: shown };
     },
@@ -685,7 +878,8 @@
         var personalNote = noteFor[k] || null;
 
         var doodleHtml = '';
-        if (shown.length <= 2) {
+        if (k === 0) {
+          // the top (100K+) card always carries the signature theme décor
           doodleHtml = cod ? self.codDoodleEl(1) : (girly ? self.girlyDoodleEl(0) : (poker ? self.pokerDoodleEl(0) : (mermaid ? self.mermaidDoodleEl(0) : self.doodleEl(13))));
         } else if (doodleOn) {
           doodleHtml = cod ? self.codDoodleEl(Math.floor(k / 6)) : (girly ? self.girlyDoodleEl(Math.floor(k / 6)) : (poker ? self.pokerDoodleEl(Math.floor(k / 6)) : (mermaid ? self.mermaidDoodleEl(Math.floor(k / 6)) : self.doodleEl(k))));
@@ -696,7 +890,7 @@
           ' 58%); box-shadow:0 3px 5px rgba(0,0,0,.32); z-index:3;';
 
         // -- build the card HTML (mirrors the template's sc-if branches) --
-        var html = '<div class="note" data-act="openJob" data-id="' + id + '" data-link="' + esc(j.link) + '" data-co="' + esc(j.co) + '" style="' + noteStyle + '">';
+        var html = '<div class="note' + (k === 0 ? ' note-first' : '') + '" data-act="openJob" data-id="' + id + '" data-link="' + esc(j.link) + '" data-co="' + esc(j.co) + '" style="' + noteStyle + '">';
 
         // envelope ("open" tab)
         if (showEnvelope) {
@@ -904,7 +1098,7 @@
 
       // salary color key
       out += '<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 16px;">' +
-        '<span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + payKeyInk + ';">pay key →</span>' +
+        '<span class="pay-key-label" style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + payKeyInk + ';">pay key →</span>' +
         '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.lowCard || 'linear-gradient(160deg,#ECDEC6,#E0D0B2)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">under $80K</span></div>' +
         '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.midCard || 'linear-gradient(160deg,#E0CBA2,#D3BB8C)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$80–99K</span></div>' +
         '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + P.payHi + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$100K+</span></div>' +
@@ -947,11 +1141,18 @@
 
       out += '</div>'; // /header+content wrap
 
+      // Capture focus intent BEFORE the innerHTML swap. Replacing innerHTML removes the
+      // old #su-search, which fires a focusout that flips this._searchFocused to false
+      // mid-render — so read it into a local first, else the restore below never runs and
+      // the field drops focus after every single keystroke.
+      var keepSearchFocus = this._searchFocused ||
+        (document.activeElement && document.activeElement.id === 'su-search');
+
       board.innerHTML = out;
 
       // restore focus + caret to the search input after re-render
       var inp = document.getElementById('su-search');
-      if (inp && this._searchFocused) {
+      if (inp && keepSearchFocus) {
         inp.focus();
         try { inp.setSelectionRange(this._searchCaret, this._searchCaret); } catch (e) {}
       }
@@ -967,25 +1168,35 @@
       // About modal
       if (this.state.modalOpen) {
         out += '<div data-act="closeModal" style="position: fixed; inset: 0; z-index: 200; background: rgba(44,33,24,0.58); display: flex; align-items: center; justify-content: center; padding: 24px;">' +
-          '<div data-act="stop" style="width: 600px; max-width: 100%; background: #F4EEE2; border-radius: 26px; overflow: hidden; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.6deg);">' +
-            '<div data-act="closeModal" style="position: absolute; top: 18px; right: 18px; width: 38px; height: 38px; border-radius: 50%; background: rgba(244,238,226,0.92); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 3; box-shadow: 0 2px 8px rgba(44,33,24,0.18);">' +
+          '<div data-act="stop" style="width: 588px; max-width: 100%; background: #FCFAF3; border-radius: 5px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.8deg); font-family: \'Archivo\', sans-serif;">' +
+            '<div style="position: absolute; top: -13px; left: 66px; width: 122px; height: 30px; background: rgba(228,202,128,0.72); transform: rotate(-4deg); box-shadow: 0 2px 5px rgba(44,33,24,0.14); z-index: 5;"></div>' +
+            '<div style="position: absolute; top: -12px; right: 62px; width: 122px; height: 30px; background: rgba(228,202,128,0.72); transform: rotate(3.5deg); box-shadow: 0 2px 5px rgba(44,33,24,0.14); z-index: 5;"></div>' +
+            '<div data-act="closeModal" style="position: absolute; top: 20px; right: 20px; width: 38px; height: 38px; border-radius: 50%; background: rgba(252,250,243,0.94); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 8; box-shadow: 0 2px 8px rgba(44,33,24,0.2);">' +
               '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.2" stroke-linecap="round"></path></svg>' +
             '</div>' +
-            '<div style="width: 100%; height: 264px; background: #E8D9C5; overflow: hidden;">' +
-              '<img src="assets/5037150f-ce24-477c-bae7-ef884fbc5849.jpg" alt="Nic, the founder, on SiriusXM" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; filter: saturate(1.04) brightness(1.02);">' +
-            '</div>' +
-            '<div style="padding: 32px 44px 40px;">' +
-              '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 32px; line-height: 1.06; letter-spacing: -0.02em; color: #2C2118; width: 300px;">Hey, I\'m Nic. I built this.</div>' +
-              '<div style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 16px;">I sent 1,500 applications and got ghosted more times than I can count. Seven months later, Instagram said yes. StillUnemployed is the board I wish I\'d had. Roles here are opened and verified by a human, and that human is me. No AI slop, just jobs I\'d actually apply to.</div>' +
-              '<div style="display: flex; align-items: center; gap: 9px; margin-top: 20px;">' +
-                '<div style="width: 20px; height: 20px; border-radius: 50%; background: #E8502E; display: flex; align-items: center; justify-content: center; flex: none;">' +
-                  '<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="#F4EEE2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
+            '<div style="padding: 16px 16px 0;">' +
+              '<div style="position: relative; height: 244px; overflow: hidden; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(44,33,24,0.06);">' +
+                '<img src="assets/home-founder-nic.jpg" alt="Nic, the founder, on SiriusXM" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; filter: saturate(1.04) brightness(1.02);">' +
+                '<div style="position: absolute; bottom: 14px; left: 14px; display: inline-flex; align-items: center; gap: 6px; border: 2.6px solid #FFFFFF; color: #FFFFFF; border-radius: 5px; padding: 5px 10px; font-family: \'Archivo\', sans-serif; font-weight: 900; font-size: 11.5px; letter-spacing: 0.14em; transform: rotate(-3deg); box-shadow: 0 2px 10px rgba(0,0,0,0.28);">' +
+                  '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.4"></circle><path d="M8.3 12.2l2.4 2.4 4.9-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
+                  'THE REAL ONE' +
                 '</div>' +
-                '<div style="font-size: 13px; font-weight: 600; color: #6f6253; letter-spacing: 0.01em;">Content Specialist at Instagram · Class of 2025</div>' +
               '</div>' +
-              '<a href="./index.html" style="display: inline-flex; align-items: center; gap: 11px; background: #5C4033; color: #F4EEE2; font-size: 16px; font-weight: 700; padding: 15px 26px; border-radius: 14px; cursor: pointer; margin-top: 24px; box-shadow: 0 10px 24px rgba(44,33,24,0.22); text-decoration: none; font-family: \'Archivo\', sans-serif;">Read the full story' +
-                '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#F4EEE2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
-              '</a>' +
+            '</div>' +
+            '<div style="padding: 22px 42px 40px;">' +
+              '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 23px; color: #D8502E; transform: rotate(-1.5deg); display: block;">hey stranger,</div>' +
+              '<div style="position: relative; display: block; margin-top: 4px;">' +
+                '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 32px; line-height: 1.06; letter-spacing: -0.02em; color: #2C2118; width: 300px;">Hey, I\'m Nic. I built this.</div>' +
+                '<svg width="220" height="12" viewBox="0 0 220 12" fill="none" style="position: absolute; left: 4px; bottom: -8px;"><path d="M3 7 C 55 2, 120 2, 217 6" stroke="#F2C231" stroke-width="4" stroke-linecap="round"></path></svg>' +
+              '</div>' +
+              '<div style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 18px;">I sent <strong style="font-weight: 800; color: #2C2118;">1,500 applications</strong> and got ghosted more times than I can count. Seven months later, <strong style="font-weight: 800; color: #2C2118;">Instagram</strong> said yes. <strong style="font-weight: 800; color: #2C2118;">StillUnemployed</strong> is the board I wish I\'d had. Roles here are <strong style="font-weight: 800; color: #2C2118;">opened and verified by a human</strong>, and that human is me. No AI slop, just jobs I\'d <strong style="font-weight: 800; color: #2C2118;">actually apply to</strong>.</div>' +
+              '<div style="font-size: 13px; font-weight: 600; color: #6f6253; letter-spacing: 0.01em; margin-top: 18px;">Content Specialist at Instagram · Class of 2025</div>' +
+              '<div style="display: flex; align-items: center; gap: 16px; margin-top: 22px; flex-wrap: wrap;">' +
+                '<a href="https://NicholasAlexis.com" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 11px; background: #5C4033; color: #F4EEE2; font-size: 16px; font-weight: 700; padding: 15px 26px; border-radius: 12px; cursor: pointer; box-shadow: 0 10px 24px rgba(44,33,24,0.22); text-decoration: none; transform: rotate(-1deg); font-family: \'Archivo\', sans-serif;">View My Portfolio' +
+                  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#F4EEE2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
+                '</a>' +
+                '<div style="font-family: \'Indie Flower\', cursive; font-size: 22px; color: #6F5E45; transform: rotate(-2deg);">- Nic</div>' +
+              '</div>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -1011,7 +1222,7 @@
                 '<div style="width: 40px; height: 40px; border-radius: 50%; background: #D8502E; display: flex; align-items: center; justify-content: center; margin: 0 auto;">' +
                   '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 7H6.5a3.5 3.5 0 0 0 0 7H9M15 7h2.5a3.5 3.5 0 0 1 0 7H15M9 10.5h2M4 4l16 16" stroke="#F4EEE2" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
                 '</div>' +
-                '<div style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 15px; color: #3A2A1B; margin-top: 12px;">Job link broken</div>' +
+                '<div style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 15px; color: #3A2A1B; margin-top: 12px;">No longer open</div>' +
               '</div>' +
             '</div>' +
             '<div data-act="closeFeedback" style="margin-top: 18px; text-align: center; font-family: \'Indie Flower\', cursive; font-size: 19px; color: #8A7558; cursor: pointer;">job wasn\'t a right fit →</div>' +
@@ -1028,19 +1239,9 @@
             '</div>' +
             '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 27px; color: #2A2118; line-height: 1.1; transform: rotate(-1deg);">change the look?</div>' +
             '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #6F5E45; margin-top: 6px;">pick a vibe for the board ↓</div>' +
-            // flex-wrap so the 5 options break into two scrapbook rows (3 + 2)
-            '<div style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: 22px;">' +
-              // --- WW2 themed ---
-              '<div data-act="pickCod" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #555B38; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(-2deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
-                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 54px; height: 16px; background: rgba(228,202,128,0.5); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
-                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
-                  '<div style="display: inline-flex; align-items: center; gap: 6px; border: 2.4px solid #FFFFFF; color: #FFFFFF; border-radius: 4px; padding: 5px 9px; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .14em; opacity: .92; transform: rotate(-9deg); box-shadow: 0 0 0 1.5px rgba(255,255,255,0.16); background: rgba(255,255,255,0.04);">' +
-                    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="10" fill="none" stroke="#FFFFFF" stroke-width="1.7" stroke-dasharray="53 10" stroke-dashoffset="20"></circle><path d="M12 5.2 L13.59 9.82 L18.47 9.9 L14.57 12.83 L16 17.5 L12 14.7 L8 17.5 L9.43 12.83 L5.53 9.9 L10.41 9.82 Z" fill="#FFFFFF"></path></svg>' +
-                    'Human Verified' +
-                  '</div>' +
-                '</div>' +
-                '<div style="font-family: \'Black Ops One\', \'Archivo Black\', sans-serif; font-size: 16px; color: #FFFFFF; letter-spacing: 0.6px; line-height: 1; text-transform: uppercase; text-shadow: 0 1px 1px rgba(0,0,0,0.28);">WW2 Themed</div>' +
-              '</div>' +
+            // grid: 3-across on desktop (3+2 scrapbook rows), 2-across on mobile (see styles.css .look-grid)
+            '<div class="look-grid" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 22px;">' +
+              // --- WW2 (ARCHIVED — hidden from picker, theme code kept for future) ---
               // --- Original ---
               '<div data-act="pickOriginal" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #F2E14B; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.6deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
                 '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 54px; height: 16px; background: rgba(228,202,128,0.55); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
@@ -1051,6 +1252,17 @@
                   '</div>' +
                 '</div>' +
                 '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #2A2118; letter-spacing: -0.3px; line-height: 1.05;">Original version</div>' +
+              '</div>' +
+              // --- Casino (poker) ---
+              '<div data-act="pickPoker" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #4A0E18; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.8deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
+                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(2.5deg); width: 54px; height: 16px; background: rgba(228,202,128,0.5); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
+                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
+                  '<div style="display: inline-flex; align-items: center; gap: 6px; border: 2.2px solid #D4AF37; color: #D4AF37; border-radius: 4px; padding: 5px 9px; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .12em; opacity: .95; transform: rotate(-7deg);">' +
+                    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="10" fill="none" stroke="#D4AF37" stroke-width="1.7" stroke-dasharray="4.5 4.7"></circle><circle cx="12" cy="12" r="4.5" fill="#D4AF37"></circle></svg>' +
+                    'Human Verified' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #E9D9A6; letter-spacing: -0.3px; line-height: 1.05;">Casino</div>' +
               '</div>' +
               // --- For the girlies ---
               '<div data-act="pickGirly" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #EFAEC4; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(-1.4deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
@@ -1064,28 +1276,7 @@
                 '</div>' +
                 '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #5A2638; letter-spacing: -0.3px; line-height: 1.05;">For the girlies</div>' +
               '</div>' +
-              // --- Casino (poker) ---
-              '<div data-act="pickPoker" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #4A0E18; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.8deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
-                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(2.5deg); width: 54px; height: 16px; background: rgba(228,202,128,0.5); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
-                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
-                  '<div style="display: inline-flex; align-items: center; gap: 6px; border: 2.2px solid #D4AF37; color: #D4AF37; border-radius: 4px; padding: 5px 9px; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .12em; opacity: .95; transform: rotate(-7deg);">' +
-                    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="10" fill="none" stroke="#D4AF37" stroke-width="1.7" stroke-dasharray="4.5 4.7"></circle><circle cx="12" cy="12" r="4.5" fill="#D4AF37"></circle></svg>' +
-                    'Human Verified' +
-                  '</div>' +
-                '</div>' +
-                '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #E9D9A6; letter-spacing: -0.3px; line-height: 1.05;">Casino</div>' +
-              '</div>' +
-              // --- Mermaidcore ---
-              '<div data-act="pickMermaid" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #BFE8F2; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(-1.8deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
-                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(-2.5deg); width: 54px; height: 16px; background: rgba(228,202,128,0.5); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
-                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
-                  '<div style="display: inline-flex; align-items: center; gap: 5px; border: 2.2px solid #0E4A5C; color: #0E4A5C; border-radius: 14px; padding: 4px 10px; font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 13px; opacity: .92; transform: rotate(-6deg);">' +
-                    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M12 20 L5 13 A 7 7 0 0 1 19 13 Z" fill="#0E4A5C"></path><path d="M12 20 L8.5 11 M12 20 L15.5 11" stroke="#BFE8F2" stroke-width="1.4" stroke-linecap="round"></path></svg>' +
-                    'Human Verified' +
-                  '</div>' +
-                '</div>' +
-                '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #0E4A5C; letter-spacing: -0.3px; line-height: 1.05;">Mermaidcore</div>' +
-              '</div>' +
+              // --- Mermaidcore (ARCHIVED — hidden from picker, theme code kept for future) ---
             '</div>' +
             '<div data-act="closeLook" style="margin-top: 18px; text-align: center; font-family: \'Indie Flower\', cursive; font-size: 19px; color: #8A7558; cursor: pointer;">keep it as is →</div>' +
           '</div>' +
@@ -1125,6 +1316,7 @@
             }
             trackerLog(self.state.feedbackCo, self.state.feedbackLink, tj ? tj.role : '');
             self.setState({ feedbackOpen: false });
+            suConfetti();   // short celebratory burst; popup closes so they keep browsing
             break;
           }
           case 'reportBroken':
@@ -1238,6 +1430,22 @@
           self.setState({ st: e.target.value });
         }
       });
+
+      // theme dwell-time tracking + arm the "do you like this look?" vote on scroll
+      (function () {
+        try {
+          var p = new URLSearchParams(location.search);
+          if (p.has('votereset')) {                       // dev: re-enable the vote for testing
+            for (var i = localStorage.length - 1; i >= 0; i--) {
+              var k = localStorage.key(i);
+              if (k && k.indexOf('su_tv_') === 0) localStorage.removeItem(k);
+            }
+          }
+        } catch (e) {}
+        initThemeTracking(self.state.look);
+        armThemeVote(self.state.look);                    // catch visitors who arrive already on a theme
+        window.addEventListener('scroll', onThemeScroll, { passive: true });
+      })();
     },
 
     // Reorder once per page load so the board never feels static: a recency-
@@ -1278,7 +1486,8 @@
   function loadLook() {
     try {
       var v = localStorage.getItem('su_look');
-      return (v === 'cod' || v === 'girly' || v === 'poker' || v === 'mermaid') ? v : 'original';
+      // cod (WW2) + mermaid ARCHIVED: anyone with them saved falls back to original
+      return (v === 'girly' || v === 'poker') ? v : 'original';
     } catch (e) { return 'original'; }
   }
 
