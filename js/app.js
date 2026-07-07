@@ -214,8 +214,10 @@
   function suShareJob(job) {
     if (!job) return;
     var deep = location.origin + '/j/' + suShareTheme() + '/' + suSlug(job.link || '') + '.html';
-    var role = job.role || 'this role';
-    var text = "Thought you'd love this one. " + role + (job.co ? ' at ' + job.co : '') + ' — found it on StillUnemployed.com, check it out:';
+    // Casual, no link/brand in the TEXT (iMessage auto-linkifies "StillUnemployed.com"
+    // into a tappable link that goes to the homepage, not the job — Nic didn't want that).
+    // The shared url param below still generates the Post-it thumbnail.
+    var text = 'Saw this role from ' + (job.co || 'a company') + ' and thought about you.';
     var title = (job.co || 'StillUnemployed') + (job.role ? ' — ' + job.role : '');
     try {
       if (navigator.share) { navigator.share({ title: title, text: text, url: deep }).catch(function () {}); return; }

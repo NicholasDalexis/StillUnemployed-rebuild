@@ -26,6 +26,7 @@ reg('node_modules/@fontsource/indie-flower/files/indie-flower-latin-400-normal.w
 reg('node_modules/@fontsource/archivo/files/archivo-latin-400-normal.woff2', 'SUBody');
 reg('node_modules/@fontsource/archivo/files/archivo-latin-500-normal.woff2', 'SUBody');
 reg('node_modules/@fontsource/archivo/files/archivo-latin-600-normal.woff2', 'SUBody');
+reg('node_modules/@fontsource/archivo/files/archivo-latin-700-normal.woff2', 'SUBody');
 const F_BLACK = "'SUBlack', Archivo, sans-serif";
 const F_HAND = "'SUHand', 'Comic Sans MS', cursive";
 const F_BODY = "'SUBody', Archivo, sans-serif";
@@ -102,78 +103,56 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-// Draw one job as a themed Post-it note (1200x630 for OG).
+// Draw one job to look EXACTLY like the board card (flat, same fonts/colors),
+// just scaled up for the 1200x630 OG frame. No tape / peel / curl / sheen /
+// vignette — the board card doesn't have those, and Nic didn't want them.
 function drawCard(job, themeKey) {
   const T = THEMES[themeKey] || THEMES.original;
   const P = T[payTier(job.pay)];
   const W = 1200, H = 630, cv = createCanvas(W, H), ctx = cv.getContext('2d');
 
-  // 1) Surface behind the note (felt / corkboard / paper) with a soft vignette.
+  // thin surface behind the card (barely shows — the card nearly fills the frame)
   ctx.fillStyle = T.back; ctx.fillRect(0, 0, W, H);
-  const vg = ctx.createRadialGradient(W / 2, H / 2, 120, W / 2, H / 2, 760);
-  vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.16)');
-  ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
 
-  // 2) The note, tilted a touch like it was stuck on by hand.
-  const x = 120, y = 74, w = W - 240, h = H - 148, r = 16;
+  // the card fills most of the frame -> little empty space, like the real card
+  const x = 34, y = 32, w = W - 68, h = H - 64, r = 14;
   ctx.save();
-  ctx.translate(W / 2, H / 2); ctx.rotate(-0.017); ctx.translate(-W / 2, -H / 2);
+  ctx.translate(W / 2, H / 2); ctx.rotate(-0.012); ctx.translate(-W / 2, -H / 2);
 
-  // drop shadow
+  // soft drop shadow (like a card sitting on a surface)
   ctx.save();
-  ctx.shadowColor = 'rgba(20,14,8,0.34)'; ctx.shadowBlur = 46; ctx.shadowOffsetY = 24;
+  ctx.shadowColor = 'rgba(20,14,8,0.26)'; ctx.shadowBlur = 34; ctx.shadowOffsetY = 16;
   ctx.fillStyle = P.bg[1];
   roundRect(ctx, x, y, w, h, r); ctx.fill();
   ctx.restore();
 
-  // paper gradient (lighter top -> base bottom) for a real note, not a flat box
-  const pg = ctx.createLinearGradient(0, y, 0, y + h);
-  pg.addColorStop(0, P.bg[0]); pg.addColorStop(1, P.bg[1]);
-  ctx.fillStyle = pg;
+  // card fill = the SAME subtle two-tone gradient the board card uses (160deg),
+  // nothing layered on top.
+  const g = ctx.createLinearGradient(x + w * 0.5, y, x + w * 0.4, y + h);
+  g.addColorStop(0, P.bg[0]); g.addColorStop(1, P.bg[1]);
+  ctx.fillStyle = g;
   roundRect(ctx, x, y, w, h, r); ctx.fill();
 
-  // subtle top sheen + bottom "peel" shading so it lifts off the surface
-  const sheen = ctx.createLinearGradient(0, y, 0, y + 90);
-  sheen.addColorStop(0, 'rgba(255,255,255,0.22)'); sheen.addColorStop(1, 'rgba(255,255,255,0)');
-  ctx.fillStyle = sheen; roundRect(ctx, x, y, w, h, r); ctx.fill();
-  const peel = ctx.createLinearGradient(0, y + h - 120, 0, y + h);
-  peel.addColorStop(0, 'rgba(0,0,0,0)'); peel.addColorStop(1, 'rgba(0,0,0,0.10)');
-  ctx.fillStyle = peel; roundRect(ctx, x, y, w, h, r); ctx.fill();
-
-  // lifted bottom-right corner curl
-  ctx.save();
-  ctx.beginPath(); ctx.moveTo(x + w - 66, y + h); ctx.lineTo(x + w, y + h); ctx.lineTo(x + w, y + h - 66); ctx.closePath();
-  ctx.shadowColor = 'rgba(20,14,8,0.30)'; ctx.shadowBlur = 18; ctx.shadowOffsetX = -6; ctx.shadowOffsetY = -6;
-  const curl = ctx.createLinearGradient(x + w - 66, y + h, x + w, y + h - 66);
-  curl.addColorStop(0, hexToRgba(P.bg[1], 0.9)); curl.addColorStop(1, P.bg[0]);
-  ctx.fillStyle = curl; ctx.fill();
-  ctx.restore();
-
-  // 3) A strip of tape across the top-center.
-  ctx.save();
-  ctx.translate(W / 2, y - 2); ctx.rotate(-0.05);
-  ctx.fillStyle = 'rgba(240,236,222,0.55)';
-  ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = 2;
-  roundRect(ctx, -118, -26, 236, 52, 4); ctx.fill(); ctx.stroke();
-  ctx.fillStyle = 'rgba(255,255,255,0.16)'; roundRect(ctx, -118, -26, 236, 16, 4); ctx.fill();
-  ctx.restore();
-
-  // 4) Text.
-  const px = x + 62;
+  // text — same faces + weights as the board card, tightly packed
+  const px = x + 64;
   ctx.textBaseline = 'top';
   ctx.fillStyle = P.ink;
-  ctx.font = `64px ${F_BLACK}`; ctx.fillText(String(job.co || '').slice(0, 22), px, y + 64);
-  ctx.font = `34px ${F_BODY}`; ctx.fillStyle = hexToRgba(P.ink, 0.88);
-  ctx.fillText(String(job.role || '').slice(0, 42), px, y + 148);
-  if (job.pay) { ctx.font = `64px ${F_BLACK}`; ctx.fillStyle = P.ink; ctx.fillText(String(job.pay), px, y + 214); }
-  ctx.font = `30px ${F_BODY}`; ctx.fillStyle = hexToRgba(P.ink, 0.78);
-  ctx.fillText([job.loc, job.style, job.exp].filter(Boolean).join('   ·   ').slice(0, 52), px, y + 306);
+  ctx.font = `900 66px ${F_BLACK}`; ctx.fillText(String(job.co || '').slice(0, 24), px, y + 66);
+  ctx.font = `600 36px ${F_BODY}`; ctx.fillStyle = hexToRgba(P.ink, 0.92);
+  ctx.fillText(String(job.role || '').slice(0, 44), px, y + 156);
+  if (job.pay) { ctx.font = `800 66px ${F_BODY}`; ctx.fillStyle = P.ink; ctx.fillText(String(job.pay), px, y + 262); }
+  ctx.font = `30px ${F_BODY}`; ctx.fillStyle = hexToRgba(P.ink, 0.85);
+  ctx.fillText([job.loc, job.style, job.exp].filter(Boolean).join('  ·  ').slice(0, 54), px, y + 350);
 
-  // footer brand line, handwritten (star glyph omitted — not in the handmade font)
+  // footer brand line: red star (sans has the glyph) + handwritten domain — same
+  // as the board's "★ StillUnemployed.com / roles I'd actually apply to".
+  const by = y + h - 128;
   ctx.fillStyle = P.apply;
-  ctx.font = `44px ${F_HAND}`; ctx.fillText('stillunemployed.com', px, y + h - 124);
+  ctx.font = `34px sans-serif`; ctx.fillText('★', px, by + 10);
+  const sw = ctx.measureText('★').width;
+  ctx.font = `46px ${F_HAND}`; ctx.fillText('stillunemployed.com', px + sw + 14, by);
   ctx.font = `30px ${F_HAND}`; ctx.fillStyle = hexToRgba(P.ink, 0.72);
-  ctx.fillText("roles I'd actually apply to", px, y + h - 68);
+  ctx.fillText("roles I'd actually apply to", px, by + 58);
 
   ctx.restore();
   return cv.toBuffer('image/png');
@@ -182,7 +161,7 @@ function drawCard(job, themeKey) {
 function stub(job, slug, themeKey) {
   const url = `/jobs.html?job=${b64(job.link)}`;
   const img = `${SITE}/j/og/${themeKey}/${slug}.png`;
-  const title = `${job.role || 'A role'} at ${job.co || 'a great company'}`;
+  const title = `Job at ${job.co || 'a great company'}`;
   const desc = [job.pay, job.loc].filter(Boolean).join(' · ') + " — thought you'd want to see this one.";
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <title>${esc(title)} — StillUnemployed.com</title>
