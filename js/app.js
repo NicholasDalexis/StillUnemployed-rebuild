@@ -44,6 +44,59 @@
     var h = location.hostname;
     return (h !== 'stillunemployed.com' && h !== 'www.stillunemployed.com');
   }
+  // Log a "recipe_view" when a popup that carries the capture block is opened (same 1-in-3
+  // hash as the render), so the Reports sheet can compute views vs hides vs signups.
+  function suRecipeView(link, comp) {
+    try {
+      if (!link || (comp && comp._recipeHidden)) return;
+      var h = 0, s = String(link);
+      for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 9973;
+      if (h % 3 !== 0) return;
+      // 30+ day cards don't show the block (they carry the age line instead) — don't log a view
+      if (comp && comp.jobs) {
+        for (var j = 0; j < comp.jobs.length; j++) {
+          if (comp.jobs[j].link === link) {
+            var src = comp.jobs[j].posted || comp.jobs[j].added || '';
+            if (src) { var ad = new Date(String(src).trim().slice(0, 10) + 'T00:00:00'); if (!isNaN(ad.getTime()) && Math.floor((Date.now() - ad.getTime()) / 86400000) >= 30) return; }
+            break;
+          }
+        }
+      }
+      var variants = ['want the exact advice that got me a job at Instagram? ↓', 'want the recipe I followed to a 6-figure offer? ↓', 'the advice that almost got me a job with the Kardashians ↓', '4 hand-picked jobs + 1 raw story, every Monday. free. ↓'];
+      postReport('recipe_view', variants[(h >> 2) % variants.length], link);
+    } catch (e) {}
+  }
+
+  // "Tracker (N)" nav badge — digits in Archivo (clearer than Indie Flower), 99+ cap, hidden at 0
+  function suTrkBadge() {
+    try {
+      var r = JSON.parse(localStorage.getItem('su_tracker') || '[]');
+      var n = Array.isArray(r) ? r.length : 0;
+      if (!n) return '';
+      return ' (<span style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 16px;">' + (n > 99 ? '99+' : n) + '</span>)';
+    } catch (e) { return ''; }
+  }
+
+  // Anonymous per-visitor id (random, no PII) — lets the triage agent spot repeat offenders
+  // whose "no longer open" reports keep turning out to be false.
+  function suCid() {
+    try {
+      var c = localStorage.getItem('su_cid');
+      if (!c) { c = 'c' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36); localStorage.setItem('su_cid', c); }
+      return c;
+    } catch (e) { return 'c_anon'; }
+  }
+  // Sliding-window rate limiter (per visitor, per bucket). Returns false when over the cap.
+  function suRateOk(bucket, max, windowSec) {
+    try {
+      var k = 'su_rate_' + bucket, now = Date.now();
+      var ts = JSON.parse(localStorage.getItem(k) || '[]').filter(function (t) { return now - t < windowSec * 1000; });
+      if (ts.length >= max) { localStorage.setItem(k, JSON.stringify(ts)); return false; }
+      ts.push(now); localStorage.setItem(k, JSON.stringify(ts));
+      return true;
+    } catch (e) { return true; }
+  }
+
   function postReport(action, co, link) {
     if (!REPORT_URL) return;
     if (reportExcluded()) {                    // admin / localhost: log, don't POST (no sheet row, no email)
@@ -55,7 +108,7 @@
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: action, company: co || '', link: link || '', page: location.href })
+        body: JSON.stringify({ action: action, company: co || '', link: link || '', page: location.href, cid: suCid() })
       });
     } catch (e) { /* fire-and-forget; never block the UI */ }
   }
@@ -70,6 +123,10 @@
     poker:    { shape: 'chip',  colors: ['#D8323C', '#16181D', '#1F6B3A', '#F4EEE2', '#E9C46A'] },
     mermaid:  { shape: 'scale', colors: ['#2E9E8F', '#58C4B0', '#8FE3D6', '#BDECE4', '#7FB6E0'] },
     girly:    { shape: 'heart', colors: ['#FF77BC', '#F23E98', '#FFC1E3', '#E84B9C', '#FFFFFF'] },
+    bratt:    { shape: 'rect',  colors: ['#8ACE00', '#96DB0A', '#0A0A0A', '#B6F03A', '#FFFFFF'] },
+    noir:     { shape: 'rect',  colors: ['#C9CDD4', '#8A8E94', '#1A1A1A', '#E5E8EC', '#FFFFFF'] },
+    beauty:   { shape: 'heart', colors: ['#7E1728', '#F3C9D2', '#F3D9B8', '#C24A78', '#EFE7DC'] },
+    chess:    { shape: 'rect',  colors: ['#141414', '#FFFFFF', '#3A3A3A', '#E5E5E5', '#8A8A8A'] },
     cod:      { shape: 'grain', colors: ['#C8A24A', '#A9852F', '#8A6D2B', '#D8C48A', '#6B5A2A'] }
   };
   function suDrawParticle(ctx, shape, p) {
@@ -291,7 +348,7 @@
       try { if (typeof window.suTrack === 'function') window.suTrack('themevote', look, 'down', ''); } catch (e) {}
       box.innerHTML = '';
       var t = document.createElement('div'); t.style.cssText = 'font-size:15px;max-width:210px;text-align:center;line-height:1.35;';
-      t.innerHTML = 'no worries — tap <b>&ldquo;Need a change?&rdquo;</b> up top to switch anytime →';
+      t.innerHTML = 'no worries — tap <b>&ldquo;change theme&rdquo;</b> up top to switch anytime →';
       box.appendChild(t);
       setTimeout(close, 3400);
     });
@@ -371,7 +428,22 @@
       // pickBadge). render() falls back to the original values when a key is absent.
       // Casino (poker): salary tiers by top-of-range — <$80K white, $80-99K green, $100K+ black.
       poker:    { acc:'#D4AF37', accInk:'#2A1810', cls:'poker', ink:'#F2E4C8', sub:'#D9B989', pay:'#D9B989', show:'#D9B989', navBg:'#D4AF37', navInk:'#2A1810', hl:'rgba(31,107,58,0.92)', hiCard:'linear-gradient(160deg,#26262B 0%,#101014 100%)', hiInk:'#E9D9A6', hiApply:'#D4AF37', hiStamp:'#D4AF37', payHi:'linear-gradient(160deg,#26262B,#101014)', lowCard:'linear-gradient(160deg,#FFFFFF 0%,#F1ECDE 100%)', midCard:'linear-gradient(160deg,#1F6B3A 0%,#155229 100%)', midInk:'#EAF6E4', midApply:'#FFD98A', midStamp:'#F2E7C8', baseInk:'#23242C', baseApply:'#C0303A', baseStamp:'#23242C', pickCard:'linear-gradient(160deg,#26262B 0%,#101014 100%)', pickInk:'#E9D9A6', pickApply:'#D4AF37', pickStamp:'#D4AF37', pickBadge:'#D4AF37' },
-      mermaid:  { acc:'#FF7E67', accInk:'#4A160D', cls:'mermaid', ink:'#0E4A5C', sub:'#1B6B7D', pay:'#1B6B7D', show:'#1B6B7D', navBg:'#0E4A5C', navInk:'#E9FBFF', hl:'rgba(255,126,103,0.85)', hiCard:'linear-gradient(160deg,#177287 0%,#0E4A5C 100%)', hiInk:'#F2FBFA', hiApply:'#FFC7B8', hiStamp:'#EAF7F4', payHi:'linear-gradient(160deg,#177287,#0E4A5C)', lowCard:'linear-gradient(160deg,#FFFFFF 0%,#EAF6F6 55%,#F5EEF7 100%)', midCard:'linear-gradient(160deg,#FDFEFF 0%,#DFF2F1 55%,#F0E7F4 100%)', baseInk:'#0E4A5C', baseApply:'#D9553C', baseStamp:'#0E4A5C', pickCard:'linear-gradient(160deg,#177287 0%,#0E4A5C 100%)', pickInk:'#F2FBFA', pickApply:'#FFC7B8', pickStamp:'#EAF7F4', pickBadge:'#D9553C' }
+      mermaid:  { acc:'#FF7E67', accInk:'#4A160D', cls:'mermaid', ink:'#0E4A5C', sub:'#1B6B7D', pay:'#1B6B7D', show:'#1B6B7D', navBg:'#0E4A5C', navInk:'#E9FBFF', hl:'rgba(255,126,103,0.85)', hiCard:'linear-gradient(160deg,#177287 0%,#0E4A5C 100%)', hiInk:'#F2FBFA', hiApply:'#FFC7B8', hiStamp:'#EAF7F4', payHi:'linear-gradient(160deg,#177287,#0E4A5C)', lowCard:'linear-gradient(160deg,#FFFFFF 0%,#EAF6F6 55%,#F5EEF7 100%)', midCard:'linear-gradient(160deg,#FDFEFF 0%,#DFF2F1 55%,#F0E7F4 100%)', baseInk:'#0E4A5C', baseApply:'#D9553C', baseStamp:'#0E4A5C', pickCard:'linear-gradient(160deg,#177287 0%,#0E4A5C 100%)', pickInk:'#F2FBFA', pickApply:'#FFC7B8', pickStamp:'#EAF7F4', pickBadge:'#D9553C' },
+      // "bratt" theme — Charli XCX BRAT album green #8ACE00 (verified). Named double-t to dodge the trademark.
+      // $100K+ card = brat green with near-black lowercase-energy text; board accents + highlight are the green.
+      bratt:    { acc:'#8ACE00', accInk:'#0A1400', cls:'bratt', ink:'#0A0A0A', sub:'#4A6A10', pay:'#4A6A10', show:'#2E4A00', navBg:'#8ACE00', navInk:'#0A1400', hl:'rgba(138,206,0,0.95)', hiCard:'linear-gradient(160deg,#96DB0A 0%,#8ACE00 100%)', hiInk:'#0A1400', hiApply:'#0A1400', hiStamp:'#0A1400', payHi:'linear-gradient(160deg,#96DB0A,#8ACE00)', lowCard:'linear-gradient(160deg,#FFFFFF 0%,#F4FBE4 100%)', midCard:'linear-gradient(160deg,#EAF7C4 0%,#DCEF9E 100%)', baseInk:'#1A2A0A', baseApply:'#3A7A00', baseStamp:'#1A2A0A', pickCard:'linear-gradient(160deg,#96DB0A,#8ACE00)', pickInk:'#0A1400', pickApply:'#0A1400', pickStamp:'#0A1400', pickBadge:'#0A1400' },
+      // "Noir" — black luxury (not gothic). Cream board, $100K+ card black with silver letters.
+      // "Black Cat" (label) — matte black luxury. ALL cards keep the same silver text (Nic: consistent
+      // text color so the eye flows). $100K+ = brushed-graphite (silver, matte, not corny); lower tiers darker.
+      // "Black Cat" — luxury SILK-white board. Cards get darker/lighter by tier but the TEXT stays WHITE
+      // on every card (Nic: don't flip the font color). $100K+ = matte black, $80-99K = dark charcoal,
+      // <$80K = medium-dark gray — all with white text.
+      noir:     { acc:'#1E1C1A', accInk:'#F4F2EC', cls:'noir', ink:'#1C1A18', sub:'#6E675E', pay:'#4A443C', show:'#241F1A', navBg:'#161616', navInk:'#ECECEC', hl:'rgba(196,180,150,0.38)', hiCard:'linear-gradient(160deg,#161618 0%,#050506 100%)', hiInk:'#ECECEE', hiApply:'#ECECEE', hiStamp:'#C6C6C8', payHi:'linear-gradient(160deg,#161618,#050506)', lowCard:'linear-gradient(160deg,#4E4E52 0%,#3E3E42 100%)', midCard:'linear-gradient(160deg,#2E2E31 0%,#232326 100%)', midInk:'#ECECEE', midApply:'#ECECEE', midStamp:'#C6C6C8', baseInk:'#ECECEE', baseApply:'#ECECEE', baseStamp:'#C6C6C8', pickCard:'linear-gradient(160deg,#161618,#050506)', pickInk:'#ECECEE', pickApply:'#ECECEE', pickStamp:'#C6C6C8', pickBadge:'#1E1C1A' },
+      // "Beauty" — high-class lipstick. Cream board, $100K+ card burgundy with warm-gold text; pink lower cards.
+      beauty:   { acc:'#8A1E33', accInk:'#FDECEF', cls:'beauty', ink:'#4A1520', sub:'#8A4A58', pay:'#8A4A58', show:'#6E2233', navBg:'#6E1423', navInk:'#F7DDE2', hl:'rgba(240,190,202,0.95)', hiCard:'linear-gradient(160deg,#7E1728 0%,#5A0F1C 100%)', hiInk:'#F3D9B8', hiApply:'#F3D9B8', hiStamp:'#F3D9B8', payHi:'linear-gradient(160deg,#7E1728,#5A0F1C)', lowCard:'linear-gradient(160deg,#FBEFF1 0%,#F3C9D2 100%)', midCard:'linear-gradient(160deg,#F5D3DA 0%,#EAB4C0 100%)', baseInk:'#5A2230', baseApply:'#A83048', baseStamp:'#5A2230', pickCard:'linear-gradient(160deg,#7E1728,#5A0F1C)', pickInk:'#F3D9B8', pickApply:'#F3D9B8', pickStamp:'#F3D9B8', pickBadge:'#F3D9B8' },
+      // "Chess" — marble board. $100K+ = the black "king" card (white text); lower tiers = warm ivory + cool
+      // stone (black text). Black vs white IS the chess identity; décor = chess pieces on the board.
+      chess:    { acc:'#141414', accInk:'#F4F4F4', cls:'chess', ink:'#161616', sub:'#5A5A5A', pay:'#3A3A3A', show:'#161616', navBg:'#161616', navInk:'#F4F4F4', hl:'rgba(20,20,20,0.14)', hiCard:'linear-gradient(160deg,#20211F 0%,#0C0C0C 100%)', hiInk:'#F4F4F4', hiApply:'#F4F4F4', hiStamp:'#D4D4D4', payHi:'linear-gradient(160deg,#20211F,#0C0C0C)', lowCard:'linear-gradient(160deg,#EDEEEA 0%,#DBDDD6 100%)', midCard:'linear-gradient(160deg,#FBFAF6 0%,#F0EEE5 100%)', midInk:'#161616', midApply:'#161616', midStamp:'#3A3A3A', baseInk:'#161616', baseApply:'#161616', baseStamp:'#3A3A3A', pickCard:'linear-gradient(160deg,#20211F,#0C0C0C)', pickInk:'#F4F4F4', pickApply:'#F4F4F4', pickStamp:'#D4D4D4', pickBadge:'#141414' }
     },
 
     themeDefs: {
@@ -689,7 +761,7 @@
         }
       }
       if (this.state.ws !== 'Any' && j.style !== this.state.ws) return false;
-      if (this.state.st !== 'all' && j.state !== this.state.st) return false;
+      if (this.state.st !== 'all' && j.state !== this.state.st && j.state !== 'Remote') return false; // remote roles always show for any selected state
       if (this.state.pr !== 'Any') {
         var t = this.payTier(j.pay);
         var want = this.state.pr === 'Under $80K' ? 'low' : (this.state.pr === '$80–99K' ? 'mid' : 'high');
@@ -715,8 +787,8 @@
 
     // apply a "Change Look?" theme, close the modal, and persist site-wide
     setLook: function (look) {
-      // WW2 (cod) + Mermaid ARCHIVED for launch: not selectable, fall back to original. Theme code kept.
-      if (look !== 'girly' && look !== 'poker') look = 'original';
+      // WW2 (cod) still archived. Mermaid re-enabled (Nic wants to see it on localhost).
+      if (look !== 'girly' && look !== 'poker' && look !== 'mermaid' && look !== 'bratt' && look !== 'noir' && look !== 'beauty' && look !== 'chess') look = 'original';
       // analytics: look change — company = new look, role = previous look (additive)
       if (look !== this.state.look) {
         if (typeof window.suTrack === 'function') window.suTrack('look', look, this.state.look, '');
@@ -725,6 +797,13 @@
         armThemeVote(look);                   // may prompt "do you like this look?" after 10 cards
       }
       try { localStorage.setItem('su_look', look); } catch (e) {}
+      // Reflect the theme in the address bar so it's a copy-pasteable share link:
+      // /jobs/casino, /jobs/blackcat, /jobs (original). Works with the Netlify /jobs/* rewrite.
+      try {
+        var slug = { poker:'casino', girly:'girlies', mermaid:'mermaid', bratt:'bratt', noir:'blackcat', beauty:'beauty', chess:'chess' }[look];
+        var newPath = slug ? ('/jobs/' + slug) : '/jobs';
+        if (window.history && history.replaceState) history.replaceState(null, '', newPath + (location.hash || ''));
+      } catch (e) {}
       this.setState({ look: look, lookOpen: false });
     },
 
@@ -808,7 +887,60 @@
 
     pokerDoodleEl: function (idx) { return this.richDoodleEl(this.POKER, idx, '0 3px 3px rgba(0,0,0,0.35)'); },
 
-    mermaidDoodleEl: function (idx) { return this.richDoodleEl(this.MERMAID, idx, '0 2px 2px rgba(10,70,90,0.25)'); },
+    mermaidDoodleEl: function (idx) {
+      // light-skin-tone mermaid 🧜🏻‍♀️ (Nic wants the white-skin variant, not a silhouette)
+      var left = (idx % 2 === 0);
+      return '<div class="doodle" style="position:absolute; ' + (left ? 'top:-36px; left:6%;' : 'top:-32px; right:8%;') + ' pointer-events:none; z-index:4; transform:rotate(' + (left ? -9 : 8) + 'deg); font-size:30px; filter:drop-shadow(0 2px 3px rgba(10,70,90,0.4)); opacity:0.98;">🧜🏻‍♀️</div>';
+    },
+
+    // brat decor: album-cover-style scribbles + brat-era icons (black shades, vinyl record).
+    // idx is a unique ascending ordinal (see dIdx) so text never repeats on screen.
+    brattDoodleEl: function (idx) {
+      var left = (idx % 2 === 0);
+      var pos = left ? 'top:-32px; left:5%;' : 'top:-28px; right:7%;';
+      var rot = left ? -8 : 7;
+      var wrap = function (inner, extra) {
+        return '<div class="doodle" style="position:absolute; ' + pos + ' pointer-events:none; z-index:4; transform:rotate(' + rot + 'deg); ' + (extra || '') + '">' + inner + '</div>';
+      };
+      var slot = ((idx % 6) + 6) % 6;
+      if (slot === 1) {
+        // black sunglasses (the brat-era shades)
+        return wrap('🕶️', 'font-size:26px; opacity:0.95; filter:drop-shadow(0 2px 3px rgba(0,0,0,0.35));');
+      }
+      if (slot === 4) {
+        // a little vinyl record with a lime (brat) label
+        return wrap('<span style="display:inline-block; width:27px; height:27px; border-radius:50%; background:radial-gradient(circle, #EDEDED 0 7%, #8ACE00 7% 20%, #141414 20% 100%); box-shadow:0 2px 4px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.06);"></span>', 'opacity:0.96;');
+      }
+      // brat-album-font text: lowercase, plain Arial, softly blurred like the cover.
+      // 15 unique phrases indexed by the ordinal → nothing repeats across the whole board.
+      var lines = ['fresh to the core', 'not rotten', 'brat summer', 'pure brat', '365 energy',
+                   'party girl', 'lime green', 'so brat', 'it girl', 'no filter', 'club ready',
+                   'raw + real', 'brat forever', 'no rules', 'stay brat'];
+      var txt = lines[((idx % lines.length) + lines.length) % lines.length];
+      return wrap(txt, 'font-family:Arial,Helvetica,sans-serif; font-weight:400; font-size:20px; color:#141414; opacity:0.9; white-space:nowrap; text-transform:lowercase; letter-spacing:-0.5px; filter:blur(0.4px);');
+    },
+    // noir decor: sleek black-luxury emoji
+    noirDoodleEl: function (idx) {
+      // luxe decor with a soft white glow so it shows on the matte-black board
+      var emo = ['🐈‍⬛', '💎', '🥂', '✨'];
+      var e = emo[((idx % emo.length) + emo.length) % emo.length];
+      var left = (idx % 2 === 0);
+      return '<div class="doodle" style="position:absolute; ' + (left ? 'top:-34px; left:7%;' : 'top:-30px; right:9%;') + ' pointer-events:none; z-index:4; transform:rotate(' + (left ? -10 : 8) + 'deg); font-size:26px; filter:drop-shadow(0 0 5px rgba(255,255,255,0.55)) drop-shadow(0 2px 3px rgba(0,0,0,0.5)); opacity:0.97;">' + e + '</div>';
+    },
+    // chess decor: black/white chess-piece glyphs, floated above the card on the marble board
+    chessDoodleEl: function (idx) {
+      var emo = ['♛', '♞', '♙', '♜', '♗', '♚']; // ♛ ♞ ♙ ♜ ♗ ♚
+      var e = emo[((idx % emo.length) + emo.length) % emo.length];
+      var left = (idx % 2 === 0);
+      return '<div class="doodle" style="position:absolute; ' + (left ? 'top:-36px; left:7%;' : 'top:-32px; right:9%;') + ' pointer-events:none; z-index:4; transform:rotate(' + (left ? -8 : 7) + 'deg); font-size:32px; color:#141414; text-shadow:0 1px 0 #FFFFFF, 0 2px 4px rgba(0,0,0,0.28); opacity:0.92;">' + e + '</div>';
+    },
+    // beauty decor: lipstick / kiss / beauty emoji
+    beautyDoodleEl: function (idx) {
+      var emo = ['💄', '💋', '💅', '🎀'];
+      var e = emo[((idx % emo.length) + emo.length) % emo.length];
+      var left = (idx % 2 === 0);
+      return '<div class="doodle" style="position:absolute; ' + (left ? 'top:-34px; left:7%;' : 'top:-30px; right:9%;') + ' pointer-events:none; z-index:4; transform:rotate(' + (left ? -10 : 9) + 'deg); font-size:26px; opacity:0.97;">' + e + '</div>';
+    },
 
     // ---- the big one: compute everything needed to render (ports renderVals) ----
     computeShown: function () {
@@ -849,6 +981,10 @@
       var girly = look === 'girly';
       var poker = look === 'poker';
       var mermaid = look === 'mermaid';
+      var bratt = look === 'bratt';
+      var noir = look === 'noir';
+      var beauty = look === 'beauty';
+      var chess = look === 'chess';
       var P = this.THEMES[look] || this.THEMES.original;
       var ACC = P.acc, ACC_INK = P.accInk;
       var boardCls = P.cls, boardInk = P.ink, subInk = P.sub, payKeyInk = P.pay,
@@ -959,11 +1095,11 @@
         var personalNote = noteFor[k] || null;
 
         var doodleHtml = '';
-        if (k === 0) {
-          // the top (100K+) card always carries the signature theme décor
-          doodleHtml = cod ? self.codDoodleEl(1) : (girly ? self.girlyDoodleEl(0) : (poker ? self.pokerDoodleEl(0) : (mermaid ? self.mermaidDoodleEl(0) : self.doodleEl(13))));
-        } else if (doodleOn) {
-          doodleHtml = cod ? self.codDoodleEl(Math.floor(k / 6)) : (girly ? self.girlyDoodleEl(Math.floor(k / 6)) : (poker ? self.pokerDoodleEl(Math.floor(k / 6)) : (mermaid ? self.mermaidDoodleEl(Math.floor(k / 6)) : self.doodleEl(k))));
+        // dIdx = a UNIQUE, ascending ordinal per doodle on screen (top card = 0, then 1,2,3…).
+        // Prevents décor from repeating (Nic: brat scribbles must never say the same thing twice).
+        var dIdx = (k === 0) ? 0 : (Math.floor(k / 6) + 1);
+        if (k === 0 || doodleOn) {
+          doodleHtml = cod ? self.codDoodleEl(dIdx) : girly ? self.girlyDoodleEl(dIdx) : poker ? self.pokerDoodleEl(dIdx) : mermaid ? self.mermaidDoodleEl(dIdx) : bratt ? self.brattDoodleEl(dIdx) : noir ? self.noirDoodleEl(dIdx) : beauty ? self.beautyDoodleEl(dIdx) : chess ? self.chessDoodleEl(dIdx) : self.doodleEl(k === 0 ? 13 : k);
         }
 
         var pinStyle = 'position:absolute; top:-9px; left:50%; transform:translateX(-50%); width:17px; height:17px; ' +
@@ -1055,7 +1191,9 @@
 
       var savedBtnBase = "font-family:'Indie Flower',cursive; font-weight:700; font-size:19px; padding:11px 17px; transform:rotate(3deg); box-shadow:2px 4px 9px rgba(44,33,24,0.2); white-space:nowrap; position:relative; top:8px; flex:none; cursor:pointer; border-radius:2px;";
       var savedBtnStyle = savedBtnBase + (this.state.savedOnly ? 'background:#2A2118; color:#F4E9C9;' : ('background:' + ACC + '; color:' + ACC_INK + ';'));
-      var savedLabel = this.state.savedOnly ? ('Saved (' + savedCount + ') ✕') : ('Saved (' + savedCount + ')');
+      // digits render clearer in Archivo than in Indie Flower (Nic, 2026-07-11); cap at 99+
+      var savedNum = '<span style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 16px; letter-spacing: 0;">' + (savedCount > 99 ? '99+' : savedCount) + '</span>';
+      var savedLabel = this.state.savedOnly ? ('Saved (' + savedNum + ') ✕') : ('Saved (' + savedNum + ')');
 
       // "Change Look?" toolbar button (base + open/closed colors, ported verbatim)
       var changeLookBtnBase = "display:inline-flex; align-items:center; gap:7px; font-family:'Indie Flower',cursive; font-weight:700; font-size:19px; padding:11px 16px; transform:rotate(-3deg); box-shadow:2px 4px 9px rgba(44,33,24,0.2); white-space:nowrap; position:relative; top:8px; flex:none; cursor:pointer; border-radius:2px;";
@@ -1124,7 +1262,7 @@
           '<a href="./jobs.html" class="postit" style="--r: 2.5deg; background: ' + navBg + '; color: ' + navInk + '; font-family: \'Indie Flower\', cursive; font-size: 21px; letter-spacing: 0.01em; padding: 10px 20px; cursor: pointer; text-decoration: none; display: inline-block;">Jobs</a>' +
           // Tracker tab removed Jul 3 2026 (Nic) — tracker.html + tracker.js + trackerLog() stay
           // in the repo but unlinked, so there's no UI way to reach it while we rework it.
-          '<a href="https://jobhuntrecipe.com/p/jobs-ghost-more-than-hinge-issue-1" target="_blank" rel="noopener" class="postit" style="--r: -2deg; background: ' + navBg + '; color: ' + navInk + '; font-family: \'Indie Flower\', cursive; font-size: 21px; letter-spacing: 0.01em; padding: 10px 20px; cursor: pointer; text-decoration: none;">Advice</a>' +
+          '<a href="./tracker.html" class="postit" style="--r: -2deg; background: ' + navBg + '; color: ' + navInk + '; font-family: \'Indie Flower\', cursive; font-size: 21px; letter-spacing: 0.01em; padding: 10px 20px; cursor: pointer; text-decoration: none;">Tracker' + suTrkBadge() + '</a>' +
         '</div>' +
       '</div>';
 
@@ -1137,8 +1275,8 @@
             '<div class="board-subtitle" style="font-family: \'Indie Flower\', cursive; font-size: 22px; color: ' + subInk + '; margin-top: 14px; transform: rotate(-0.6deg);">opened &amp; checked by a human (me) · updated weekly →</div>' +
           '</div>' +
           '<div style="display: flex; align-items: flex-start; gap: 12px; flex: none;">' +
-            '<div data-act="openLook" class="tab" style="' + changeLookBtnStyle + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M4 7l5-3 6 3 5-3v13l-5 3-6-3-5 3V7z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path><path d="M9 4v13M15 7v13" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path></svg>Need a change?</div>' +
-            '<div data-act="toggleSavedOnly" class="tab" style="' + savedBtnStyle + '">' + esc(savedLabel) + '</div>' +
+            '<div data-act="openLook" class="tab" style="' + changeLookBtnStyle + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M4 7l5-3 6 3 5-3v13l-5 3-6-3-5 3V7z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path><path d="M9 4v13M15 7v13" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path></svg>change theme</div>' +
+            '<div data-act="toggleSavedOnly" class="tab" style="' + savedBtnStyle + '">' + savedLabel + '</div>' +
           '</div>' +
         '</div>';
 
@@ -1248,8 +1386,8 @@
 
       // About modal
       if (this.state.modalOpen) {
-        out += '<div data-act="closeModal" style="position: fixed; inset: 0; z-index: 200; background: rgba(44,33,24,0.58); display: flex; align-items: center; justify-content: center; padding: 24px;">' +
-          '<div data-act="stop" style="width: 588px; max-width: 100%; background: #FCFAF3; border-radius: 5px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.8deg); font-family: \'Archivo\', sans-serif;">' +
+        out += '<div data-act="closeModal" style="position: fixed; inset: 0; z-index: 200; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
+          '<div data-act="stop" style="margin: auto;width: 588px; max-width: 100%; background: #FCFAF3; border-radius: 5px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.8deg); font-family: \'Archivo\', sans-serif;">' +
             '<div style="position: absolute; top: -13px; left: 66px; width: 122px; height: 30px; background: rgba(228,202,128,0.72); transform: rotate(-4deg); box-shadow: 0 2px 5px rgba(44,33,24,0.14); z-index: 5;"></div>' +
             '<div style="position: absolute; top: -12px; right: 62px; width: 122px; height: 30px; background: rgba(228,202,128,0.72); transform: rotate(3.5deg); box-shadow: 0 2px 5px rgba(44,33,24,0.14); z-index: 5;"></div>' +
             '<div data-act="closeModal" style="position: absolute; top: 20px; right: 20px; width: 38px; height: 38px; border-radius: 50%; background: rgba(252,250,243,0.94); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 8; box-shadow: 0 2px 8px rgba(44,33,24,0.2);">' +
@@ -1285,8 +1423,8 @@
 
       // apply feedback popup
       if (this.state.feedbackOpen) {
-        out += '<div data-act="closeFeedback" style="position: fixed; inset: 0; z-index: 210; background: rgba(44,33,24,0.58); display: flex; align-items: center; justify-content: center; padding: 24px;">' +
-          '<div data-act="stop" style="width: 460px; max-width: 100%; background: #F4EEE2; border-radius: 8px; padding: 30px 30px 28px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.7deg);">' +
+        out += '<div data-act="closeFeedback" style="position: fixed; inset: 0; z-index: 210; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
+          '<div data-act="stop" style="margin: auto;width: 460px; max-width: 100%; background: #F4EEE2; border-radius: 8px; padding: 30px 30px 28px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.7deg);">' +
             '<div data-act="closeFeedback" style="position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%; background: rgba(44,33,24,0.06); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
               '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.2" stroke-linecap="round"></path></svg>' +
             '</div>' +
@@ -1326,23 +1464,66 @@
             if (bp.length < 2) bp = raw.split('. ').map(function (s) { return s.trim(); }).filter(function (s) { return s.length > 3; });
             bl = bp.slice(0, 4).map(function (b) { return '<li style="margin: 7px 0;">' + esc(b) + '</li>'; }).join('');
           }
-          var _applyC = (_P.hiApply && _P.hiApply.toUpperCase() !== '#FFFFFF') ? _P.hiApply : '#D8502E';
+          // popup note-card is always cream, so apply is ALWAYS bright orange (Nic: it must pop)
+          var _applyC = '#E8502E';
+          // ── recipe capture config (Nic, 2026-07-11 late) ─────────────────────────────
+          // Shown on ~1 in 3 jobs (deterministic per job, so it doesn't flicker between
+          // renders). Copy rotates through variants (stable per job) so the Reports sheet
+          // can tell us which line earns signups vs ✕s. Hidden = in-memory only, so an
+          // accidental ✕ comes back on reload.
+          var _rHash = 0; try { var _rl = String(dj.link || ''); for (var _ri = 0; _ri < _rl.length; _ri++) _rHash = (_rHash * 31 + _rl.charCodeAt(_ri)) % 9973; } catch (eH) {}
+          var _rShow = (_rHash % 3 === 0) && !this._recipeHidden;
+          var _rVariants = [
+            'want the exact advice that got me a job at Instagram? ↓',
+            'want the recipe I followed to a 6-figure offer? ↓',
+            'the advice that almost got me a job with the Kardashians ↓',
+            '4 hand-picked jobs + 1 raw story, every Monday. free. ↓'
+          ];
+          var _rCopy = _rVariants[(_rHash >> 2) % _rVariants.length];
           var _arrow = '<svg width="30" height="15" viewBox="0 0 28 14" fill="none" style="overflow: visible; margin-left: 5px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
-          out += '<div data-act="closeDetail" style="position: fixed; inset: 0; z-index: 214; background: rgba(44,33,24,0.58); display: flex; align-items: center; justify-content: center; padding: 24px;">' +
-            '<div data-act="stop" style="position: relative; width: 410px; max-width: 100%; box-sizing: border-box; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 32px, rgba(96,130,170,0.20) 32px 33px); background-position: 0 92px; border-radius: 4px; box-shadow: 5px 18px 44px rgba(44,33,24,0.34); transform: rotate(-1deg); padding: 30px 30px 26px 48px;">' +
+          // Age disclaimer (Nic, 2026-07-11). We never retire a role for being old — old roles STAY on the
+          // board (a fuller board), and we disclose the age here, in the popup only, never on the card face.
+          // Keyed off the job's POSTED date (when the company posted it), falling back to our Date Added
+          // until the sourcer backfills Date Posted from the ATS APIs.
+          var _ageNote = '';
+          try {
+            var _src = (dj && dj.posted) ? dj.posted : (dj && dj.added ? dj.added : '');
+            if (_src) {
+              var _ad = new Date(String(_src).trim().slice(0, 10) + 'T00:00:00');
+              if (!isNaN(_ad.getTime())) {
+                var _days = Math.floor((Date.now() - _ad.getTime()) / 86400000);
+                if (_days >= 30) {
+                  // Nic 2026-07-11: ALWAYS "30+" no matter the real age (60/70/89) — a bigger
+                  // number scares people off. The 90-day sourcing cap bounds the true age.
+                  _ageNote = 'FYI: job is 30+ days old';
+                }
+              }
+            }
+          } catch (e) {}
+          // KILLED 2026-07-11 late (Nic): the age line made the whole board FEEL stale, and
+          // corporate reqs genuinely accept applicants for 60-90 days. The 90-day sourcing cap
+          // + the liveness checker are the real guards. Data (Date Posted) stays in the sheet.
+          _ageNote = '';
+          out += '<div data-act="closeDetail" style="position: fixed; inset: 0; z-index: 214; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
+            '<div data-act="stop" style="margin: auto;position: relative; width: 410px; max-width: 100%; box-sizing: border-box; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 32px, rgba(96,130,170,0.20) 32px 33px); background-position: 0 92px; border-radius: 4px; box-shadow: 5px 18px 44px rgba(44,33,24,0.34); transform: rotate(-1deg); padding: 30px 30px 26px 48px;">' +
               // red left margin line + tape
               '<div style="position: absolute; top: 0; bottom: 0; left: 36px; width: 1.5px; background: rgba(214,80,46,0.4);"></div>' +
               '<div style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(-2.5deg); width: 120px; height: 28px; background: rgba(228,202,128,0.6); border-left: 1px dashed rgba(255,255,255,.5); border-right: 1px dashed rgba(255,255,255,.5); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>' +
-              // share + close (corner)
-              '<div data-act="detailShare" data-link="' + esc(dj.link) + '" title="Share with a friend" style="position: absolute; top: 14px; right: 50px; cursor: pointer; color: #5C4033;">' +
-                '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"></circle><circle cx="6" cy="12" r="2.6"></circle><circle cx="18" cy="19" r="2.6"></circle><path d="M8.6 13.4l6.9 4M15.5 6.6l-6.9 4"></path></svg>' +
+              // share + close (corner). Share = bigger circular tap target + a hand-drawn
+              // "Share" hint with an up-arrow so people know what the icon does.
+              '<div data-act="detailShare" data-link="' + esc(dj.link) + '" title="Share with a friend" style="position: absolute; top: 9px; right: 46px; width: 32px; height: 32px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #5C4033;">' +
+                '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"></circle><circle cx="6" cy="12" r="2.6"></circle><circle cx="18" cy="19" r="2.6"></circle><path d="M8.6 13.4l6.9 4M15.5 6.6l-6.9 4"></path></svg>' +
+              '</div>' +
+              '<div data-act="detailShare" data-link="' + esc(dj.link) + '" style="position: absolute; top: 43px; right: 39px; display: flex; flex-direction: column; align-items: center; cursor: pointer; color: #C2552F;">' +
+                '<svg width="18" height="18" viewBox="0 0 20 20" fill="none" style="overflow: visible;"><path d="M10 18.5 C 8.4 12.5, 11.6 7.5, 10 2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M5.4 6 L10 1.3 L14.6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
+                '<span style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 16px; margin-top: 1px; white-space: nowrap;">Share</span>' +
               '</div>' +
               '<div data-act="closeDetail" style="position: absolute; top: 11px; right: 13px; width: 27px; height: 27px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
                 '<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.4" stroke-linecap="round"></path></svg>' +
               '</div>' +
               // header
-              '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 24px; color: #2C2118; line-height: 1.12; padding-right: 66px;">' + esc(dj.co) + '</div>' +
-              '<div style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16px; color: #3A2E20; margin-top: 4px;">' + esc(dj.role) + '</div>' +
+              '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 24px; color: #2C2118; line-height: 1.12; padding-right: 82px;">' + esc(dj.co) + '</div>' +
+              '<div style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16px; color: #3A2E20; margin-top: 4px; padding-right: 82px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">' + esc(dj.role) + '</div>' +
               (dj.pay ? '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 20px; color: #2C2118; margin-top: 10px;">' + esc(dj.pay) + '</div>' : '') +
               (dmeta ? '<div style="font-family: \'Archivo\', sans-serif; font-size: 13.5px; color: #6F5E45; margin-top: 5px;">' + esc(dmeta) + '</div>' : '') +
               // TL;DR label (handwritten + swoosh)
@@ -1353,9 +1534,19 @@
               (bl ? '<ul style="margin: 12px 0 0; padding-left: 20px; font-size: 14.5px; color: #3a3026; line-height: 1.55;">' + bl + '</ul>'
                   : '<div style="margin-top: 9px; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #6F5E45; line-height: 1.5;">a quick 3–4 bullet summary is coming to every role. for now, hit apply for the full listing →</div>') +
               // apply (card-style text link + hand-drawn arrow)
-              '<div style="margin-top: 22px; text-align: right;">' +
-                '<span data-act="detailApply" data-link="' + esc(dj.link) + '" data-co="' + esc(dj.co) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 21px; color: ' + _applyC + '; display: inline-flex; align-items: center; cursor: pointer;">apply' + _arrow + '</span>' +
+              '<div style="margin-top: 22px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">' +
+                (_ageNote
+                  ? '<span style="font-family: \'Indie Flower\', cursive; font-size: 16.5px; color: #C2552F; line-height: 1.2; text-align: left; max-width: 60%;">' + _ageNote + '</span>'
+                  : '<span></span>') +
+                '<span data-act="detailApply" data-link="' + esc(dj.link) + '" data-co="' + esc(dj.co) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 21px; color: ' + _applyC + '; display: inline-flex; align-items: center; cursor: pointer; flex: none;">apply' + _arrow + '</span>' +
               '</div>' +
+              // recipe capture: rotating one-liner + Beehiiv embed. ✕ hides it until reload.
+              (!_rShow ? '' :
+              '<div style="margin-top: 20px; border-top: 1.5px dashed rgba(44,33,24,0.22); padding-top: 12px; position: relative;">' +
+                '<div data-act="hideRecipe" data-co="' + esc(_rCopy) + '" data-link="' + esc(dj.link) + '" title="hide this" style="position: absolute; top: 5px; right: 0; width: 20px; height: 20px; border-radius: 50%; background: rgba(44,33,24,0.06); display: flex; align-items: center; justify-content: center; cursor: pointer; font-family: \'Archivo\', sans-serif; font-size: 11px; color: #6F5E45;">✕</div>' +
+                '<div style="font-family: \'Indie Flower\', cursive; font-size: 16px; color: #2C2118; line-height: 1.3; padding-right: 26px;">' + esc(_rCopy) + '</div>' +
+                '<iframe src="https://subscribe-forms.beehiiv.com/af2e314d-125f-431d-a8e0-0020be04d97c" data-test-id="beehiiv-embed" height="50" frameborder="0" scrolling="no" style="width: 100%; max-width: 100%; border: 0; border-radius: 4px; background: transparent; margin-top: 9px; display: block; overflow: hidden;"></iframe>' +
+              '</div>') +
             '</div>' +
           '</div>';
         }
@@ -1363,8 +1554,8 @@
 
       // "Change Look?" popup (markup + copy ported verbatim from MAIN FILE)
       if (this.state.lookOpen) {
-        out += '<div data-act="closeLook" style="position: fixed; inset: 0; z-index: 210; background: rgba(44,33,24,0.58); display: flex; align-items: center; justify-content: center; padding: 24px;">' +
-          '<div data-act="stop" style="width: 560px; max-width: 100%; background: #F4EEE2; border-radius: 8px; padding: 30px 30px 28px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.7deg);">' +
+        out += '<div data-act="closeLook" style="position: fixed; inset: 0; z-index: 210; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
+          '<div data-act="stop" style="margin: auto;width: 560px; max-width: 100%; background: #F4EEE2; border-radius: 8px; padding: 30px 30px 28px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.7deg);">' +
             '<div data-act="closeLook" style="position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%; background: rgba(44,33,24,0.06); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
               '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.2" stroke-linecap="round"></path></svg>' +
             '</div>' +
@@ -1385,16 +1576,31 @@
                 '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #2A2118; letter-spacing: -0.3px; line-height: 1.05;">Original version</div>' +
               '</div>' +
               // --- Casino (poker) ---
-              '<div data-act="pickPoker" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #4A0E18; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.8deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
+              '<div data-act="pickPoker" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: linear-gradient(160deg,#7E1728 0%,#5A0F1C 100%); border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.8deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
                 '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(2.5deg); width: 54px; height: 16px; background: rgba(228,202,128,0.5); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
                 '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
                   '<div style="display: inline-flex; align-items: center; gap: 6px; border: 2.2px solid #D4AF37; color: #D4AF37; border-radius: 4px; padding: 5px 9px; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .12em; opacity: .95; transform: rotate(-7deg);">' +
-                    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="10" fill="none" stroke="#D4AF37" stroke-width="1.7" stroke-dasharray="4.5 4.7"></circle><circle cx="12" cy="12" r="4.5" fill="#D4AF37"></circle></svg>' +
+                    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="10.4" fill="none" stroke="#D4AF37" stroke-width="1.4"></circle><circle cx="12" cy="12" r="9" fill="none" stroke="#D4AF37" stroke-width="3.6" stroke-dasharray="4.7 4.7"></circle><circle cx="12" cy="12" r="5.1" fill="none" stroke="#D4AF37" stroke-width="1.5"></circle></svg>' +
                     'Human Verified' +
                   '</div>' +
                 '</div>' +
                 '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #E9D9A6; letter-spacing: -0.3px; line-height: 1.05;">Casino</div>' +
               '</div>' +
+              // --- Beauty (lipstick / high-class) — FEATURED (Nic's weekly top 3) ---
+              '<div data-act="pickBeauty" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: linear-gradient(160deg,#F5D3DA 0%,#EAB4C0 100%); border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.4deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.28); box-sizing: border-box;">' +
+                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 54px; height: 16px; background: rgba(243,217,184,0.45); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
+                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
+                  '<div style="display: inline-flex; align-items: center; gap: 5px; border: 2px solid #8A1E33; color: #8A1E33; background: rgba(255,255,255,0.35); border-radius: 14px; padding: 4px 10px; font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 12.5px; opacity: .95; transform: rotate(-5deg);">' +
+                    '💄 Human Verified 💋' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #5A2230; letter-spacing: -0.3px; line-height: 1.05;">Beauty</div>' +
+              '</div>' +
+            '</div>' +
+            // Expander — the X (top-right) or clicking outside dismisses, so no "keep as is" needed.
+            '<div id="moreThemesToggle" data-act="moreThemes" style="margin-top: 16px; text-align: center; font-family: \'Indie Flower\', cursive; font-size: 19px; color: #8A7558; cursor: pointer;">we have even more themes ↓</div>' +
+            // The rest of the library, hidden until expanded, shown as smaller cards.
+            '<div id="moreThemesWrap" class="look-grid look-grid-more" style="display: none; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px;">' +
               // --- For the girlies ---
               '<div data-act="pickGirly" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #EFAEC4; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(-1.4deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
                 '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 54px; height: 16px; background: rgba(228,202,128,0.5); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
@@ -1407,9 +1613,51 @@
                 '</div>' +
                 '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #5A2638; letter-spacing: -0.3px; line-height: 1.05;">For the girlies</div>' +
               '</div>' +
-              // --- Mermaidcore (ARCHIVED — hidden from picker, theme code kept for future) ---
+              // --- Mermaidcore (re-enabled for Nic to preview) ---
+              '<div data-act="pickMermaid" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #0E4A5C; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(-1.3deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
+                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 54px; height: 16px; background: rgba(228,202,128,0.5); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
+                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
+                  '<div style="display: inline-flex; align-items: center; gap: 6px; border: 2.2px solid #7FE0D0; color: #7FE0D0; border-radius: 14px; padding: 4px 10px; font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 13px; opacity: .95; transform: rotate(-6deg);">' +
+                    '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex: none;"><path d="M12 2c2.5 3 2.5 7 0 10 2.5 3 2.5 7 0 10-2.5-3-2.5-7 0-10-2.5-3-2.5-7 0-10z"></path></svg>' +
+                    'Human Verified' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #E9FBFF; letter-spacing: -0.3px; line-height: 1.05;">Mermaidcore</div>' +
+              '</div>' +
+              // --- bratt (Charli XCX brat green) ---
+              '<div data-act="pickBratt" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #8ACE00; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.5deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
+                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 54px; height: 16px; background: rgba(228,202,128,0.5); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
+                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
+                  '<div style="display: inline-flex; align-items: center; gap: 5px; border: 2px solid #0A1400; color: #0A1400; border-radius: 4px; padding: 4px 8px; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; opacity: .82; transform: rotate(-4deg);">' +
+                    '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.4"></circle><path d="M8.3 12.2l2.4 2.4 4.9-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
+                    'Human Verified' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 20px; color: #0A1400; letter-spacing: -0.5px; line-height: 1.05; text-transform: lowercase;">bratt</div>' +
+              '</div>' +
+              // --- Noir (black luxury) ---
+              '<div data-act="pickNoir" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #141414; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(-1.3deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.28); box-sizing: border-box;">' +
+                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 54px; height: 16px; background: rgba(228,202,128,0.4); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
+                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
+                  '<div style="display: inline-flex; align-items: center; gap: 5px; border: 1.8px solid #C9CDD4; color: #C9CDD4; border-radius: 4px; padding: 4px 8px; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .12em; opacity: .85; transform: rotate(-4deg);">' +
+                    '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.4"></circle><path d="M8.3 12.2l2.4 2.4 4.9-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
+                    'Human Verified' +
+                  '</div>' +
+                '</div>' +
+                '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #DDE0E5; letter-spacing: -0.3px; line-height: 1.05;">Black Cat</div>' +
+              '</div>' +
+              // --- Chess (real checkerboard + king "Human Verified" badge) ---
+              '<div data-act="pickChess" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background-color: #F4F2EC; background-image: conic-gradient(#181818 25%, transparent 0 50%, #181818 0 75%, transparent 0); background-size: 36px 36px; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.6deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.28); box-sizing: border-box;">' +
+                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 54px; height: 16px; background: rgba(20,20,20,0.35); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
+                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
+                  '<div style="display: inline-flex; align-items: center; gap: 5px; border: 1.8px solid #171717; color: #171717; background: rgba(244,242,236,0.94); border-radius: 4px; padding: 4px 9px; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .12em; transform: rotate(-4deg);">' +
+                    '<span style="font-size: 14px; line-height: 1;">♚</span>' +
+                    'Human Verified' +
+                  '</div>' +
+                '</div>' +
+                '<div style="display:inline-block; background:#171717; color:#F4F4F4; font-family: \'Archivo Black\', sans-serif; font-size: 17px; letter-spacing: -0.3px; line-height: 1.05; padding: 3px 9px; border-radius: 3px;">Chess</div>' +
+              '</div>' +
             '</div>' +
-            '<div data-act="closeLook" style="margin-top: 18px; text-align: center; font-family: \'Indie Flower\', cursive; font-size: 19px; color: #8A7558; cursor: pointer;">keep it as is →</div>' +
           '</div>' +
         '</div>';
       }
@@ -1450,12 +1698,32 @@
             suConfetti();   // short celebratory burst; popup closes so they keep browsing
             break;
           }
-          case 'reportBroken':
-            postReport('broken', self.state.feedbackCo, self.state.feedbackLink);
+          case 'reportBroken': {
+            var _bl = self.state.feedbackLink;
+            // SPAM GUARD (Nic, 2026-07-11): max 3 reports/min and 10/day per visitor. Over the
+            // limit the UI still says thanks (looks registered) but nothing is logged — shadow
+            // throttle, so spammers can't tell they're cut off. suRateOk handles the counters.
+            if (suRateOk('br', 3, 60) && suRateOk('brDay', 10, 86400)) {
+              postReport('gone_report', self.state.feedbackCo, _bl);
+            }
+            // hide instantly for THIS visitor, persisted locally until the agent verdict
+            try {
+              var _rl2 = JSON.parse(localStorage.getItem('su_reported_links') || '[]');
+              if (_rl2.indexOf(_bl) < 0) { _rl2.push(_bl); localStorage.setItem('su_reported_links', JSON.stringify(_rl2)); }
+            } catch (eRB) {}
+            for (var _bi = 0; _bi < self.jobs.length; _bi++) {
+              if (self.jobs[_bi].link === _bl) { self.jobs.splice(_bi, 1); break; }
+            }
             self.setState({ feedbackOpen: false });
-            suToast('Thanks — we\'ll look at it ASAP.');
+            suToast('Thanks — pulled it while we double-check.');
             break;
+          }
           case 'closeDetail': self.setState({ detailOpen: false }); break;
+          case 'hideRecipe':
+            self._recipeHidden = true;   // memory only — an accidental ✕ comes back on reload
+            postReport('recipe_hide', el.getAttribute('data-co') || '', el.getAttribute('data-link') || '');
+            self.setState({});
+            break;
           case 'detailShare': {
             var sl = el.getAttribute('data-link'), sj = null;
             for (var si = 0; si < self.jobs.length; si++) { if (self.jobs[si].link === sl) { sj = self.jobs[si]; break; } }
@@ -1481,6 +1749,21 @@
           case 'pickGirly': self.setLook('girly'); break;
           case 'pickPoker': self.setLook('poker'); break;
           case 'pickMermaid': self.setLook('mermaid'); break;
+          case 'pickBratt': self.setLook('bratt'); break;
+          case 'pickNoir': self.setLook('noir'); break;
+          case 'pickBeauty': self.setLook('beauty'); break;
+          case 'pickChess': self.setLook('chess'); break;
+          case 'moreThemes': {
+            // Expand/collapse the extra themes in place (no re-render, so it stays open).
+            var _w = document.getElementById('moreThemesWrap');
+            var _t = document.getElementById('moreThemesToggle');
+            if (_w) {
+              var _open = _w.style.display !== 'none';
+              _w.style.display = _open ? 'none' : 'grid';
+              if (_t) _t.innerHTML = _open ? 'we have even more themes ↓' : 'show fewer ↑';
+            }
+            break;
+          }
           case 'toggleCat': self.setState({ openPanel: self.state.openPanel === 'cat' ? null : 'cat' }); break;
           case 'toggleFilters': self.setState({ openPanel: self.state.openPanel === 'filters' ? null : 'filters' }); break;
           case 'clearAll': self.setState({ ws: 'Any', st: 'all', pr: 'Any', fr: 'Any', theme: null }); break;
@@ -1524,7 +1807,9 @@
           case 'apply': {
             // now opens the TL;DR detail popup; real navigation happens from detailApply
             e.preventDefault(); e.stopPropagation();
-            self.setState({ detailOpen: true, detailLink: el.getAttribute('data-link') || el.getAttribute('href') || '' });
+            var _al = el.getAttribute('data-link') || el.getAttribute('href') || '';
+            suRecipeView(_al, self);   // impression log for the capture block (1-in-3 jobs)
+            self.setState({ detailOpen: true, detailLink: _al });
             break;
           }
 
@@ -1534,7 +1819,9 @@
             var ns = self.state.openNotes[id3];
             if (ns === 'open' || ns === 'closing') return;
             e.stopPropagation();
-            self.setState({ detailOpen: true, detailLink: el.getAttribute('data-link') });
+            var _dl3 = el.getAttribute('data-link');
+            suRecipeView(_dl3, self);
+            self.setState({ detailOpen: true, detailLink: _dl3 });
             break;
           }
         }
@@ -1545,7 +1832,11 @@
         if (e.target && e.target.id === 'su-search') {
           self._searchFocused = true;
           self._searchCaret = e.target.selectionStart;
-          self.setState({ q: e.target.value });
+          // DEBOUNCE the (expensive) full board re-render so typing stays snappy on mobile.
+          // The native input shows each keystroke instantly; the filtered results settle
+          // ~140ms after you pause. (This was the "1 second per letter" mobile lag.)
+          clearTimeout(self._renderTimer);
+          (function (val) { self._renderTimer = setTimeout(function () { self.setState({ q: val }); }, 140); })(e.target.value);
           // analytics: log the query once it settles (1.5s debounce) — additive
           clearTimeout(self._qTimer);
           self._qTimer = setTimeout(function () {
@@ -1628,6 +1919,12 @@
     },
 
     init: function (jobs) {
+      // "no longer open" reports hide the job INSTANTLY for this visitor (real global hide
+      // happens when the triage agent verifies at the source and marks the sheet).
+      try {
+        var _hid = JSON.parse(localStorage.getItem('su_reported_links') || '[]');
+        if (_hid.length) jobs = jobs.filter(function (j) { return _hid.indexOf(j.link) < 0; });
+      } catch (eRH) {}
       this.jobs = this.shuffleFresh(jobs);
       this.bindEvents();
       // analytics: a ?theme= content preset (theme-chip) counts as an applied filter — additive
@@ -1645,8 +1942,8 @@
   function loadLook() {
     try {
       var v = localStorage.getItem('su_look');
-      // cod (WW2) + mermaid ARCHIVED: anyone with them saved falls back to original
-      return (v === 'girly' || v === 'poker') ? v : 'original';
+      // cod (WW2) still archived. mermaid re-enabled for preview.
+      return (v === 'girly' || v === 'poker' || v === 'mermaid' || v === 'bratt' || v === 'noir' || v === 'beauty' || v === 'chess') ? v : 'original';
     } catch (e) { return 'original'; }
   }
 
@@ -1704,7 +2001,9 @@
         iLoc = col('Location'), iType = col('Type'), iPay = col('Salary'),
         iExp = col('Years of Experience'), iCat = col('Category'),
         iDesc = col('Description'), iTldr = col('TL;DR'),
-        iPick = col('Pick'), iAct = col('Active/Dead');
+        iPick = col('Pick'), iAct = col('Active/Dead'),
+        iAdded = col('Date Added'),   // when WE added it to the board
+        iPosted = col('Date Posted'); // when the COMPANY posted the job — drives the age disclaimer (2026-07-11)
     var get = function (cells, k) { return (k >= 0 && cells[k] != null) ? String(cells[k]).trim() : ''; };
     var jobs = [];
     for (var r = hasHeader ? 1 : 0; r < rows.length; r++) {
@@ -1713,12 +2012,27 @@
       if (!co && !role) continue;                                   // skip blank rows
       var act = get(cells, iAct).toLowerCase();
       if (act.indexOf('dead') !== -1 || act === 'inactive' || act === 'no') continue; // hide retired jobs
+      var _payv = get(cells, iPay);
+      // GUARD (Nic's rule: a card must NEVER show without a salary). A blank Salary cell used to render
+      // a black "$100K+" card with no number (payTier treats blank as 'high'). Skip blank-salary rows —
+      // they stay in the sheet; a role reappears the moment its Salary cell is filled. See postmortem
+      // 2026-07-08-StillUnemployed-Missing-Salary-Cards.
+      if (!_payv || !String(_payv).replace(/[\s$–—-]/g, '').match(/\d/)) continue;
+      // HOURLY (Upd. 2026-07-11, Nic): 6-month+ CONTRACT roles are now welcome — they pay hourly, and a
+      // $40/hr contract at a real company is a good early-career job. So hourly no longer means "hide."
+      // Rule: $25/hr+ shows; below that it's retail-tier hourly and stays off the board.
+      if (/\/\s*hr|\bper\s*hour\b|\bhourly\b/i.test(_payv)) {
+        var _rates = (String(_payv).match(/\d+(?:\.\d+)?/g) || []).map(Number);
+        if (!_rates.length || Math.max.apply(null, _rates) < 25) continue;
+      }
       var loc = get(cells, iLoc);
       jobs.push({
         co: co, role: role, link: safeUrl(get(cells, iLink)), loc: loc, state: deriveState(loc),
         style: get(cells, iType), ind: get(cells, iCat), pay: get(cells, iPay),
-        exp: get(cells, iExp), desc: get(cells, iDesc), tldr: get(cells, iTldr),
-        pick: get(cells, iPick).toLowerCase() === 'featured'
+        exp: normExp(get(cells, iExp)), desc: get(cells, iDesc), tldr: get(cells, iTldr),
+        pick: get(cells, iPick).toLowerCase() === 'featured',
+        added: get(cells, iAdded),    // yyyy-mm-dd — when we added it
+        posted: get(cells, iPosted)   // yyyy-mm-dd — when the COMPANY posted it (from the ATS API)
       });
     }
     return jobs;
@@ -1726,6 +2040,21 @@
 
   // Security: only let http(s) job links reach the DOM. Blocks a malicious sheet
   // row (e.g. a "javascript:" or "data:" link) from injecting a script/redirect.
+  // EXPERIENCE DISPLAY (Nic, 2026-07-11): NEVER show a range. A "3-6 yrs" card reads as scary even
+  // though the only number that matters is the FLOOR — which is literally Nic's own newsletter thesis:
+  // "always worry about the first number, never the second." So every range collapses to "<floor>+ yrs".
+  //   "3-6 yrs" -> "3+ yrs" | "2 to 4 years" -> "2+ yrs" | "1-5+ yrs" -> "1+ yrs" | "3+ yrs" -> "3+ yrs"
+  // Non-numeric values ("Early career", "See posting") pass through untouched.
+  function normExp(v) {
+    var s = String(v == null ? '' : v).trim();
+    if (!s) return '';
+    if (!/\d/.test(s)) return s;                 // "Early career", "See posting", etc.
+    var m = s.match(/\d+/);                      // the FIRST number is the floor
+    if (!m) return s;
+    if (Number(m[0]) === 0) return 'Early career';   // "0-2 yrs" -> "Early career", never "0+ yrs"
+    return m[0] + '+ yrs';
+  }
+
   function safeUrl(u) {
     u = String(u == null ? '' : u).trim();
     return /^https?:\/\//i.test(u) ? u : '';

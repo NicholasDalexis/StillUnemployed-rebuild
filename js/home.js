@@ -360,7 +360,13 @@
     n.innerHTML =
       '<a href="./index.html">Home</a>' +
       '<a href="./jobs.html">Jobs</a>' +
-      '<a href="https://jobhuntrecipe.com/p/jobs-ghost-more-than-hinge-issue-1" target="_blank" rel="noopener">Advice</a>';
+      '<a href="./tracker.html">Tracker' + (function () {
+        try {
+          var r = JSON.parse(localStorage.getItem('su_tracker') || '[]');
+          var n = Array.isArray(r) ? r.length : 0;
+          return n ? ' (<span style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 16px;">' + (n > 99 ? '99+' : n) + '</span>)' : '';
+        } catch (e) { return ''; }
+      })() + '</a>';
     hero.appendChild(n);
   }
 

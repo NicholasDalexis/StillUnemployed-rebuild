@@ -3,19 +3,40 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Root base so /jobs/<theme> deep-links resolve assets (css/js) + links from site root -->
+  <base href="/">
   <title>StillUnemployed.com — Roles I'd actually apply to</title>
   <meta name="description" content="Roles here are opened and checked by a human (me). No AI slop, just jobs I'd actually apply to.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Black Ops One powers the WW2 "Change Look?" theme label (falls back to Archivo Black) -->
   <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=6">
+  <link rel="stylesheet" href="css/styles.css?v=11">
   <!-- Pre-apply the saved "Change Look?" theme before paint to avoid a color flash -->
   <script>
     (function () {
+      // Shareable theme URLs: /jobs/casino, /jobs/blackcat, /jobs/girlies … (also ?theme=casino).
+      // A slug in the URL forces + persists that theme; otherwise fall back to the saved theme.
+      var SLUG2LOOK = { original:'original', casino:'poker', poker:'poker', girlies:'girly',
+        girly:'girly', mermaid:'mermaid', mermaidcore:'mermaid', bratt:'bratt', brat:'bratt',
+        blackcat:'noir', 'black-cat':'noir', noir:'noir', beauty:'beauty', chess:'chess' };
+      var VALID = { girly:1, poker:1, mermaid:1, bratt:1, noir:1, beauty:1, chess:1 };
+      function fromUrl() {
+        try {
+          var m = location.pathname.match(/\/jobs\/([A-Za-z0-9_-]+)/);
+          var slug = (m && m[1]) ? m[1].toLowerCase() : '';
+          if (!slug && location.search) {
+            var q = new URLSearchParams(location.search).get('theme');
+            slug = q ? q.toLowerCase() : '';
+          }
+          return (slug && SLUG2LOOK[slug]) ? SLUG2LOOK[slug] : '';
+        } catch (e) { return ''; }
+      }
       try {
-        var v = localStorage.getItem('su_look');
-        if (v === 'cod' || v === 'girly' || v === 'poker' || v === 'mermaid') {
+        var urlLook = fromUrl();
+        if (urlLook) { try { localStorage.setItem('su_look', urlLook); } catch (e) {} }
+        var v = urlLook || localStorage.getItem('su_look');
+        if (v && VALID[v]) {
           document.documentElement.setAttribute('data-su-look', v);
           document.addEventListener('DOMContentLoaded', function () {
             document.body.className = 'theme-' + v;
@@ -55,6 +76,6 @@
     <a href="./terms.html">Terms of Service</a>
   </footer>
 
-  <script src="js/app.js?v=app9" defer></script>
+  <script src="js/app.js?v=app29" defer></script>
 </body>
 </html>

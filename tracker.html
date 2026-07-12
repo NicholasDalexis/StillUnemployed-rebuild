@@ -13,7 +13,7 @@
     (function () {
       try {
         var v = localStorage.getItem('su_look');
-        if (v === 'cod' || v === 'girly' || v === 'poker' || v === 'mermaid') {
+        if (v === 'cod' || v === 'girly' || v === 'poker' || v === 'mermaid' || v === 'beauty' || v === 'bratt' || v === 'noir' || v === 'chess') {
           document.documentElement.setAttribute('data-su-look', v);
           document.addEventListener('DOMContentLoaded', function () {
             document.body.className = 'theme-' + v;
@@ -126,7 +126,7 @@
     .trk-row {
       background: #FBF6E9; border-radius: 4px; box-shadow: 3px 6px 13px rgba(44,33,24,0.15);
       padding: 15px 18px; display: grid;
-      grid-template-columns: minmax(180px, 1.2fr) 74px 148px minmax(160px, 1fr) 30px;
+      grid-template-columns: minmax(180px, 1.2fr) 74px 148px minmax(160px, 1fr) 22px 30px;
       gap: 14px; align-items: center; transform: rotate(-0.35deg);
       transition: opacity .5s ease, transform .3s ease;
     }
@@ -149,7 +149,8 @@
       cursor: pointer; outline: none; width: 100%; box-sizing: border-box;
     }
     /* status colors: interviews warm, Offer green, Rejected muted red, Ghosted gray */
-    .st-applied  { background: #F6EFDC; color: #3A2A1B; }
+    /* "Applied" matches the "+ add it" button — theme accent, whatever the look (Nic) */
+    .st-applied  { background: var(--trk-acc, #F2E14B); color: var(--trk-accink, #2A2118); }
     .st-int      { background: #F7D98C; color: #5A3A08; border-color: #D8B25B; }
     .st-offer    { background: #2E7D52; color: #F4EEE2; border-color: #1F5C3A; }
     .st-rejected { background: #E3B4A8; color: #6E241B; border-color: #C6907F; }
@@ -160,6 +161,16 @@
       outline: none; padding: 4px 2px; width: 100%; box-sizing: border-box; min-width: 0;
     }
     .trk-notes:focus { border-bottom-color: #A8825F; }
+    /* textarea version: grows vertically (js/tracker.js sizes it), never horizontally */
+    textarea.trk-notes { resize: none; overflow: hidden; line-height: 1.45; white-space: pre-wrap; overflow-wrap: break-word; font: inherit; display: block; }
+    /* ▾ expand-notes toggle — bare arrow on the row line, left of the ✕ */
+    .trk-noteexp {
+      width: 22px; height: 24px; flex: none; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      color: #4A3A28;
+    }
+    .trk-noteexp:hover { color: #1A1A1A; }
+    .trk-noteexp.open { color: #1A1A1A; }
     .trk-del {
       width: 28px; height: 28px; border-radius: 50%; background: rgba(44,33,24,0.06);
       color: #B23A1E; display: flex; align-items: center; justify-content: center;
@@ -200,6 +211,7 @@
       .trk-date { grid-column: 2 / 3; text-align: right; }
       .trk-status { grid-column: 1 / 2; }
       .trk-del { grid-column: 2 / 3; justify-self: end; }
+      .trk-noteexp { grid-column: 1 / 2; justify-self: end; }
       .trk-notes { grid-column: 1 / -1; }
     }
   </style>

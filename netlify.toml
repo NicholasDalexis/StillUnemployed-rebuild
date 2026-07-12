@@ -15,6 +15,16 @@
 [build.processing]
   skip_processing = true
 
+# Theme deep-links (added Jul 8 2026): /jobs/casino, /jobs/blackcat, /jobs/girlies, etc.
+# all serve the board (jobs.html) with the URL preserved (status 200 = rewrite, not redirect).
+# The pre-paint script in jobs.html reads the slug and applies that theme before first paint,
+# so a shared link opens straight into that theme. jobs.html uses <base href="/"> so its
+# relative assets still resolve correctly under the deeper /jobs/* path.
+[[redirects]]
+  from = "/jobs/*"
+  to = "/jobs.html"
+  status = 200
+
 # Security headers (apply to everything). Hardening for a static site: block
 # framing/clickjacking, MIME-sniffing, and referrer leakage, lock down unused
 # browser features, and restrict resource origins via CSP (only self + the

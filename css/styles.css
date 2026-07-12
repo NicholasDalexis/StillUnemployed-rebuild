@@ -422,11 +422,55 @@ body { margin: 0; background: #EFE6D4; }
       to   { background-position: 0 0, 5px 5px, 14% 8%, 86% 12%, 60px 0, -40px 0, 0 0; }
     }
     @media (prefers-reduced-motion: reduce) { .board.mermaid { animation: none; } }
+    .board.bratt {
+      /* Charli XCX brat: pale-lime base + a lime glow so the bright green cards/nav pop */
+      background-color: #EEF6D6;
+      background-image:
+        radial-gradient(rgba(90,140,0,0.10) 1px, transparent 1.7px),
+        radial-gradient(rgba(90,140,0,0.06) 1px, transparent 1.7px),
+        radial-gradient(130% 80% at 50% 0%, rgba(138,206,0,0.30), transparent 60%);
+      background-size: 10px 10px, 10px 10px, 100% 100%;
+      background-position: 0 0, 5px 5px, 0 0;
+    }
+    .board.noir {
+      /* Black Cat: luxury white SILK — soft satin sheen with a gathered spiral swirl in the corner */
+      background-color: #F0EEE8;
+      background-image:
+        conic-gradient(from 205deg at 90% 86%, rgba(255,255,255,0.85) 0deg, rgba(206,200,190,0.20) 70deg, rgba(255,255,255,0.85) 145deg, rgba(206,200,190,0.20) 215deg, rgba(255,255,255,0.85) 290deg, rgba(206,200,190,0.20) 360deg),
+        linear-gradient(122deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 32%, rgba(255,255,255,0.42) 58%, rgba(255,255,255,0) 84%, rgba(255,255,255,0.4) 100%),
+        radial-gradient(150% 120% at 14% 8%, rgba(255,255,255,0.6), transparent 55%);
+      background-size: 100% 100%, 100% 100%, 100% 100%;
+      background-repeat: no-repeat;
+    }
+    .board.beauty {
+      /* high-class beauty: cream base + soft rose glow */
+      background-color: #EFE7DC;
+      background-image:
+        radial-gradient(rgba(110,20,35,0.08) 1px, transparent 1.7px),
+        radial-gradient(rgba(110,20,35,0.05) 1px, transparent 1.7px),
+        radial-gradient(130% 80% at 50% 0%, rgba(242,196,206,0.5), transparent 62%);
+      background-size: 10px 10px, 10px 10px, 100% 100%;
+      background-position: 0 0, 5px 5px, 0 0;
+    }
+    .board.chess {
+      /* marble chessboard: warm ivory base with a faint checker grid */
+      background-color: #E9E7DF;
+      background-image:
+        linear-gradient(45deg, rgba(20,20,20,0.030) 25%, transparent 25%, transparent 75%, rgba(20,20,20,0.030) 75%),
+        linear-gradient(45deg, rgba(20,20,20,0.030) 25%, transparent 25%, transparent 75%, rgba(20,20,20,0.030) 75%),
+        radial-gradient(130% 85% at 50% 0%, rgba(255,255,255,0.5), transparent 60%);
+      background-size: 66px 66px, 66px 66px, 100% 100%;
+      background-position: 0 0, 33px 33px, 0 0;
+    }
     /* keep the page gutter behind the board matching the active theme */
+    body.theme-chess   { background: #E9E7DF !important; }
     body.theme-cod     { background: #283026 !important; }
     body.theme-girly   { background: #FBD7E8 !important; }
     body.theme-poker   { background: #4F0F1C !important; }
     body.theme-mermaid { background: #6FC7DE !important; }
+    body.theme-bratt   { background: #EEF6D6 !important; }
+    body.theme-noir    { background: #F0EEE8 !important; }
+    body.theme-beauty  { background: #EFE7DC !important; }
     /* Card text limits (Jul 2 2026): a long company or role can no longer stretch
        its whole row and leave neighbor cards with dead space. Both clamp to 2
        lines with an ellipsis; the full text stays in the job popup + title attr. */
@@ -541,6 +585,10 @@ body { margin: 0; background: #EFE6D4; }
   .look-grid > div{ min-height: 118px !important; padding: 18px 16px 18px !important; }
   .look-grid > div > div:last-child{ font-size: 16px !important; white-space: nowrap !important; }
 }
+
+/* "we have even more themes" expander: the extra themes render as smaller/secondary cards. */
+.look-grid-more > div{ min-height: 116px !important; padding: 12px 8px 11px !important; transform: none !important; }
+.look-grid-more > div > div:last-child{ font-size: 15px !important; }
 
 /* Hide the "pay key →" label on mobile (keep the color swatches + numbers) */
 @media (max-width: 560px){ .pay-key-label{ display: none !important; } }

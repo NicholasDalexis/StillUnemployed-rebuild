@@ -108,7 +108,10 @@ function roundRect(ctx, x, y, w, h, r) {
 // vignette — the board card doesn't have those, and Nic didn't want them.
 function drawCard(job, themeKey) {
   const T = THEMES[themeKey] || THEMES.original;
-  const P = T[payTier(job.pay)];
+  // Shared cards ALWAYS use the theme's $100K+ card color (the attention-grabber:
+  // original = yellow, casino = black, girly = pink), regardless of the job's real
+  // pay tier. Per Nic — a shared card should always look premium.
+  const P = T.high;
   const W = 1200, H = 630, cv = createCanvas(W, H), ctx = cv.getContext('2d');
 
   // thin surface behind the card (barely shows — the card nearly fills the frame)

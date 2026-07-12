@@ -30,7 +30,7 @@
     <div style="position: absolute; top: 24px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px;">
       <a href="./index.html" class="postit nav-postit" style="--r: -3deg;">Home</a>
       <a href="./jobs.html" class="postit nav-postit" style="--r: 2.5deg;">Jobs</a>
-      <a href="https://jobhuntrecipe.com/p/jobs-ghost-more-than-hinge-issue-1" target="_blank" rel="noopener" class="postit nav-postit" style="--r: -2deg;">Advice</a>
+      <a href="./tracker.html" class="postit nav-postit" style="--r: -2deg;">Tracker</a>
     </div>
   </div>
 
@@ -56,7 +56,7 @@
 
   <!-- torn subhead strip -->
   <div style="position: absolute; left: 60px; top: 452px; width: 520px; z-index: 21; background: #FCFAF3; padding: 20px 26px 24px; box-shadow: 3px 7px 16px rgba(44,33,24,0.16); transform: rotate(-0.7deg); clip-path: polygon(0 6%, 4% 0, 30% 5%, 52% 0, 74% 6%, 100% 2%, 99% 96%, 72% 100%, 46% 95%, 22% 100%, 2% 96%);">
-    <div style="font-family: 'Poppins', sans-serif; font-size: 20px; line-height: 1.5; color: #3A3026; font-weight: 500;">A real human <strong style="font-weight: 700; color: #2C2118;">(me)</strong> opens and checks the jobs before we add them. No dead job links. No AI slop. Just roles I would apply to myself.</div>
+    <div style="font-family: 'Poppins', sans-serif; font-size: 20px; line-height: 1.5; color: #3A3026; font-weight: 500;">A real human <strong style="font-weight: 700; color: #2C2118;">(me)</strong> opens and checks the jobs before we add them. Active links, roles still open. No AI slop. Just roles I would apply to myself.</div>
   </div>
 
   <!-- CTA row -->
@@ -226,7 +226,7 @@
     <div style="position: absolute; top: 24px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px;">
       <a href="./index.html" class="postit nav-postit" style="--r: -3deg;">Home</a>
       <a href="./jobs.html" class="postit nav-postit" style="--r: 2.5deg;">Jobs</a>
-      <a href="https://jobhuntrecipe.com/p/jobs-ghost-more-than-hinge-issue-1" target="_blank" rel="noopener" class="postit nav-postit" style="--r: -2deg;">Advice</a>
+      <a href="./tracker.html" class="postit nav-postit" style="--r: -2deg;">Tracker</a>
     </div>
   </div>
 
@@ -378,5 +378,19 @@
 </footer>
 
 <script src="js/home.js?v=nh3" defer></script>
+  <script>
+    /* "Tracker (N)" badge on the static nav post-its — digits in Archivo, 99+ cap */
+    (function () {
+      try {
+        var r = JSON.parse(localStorage.getItem('su_tracker') || '[]');
+        var n = Array.isArray(r) ? r.length : 0;
+        if (!n) return;
+        var label = n > 99 ? '99+' : String(n);
+        document.querySelectorAll('a[href="./tracker.html"]').forEach(function (a) {
+          if (a.textContent.indexOf('(') < 0) a.innerHTML = 'Tracker (<span style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 16px;">' + label + '</span>)';
+        });
+      } catch (e) {}
+    })();
+  </script>
 </body>
 </html>
