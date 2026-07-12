@@ -3,7 +3,12 @@
 [build]
   publish = "."
   # Generate the static per-job share pages + Post-it OG images from the live sheet.
-  command = "node scripts/gen-share.mjs"
+  # gen-share.mjs      = per-JOB share pages + Post-it OG images (/j/**)
+  # gen-theme-pages.mjs = per-THEME board pages (/jobs/<theme>/index.html), each with its own
+  #                      og:image, so sharing /jobs/casino previews the CASINO board. Crawlers
+  #                      don't run JS, so this cannot be done client-side. Kept separate because
+  #                      gen-share exits early if the Google Sheet is unreachable.
+  command = "node scripts/gen-share.mjs && node scripts/gen-theme-pages.mjs"
 
 # Shipped Jun 28 2026: fully disable Netlify post-processing (belt + suspenders
 # to the class-based nav fix, so future quoted inline styles can never break).

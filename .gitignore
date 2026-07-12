@@ -13,3 +13,10 @@ j/
 
 # throwaway local font/render test scratch
 _fonttest.mjs
+
+# OG share images: the 1200x630 files in assets/og/ ARE committed (they must be served).
+# The multi-MB source screenshots in assets/og-src/ are NOT — they'd bloat the repo.
+assets/og-src/
+
+# Per-theme board share pages: generated at build by scripts/gen-theme-pages.mjs
+/jobs/
