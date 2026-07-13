@@ -42,7 +42,13 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com; connect-src 'self' https://docs.google.com https://script.google.com https://script.googleusercontent.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+    # frame-src (added 2026-07-12): the newsletter signup in the job-detail popup is a Beehiiv IFRAME
+    # (app.js -> subscribe-forms.beehiiv.com). There was no frame-src and no child-src, so frames fell
+    # back to `default-src 'self'` and the browser REFUSED to load it. Localhost has no CSP headers at
+    # all, so it worked perfectly in dev and would have been silently dead in prod — the signup box
+    # just... wouldn't be there. Scoped to the exact Beehiiv host, nothing wider.
+    # frame-ancestors 'none' still stands: others can't embed US, we can embed Beehiiv. Different rule.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com; connect-src 'self' https://docs.google.com https://script.google.com https://script.googleusercontent.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src https://subscribe-forms.beehiiv.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
 
 # Why fixes kept "not showing" before: the browser/CDN served cached OLD
 # html/css/js, so deploys looked like they did nothing. Force these to

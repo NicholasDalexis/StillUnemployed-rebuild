@@ -118,10 +118,17 @@
   };
 
   // ---- one 'pv' per page load: pv / <page name> / <current look> / <referrer> ----
+  // PUSH-BLOCKER FIX (2026-07-12): the theme deep-links (/jobs/casino, /jobs/beauty, …) are all the
+  // SAME page — jobs.html, served via the netlify.toml rewrite. This used to match only /jobs.html,
+  // so every themed visit fell through to `return location.pathname` and logged as its own page name.
+  // That shattered the 'board' pageview into 9 separate labels and made board traffic look ~1/9th of
+  // real. The THEME is not lost by collapsing them: it's already a separate dimension via
+  // currentLook() below (jobs.html's inline pre-paint writes su_look from the slug before this runs).
+  // One page, one name; theme stays a dimension. Trailing slash tolerated.
   function pageName() {
-    var p = String(location.pathname || '').toLowerCase();
-    if (p === '' || p === '/' || /\/index\.html$/.test(p)) return 'home';
-    if (/\/jobs\.html$/.test(p)) return 'board';
+    var p = String(location.pathname || '').toLowerCase().replace(/\/+$/, '');
+    if (p === '' || /\/index\.html$/.test(p)) return 'home';
+    if (/\/jobs\.html$/.test(p) || p === '/jobs' || /^\/jobs\//.test(p)) return 'board';
     if (/\/tracker\.html$/.test(p)) return 'tracker';
     return location.pathname;
   }

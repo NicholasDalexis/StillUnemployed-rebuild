@@ -259,10 +259,17 @@
   // current live theme, mapped to the 3 looks we generate share cards for (archived
   // looks fall back to original). Keeps the shared link's preview matching the card
   // the viewer is actually looking at.
+  // Which theme's Post-it does a shared job preview as? The theme the sharer is LOOKING at.
+  // BUG (fixed 2026-07-12): this used to be `(t === 'poker' || t === 'girly') ? t : 'original'` — a
+  // hardcoded allowlist from when there were only 3 themes. Every theme added after that (mermaid,
+  // bratt, noir/Black Cat, beauty, chess) silently fell back to the YELLOW original card when shared.
+  // The list below MUST stay in sync with THEMES in scripts/gen-share.mjs, which generates the
+  // /j/<theme>/<slug>.html pages this links to. gen-share now FAILS THE BUILD if they drift.
+  var SHARE_LOOKS = { original: 1, poker: 1, girly: 1, mermaid: 1, bratt: 1, noir: 1, beauty: 1, chess: 1 };
   function suShareTheme() {
     var t = '';
     try { t = localStorage.getItem('su_look') || ''; } catch (e) {}
-    return (t === 'poker' || t === 'girly') ? t : 'original';
+    return SHARE_LOOKS[t] ? t : 'original';
   }
 
   // ---- Share a job: hand out ONLY the per-job link. Its Open Graph preview IS the

@@ -53,9 +53,70 @@ const THEMES = {
     high: { bg: ['#FF77BC', '#F23E98'], ink: '#3A0E26', apply: '#3A0E26', stamp: '#3A0E26' },
     mid:  { bg: DEF_MID, ink: '#3A2A1B', apply: '#C0432A', stamp: '#3A2A1B' },
     low:  { bg: DEF_LOW, ink: '#3A2A1B', apply: '#C0432A', stamp: '#3A2A1B' }
+  },
+  // --- Added 2026-07-12. These 5 themes existed on the board but NOT here, so /j/<theme>/<slug>.html
+  // was never generated for them and every share silently fell back to the yellow original card.
+  // `high` is the one that matters: the share card ALWAYS renders the theme's $100K+ colors
+  // regardless of the job's real pay tier (Nic's rule — the top card is the attention-grabber).
+  mermaid: {
+    back: '#6FC7DE',
+    high: { bg: ['#177287', '#0E4A5C'], ink: '#F2FBFA', apply: '#FFC7B8', stamp: '#EAF7F4' },
+    mid:  { bg: ['#FDFEFF', '#DFF2F1'], ink: '#0E4A5C', apply: '#D9553C', stamp: '#0E4A5C' },
+    low:  { bg: ['#FFFFFF', '#EAF6F6'], ink: '#0E4A5C', apply: '#D9553C', stamp: '#0E4A5C' }
+  },
+  bratt: {
+    back: '#EEF6D6',
+    high: { bg: ['#96DB0A', '#8ACE00'], ink: '#0A1400', apply: '#0A1400', stamp: '#0A1400' },
+    mid:  { bg: ['#EAF7C4', '#DCEF9E'], ink: '#1A2A0A', apply: '#3A7A00', stamp: '#1A2A0A' },
+    low:  { bg: ['#FFFFFF', '#F4FBE4'], ink: '#1A2A0A', apply: '#3A7A00', stamp: '#1A2A0A' }
+  },
+  noir: {                              // "Black Cat"
+    back: '#F0EEE8',
+    high: { bg: ['#161618', '#050506'], ink: '#ECECEE', apply: '#ECECEE', stamp: '#C6C6C8' },
+    mid:  { bg: ['#2E2E31', '#232326'], ink: '#ECECEE', apply: '#ECECEE', stamp: '#C6C6C8' },
+    low:  { bg: ['#4E4E52', '#3E3E42'], ink: '#ECECEE', apply: '#ECECEE', stamp: '#C6C6C8' }
+  },
+  beauty: {
+    back: '#EFE7DC',
+    high: { bg: ['#7E1728', '#5A0F1C'], ink: '#F3D9B8', apply: '#F3D9B8', stamp: '#F3D9B8' },
+    mid:  { bg: ['#F5D3DA', '#EAB4C0'], ink: '#5A2230', apply: '#A83048', stamp: '#5A2230' },
+    low:  { bg: ['#FBEFF1', '#F3C9D2'], ink: '#5A2230', apply: '#A83048', stamp: '#5A2230' }
+  },
+  chess: {
+    back: '#E9E7DF',
+    high: { bg: ['#20211F', '#0C0C0C'], ink: '#F4F4F4', apply: '#F4F4F4', stamp: '#D4D4D4' },
+    mid:  { bg: ['#FBFAF6', '#F0EEE5'], ink: '#161616', apply: '#161616', stamp: '#3A3A3A' },
+    low:  { bg: ['#EDEEEA', '#DBDDD6'], ink: '#161616', apply: '#161616', stamp: '#3A3A3A' }
   }
 };
 const THEME_KEYS = Object.keys(THEMES);
+
+// ---------------------------------------------------------------------------
+// DRIFT GUARD (2026-07-12). This file and js/app.js each hold their own list of themes. When five
+// themes were added to app.js and NOT here, every share from those themes silently fell back to the
+// yellow original card — for weeks, with no error anywhere. "Two files holding two different
+// definitions of the same concept" is exactly the failure class in
+// [[2026-07-11-New-Routes-Fragment-Analytics-And-Share-Dead-Ends]].
+// So: read app.js, pull its real theme keys, and FAIL THE BUILD if any of them is missing here.
+// A new theme now breaks the build loudly instead of shipping a broken share card quietly.
+// ---------------------------------------------------------------------------
+try {
+  const appSrc = readFileSync(join(ROOT, 'js', 'app.js'), 'utf8');
+  const block = appSrc.slice(appSrc.indexOf('THEMES: {'), appSrc.indexOf('payTier:'));
+  const appThemes = [...block.matchAll(/^\s{6}(\w+):\s*\{\s*acc:/gm)].map(m => m[1])
+    .filter(k => k !== 'cod');                     // cod (WW2) is archived: no picker entry, no shares
+  const missing = appThemes.filter(k => !THEME_KEYS.includes(k));
+  if (missing.length) {
+    console.error('\n*** gen-share: THEME DRIFT ***');
+    console.error('js/app.js has themes with no share-card definition here:', missing.join(', '));
+    console.error('Add them to THEMES above (at minimum a `high` block = that theme\'s $100K+ card),');
+    console.error('or every share from those themes falls back to the yellow original card.\n');
+    process.exit(1);
+  }
+  console.log('gen-share: theme drift check OK —', appThemes.length, 'board themes all have share cards');
+} catch (e) {
+  console.error('gen-share: theme drift check could not run (', e.message, ')');
+}
 
 function payTier(pay) {
   if (!pay) return 'high';

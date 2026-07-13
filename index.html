@@ -13,16 +13,23 @@
   <meta property="og:title" content="Still Unemployed?">
   <meta property="og:description" content="A real human (me) opens and checks the jobs before we add them. No AI slop. Just roles I would apply to myself.">
   <meta property="og:url" content="https://stillunemployed.com/">
-  <meta property="og:image" content="https://stillunemployed.com/assets/og/home.png">
+  <!-- ?v=3 (2026-07-12): the "STILL UNEMPLOYED?" hero photo, 4:5 PORTRAIT (1200x1500).
+       NOT 1200x630. 1.91:1 is a *recommendation*, not a rule — Apple Messages renders a tall card at
+       the image's own ratio (Nic confirmed on his phone), and 4:5 keeps ~94% of the photo instead of
+       hacking it into a letterbox. LinkedIn/X center-crop to 1.91:1, and on this composition that
+       band lands square on the sign, so nothing important is lost there either. Verified both.
+       CACHING: iMessage/LinkedIn/X cache og:image BY URL and will serve the old one forever if the
+       path doesn't change. The ?v= query is what forces a re-fetch. BUMP IT on every image swap. -->
+  <meta property="og:image" content="https://stillunemployed.com/assets/og/home.png?v=3">
   <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
+  <meta property="og:image:height" content="1500">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Still Unemployed?">
   <meta name="twitter:description" content="A real human (me) opens and checks the jobs before we add them. No AI slop. Just roles I would apply to myself.">
-  <meta name="twitter:image" content="https://stillunemployed.com/assets/og/home.png">
+  <meta name="twitter:image" content="https://stillunemployed.com/assets/og/home.png?v=3">
   <link rel="stylesheet" href="css/home.css?v=nh2">
   <!-- First-party analytics: defer keeps document order, so this runs BEFORE js/home.js -->
-  <script src="js/analytics.js?v=an2" defer></script>
+  <script src="js/analytics.js?v=an3" defer></script>
   <!-- Google Analytics 4 (consent-gated, loads only after Accept) -->
   <script src="js/ga.js?v=1" defer></script>
 </head>
