@@ -215,10 +215,47 @@
     var fbAuth = U.getAuth(app);
     var fs = F.getFirestore(app);
 
+    // ── SIGN-IN: popup, falling back to REDIRECT. (Rewritten 2026-07-12 after the first version
+    //    failed on preview with a bare `auth/internal-error`.)
+    //
+    // What I verified before changing anything, so this isn't a guess:
+    //   · Identity Toolkit answers HTTP 200 for this API key.
+    //   · `preview--stillunemployed.netlify.app` IS in the authorized-domains list.
+    //   · The OAuth client exists — loading the /__/auth/handler URL by hand renders Google's real
+    //     account chooser.
+    //   · The auth iframe from firebaseapp.com loads with ZERO CSP violations.
+    //   · The localStorage.setItem wrapper below is not the cause (retested with the native setter).
+    // Everything server-side is healthy. The failure is purely in the POPUP handshake.
+    //
+    // Rather than keep chasing it: popups are the fragile part of this flow, and they are worst
+    // exactly where Nic's traffic comes from — Instagram and LinkedIn in-app browsers, and iOS
+    // Safari, all of which block or sever popups. A redirect has no popup, no opener relationship,
+    // and no user-gesture requirement. It is the right flow for a mobile-first job board even if
+    // the popup were working.
+    //
+    // So: try the popup (nicer on desktop — you never leave the page), and the moment it fails for
+    // ANY reason other than the user closing it themselves, silently fall back to a full redirect.
     state.auth = {
-      signIn: function () { return U.signInWithPopup(fbAuth, new U.GoogleAuthProvider()); },
+      signIn: function () {
+        var provider = new U.GoogleAuthProvider();
+        return U.signInWithPopup(fbAuth, provider).catch(function (e) {
+          var code = (e && e.code) || '';
+          // The user shut the popup on purpose. Respect that — do NOT then yank them to Google.
+          if (code.indexOf('popup-closed') > -1 || code.indexOf('cancelled-popup') > -1) throw e;
+          console.warn('[su-auth] popup failed (' + code + ') — falling back to redirect');
+          badge('redirecting…');
+          return U.signInWithRedirect(fbAuth, provider);
+        });
+      },
       signOut: function () { return U.signOut(fbAuth); }
     };
+
+    // Coming BACK from a redirect sign-in. onAuthStateChanged fires on its own, so this exists to
+    // surface a real failure instead of dumping the user back on the board with no explanation.
+    U.getRedirectResult(fbAuth).catch(function (e) {
+      var code = (e && e.code) || '';
+      if (code) console.warn('[su-auth] redirect sign-in failed', code);
+    });
 
     U.onAuthStateChanged(fbAuth, function (user) {
       state.user = user || null;
