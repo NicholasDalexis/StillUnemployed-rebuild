@@ -233,11 +233,14 @@
 
       // ---- summary pills + export ----
       out += '<div class="trk-pills">' +
-        '<div class="trk-pill p1"><b>' + c.total + '</b><span>total applied</span></div>' +
-        '<div class="trk-pill p2"><b>' + c.ints + '</b><span>in interviews</span></div>' +
+        // ONE BAR, THREE NUMBERS (Nic, 2026-07-12). Was five pills: total / interviews / offers /
+        // rejected / ghosted. "Rejected" and "Ghosted" were counters of how badly it's going, shown
+        // to someone who is already living it. Nic cut Ghosted; I cut Rejected with it for the same
+        // reason. The row still adds up (rejections are visible on the rows themselves), it just
+        // doesn't lead with them.
+        '<div class="trk-pill p1"><b>' + c.total + '</b><span>applied</span></div>' +
+        '<div class="trk-pill p2"><b>' + c.ints + '</b><span>interviews</span></div>' +
         '<div class="trk-pill p3"><b>' + c.offers + '</b><span>offers</span></div>' +
-        '<div class="trk-pill p4"><b>' + c.rejected + '</b><span>rejected</span></div>' +
-        '<div class="trk-pill p5"><b>' + c.ghosted + '</b><span>ghosted</span></div>' +
         '<button type="button" data-act="exportCsv" class="trk-export">' +
           '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
           'Export CSV' +

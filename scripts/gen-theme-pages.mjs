@@ -22,7 +22,23 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const SITE = process.env.DEPLOY_PRIME_URL || process.env.URL || 'https://stillunemployed.com';
+
+// WHICH ORIGIN DO THE og TAGS POINT AT? (fixed 2026-07-12, after shipping it wrong.)
+// Netlify env vars, and the trap:
+//   URL              = the site's PRIMARY custom domain  -> https://stillunemployed.com
+//   DEPLOY_PRIME_URL = THIS deploy's own URL             -> https://preview--stillunemployed.netlify.app
+//                      ...but on a PRODUCTION build that's https://main--stillunemployed.netlify.app,
+//                      NOT the custom domain.
+// The first version read DEPLOY_PRIME_URL first for every context. On preview that was right; on
+// production it rewrote every og:image/og:url to `main--stillunemployed.netlify.app`, so a shared
+// link advertised the netlify.app subdomain instead of the brand (and split the canonical URL).
+// CONTEXT is the only reliable discriminator: it's exactly "production" for the live build.
+// Full writeup: Rasputin/Trial-and-Error/2026-07-12-DEPLOY-PRIME-URL-Is-Not-The-Custom-Domain.md
+const IS_PROD = process.env.CONTEXT === 'production';
+const CANONICAL = process.env.URL || 'https://stillunemployed.com';
+const SITE = IS_PROD ? CANONICAL : (process.env.DEPLOY_PRIME_URL || CANONICAL);
+console.log(`gen-theme-pages: context=${process.env.CONTEXT || 'local'} -> og origin ${SITE}`);
+
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 // slug -> share title. The slug must match jobs.html's SLUG2LOOK pre-paint map.
@@ -74,8 +90,10 @@ console.log(`gen-theme-pages: wrote ${made}/${Object.keys(THEMES).length} theme 
 // Netlify sets DEPLOY_PRIME_URL per deploy, so rewrite the absolute origin to match wherever we are.
 // Source files are untouched; this only rewrites the build output (Netlify builds a fresh checkout).
 // ---------------------------------------------------------------------------
-if (SITE !== 'https://stillunemployed.com') {
-  for (const f of ['index.html', 'jobs.html']) {
+// Only ever repoint on a NON-production deploy. On production the source files already carry the
+// canonical https://stillunemployed.com/ and must be left exactly as they are.
+if (!IS_PROD && SITE !== CANONICAL) {
+  for (const f of ['index.html', 'jobs.html', 'tracker.html']) {   // tracker.html added 2026-07-12
     const p = join(ROOT, f);
     const before = readFileSync(p, 'utf8');
     const after = before.replaceAll('https://stillunemployed.com/', `${SITE}/`);
@@ -84,4 +102,6 @@ if (SITE !== 'https://stillunemployed.com') {
       console.log(`gen-theme-pages: repointed og tags in ${f} -> ${SITE}`);
     }
   }
+} else {
+  console.log('gen-theme-pages: production build — og tags left on the canonical domain');
 }

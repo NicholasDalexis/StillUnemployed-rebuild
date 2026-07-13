@@ -48,7 +48,17 @@
     # all, so it worked perfectly in dev and would have been silently dead in prod — the signup box
     # just... wouldn't be there. Scoped to the exact Beehiiv host, nothing wider.
     # frame-ancestors 'none' still stands: others can't embed US, we can embed Beehiiv. Different rule.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com; connect-src 'self' https://docs.google.com https://script.google.com https://script.googleusercontent.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src https://subscribe-forms.beehiiv.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+    # FIREBASE hosts added 2026-07-12 for Google sign-in (js/auth.js). Learned the hard way from the
+    # Beehiiv iframe: localhost serves NO CSP, so anything CSP blocks works perfectly in dev and is
+    # silently dead once deployed. Adding these before the first preview deploy, not after.
+    #   www.gstatic.com          -> the Firebase SDK modules (script-src)
+    #   identitytoolkit/securetoken/firestore .googleapis.com -> auth + data (connect-src)
+    #   accounts.google.com + the project's firebaseapp.com -> the sign-in popup (frame-src)
+    # NOTE: js/auth.js hard-gates itself OFF on stillunemployed.com, so production never contacts
+    # any of these. Allowing a host the live site never talks to costs nothing; a CSP is a ceiling,
+    # not a floor. The alternative (a second, preview-only CSP) is a second thing to keep in sync,
+    # and this repo has been bitten three times by exactly that.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com https://lh3.googleusercontent.com; connect-src 'self' https://docs.google.com https://script.google.com https://script.googleusercontent.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://www.gstatic.com; frame-src https://subscribe-forms.beehiiv.com https://accounts.google.com https://*.firebaseapp.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
 
 # Why fixes kept "not showing" before: the browser/CDN served cached OLD
 # html/css/js, so deploys looked like they did nothing. Force these to

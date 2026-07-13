@@ -44,26 +44,94 @@
     var h = location.hostname;
     return (h !== 'stillunemployed.com' && h !== 'www.stillunemployed.com');
   }
-  // Log a "recipe_view" when a popup that carries the capture block is opened (same 1-in-3
-  // hash as the render), so the Reports sheet can compute views vs hides vs signups.
+  // ═══ NEWSLETTER CAPTURE — ONE SOURCE OF TRUTH (Nic, 2026-07-12) ═══════════════════════════
+  // Everything about the capture block is defined HERE and nowhere else.
+  //
+  // It used to be defined TWICE: the copy list and the frequency rule were copy-pasted into both
+  // the render path and the view-logger, and they had already drifted. Exact same failure class as
+  // the share-card theme bug (two definitions of one concept, kept in sync by memory). One list,
+  // one rule, both consumers read from it.
+  //
+  // FREQUENCY: every Nth card by DISPLAYED POSITION (`j._pos`, stamped at render time).
+  // NOT a hash of the job link. A hash clusters — two adjacent cards could both carry it and then
+  // eight in a row carry none. That's the "two cards in a row have the email popup" Nic reported.
+  // Position is evenly spaced by construction. TUNE THE WHOLE THING WITH THIS ONE NUMBER:
+  var RECIPE_EVERY = 2;                 // 2 = every other card. 3 = every third. etc.
+
+  // COPY: 50 variants. Stable per card (driven by position, so a given card always shows the same
+  // line — it never shuffles under you between renders).
+  // HARD RULE (Nic, 2026-07-12): NEVER name a weekday. The newsletter does not ship on a fixed day.
+  // "every week" only. Never "every Monday".
+  var RECIPE_COPY = [
+    'want the exact advice that got me a job at Instagram? ↓',
+    'want the recipe I followed to a 6-figure offer? ↓',
+    'the advice that almost got me a job with the Kardashians ↓',
+    '4 hand-picked jobs + 1 raw story, every week. free. ↓',
+    '1,500 applications. 7 months. one yes. here is what worked ↓',
+    'the newsletter i wish someone had sent me at 22 ↓',
+    'i got ghosted for 7 months. then Instagram said yes ↓',
+    'no AI slop. no filler. just what actually got me hired ↓',
+    'everything i would do differently if i started over ↓',
+    'free. weekly. easy unsub. no weird tricks ↓',
+    'the resume line that got me callbacks. for free ↓',
+    'what i sent after every interview. it worked ↓',
+    'you are not bad at this. your strategy is ↓',
+    'the cold email that got me a reply from a recruiter ↓',
+    'how i went from 0 callbacks to 4 in one month ↓',
+    'the part of the job hunt nobody explains ↓',
+    'i read every rejection so you do not have to ↓',
+    'what actually got me in the door at Meta ↓',
+    'stop applying to 200 jobs. do this instead ↓',
+    'the exact follow-up i sent. steal it ↓',
+    'one raw story + jobs worth your time, weekly ↓',
+    'i was you 8 months ago. here is the map ↓',
+    'the portfolio change that got me interviews ↓',
+    'nobody tells you this about entry-level roles ↓',
+    'the recipe. free. no course, no upsell ↓',
+    'how to get a referral from a total stranger ↓',
+    'why your applications are getting auto-rejected ↓',
+    'i tracked all 1,500. here is what the data said ↓',
+    'the 3 lines i put at the top of my resume ↓',
+    'what recruiters actually skim for. free breakdown ↓',
+    'ghosted again? read this before you apply again ↓',
+    'the interview answer that changed everything ↓',
+    'jobs worth applying to, sent to you weekly. free ↓',
+    'how i talked about zero experience and still got hired ↓',
+    'you are one strategy change away. free newsletter ↓',
+    'the honest version of the job hunt. no LinkedIn voice ↓',
+    'what i wish i knew before application #1 ↓',
+    'the free thing that got me a 6-figure offer ↓',
+    'i built this board because the recipe worked ↓',
+    'real jobs. real story. every week. free ↓',
+    'stop rewriting your resume. read this first ↓',
+    'the follow-up nobody sends. that is the point ↓',
+    'i answer every reply. hit me with your questions ↓',
+    'a job hunt newsletter that respects your time ↓',
+    'what changed between rejection 1,400 and offer 1 ↓',
+    'the story i do not tell on LinkedIn ↓',
+    'how to stand out when everyone looks the same ↓',
+    'no motivational quotes. just what worked ↓',
+    'free weekly recipe from someone who just did this ↓',
+    'the job hunt is broken. here is how i beat it ↓'
+  ];
+  // Which cards carry the block, and which line each one gets.
+  // Copy index divides by RECIPE_EVERY so we cycle through ALL 50 lines. (Indexing on raw position
+  // with RECIPE_EVERY=2 would only ever show the 25 even-numbered lines.)
+  function recipeShows(pos) { return typeof pos === 'number' && pos >= 0 && pos % RECIPE_EVERY === 0; }
+  function recipeCopy(pos) { return RECIPE_COPY[Math.floor(pos / RECIPE_EVERY) % RECIPE_COPY.length]; }
+
+  // Log a "recipe_view" when a popup carrying the capture block is opened, so the Reports sheet can
+  // compute views vs hides vs signups PER LINE — that's how we learn which of the 50 actually earns.
   function suRecipeView(link, comp) {
     try {
-      if (!link || (comp && comp._recipeHidden)) return;
-      var h = 0, s = String(link);
-      for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 9973;
-      if (h % 3 !== 0) return;
+      if (!link || (comp && comp._recipeHidden) || !comp || !comp.jobs) return;
+      var job = null;
+      for (var j = 0; j < comp.jobs.length; j++) { if (comp.jobs[j].link === link) { job = comp.jobs[j]; break; } }
+      if (!job || !recipeShows(job._pos)) return;
       // 30+ day cards don't show the block (they carry the age line instead) — don't log a view
-      if (comp && comp.jobs) {
-        for (var j = 0; j < comp.jobs.length; j++) {
-          if (comp.jobs[j].link === link) {
-            var src = comp.jobs[j].posted || comp.jobs[j].added || '';
-            if (src) { var ad = new Date(String(src).trim().slice(0, 10) + 'T00:00:00'); if (!isNaN(ad.getTime()) && Math.floor((Date.now() - ad.getTime()) / 86400000) >= 30) return; }
-            break;
-          }
-        }
-      }
-      var variants = ['want the exact advice that got me a job at Instagram? ↓', 'want the recipe I followed to a 6-figure offer? ↓', 'the advice that almost got me a job with the Kardashians ↓', '4 hand-picked jobs + 1 raw story, every Monday. free. ↓'];
-      postReport('recipe_view', variants[(h >> 2) % variants.length], link);
+      var src = job.posted || job.added || '';
+      if (src) { var ad = new Date(String(src).trim().slice(0, 10) + 'T00:00:00'); if (!isNaN(ad.getTime()) && Math.floor((Date.now() - ad.getTime()) / 86400000) >= 30) return; }
+      postReport('recipe_view', recipeCopy(job._pos), link);
     } catch (e) {}
   }
 
@@ -1050,6 +1118,12 @@
 
       var cardsHtml = shown.map(function (j, k) {
         var id = self.jobs.indexOf(j);
+        // POSITION IN THE LIST AS THE USER SEES IT (Nic, 2026-07-12). The newsletter capture block
+        // used to appear on a HASH of the job link (~1 in 3), which clusters: two adjacent cards
+        // could both have it, then six in a row with none. Nic saw exactly that. Stamping the
+        // DISPLAYED index here makes "every Nth card" mean every Nth card on screen, after
+        // shuffling and filtering, with no clusters and no gaps.
+        j._pos = k;
         var key = j.link;
         var saved = !!self.state.saved[key];
         var tier = self.payTier(j.pay);
@@ -1473,20 +1547,12 @@
           }
           // popup note-card is always cream, so apply is ALWAYS bright orange (Nic: it must pop)
           var _applyC = '#E8502E';
-          // ── recipe capture config (Nic, 2026-07-11 late) ─────────────────────────────
-          // Shown on ~1 in 3 jobs (deterministic per job, so it doesn't flicker between
-          // renders). Copy rotates through variants (stable per job) so the Reports sheet
-          // can tell us which line earns signups vs ✕s. Hidden = in-memory only, so an
-          // accidental ✕ comes back on reload.
-          var _rHash = 0; try { var _rl = String(dj.link || ''); for (var _ri = 0; _ri < _rl.length; _ri++) _rHash = (_rHash * 31 + _rl.charCodeAt(_ri)) % 9973; } catch (eH) {}
-          var _rShow = (_rHash % 3 === 0) && !this._recipeHidden;
-          var _rVariants = [
-            'want the exact advice that got me a job at Instagram? ↓',
-            'want the recipe I followed to a 6-figure offer? ↓',
-            'the advice that almost got me a job with the Kardashians ↓',
-            '4 hand-picked jobs + 1 raw story, every Monday. free. ↓'
-          ];
-          var _rCopy = _rVariants[(_rHash >> 2) % _rVariants.length];
+          // ── recipe capture (Nic, 2026-07-12) ─────────────────────────────────────────
+          // Frequency + all 50 copy lines live in RECIPE_EVERY / RECIPE_COPY at the top of this
+          // file. Do NOT redefine them here — that duplication is exactly what drifted before.
+          // Hidden = in-memory only, so an accidental ✕ comes back on reload.
+          var _rShow = recipeShows(dj._pos) && !this._recipeHidden;
+          var _rCopy = recipeShows(dj._pos) ? recipeCopy(dj._pos) : '';
           var _arrow = '<svg width="30" height="15" viewBox="0 0 28 14" fill="none" style="overflow: visible; margin-left: 5px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
           // Age disclaimer (Nic, 2026-07-11). We never retire a role for being old — old roles STAY on the
           // board (a fuller board), and we disclose the age here, in the popup only, never on the card face.
