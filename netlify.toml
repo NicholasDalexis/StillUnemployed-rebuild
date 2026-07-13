@@ -2,6 +2,24 @@
 # Netlify just serves the repo root as-is.
 [build]
   publish = "."
+
+# ── Netlify secrets scanning (2026-07-12) ──────────────────────────────────────────────────────
+# Netlify scans the build output for anything that looks like a credential and FAILS THE DEPLOY if
+# it finds one. It flagged `apiKey` in js/auth.js and blocked two builds. That is the scanner doing
+# exactly its job, and the default should stay ON.
+#
+# This ONE file is a real exception. A Firebase **web config** (apiKey / authDomain / projectId /
+# appId) is a PUBLIC IDENTIFIER, not a secret — Google's own docs say to ship it in client-side JS.
+# It grants nothing on its own. The actual security for this feature is:
+#   1. Firestore rules  — a user can only read/write `users/{their own uid}`; everything else denied.
+#   2. Authorized domains — only `localhost` + `preview--stillunemployed.netlify.app` can sign in.
+#      stillunemployed.com is deliberately NOT authorized.
+#   3. js/auth.js hard-gates itself off on the production hostname.
+#
+# Scoped to the single path, so a REAL secret leaking anywhere else in the repo still fails the build.
+# If this ever needs to cover a second file, stop and think about why first.
+[build.environment]
+  SECRETS_SCAN_OMIT_PATHS = "js/auth.js"
   # Generate the static per-job share pages + Post-it OG images from the live sheet.
   # gen-share.mjs      = per-JOB share pages + Post-it OG images (/j/**)
   # gen-theme-pages.mjs = per-THEME board pages (/jobs/<theme>/index.html), each with its own
