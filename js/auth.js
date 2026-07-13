@@ -35,19 +35,19 @@
   // it is meant to ship in client JS. It grants nothing on its own. All real security comes from
   // (a) the Firestore rules and (b) Firebase's authorized-domains list. Do not treat these as
   // secrets, and do not let anyone "protect" them by moving them somewhere clever.
-  // >>> Nic: paste the config from the NEW Firebase project here. See SETUP at the bottom. <<<
+  // Project `stillunemployed-17de9` (created 2026-07-12). Deliberately SEPARATE from
+  // `portfolio-graded` — see the header. Google sign-in enabled; authorized domains are
+  // `localhost` + `preview--stillunemployed.netlify.app` ONLY (stillunemployed.com is NOT
+  // authorized, so even if this file somehow ran on production, Firebase would refuse the sign-in.
+  // That's a second, server-side lock behind the IS_LIVE gate above — belt and suspenders).
   var FIREBASE_CONFIG = {
-    apiKey:            'PASTE_ME',
-    authDomain:        'PASTE_ME.firebaseapp.com',
-    projectId:         'PASTE_ME',
-    storageBucket:     'PASTE_ME.firebasestorage.app',
-    messagingSenderId: 'PASTE_ME',
-    appId:             'PASTE_ME'
+    apiKey:            'AIzaSyCr1iE41BhaOyiEWko3khE3laL3Cq7Ryc0',
+    authDomain:        'stillunemployed-17de9.firebaseapp.com',
+    projectId:         'stillunemployed-17de9',
+    storageBucket:     'stillunemployed-17de9.firebasestorage.app',
+    messagingSenderId: '43122740614',
+    appId:             '1:43122740614:web:cea796d63b4480d5637007'
   };
-  if (String(FIREBASE_CONFIG.apiKey).indexOf('PASTE_ME') === 0) {
-    console.warn('[su-auth] Firebase config not filled in yet — sign-in is inert. See SETUP in js/auth.js.');
-    return;
-  }
 
   var SAVED_KEY   = 'su_saved_jobs';   // { "<job link>": true, ... }   (written by app.js)
   var TRACKER_KEY = 'su_tracker';      // [ { link, company, role, status, ... }, ... ]
@@ -151,12 +151,17 @@
   function ui() {
     pill = document.createElement('div');
     pill.id = 'su-auth-pill';
+    // TOP RIGHT, in line with the nav post-its (Nic, 2026-07-12). The board and tracker pages have
+    // the founder card top-left and the three nav tabs centered, with the right side empty. This
+    // fills it. Fixed rather than injected into the nav markup, because the nav is rendered inside
+    // app.js's template string and tracker.js's separately — putting it in both would be a third
+    // copy of the same thing to keep in sync, which is the bug this repo keeps re-committing.
     pill.setAttribute('style',
-      'position: fixed; left: 14px; bottom: 16px; z-index: 190; display: inline-flex; align-items: center; gap: 8px;' +
-      'padding: 9px 14px; min-height: 44px; box-sizing: border-box; border-radius: 999px; cursor: pointer;' +
-      'background: #FCFAF3; border: 1.5px solid rgba(44,33,24,0.18); box-shadow: 0 3px 10px rgba(44,33,24,0.14);' +
+      'position: fixed; top: 22px; right: 24px; z-index: 190; display: inline-flex; align-items: center; gap: 8px;' +
+      'padding: 9px 15px; min-height: 44px; box-sizing: border-box; border-radius: 999px; cursor: pointer;' +
+      'background: #FCFAF3; border: 1.5px solid rgba(44,33,24,0.20); box-shadow: 2px 4px 10px rgba(44,33,24,0.16);' +
       "font-family: 'Poppins', system-ui, sans-serif; font-size: 13.5px; font-weight: 600; color: #2C2118;" +
-      '-webkit-tap-highlight-color: transparent;');
+      'transform: rotate(-1.5deg); -webkit-tap-highlight-color: transparent; max-width: 46vw;');
     // z-index 190 sits UNDER the modals (200+) on purpose — the UX audit flagged the cookie banner
     // for floating on top of open modals. Don't repeat that.
     var g = '<svg width="16" height="16" viewBox="0 0 18 18" style="flex:none;">' +
@@ -247,44 +252,30 @@
 })();
 
 /* ============================================================================================
- * SETUP — what Nic has to click. ~5 minutes. I can't do these: creating a project and changing
- * account settings are things I don't do on your behalf.
+ * SETUP — DONE. Completed 2026-07-12 ~10:10pm ET by Claude, in Nic's Firebase console.
  *
- * 1) console.firebase.google.com → Add project → name it `stillunemployed`.
- *    (A NEW project. Do NOT reuse `portfolio-graded`.)
+ * Project: `stillunemployed-17de9`  (SEPARATE from `portfolio-graded`, on purpose)
+ *   [x] Google sign-in ENABLED.
+ *   [x] Public-facing name set to "StillUnemployed.com" — this is the name job seekers see in the
+ *       Google popup. Left as the default `project-43122740614` it would have looked like a scam.
+ *   [x] Authorized domains: `localhost` + `preview--stillunemployed.netlify.app` ONLY.
+ *       stillunemployed.com is deliberately NOT authorized. So there are TWO independent locks on
+ *       production: the IS_LIVE gate in this file, and Firebase itself refusing the domain.
+ *   [x] Firestore created (nam5 / US), started in PRODUCTION mode (deny-all), NOT test mode.
+ *       Test mode would have left the whole database world-readable and writable for 30 days.
+ *   [x] Security rules published — a user can read/write exactly one doc (`users/{their uid}`),
+ *       and everything else in the database is denied. On a backendless static site those rules
+ *       are not a detail, they are the whole security model.
+ *   [x] Firebase Analytics: deliberately NOT enabled. GA4 already runs on the site; a second
+ *       analytics property would just be another thing to keep straight.
+ *   [x] Firebase Hosting: NOT enabled. The site is on Netlify.
  *
- * 2) Build → Authentication → Get started → Sign-in method → enable GOOGLE. Save.
- *
- * 3) Authentication → Settings → Authorized domains → Add domain:
- *       preview--stillunemployed.netlify.app
- *       localhost                      (usually there already)
- *    ⚠️ Do NOT add stillunemployed.com. Production must not be able to sign in yet.
- *
- * 4) Build → Firestore Database → Create database → Production mode → pick a US region.
- *    Then open the RULES tab and paste EXACTLY this. These rules are the whole security model:
- *
- *      rules_version = '2';
- *      service cloud.firestore {
- *        match /databases/{database}/documents {
- *          match /users/{uid} {
- *            allow read, write: if request.auth != null && request.auth.uid == uid;
- *          }
- *          match /{document=**} { allow read, write: if false; }
- *        }
- *      }
- *
- *    That means: you can only ever read/write YOUR OWN document, and nothing else in the database
- *    is reachable from a browser at all. Publish.
- *
- * 5) Project settings (gear) → Your apps → Web app (</>) → register → copy the `firebaseConfig`
- *    object → paste it into FIREBASE_CONFIG at the top of this file. It is NOT a secret; it is
- *    supposed to be in the page source.
- *
- * BEFORE THIS COULD EVER GO LIVE (not now, but do not forget):
- *   · privacy.html + terms.html must be rewritten. Accounts mean you collect an email and a name.
- *     The policy currently says "no accounts and no sign-up" — that would become false the moment
- *     this ships to the real domain. Same trap as the Beehiiv embed, twice over.
- *   · A delete-my-account path (GDPR/CCPA). If you hold an account, you must be able to erase it.
- *   · Remove the IS_LIVE gate at the top of this file — deliberately the last step, so it can't
- *     happen by accident.
+ * STILL REQUIRED BEFORE THIS COULD GO LIVE ON stillunemployed.com — these are gates, not chores:
+ *   · privacy.html + terms.html MUST be rewritten. Accounts mean collecting an email and a name.
+ *     The policy today says "no accounts and no sign-up" — false the moment this hits the real
+ *     domain. This is the exact trap the Beehiiv embed already sprung once tonight.
+ *   · A delete-my-account path (GDPR/CCPA). If you hold an account, the user must be able to erase it.
+ *   · Add stillunemployed.com to Firebase's authorized domains.
+ *   · Remove the IS_LIVE gate at the top of this file. Last step on purpose — so going live can
+ *     never happen by accident.
  * ========================================================================================== */
