@@ -148,20 +148,40 @@
   // Deliberately self-contained: a small pill, bottom-left, injected by this file. app.js is not
   // touched, so if we ever kill this feature it's one <script> tag and this file, nothing else.
   var pill, label;
+
+  // POSITIONING. Desktop: top right, in line with the nav post-its — the founder card sits top-left,
+  // the three tabs are centered, and the right side was empty (Nic, 2026-07-12).
+  //
+  // MOBILE: that same spot LANDS ON TOP OF THE "TRACKER" TAB. Nic caught it on his phone. The nav
+  // post-its are centered and grow toward the right edge, so on a narrow screen there is no empty
+  // right side to sit in — the desktop assumption just doesn't hold. Rather than shrink it and hope,
+  // move it out of the nav's way entirely: bottom right, above the thumb, where nothing else lives.
+  // (The cookie banner is bottom-LEFT on mobile, so they don't collide — that was the other trap.)
+  //
+  // Done with a real stylesheet + media query rather than inline styles, because inline styles can't
+  // express a breakpoint, and because Netlify's post-processing has mangled quoted inline styles on
+  // this site before ([[2026-06-28 Netlify nav postmortem]]).
+  function injectStyles() {
+    if (document.getElementById('su-auth-css')) return;
+    var s = document.createElement('style');
+    s.id = 'su-auth-css';
+    s.textContent =
+      '#su-auth-pill{position:fixed;top:22px;right:24px;z-index:190;display:inline-flex;align-items:center;' +
+      'gap:8px;padding:9px 15px;min-height:44px;box-sizing:border-box;border-radius:999px;cursor:pointer;' +
+      'background:#FCFAF3;border:1.5px solid rgba(44,33,24,0.20);box-shadow:2px 4px 10px rgba(44,33,24,0.16);' +
+      "font-family:'Poppins',system-ui,sans-serif;font-size:13.5px;font-weight:600;color:#2C2118;" +
+      'transform:rotate(-1.5deg);-webkit-tap-highlight-color:transparent;max-width:46vw;}' +
+      '#su-auth-pill:active{transform:rotate(-1.5deg) scale(0.97);}' +
+      /* Phones: get out from under the nav. Bottom right, thumb-reachable, min 48px tap target. */
+      '@media (max-width:700px){#su-auth-pill{top:auto;bottom:18px;right:14px;min-height:48px;' +
+      'padding:11px 16px;font-size:14px;max-width:76vw;box-shadow:0 4px 14px rgba(44,33,24,0.24);}}';
+    document.head.appendChild(s);
+  }
+
   function ui() {
+    injectStyles();
     pill = document.createElement('div');
     pill.id = 'su-auth-pill';
-    // TOP RIGHT, in line with the nav post-its (Nic, 2026-07-12). The board and tracker pages have
-    // the founder card top-left and the three nav tabs centered, with the right side empty. This
-    // fills it. Fixed rather than injected into the nav markup, because the nav is rendered inside
-    // app.js's template string and tracker.js's separately — putting it in both would be a third
-    // copy of the same thing to keep in sync, which is the bug this repo keeps re-committing.
-    pill.setAttribute('style',
-      'position: fixed; top: 22px; right: 24px; z-index: 190; display: inline-flex; align-items: center; gap: 8px;' +
-      'padding: 9px 15px; min-height: 44px; box-sizing: border-box; border-radius: 999px; cursor: pointer;' +
-      'background: #FCFAF3; border: 1.5px solid rgba(44,33,24,0.20); box-shadow: 2px 4px 10px rgba(44,33,24,0.16);' +
-      "font-family: 'Poppins', system-ui, sans-serif; font-size: 13.5px; font-weight: 600; color: #2C2118;" +
-      'transform: rotate(-1.5deg); -webkit-tap-highlight-color: transparent; max-width: 46vw;');
     // z-index 190 sits UNDER the modals (200+) on purpose — the UX audit flagged the cookie banner
     // for floating on top of open modals. Don't repeat that.
     var g = '<svg width="16" height="16" viewBox="0 0 18 18" style="flex:none;">' +
