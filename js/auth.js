@@ -40,9 +40,21 @@
   // `localhost` + `preview--stillunemployed.netlify.app` ONLY (stillunemployed.com is NOT
   // authorized, so even if this file somehow ran on production, Firebase would refuse the sign-in.
   // That's a second, server-side lock behind the IS_LIVE gate above — belt and suspenders).
+  // authDomain = THIS host, not firebaseapp.com. (THE fix, 2026-07-12.)
+  // Firebase brokers the auth session through an iframe on `authDomain`. Point it at
+  // firebaseapp.com and that iframe is THIRD-PARTY to us — Chrome partitions its storage, the
+  // session is written under Firebase's origin, and our page can never read it back. That is why
+  // Nic could sign in with Google and still see a "Sign in" button, and why nothing synced: with no
+  // user visible to our page, there is no Firestore write. Same root cause as the popup's
+  // auth/internal-error. Three symptoms, one bug.
+  //
+  // netlify.toml proxies /__/auth/* through to Firebase, so on a deployed host the ENTIRE flow is
+  // same-origin and none of the above applies. Localhost has no proxy, so it keeps the real
+  // firebaseapp.com domain (localhost is exempt from the partitioning that bites us in production).
+  var IS_LOCAL = (host === 'localhost' || host === '127.0.0.1');
   var FIREBASE_CONFIG = {
     apiKey:            'AIzaSyCr1iE41BhaOyiEWko3khE3laL3Cq7Ryc0',
-    authDomain:        'stillunemployed-17de9.firebaseapp.com',
+    authDomain:        IS_LOCAL ? 'stillunemployed-17de9.firebaseapp.com' : location.host,
     projectId:         'stillunemployed-17de9',
     storageBucket:     'stillunemployed-17de9.firebasestorage.app',
     messagingSenderId: '43122740614',
@@ -170,15 +182,44 @@
       'gap:8px;padding:9px 15px;min-height:44px;box-sizing:border-box;border-radius:999px;cursor:pointer;' +
       'background:#FCFAF3;border:1.5px solid rgba(44,33,24,0.20);box-shadow:2px 4px 10px rgba(44,33,24,0.16);' +
       "font-family:'Poppins',system-ui,sans-serif;font-size:13.5px;font-weight:600;color:#2C2118;" +
-      'transform:rotate(-1.5deg);-webkit-tap-highlight-color:transparent;max-width:46vw;}' +
+      'transform:rotate(-1.5deg);-webkit-tap-highlight-color:transparent;max-width:46vw;white-space:nowrap;}' +
       '#su-auth-pill:active{transform:rotate(-1.5deg) scale(0.97);}' +
-      /* Phones: get out from under the nav. Bottom right, thumb-reachable, min 48px tap target. */
-      '@media (max-width:700px){#su-auth-pill{top:auto;bottom:18px;right:14px;min-height:48px;' +
-      'padding:11px 16px;font-size:14px;max-width:76vw;box-shadow:0 4px 14px rgba(44,33,24,0.24);}}';
+      // PHONES: thinner, and pinned just UNDER the nav rather than floating at the bottom (Nic
+      // didn't like bottom-right). The exact `top` is computed at runtime from the nav's real
+      // bounding box (see placeForMobile) — hardcoding a pixel value is what caused the overlap
+      // with the Tracker tab in the first place, since the nav's height isn't a constant.
+      '@media (max-width:700px){#su-auth-pill{right:12px;min-height:40px;padding:8px 13px;' +
+      'font-size:13px;gap:6px;max-width:48vw;transform:rotate(-1deg);' +
+      'box-shadow:1px 3px 9px rgba(44,33,24,0.20);}}';
     document.head.appendChild(s);
   }
 
+  // Anchor the pill under the nav on mobile, measured from the DOM instead of guessed.
+  function placeForMobile() {
+    if (!pill) return;
+    if (window.innerWidth > 700) { pill.style.top = ''; return; }
+    var nav = null, best = 0;
+    // The nav post-its are anchors reading Home / Jobs / Tracker. Find the lowest one and sit below.
+    var links = document.querySelectorAll('a');
+    for (var i = 0; i < links.length; i++) {
+      var t = (links[i].textContent || '').trim();
+      if (/^(Home|Jobs|Tracker|Advice)$/i.test(t)) {
+        var r = links[i].getBoundingClientRect();
+        if (r.height && r.bottom > best) { best = r.bottom; nav = links[i]; }
+      }
+    }
+    pill.style.top = (nav ? Math.round(best + 10) : 74) + 'px';
+  }
+
   function ui() {
+    // HOMEPAGE: desktop only, never mobile (Nic, 2026-07-12). The mobile homepage is the hero —
+    // a photo, a headline, one CTA. A sign-in button there competes with "Browse the board", which
+    // is the only thing a first-time visitor should be doing. On desktop there's room; on a phone
+    // there isn't, and the ask is different anyway (sync matters once you've saved something).
+    var p = String(location.pathname || '').toLowerCase().replace(/\/+$/, '');
+    var isHome = (p === '' || /\/index\.html$/.test(p));
+    if (isHome && window.innerWidth <= 700) return;
+
     injectStyles();
     pill = document.createElement('div');
     pill.id = 'su-auth-pill';
@@ -195,17 +236,26 @@
     pill.addEventListener('click', onClick);
     document.body.appendChild(pill);
     render();
+    // The board renders asynchronously, so the nav may not exist yet when we first measure.
+    // Re-place after paint, and on resize/orientation change.
+    setTimeout(placeForMobile, 400);
+    setTimeout(placeForMobile, 1400);
+    window.addEventListener('resize', placeForMobile);
+    window.addEventListener('orientationchange', function () { setTimeout(placeForMobile, 250); });
   }
   function render() {
     if (!label) return;
     if (state.user) {
-      var who = (state.user.email || '').split('@')[0];
-      label.textContent = who + ' · synced';
-      pill.title = 'Signed in as ' + state.user.email + '. Click to sign out.';
+      // Signed in: show WHO, so it's unmistakable that it worked. Nic's complaint was that after
+      // signing in the button looked identical — it must visibly change or the feature reads broken.
+      var who = (state.user.displayName || (state.user.email || '').split('@')[0] || 'you');
+      label.textContent = String(who).split(' ')[0] + ' · synced';
+      pill.title = 'Signed in as ' + (state.user.email || '') + '. Click to sign out.';
     } else {
-      label.textContent = 'Sign in to sync';
+      label.textContent = 'Sign in';   // (Nic, 2026-07-12) just "Sign in" + the Google mark.
       pill.title = 'Sign in with Google to keep saved jobs and your tracker on every device.';
     }
+    placeForMobile();
   }
   function badge(t) { if (label && state.user) { label.textContent = t; setTimeout(render, 1400); } }
 
