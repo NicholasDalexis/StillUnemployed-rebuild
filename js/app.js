@@ -223,6 +223,85 @@
       ctx.beginPath(); ctx.moveTo(0, -p.w * 0.78); ctx.lineTo(0, p.w * 0.78); ctx.stroke();
     }
   }
+  // ═══ FIRST "I APPLIED!" ONLY — point them at the Tracker (Nic, 2026-07-12) ═══════════════════
+  // The application is ALREADY being logged to the tracker on every "I applied!" (see trackerLog).
+  // The problem is nobody KNOWS that. So the first time someone taps it, we say so once, with a
+  // post-it they can tap straight through to /tracker.
+  //
+  // ONCE, EVER. Not once per session — once per person. Nic was explicit: "I don't want to do that
+  // every time." A nudge that repeats stops being a nudge and becomes nagging, and this fires at
+  // the exact moment someone is feeling good about applying. Burn that moment once, well.
+  // The flag lives in localStorage; clearing site data resets it, which is fine.
+  var TRACKER_NUDGE_KEY = 'su_tracker_nudged';
+  function suTrackerNudge() {
+    try { if (localStorage.getItem(TRACKER_NUDGE_KEY)) return; } catch (e) { return; }
+    try { localStorage.setItem(TRACKER_NUDGE_KEY, '1'); } catch (e) {}
+
+    // Wait out the confetti so the two don't fight for attention.
+    setTimeout(function () {
+      var wrap = document.createElement('div');
+      wrap.id = 'su-tracker-nudge';
+      // z-index 195: above the board, BELOW the modals (200+). The UX audit flagged the cookie
+      // banner for floating over open modals — not repeating that.
+      wrap.setAttribute('style',
+        'position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) rotate(-1deg); z-index: 195;' +
+        'display: flex; align-items: center; gap: 14px; max-width: 92vw; box-sizing: border-box;' +
+        'background: #FCFAF3; border: 1.5px solid rgba(44,33,24,0.18); border-radius: 10px;' +
+        'padding: 14px 16px 14px 18px; box-shadow: 3px 8px 22px rgba(44,33,24,0.26);' +
+        'opacity: 0; transition: opacity .28s ease, transform .28s ease;');
+
+      var msg = document.createElement('div');
+      msg.setAttribute('style',
+        "font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 19px; line-height: 1.25;" +
+        'color: #2C2118; max-width: 250px;');
+      msg.textContent = 'nice. every job you apply to gets saved here →';
+
+      // hand-drawn arrow, same language as the rest of the board
+      var arrow = document.createElement('span');
+      arrow.setAttribute('style', 'flex: none; color: #C2552F; display: inline-flex;');
+      arrow.innerHTML = '<svg width="34" height="16" viewBox="0 0 34 16" fill="none" style="overflow: visible;">' +
+        '<path d="M1 8 C 10 2.5, 20 2.5, 29 7.6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path>' +
+        '<path d="M23 3.2 L30.5 7.9 L23.5 12.8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+
+      // the tracker post-it itself — an <a>, NOT a div with a click handler, so it works with
+      // middle-click / cmd-click / keyboard like a real link.
+      var link = document.createElement('a');
+      link.href = 'tracker.html';
+      link.setAttribute('style',
+        'flex: none; background: #F2E14B; color: #2A2118; text-decoration: none;' +
+        "font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 20px;" +
+        'padding: 11px 18px; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center;' +
+        'transform: rotate(2deg); box-shadow: 2px 4px 9px rgba(44,33,24,0.22); cursor: pointer;');
+      link.textContent = 'Tracker';
+      link.addEventListener('click', function () { postReport('tracker_nudge_click', '', ''); });
+
+      var close = document.createElement('div');
+      close.setAttribute('style',
+        'flex: none; align-self: flex-start; width: 24px; height: 24px; margin-left: 2px; border-radius: 50%;' +
+        'display: flex; align-items: center; justify-content: center; cursor: pointer;' +
+        "background: rgba(44,33,24,0.06); font-family: 'Archivo', sans-serif; font-size: 12px; color: #6F5E45;");
+      close.textContent = '✕';
+      close.title = 'dismiss';
+      close.addEventListener('click', function () { hide(); });
+
+      wrap.appendChild(msg); wrap.appendChild(arrow); wrap.appendChild(link); wrap.appendChild(close);
+      document.body.appendChild(wrap);
+      requestAnimationFrame(function () {
+        wrap.style.opacity = '1';
+        wrap.style.transform = 'translateX(-50%) rotate(-1deg) translateY(-4px)';
+      });
+
+      var t = setTimeout(hide, 9000);   // don't camp on their screen
+      function hide() {
+        clearTimeout(t);
+        if (!wrap.parentNode) return;
+        wrap.style.opacity = '0';
+        setTimeout(function () { if (wrap.parentNode) wrap.parentNode.removeChild(wrap); }, 300);
+      }
+      try { postReport('tracker_nudge_view', '', ''); } catch (e) {}
+    }, 850);
+  }
+
   function suConfetti() {
     try {
       if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -1768,7 +1847,8 @@
             }
             trackerLog(self.state.feedbackCo, self.state.feedbackLink, tj ? tj.role : '');
             self.setState({ feedbackOpen: false });
-            suConfetti();   // short celebratory burst; popup closes so they keep browsing
+            suConfetti();       // short celebratory burst; popup closes so they keep browsing
+            suTrackerNudge();   // FIRST TIME ONLY: tell them the tracker exists (it already logged)
             break;
           }
           case 'reportBroken': {
