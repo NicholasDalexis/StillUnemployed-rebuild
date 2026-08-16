@@ -379,7 +379,12 @@
       '<div class="sn-card">' +
         '<div class="sn-close">×</div>' +
         '<div class="sn-label">open</div>' +
-        '<div class="sn-msg">Hi, I’m Nic. I spent 7 months unemployed after graduating in 2025. Today I work at Instagram and make six figures. This is the job board I wish I had, so I built it. Have fun!<span class="sn-sign">– Nic</span></div>' +
+        // Signature row (Nic, 2026-07-18): circular photo of Nic (at the Instagram wall) LEFT,
+        // "– Nic" beside it, row left-aligned — replaces the lone right-aligned "– Nic".
+        // onerror hides the circle if assets/nic-avatar.jpg is ever missing: no broken-image icon.
+        '<div class="sn-msg">Hi, I’m Nic. I spent 7 months unemployed after graduating in 2025. Today I work at Instagram and make six figures. This is the job board I wish I had, so I built it. Have fun!' +
+          '<span class="sn-sig"><img class="sn-ava" src="assets/nic-avatar.jpg" alt="Nic at the Instagram office" onerror="this.style.display=\'none\'"><span class="sn-sign">– Nic</span></span>' +
+        '</div>' +
       '</div>';
     hero.appendChild(s);
     if (!window.__mStickyDelegated) {

@@ -1,9 +1,12 @@
-/* Google Analytics 4 (G-ST5YR2876M) with a lightweight, privacy-first consent gate.
-   - GA only loads AFTER the visitor clicks Accept (cookies aren't set until then).
-   - Nic's admin-excluded browsers never load GA (keeps his own visits out).
-   - On non-prod hosts (localhost / previews) the banner still shows for review,
-     but GA is NOT actually loaded — so testing never pollutes the data.
-   Keep the prod host list in sync with analytics.js / app.js. */
+/* Google Analytics 4 (G-ST5YR2876M) — Consent Mode v2 + full auto-instrumentation. v2 2026-07-19.
+   WHAT CHANGED vs v1: v1 only loaded GA after Accept (decliners + ignorers were invisible) and
+   sent zero events. v2: gtag loads on prod for everyone with analytics_storage DENIED by default
+   (cookieless, anonymous pings — every page visit still counted), Accept upgrades to full cookies.
+   Auto-tracks: every page view, every button/link click, every input touched (field NAME only,
+   NEVER what was typed), and time-on-page. Privacy policy §5 updated in the same change.
+   - Admin browsers (su_admin=1) never load GA.
+   - Non-prod (localhost/previews): GA not loaded; events go to console as [su-ga] so tracking
+     is verifiable locally. Keep prod host list in sync with analytics.js / app.js. */
 (function () {
   var GA_ID = 'G-ST5YR2876M';
   var PROD = { 'stillunemployed.com': 1, 'www.stillunemployed.com': 1 };
@@ -11,37 +14,90 @@
   function isAdmin() { try { return localStorage.getItem('su_admin') === '1'; } catch (e) { return false; } }
   function consent() { try { return localStorage.getItem('su_consent'); } catch (e) { return null; } }
   function setConsent(v) { try { localStorage.setItem('su_consent', v); } catch (e) {} }
-  // Dev/testing toggle: visit <site>/?consent=reset to make the banner appear again.
-  (function () {
-    try {
-      var p = new URLSearchParams(location.search);
-      if (p.has('consent') && (p.get('consent') === 'reset' || p.get('consent') === 'off')) {
-        localStorage.removeItem('su_consent');
-      }
-    } catch (e) {}
-  })();
+  try {
+    var p = new URLSearchParams(location.search);
+    if (p.has('consent') && (p.get('consent') === 'reset' || p.get('consent') === 'off')) localStorage.removeItem('su_consent');
+  } catch (e) {}
 
-  function loadGA() {
-    if (window.__gaLoaded) return;
-    window.__gaLoaded = true;
-    if (!isProd()) { try { console.debug('[su-ga] consent granted — GA would load on prod (skipped on', location.hostname + ')'); } catch (e) {} return; }
+  if (isAdmin()) return; // Nic's own browsers: nothing loads, no banner.
+
+  // Page identity (mirror analytics.js): /jobs* -> board
+  var PAGE = /^\/jobs/.test(location.pathname) ? 'board'
+    : /tracker/.test(location.pathname) ? 'tracker'
+    : (location.pathname === '/' || /index/.test(location.pathname)) ? 'home' : location.pathname;
+
+  // gtag bootstrap. On prod: real GA with Consent Mode. Elsewhere: console shim.
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  window.gtag = window.gtag || gtag;
+  if (isProd()) {
+    gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
     var s = document.createElement('script');
-    s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
     document.head.appendChild(s);
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function () { window.dataLayer.push(arguments); };
-    window.gtag('js', new Date());
-    window.gtag('config', GA_ID, { anonymize_ip: true });
+    gtag('js', new Date());
+    gtag('config', GA_ID, { anonymize_ip: true, page_title: PAGE, transport_type: 'beacon' });
+    if (consent() === 'granted') gtag('consent', 'update', { analytics_storage: 'granted' });
+  } else {
+    window.gtag = function () { try { console.debug('[su-ga]', [].slice.call(arguments)); } catch (e) {} };
+  }
+  function ev(name, params) {
+    params = params || {}; params.page = PAGE;
+    try { window.gtag('event', name, params); } catch (e) {}
   }
 
-  // Nic's own (admin-excluded) browsers: never load GA, no banner.
-  if (isAdmin()) return;
-  // Already decided.
-  if (consent() === 'granted') { loadGA(); return; }
-  if (consent() === 'denied') return;
+  // ---- every button / link / control click (delegated, capture phase) ----
+  function labelOf(el) {
+    var l = el.getAttribute && (el.getAttribute('data-act') || el.getAttribute('aria-label'));
+    if (l && el.getAttribute && el.getAttribute('data-note')) l += ':' + el.getAttribute('data-note'); // per-card identity (advice cards etc.)
+    if (!l && el.tagName === 'A') l = (el.getAttribute('href') || '').slice(0, 80);
+    if (!l) l = (el.textContent || el.value || '').replace(/\s+/g, ' ').trim().slice(0, 60);
+    return l || el.tagName.toLowerCase();
+  }
+  document.addEventListener('click', function (e) {
+    var el = e.target && e.target.closest && e.target.closest('button, a, [data-act], [role="button"], input[type="submit"], input[type="checkbox"], input[type="radio"], select, summary');
+    if (!el) return;
+    ev('ui_click', { ui: labelOf(el), tag: el.tagName.toLowerCase() });
+  }, true);
 
-  // ---- consent banner: an on-brand Post-it note ----
+  // ---- every input touched: field IDENTITY only, never the typed value ----
+  var seenFields = {};
+  function fieldName(el) {
+    return el.getAttribute('name') || el.id || el.getAttribute('placeholder') || el.getAttribute('aria-label') || el.type || el.tagName.toLowerCase();
+  }
+  document.addEventListener('input', function (e) {
+    var el = e.target;
+    if (!el || !/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)) return;
+    var f = fieldName(el);
+    if (seenFields[f]) return; // one event per field per page load
+    seenFields[f] = 1;
+    ev('input_used', { field: String(f).slice(0, 60) });
+  }, true);
+  document.addEventListener('change', function (e) {
+    var el = e.target;
+    if (!el || el.tagName !== 'SELECT') return;
+    ev('select_changed', { field: String(fieldName(el)).slice(0, 60) });
+  }, true);
+
+  // ---- time on page: visible-seconds accumulator + exit beacon + heartbeats ----
+  var visStart = document.hidden ? 0 : Date.now(), visTotal = 0, beats = 0;
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { if (visStart) { visTotal += Date.now() - visStart; visStart = 0; } }
+    else visStart = Date.now();
+  });
+  setInterval(function () {
+    if (document.hidden || beats >= 20) return; // heartbeat every 30s of visible time, capped at 10 min
+    beats++; ev('heartbeat', { beat: beats });
+  }, 30000);
+  function flushTime() {
+    if (visStart) { visTotal += Date.now() - visStart; visStart = 0; }
+    var secs = Math.round(visTotal / 1000);
+    if (secs > 0) ev('time_on_page', { seconds: secs });
+  }
+  window.addEventListener('pagehide', flushTime);
+
+  // ---- consent banner (unchanged look; Accept now upgrades Consent Mode) ----
+  if (consent() === 'granted' || consent() === 'denied') return;
   function injectStyle() {
     if (document.getElementById('su-cc-style')) return;
     var st = document.createElement('style');
@@ -62,7 +118,6 @@
         'transform:rotate(1.5deg);box-shadow:1px 2px 5px rgba(0,0,0,0.22);}',
       '.su-cc-decline{cursor:pointer;background:none;border:none;color:#5C4A24;',
         'font-family:inherit;font-size:15.5px;text-decoration:underline;padding:4px 2px;}',
-      // mobile: smaller + lifted well above the footer / "open" note, right-anchored
       '@media (max-width:640px){.su-cc{left:12px;right:auto;bottom:100px;width:158px;padding:9px 11px 9px;transform:rotate(-2deg);}',
         '.su-cc::before{width:48px;height:14px;top:-6px;}',
         '.su-cc-t{font-size:11.5px;line-height:1.35;margin:0 0 7px;}',
@@ -86,7 +141,11 @@
         '<button type="button" class="su-cc-decline">No thanks</button>' +
       '</div>';
     function close() { if (bar.parentNode) bar.parentNode.removeChild(bar); }
-    bar.querySelector('.su-cc-accept').addEventListener('click', function () { setConsent('granted'); loadGA(); close(); });
+    bar.querySelector('.su-cc-accept').addEventListener('click', function () {
+      setConsent('granted');
+      try { window.gtag('consent', 'update', { analytics_storage: 'granted' }); } catch (e) {}
+      close();
+    });
     bar.querySelector('.su-cc-decline').addEventListener('click', function () { setConsent('denied'); close(); });
     document.body.appendChild(bar);
   }

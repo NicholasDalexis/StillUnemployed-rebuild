@@ -595,3 +595,15 @@ body { margin: 0; background: #EFE6D4; }
 
 /* First-card DECOR always anchored far-left so it never overlaps the "Showing X of X" label */
 .note-first .doodle { left: 4px !important; right: auto !important; }
+
+/* ---- Advice notes + newsletter signup cards in the feed (2026-07-18) ----
+   Two cadences live in the same DOM: .su-ins-d = desktop schedule (advice note in every
+   3rd row's middle slot, signup card at a row-end two rows later), .su-ins-m = mobile
+   schedule (J J S J J N — signup roughly every 3rd card, note every 5th job card).
+   display:none removes the hidden set from the grid flow, so each viewport only ever
+   sees its own cadence and positions stay exact. Breakpoint matches the 700px 1-col flip. */
+@media (max-width: 700px) { .su-ins-d { display: none !important; } }
+@media (min-width: 701px) { .su-ins-m { display: none !important; } }
+/* notes lift a little less than job cards on hover — they're paper, not postings */
+.su-advice:hover { transform: rotate(0deg) translateY(-5px) scale(1.015); }
+.su-signup:hover { transform: rotate(var(--rot, 0deg)); box-shadow: 3px 6px 13px rgba(44,33,24,0.17); }

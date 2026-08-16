@@ -68,36 +68,37 @@
     'the advice that almost got me a job with the Kardashians ↓',
     '4 hand-picked jobs + 1 raw story, every week. free. ↓',
     '1,500 applications. 7 months. one yes. here is what worked ↓',
-    'the newsletter i wish someone had sent me at 22 ↓',
+    'the newsletter i wish someone had sent me at 21 ↓',
+    'the recipe i wish i had the day after graduation ↓',
     'i got ghosted for 7 months. then Instagram said yes ↓',
-    'no AI slop. no filler. just what actually got me hired ↓',
+    'just what actually got me hired. nothing else ↓',
     'everything i would do differently if i started over ↓',
     'free. weekly. easy unsub. no weird tricks ↓',
-    'the resume line that got me callbacks. for free ↓',
+    'the resume line that got me interviews. for free ↓',
     'what i sent after every interview. it worked ↓',
     'you are not bad at this. your strategy is ↓',
     'the cold email that got me a reply from a recruiter ↓',
-    'how i went from 0 callbacks to 4 in one month ↓',
+    'how i went from 0 interviews to 4 in one month ↓',
     'the part of the job hunt nobody explains ↓',
     'i read every rejection so you do not have to ↓',
     'what actually got me in the door at Meta ↓',
     'stop applying to 200 jobs. do this instead ↓',
     'the exact follow-up i sent. steal it ↓',
     'one raw story + jobs worth your time, weekly ↓',
-    'i was you 8 months ago. here is the map ↓',
+    'i was you 8 months ago. here is the recipe ↓',
     'the portfolio change that got me interviews ↓',
     'nobody tells you this about entry-level roles ↓',
     'the recipe. free. no course, no upsell ↓',
     'how to get a referral from a total stranger ↓',
     'why your applications are getting auto-rejected ↓',
-    'i tracked all 1,500. here is what the data said ↓',
+    'i tracked all 1,500 applications. here is what worked ↓',
     'the 3 lines i put at the top of my resume ↓',
     'what recruiters actually skim for. free breakdown ↓',
     'ghosted again? read this before you apply again ↓',
     'the interview answer that changed everything ↓',
     'jobs worth applying to, sent to you weekly. free ↓',
     'how i talked about zero experience and still got hired ↓',
-    'you are one strategy change away. free newsletter ↓',
+    'you might be one fix away. i will show you it ↓',
     'the honest version of the job hunt. no LinkedIn voice ↓',
     'what i wish i knew before application #1 ↓',
     'the free thing that got me a 6-figure offer ↓',
@@ -106,7 +107,7 @@
     'stop rewriting your resume. read this first ↓',
     'the follow-up nobody sends. that is the point ↓',
     'i answer every reply. hit me with your questions ↓',
-    'a job hunt newsletter that respects your time ↓',
+    'job hunt advice that respects your time ↓',
     'what changed between rejection 1,400 and offer 1 ↓',
     'the story i do not tell on LinkedIn ↓',
     'how to stand out when everyone looks the same ↓',
@@ -120,6 +121,365 @@
   function recipeShows(pos) { return typeof pos === 'number' && pos >= 0 && pos % RECIPE_EVERY === 0; }
   function recipeCopy(pos) { return RECIPE_COPY[Math.floor(pos / RECIPE_EVERY) % RECIPE_COPY.length]; }
 
+  // ═══ ADVICE NOTES — the notebook's margin notes (Nic, 2026-07-18) ═══════════════════════════
+  // 15 notes mined from the newsletter issues (the newsletter is the asset factory; the board
+  // restyles its ideas, never its fonts/colors). Rendered as lined-paper post-its BETWEEN job
+  // cards: desktop (3-col) = every 3rd row's middle slot · mobile (1-col) = every ~5th card.
+  // They are NOTES, not jobs: the paper stays cream in EVERY theme and never takes the
+  // salary-band colors (the pay key is a promise — UX rule #5 in Rasputin/Reference/
+  // StillUnemployed-UX-Rules.md). Stats keep their sources, always (rule #7).
+  // g: optional hand-drawn graphic ('week' | 'cycle' | 'stat') — pure SVG/CSS, no image files.
+  // REWRITTEN 2026-07-18 from Nic's card-by-card localhost review. The system:
+  //   FRONT  = hook (5-10 words, shocking / curious / a little controversial — its job is to STOP
+  //            THE SCROLL) + optional graphic + a CTA that CONTINUES the thought (never a generic
+  //            "find out why" unless that IS the continuation).
+  //   BACK   = the payoff in plain words (no jargon — nobody knows what "ATS" is; explain it),
+  //            bullets where a list reads better than prose, and Nic's TRUE story only (he was
+  //            never "ghosted 7 months straight" — he got some replies; don't invent biography).
+  //   FUNNEL = every popup ends with a sell line + email field. NEVER lead with the word
+  //            "newsletter" — people hear "another AI-slop substack." It's "the exact recipe that
+  //            got me my job at Instagram." NO citations on cards — this is his handwritten
+  //            journal, not the newsletter; sources live there. Soften stats so they don't need a
+  //            footnote ("2 out of 5", "most grads").
+  //   cta  = flip prompt on the card front · sell = line above the email field in the popup.
+  //   why  = string, OR { intro, bullets[], outro } when a list earns its keep.
+  var ADVICE_NOTES = [
+    // Round 2 (Nic, 2026-07-18 localhost review #2). New rules baked in:
+    //  · CTAs are NEVER one word ("how" → "find out how").
+    //  · One-line hooks left cards looking unfinished → `sub` (a second handwritten line) and/or
+    //    `d` (a small hand-drawn CORNER DOODLE related to the card — NOT theme decor).
+    //  · Every hook must stand alone for someone who has never seen another card ("1,500" alone
+    //    means nothing → "1,500 job applications").
+    //  · No "callbacks" (sounds like acting), no "data" (too corporate), no "fluff"/"AI slop"
+    //    framing, and "newsletter" never leads.
+    { id: 'no-weekends', g: 'week', hook: 'the days you shouldn\'t apply to jobs',
+      cta: 'wait, why monday?',
+      why: 'Weekend applications pile up in a closed inbox. On Monday recruiters dig out of that pile, and yours is at the bottom of it. Apply Tuesday to Thursday, early.' },
+    { id: 'board-trap', g: 'cycle', hook: 'the job-board trap',
+      cta: 'how to break the loop',
+      sell: 'the recipe skips the loop entirely ↓',
+      // Nic explicitly rejected the "pick 5 roles" advice (his philosophy is volume on a strong
+      // base resume). The trap ISN'T applying too much — it's that every board is the same
+      // recycled LinkedIn listings. Which conveniently positions THIS board as the way out.
+      why: 'You use LinkedIn. You get bored of LinkedIn. You find a shiny new job board, and it\'s the same jobs reposted. Most boards are mirrors of each other. This one is checked by a human, every role has a real salary, and I only add jobs I\'d actually apply to.' },
+    { id: 'grad-school', g: 'figures', hook: 'thinking grad school will save you?',
+      cta: 'run the numbers',
+      why: '2 out of 5 master\'s programs leave grads financially worse off than if they\'d just started working. Grad school is a plan, not a hiding spot. Run the numbers before you sign anything.' },
+    { id: 'three-years', g: 'bang', hook: 'you DO have 3+ years of experience',
+      cta: 'count yours',
+      why: 'College counts. Class projects, internships, clubs, freelance: that\'s years of real work. Stop reading "3+ years" as a locked door and start listing yours.' },
+    { id: 'first-come', d: 'medal', hook: 'the first ones to apply get seen first',
+      cta: 'so be first',
+      why: 'Recruiters read applications in the order they arrive, and interview slots fill off the first wave. A day-one application beats a perfect week-two one.' },
+    { id: 'ghosted', d: 'ghost', hook: 'ghosted again? it\'s not you, it\'s them',
+      cta: 'find out why',
+      sell: 'the newsletter I wish someone had sent me at 21 ↓',
+      why: 'Out of my 1,500 applications, most never wrote back at all. Silence is a volume problem on their side, not a verdict on you. Follow up once, then keep moving. Know your worth.' },
+    { id: 'manifesting', d: 'stars', hook: 'manifesting is not a strategy to get a job',
+      cta: 'find out what is',
+      why: 'A vision board never filled out an application. 20 focused minutes tailoring your resume beats an hour of wishing. Do the boring thing daily.' },
+    { id: 'canva-resume', d: 'stamp', hook: 'your Canva resume is getting you rejected...',
+      cta: 'here\'s why',
+      why: 'Most companies run your resume through scanning software before a human ever sees it. Icons, columns, and graphics read as static to the machine, so it rejects you before anyone looks. One column, real text.' },
+    { id: 'wish-list', hook: 'job requirements are a wish list', sub: 'not mandatory',
+      cta: 'you could just...',
+      sell: 'which requirements actually have wiggle room? it\'s in the recipe ↓',
+      why: 'Most recruiters will tell you they\'re not looking for someone who checks every single box. The first number is the floor, and everything after it is negotiable. If you clear the floor, apply.' },
+    { id: 'follow-up', d: 'mail', hook: 'the follow-up nobody sends',
+      cta: 'steal it',
+      why: { intro: 'After every interview I sent 3 lines:',
+             bullets: ['thank you', 'one specific thing we talked about', 'a quick question about next steps'],
+             outro: 'Almost nobody sends it. That\'s exactly why it works.' } },
+    { id: 'show-dont-ask', d: 'megaphone', hook: 'I got my job without applying',
+      cta: 'find out how',
+      why: 'A recruiter found my LinkedIn post about the hunt and my projects. Two weeks later, an offer from Instagram. Post what you build. Show, don\'t ask.' },
+    { id: 'volume-trap', hook: '1,500 job applications taught me one thing',
+      cta: 'the one thing',
+      why: { intro: 'I tried spray-and-pray: one resume, sent everywhere. I tried tailoring every single application. Neither worked. The middle ground did:',
+             bullets: ['20 of every 25 jobs get my base resume', 'the 5 I actually care about get the extra time'],
+             outro: 'Volume where it\'s cheap, effort where it counts.' } },
+    { id: 'not-linkedin', d: 'split', hook: 'stop applying ONLY on LinkedIn',
+      cta: 'where instead',
+      why: 'Everyone you\'re competing with is in the same line. Niche boards and company career pages got me interviews LinkedIn never did. Go where the crowd isn\'t.' },
+    { id: 'cold-referral', d: 'q', hook: 'do cold emails work in 2026?',
+      cta: 'what i sent',
+      why: 'I cold messaged people at my dream companies and kept it to 3 lines: I admire your work, I\'d love your feedback, here\'s my portfolio link. That\'s it. Worst case is silence, and you survive that every week already.' },
+    { id: 'linkedin-dms', d: 'q', hook: 'are LinkedIn DMs even worth it in 2026?',
+      cta: 'the short answer',
+      why: 'Cold DMs to recruiters mostly drown. DMs that reference something specific the person posted, with your work attached, get answered. It\'s not the channel, it\'s the laziness.' },
+    { id: 'resume-layout', d: 'stamp', hook: 'think your resume layout sucks?',
+      cta: 'the layout i used',
+      sell: 'the exact resume that got me my job at Instagram ↓',
+      why: 'One column. Real text, no graphics. Name, then experience with numbers in it, then skills. Boring on purpose: the scanning software reads it clean and the recruiter finds everything in 10 seconds.' },
+    { id: 'major-cage', hook: 'your major is not a cage',
+      cta: 'find out why',
+      why: 'Most grads end up working jobs unrelated to their major, and hiring managers know it. Apply for the role you want, not the one your degree names.' },
+    { id: 'keyword-stuffing', hook: 'what is keyword stuffing?', sub: 'and how it gets you auto-rejected',
+      cta: 'find out why',
+      why: 'Cramming your resume with words copied straight from the job post. The scanning software flags it, and recruiters smell it instantly. Use the job\'s real language where it\'s true about you, and cut the rest.' }
+  ];
+
+  // Shuffle the bank once per page load. The FIRST note a visitor sees must never repeat
+  // back-to-back across refreshes: localStorage su_first_note remembers last load's first
+  // note; if the shuffle re-picks it, swap it away.
+  var NOTE_ORDER = (function () {
+    var arr = ADVICE_NOTES.slice();
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    try {
+      var last = localStorage.getItem('su_first_note');
+      if (last && arr.length > 1 && arr[0].id === last) {
+        var k = 1 + Math.floor(Math.random() * (arr.length - 1));
+        var tmp = arr[0]; arr[0] = arr[k]; arr[k] = tmp;
+      }
+      localStorage.setItem('su_first_note', arr[0].id);
+    } catch (e) {}
+    return arr;
+  })();
+  function adviceAt(n) { return NOTE_ORDER[n % NOTE_ORDER.length]; }
+
+  // Grid signup cards rotate through the SAME 50 RECIPE_COPY lines (one source of truth).
+  // Random per-load offset so every line gets airtime; stride 7 is coprime with 50, so a
+  // long scroll never repeats a line before all 50 have shown.
+  var SIGNUP_LINE_SEED = Math.floor(Math.random() * RECIPE_COPY.length);
+  function signupLine(n) { return RECIPE_COPY[(SIGNUP_LINE_SEED + n * 7) % RECIPE_COPY.length]; }
+
+  // ── feed schedule: where notes + signup cards sit between job cards ────────────────────────
+  // Desktop (3-col grid): advice note = every 3rd row's MIDDLE slot (visible slots 7, 16, 25 …
+  // ≡ 7 mod 9), signup card = the END slot two rows after each note (slots 14, 23, 32 … ≡ 5
+  // mod 9) — never adjacent to a note, horizontally or vertically.
+  // Mobile (1-col feed): repeating pattern J J S J J N — a signup card roughly every 3rd card
+  // (Nic scrolled 7+ without seeing one), an advice note every 5th job card, and always 2 job
+  // cards between a signup and a note so the feed never reads as ads.
+  // Returns { <jobIndex>: [ {t:'note'|'signup', n:ordinal}, … ] } = items to insert BEFORE
+  // that displayed job.
+  function suFeedSchedule(totalJobs, isMobile, signupsOn) {
+    var map = {}, v = 0, jobs = 0, notes = 0, sign = 0, guard = 0;
+    while (jobs < totalJobs && guard++ < 4000) {
+      var slot = 'job';
+      if (isMobile) {
+        if (v % 6 === 5) slot = 'note';
+        else if (v % 6 === 2) slot = 'signup';
+      } else {
+        if (v >= 7 && v % 9 === 7) slot = 'note';
+        else if (v >= 14 && v % 9 === 5) slot = 'signup';
+      }
+      if (slot === 'job') jobs++;
+      else if (slot === 'note') (map[jobs] = map[jobs] || []).push({ t: 'note', n: notes++ });
+      else if (signupsOn) (map[jobs] = map[jobs] || []).push({ t: 'signup', n: sign++ });
+      else sign++;                      // ✕-hidden: keep the schedule stable, emit nothing
+      v++;
+    }
+    return map;
+  }
+
+  // ── hand-drawn note graphics (inline SVG/CSS only — no image files) ────────────────────────
+  // FOUR types (Nic: "three looks half done"): week · cycle · figures · bang.
+  function adviceGraphicHtml(note, ACC, big) {
+    if (!note.g) return '';
+    var s = big ? 1.12 : 1;
+    if (note.g === 'week') {
+      // The scroll-stopper. Week starts SUNDAY (S M T W T F S — an S at each end, so the crossed
+      // Monday reads clearly), red hand-drawn X's on Sun / Mon / Sat that spill past the boxes on
+      // purpose (Nic: "half going off the box, a tiny bit sloppy"). Row spans the full card width.
+      var days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+      var xOn = { 0: 1, 1: 1, 6: 1 };
+      // Round 2: the big X's read too heavy ("expands out the card"). Now a single THIN red
+      // strike line through Sun / Mon / Sat, barely past the box edges. Three slightly different
+      // angles so it doesn't look stamped.
+      var strikes = [
+        '<path d="M-1 22 C 7 16, 16 8, 25 3" />',
+        '<path d="M-1 4 C 8 10, 17 17, 25 23" />',
+        '<path d="M-2 20 C 8 14, 15 9, 26 5" />'
+      ];
+      var xi = 0, cells = '';
+      for (var i = 0; i < 7; i++) {
+        var rot = (i % 2 === 0) ? -2.5 : 2;
+        cells += '<span style="position:relative; flex:1 1 0; max-width:' + Math.round(34 * s) + 'px; height:' + Math.round(34 * s) + 'px; border:1.7px solid rgba(44,33,24,0.55); border-radius:3px; transform:rotate(' + rot + 'deg); display:inline-flex; align-items:center; justify-content:center; font-family:\'Indie Flower\',cursive; font-weight:700; font-size:' + Math.round(16 * s) + 'px; color:#2A2118; background:rgba(255,255,255,0.4);">' + days[i] +
+          (xOn[i] ? '<svg viewBox="0 0 24 26" preserveAspectRatio="none" style="position:absolute; top:-2px; left:-2px; width:calc(100% + 4px); height:calc(100% + 4px); overflow:visible;" fill="none" stroke="#C2552F" stroke-width="1.9" stroke-linecap="round">' + strikes[(xi++) % 3] + '</svg>' : '') +
+        '</span>';
+      }
+      return '<div style="display:flex; gap:6px; margin-top:16px; align-items:center; width:100%;">' + cells + '</div>';
+    }
+    if (note.g === 'cycle') {
+      // Round 2: "apply / wait / repeat" was too vague, and the advice behind it wasn't Nic's.
+      // The REAL trap (his framing): LinkedIn → bored of it → a "new" board → same jobs. Four
+      // stops, 1-2 words each, arrows chasing clockwise. The loop sells why THIS board exists.
+      var w = Math.round(190 * s), h = Math.round(120 * s);
+      return '<div style="position:relative; width:' + w + 'px; height:' + h + 'px; margin:16px auto 4px;">' +
+        '<svg viewBox="0 0 190 120" style="position:absolute; top:0; left:0; width:100%; height:100%; overflow:visible;" fill="none" stroke-linecap="round" stroke-linejoin="round">' +
+          '<path d="M120 20 C 148 28, 158 44, 154 62" stroke="rgba(44,33,24,0.6)" stroke-width="2.4"></path>' +
+          '<path d="M159 50 L154 63 L143 55" stroke="#C2552F" stroke-width="2.4"></path>' +
+          '<path d="M140 92 C 122 102, 72 102, 54 92" stroke="rgba(44,33,24,0.6)" stroke-width="2.4"></path>' +
+          '<path d="M66 99 L53 92 L63 82" stroke="#C2552F" stroke-width="2.4"></path>' +
+          '<path d="M36 62 C 32 44, 42 28, 68 20" stroke="rgba(44,33,24,0.6)" stroke-width="2.4"></path>' +
+          '<path d="M56 24 L69 19 L66 32" stroke="#C2552F" stroke-width="2.4"></path>' +
+        '</svg>' +
+        '<span style="position:absolute; top:-6px; left:50%; transform:translateX(-50%) rotate(-2deg); font-family:\'Indie Flower\',cursive; font-weight:700; font-size:15px; color:#2A2118; white-space:nowrap;">LinkedIn</span>' +
+        '<span style="position:absolute; top:44%; right:-10px; transform:rotate(2deg); font-family:\'Indie Flower\',cursive; font-weight:700; font-size:15px; color:#2A2118; white-space:nowrap;">bored of it</span>' +
+        '<span style="position:absolute; bottom:-6px; left:50%; transform:translateX(-50%) rotate(1.5deg); font-family:\'Indie Flower\',cursive; font-weight:700; font-size:15px; color:#2A2118; white-space:nowrap;">"new" board</span>' +
+        '<span style="position:absolute; top:44%; left:-10px; transform:rotate(-2deg); font-family:\'Indie Flower\',cursive; font-weight:700; font-size:15px; color:#C2552F; white-space:nowrap;">same jobs</span>' +
+      '</div>';
+    }
+    if (note.g === 'figures') {
+      // Round 2: X-ing out the figures read like a kill list. Now the 2 who are worse off are
+      // just drawn in red, slightly slumped. Same message, zero menace.
+      var figInk = '<g stroke="#2A2118" stroke-width="2" fill="none" stroke-linecap="round"><circle cx="10" cy="6" r="4.5"></circle><path d="M10 11 L10 24 M10 14 L3 20 M10 14 L17 20 M10 24 L4 34 M10 24 L16 34"></path></g>';
+      var figRed = '<g stroke="#C2552F" stroke-width="2" fill="none" stroke-linecap="round" transform="rotate(6 10 20)"><circle cx="10" cy="7" r="4.5"></circle><path d="M10 12 L10 25 M10 15 L4 22 M10 15 L16 22 M10 25 L5 35 M10 25 L15 35"></path></g>';
+      var figs = '';
+      for (var f = 0; f < 5; f++) {
+        var frot = (f % 2 === 0) ? -3 : 3;
+        figs += '<span style="position:relative; width:' + Math.round(26 * s) + 'px; height:' + Math.round(46 * s) + 'px; transform:rotate(' + frot + 'deg); flex:none;">' +
+          '<svg viewBox="0 0 20 38" style="width:100%; height:100%; overflow:visible;">' + (f < 2 ? figRed : figInk) + '</svg></span>';
+      }
+      return '<div style="margin-top:14px;">' +
+        '<div style="display:flex; gap:' + Math.round(10 * s) + 'px; align-items:flex-end;">' + figs + '</div>' +
+        '<div style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:' + Math.round(15.5 * s) + 'px; color:#2A2118; margin-top:10px; transform:rotate(-1deg);">2 out of 5 leave worse off</div>' +
+      '</div>';
+    }
+    if (note.g === 'bang') {
+      // three-years: two big hand-drawn exclamation marks (Nic asked for these specifically)
+      return '<div style="display:flex; gap:8px; margin-top:12px; align-items:flex-start;">' +
+        '<svg width="' + Math.round(20 * s) + '" height="' + Math.round(44 * s) + '" viewBox="0 0 20 44" fill="none" stroke="#C2552F" stroke-linecap="round" style="transform:rotate(-5deg); overflow:visible;"><path d="M10 3 C 9 12, 11 20, 10 29" stroke-width="4.4"></path><circle cx="10" cy="39" r="2.6" fill="#C2552F" stroke="none"></circle></svg>' +
+        '<svg width="' + Math.round(20 * s) + '" height="' + Math.round(44 * s) + '" viewBox="0 0 20 44" fill="none" stroke="#C2552F" stroke-linecap="round" style="transform:rotate(4deg); margin-top:3px; overflow:visible;"><path d="M10 3 C 11 12, 9 20, 10 29" stroke-width="4.4"></path><circle cx="10" cy="39" r="2.6" fill="#C2552F" stroke="none"></circle></svg>' +
+      '</div>';
+    }
+    return '';
+  }
+
+  // ── corner doodles (Nic, round 2): one-line hooks left cards looking UNFINISHED, so cards
+  // without a big graphic get a small hand-drawn doodle RELATED to the card. These are NOT theme
+  // decor (decor = the casino chips / seashells that belong to a look); doodles belong to the
+  // note itself and stay ink+red in every theme, like the rest of the paper.
+  function adviceDoodleHtml(note) {
+    if (!note.d || note.g) return '';
+    var D = '';
+    if (note.d === 'medal') {
+      // a #1 medal — first come, first seen
+      D = '<svg width="52" height="62" viewBox="0 0 40 48" fill="none" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M14 2 L12 16 M26 2 L28 16" stroke="#C2552F" stroke-width="2.4"></path>' +
+        '<path d="M9 2 L19 2 M21 2 L31 2" stroke="#C2552F" stroke-width="2.4"></path>' +
+        '<circle cx="20" cy="30" r="13" stroke="#2A2118" stroke-width="2.2" fill="rgba(255,255,255,0.5)"></circle>' +
+        '<text x="20" y="36" text-anchor="middle" font-family="Indie Flower, cursive" font-weight="700" font-size="15" fill="#2A2118">#1</text></svg>';
+    } else if (note.d === 'stamp') {
+      // a hand-drawn REJECTED stamp
+      D = '<svg width="104" height="42" viewBox="0 0 104 42" fill="none">' +
+        '<rect x="3" y="5" width="98" height="32" rx="5" stroke="#C2552F" stroke-width="2.6" transform="rotate(-4 52 21)" opacity="0.85"></rect>' +
+        '<text x="52" y="27" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="800" font-size="13" letter-spacing="2" fill="#C2552F" transform="rotate(-4 52 21)" opacity="0.85">REJECTED</text></svg>';
+    } else if (note.d === 'ghost') {
+      // a friendly little hand-drawn ghost
+      D = '<svg width="48" height="56" viewBox="0 0 34 40" fill="none" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M5 34 C 4 16, 8 4, 17 4 C 26 4, 30 16, 29 34 C 26 30, 24 30, 22 34 C 20 30, 18 30, 17 34 C 15 30, 13 30, 11 34 C 9 30, 7 30, 5 34 Z" stroke="#2A2118" stroke-width="2.2" fill="rgba(255,255,255,0.55)"></path>' +
+        '<circle cx="13" cy="16" r="1.8" fill="#2A2118"></circle><circle cx="21" cy="16" r="1.8" fill="#2A2118"></circle>' +
+        '<path d="M14 22 C 16 23.5, 18 23.5, 20 22" stroke="#2A2118" stroke-width="1.8"></path></svg>';
+    } else if (note.d === 'mail') {
+      // an envelope with 3 little lines — the 3-line follow-up
+      D = '<svg width="60" height="46" viewBox="0 0 46 34" fill="none" stroke-linecap="round" stroke-linejoin="round">' +
+        '<rect x="2" y="6" width="30" height="22" rx="2.5" stroke="#2A2118" stroke-width="2.2" fill="rgba(255,255,255,0.5)" transform="rotate(-3 17 17)"></rect>' +
+        '<path d="M3 8 L17 19 L31 8" stroke="#2A2118" stroke-width="2" transform="rotate(-3 17 17)"></path>' +
+        '<path d="M37 10 L44 10 M37 16 L44 16 M37 22 L44 22" stroke="#C2552F" stroke-width="2.2"></path></svg>';
+    } else if (note.d === 'megaphone') {
+      // shouting your work into the world
+      D = '<svg width="58" height="46" viewBox="0 0 46 36" fill="none" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M4 15 L4 23 L10 23 L24 30 L24 8 L10 15 Z" stroke="#2A2118" stroke-width="2.2" fill="rgba(255,255,255,0.5)" transform="rotate(-6 14 19)"></path>' +
+        '<path d="M30 12 C 33 15, 33 21, 30 24" stroke="#C2552F" stroke-width="2.2"></path>' +
+        '<path d="M35 8 C 40 13, 40 23, 35 28" stroke="#C2552F" stroke-width="2.2"></path></svg>';
+    } else if (note.d === 'stars') {
+      // manifesting sparkles (that never filled out an application)
+      D = '<svg width="66" height="44" viewBox="0 0 54 36" fill="none" stroke-linecap="round">' +
+        '<path d="M12 6 L12 18 M6 12 L18 12" stroke="#C2552F" stroke-width="2.2" transform="rotate(-8 12 12)"></path>' +
+        '<path d="M34 14 L34 30 M26 22 L42 22" stroke="#2A2118" stroke-width="2.4" transform="rotate(6 34 22)"></path>' +
+        '<path d="M48 4 L48 12 M44 8 L52 8" stroke="#C2552F" stroke-width="2" transform="rotate(-10 48 8)"></path></svg>';
+    } else if (note.d === 'split') {
+      // one crowded road, one open one
+      D = '<svg width="62" height="46" viewBox="0 0 50 38" fill="none" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M25 36 L25 22 C 25 16, 12 14, 10 5" stroke="#2A2118" stroke-width="2.2"></path>' +
+        '<path d="M25 22 C 25 16, 38 14, 40 5" stroke="#C2552F" stroke-width="2.2"></path>' +
+        '<path d="M36 9 L40 4 L44 9" stroke="#C2552F" stroke-width="2.2"></path></svg>';
+    } else if (note.d === 'q') {
+      // a big scribbled question mark for the question cards
+      D = '<svg width="40" height="56" viewBox="0 0 26 42" fill="none" stroke-linecap="round">' +
+        '<path d="M4 10 C 4 4, 12 1, 17 4 C 23 7, 23 14, 17 18 C 14 20, 13 22, 13 27" stroke="#C2552F" stroke-width="3" transform="rotate(5 13 21)"></path>' +
+        '<circle cx="13" cy="36" r="2.4" fill="#C2552F"></circle></svg>';
+    }
+    if (!D) return '';
+    return '<div style="margin-top:14px; transform:rotate(-2deg); opacity:0.92;">' + D + '</div>';
+  }
+
+  // The "why" can be a plain string or { intro, bullets[], outro } — bullets render as a
+  // handwritten-adjacent list (Nic: the follow-up card's "3 lines" must BE 3 lines).
+  function adviceWhyHtml(why) {
+    if (typeof why === 'string') {
+      return '<div style="font-family:\'Poppins\',sans-serif; font-size:14.5px; line-height:1.65; color:#3a3026;">' + esc(why) + '</div>';
+    }
+    var h = '';
+    if (why.intro) h += '<div style="font-family:\'Poppins\',sans-serif; font-size:14.5px; line-height:1.65; color:#3a3026;">' + esc(why.intro) + '</div>';
+    if (why.bullets && why.bullets.length) {
+      h += '<div style="margin:10px 0 0 4px;">';
+      for (var b = 0; b < why.bullets.length; b++) {
+        h += '<div style="display:flex; gap:9px; align-items:baseline; margin-top:7px;">' +
+          '<span style="flex:none; font-family:\'Indie Flower\',cursive; font-weight:700; font-size:16px; color:#C2552F;">•</span>' +
+          '<span style="font-family:\'Poppins\',sans-serif; font-size:14.5px; line-height:1.55; color:#3a3026;">' + esc(why.bullets[b]) + '</span></div>';
+      }
+      h += '</div>';
+    }
+    if (why.outro) h += '<div style="font-family:\'Poppins\',sans-serif; font-size:14.5px; line-height:1.65; color:#3a3026; margin-top:12px;">' + esc(why.outro) + '</div>';
+    return h;
+  }
+
+  // ── advice note card (in the grid) — TL;DR-popup paper, visually NOT a job card ────────────
+  function adviceCardHtml(note, mode, seq, ACC) {
+    var rot = (seq % 2 === 0) ? -1.6 : 1.8;
+    var cls = mode === 'm' ? 'su-ins-m' : 'su-ins-d';
+    return '<div class="note su-advice ' + cls + '" data-act="openAdvice" data-note="' + esc(note.id) + '" data-imp="note_view|' + esc(note.id) + '|' + esc(note.hook) + '" style="--rot:' + rot + 'deg; cursor:pointer; position:relative; background-color:#FCFAF3; background-image:repeating-linear-gradient(180deg, transparent 0 24px, rgba(96,130,170,0.30) 24px 25px); background-position:0 60px; color:#2A2118; border-radius:3px; padding:32px 22px 18px 30px; box-sizing:border-box; display:flex; flex-direction:column; min-height:238px; box-shadow:3px 6px 13px rgba(44,33,24,0.17);">' +
+      '<div style="position:absolute; top:0; bottom:0; left:18px; width:1.5px; background:rgba(214,80,46,0.38);"></div>' +
+      '<div style="position:absolute; top:-11px; left:50%; transform:translateX(-50%) rotate(-2.5deg); width:92px; height:24px; background:rgba(228,202,128,0.6); border-left:1px dashed rgba(255,255,255,.5); border-right:1px dashed rgba(255,255,255,.5); box-shadow:0 1px 2px rgba(0,0,0,.1); z-index:3;"></div>' +
+      '<div style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:15px; color:#8A7558; transform:rotate(-1deg);">note to self ↓</div>' +
+      '<div style="position:relative; display:inline-block; margin-top:6px;">' +
+        '<div style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:24px; line-height:1.22; color:#2A2118;">' + esc(note.hook) + '</div>' +
+        '<svg width="120" height="9" viewBox="0 0 120 9" fill="none" style="position:absolute; left:0; bottom:-4px;"><path d="M2 6 C 40 2, 80 2, 118 5" stroke="' + ACC + '" stroke-width="3.5" stroke-linecap="round"></path></svg>' +
+      '</div>' +
+      (note.sub ? '<div style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:18px; color:#6F5E45; margin-top:9px; transform:rotate(-0.6deg);">' + esc(note.sub) + '</div>' : '') +
+      adviceGraphicHtml(note, ACC, false) +
+      adviceDoodleHtml(note) +
+      '<div style="flex:1; min-height:12px;"></div>' +
+      // The flip CTA continues the thought ("wait, why monday?" · "you could just..."), it doesn't
+      // repeat a generic "find out why" 16 times. Slightly larger than before — it's the click.
+      '<div style="display:flex; justify-content:flex-end;"><span style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:20px; color:#C2552F; display:inline-flex; align-items:center; gap:4px;">' + esc(note.cta || 'find out why') + '<svg class="doodle-arrow" width="28" height="14" viewBox="0 0 28 14" fill="none" style="overflow:visible; margin-left:2px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>' +
+    '</div>';
+  }
+
+  // ── newsletter signup card (in the grid) — a note in the notebook, not an ad ───────────────
+  // ✕ hides ALL signup cards until reload (same _recipeHidden flag as the popup block, so the
+  // dismissal is consistent everywhere — UX rule #9).
+  // NO EMAIL FIELD IN THE FEED (Nic, 2026-07-18: "that just reads like an ad"). Email fields live
+  // in POPUPS only. The card is now a hook + a "get the recipe" flip, exactly like an advice note —
+  // click it and the popup carries the field.
+  //
+  // This is ALSO the fix for the board feeling slow: every setState rebuilds the grid's HTML, and
+  // each of these cards used to carry a LIVE Beehiiv iframe — so every popup open re-fetched ~a
+  // dozen iframes from the network. That was the ~2s lag AND the "arrow but no email field" bug
+  // (fields still loading mid-rebuild). Cards are now pure HTML; iframes exist only in popups.
+  function signupCardHtml(mode, seq) {
+    // The 50-line bank was written for POPUPS, where a trailing "↓" points at the email field
+    // directly below. On a grid card there IS no field below (Nic: "the arrow points at nothing"),
+    // so strip any trailing arrow before rendering here. Popups keep theirs.
+    var line = signupLine(seq).replace(/\s*[↓→]\s*$/, '');
+    var rot = (seq % 2 === 0) ? 1.4 : -1.4;
+    var cls = mode === 'm' ? 'su-ins-m' : 'su-ins-d';
+    return '<div class="note su-signup ' + cls + '" data-act="openSignup" data-line="' + esc(line) + '" data-imp="signup_view|' + esc(line) + '|card" style="--rot:' + rot + 'deg; cursor:pointer; position:relative; background-color:#FCFAF3; background-image:repeating-linear-gradient(180deg, transparent 0 24px, rgba(96,130,170,0.30) 24px 25px); background-position:0 52px; color:#2A2118; border-radius:3px; padding:30px 22px 16px 30px; box-sizing:border-box; display:flex; flex-direction:column; min-height:210px; box-shadow:3px 6px 13px rgba(44,33,24,0.17);">' +
+      '<div style="position:absolute; top:0; bottom:0; left:18px; width:1.5px; background:rgba(214,80,46,0.38);"></div>' +
+      '<div style="position:absolute; top:-11px; left:50%; transform:translateX(-50%) rotate(2deg); width:92px; height:24px; background:rgba(228,202,128,0.6); border-left:1px dashed rgba(255,255,255,.5); border-right:1px dashed rgba(255,255,255,.5); box-shadow:0 1px 2px rgba(0,0,0,.1); z-index:3;"></div>' +
+      '<div data-act="hideSignupCards" data-co="' + esc(line) + '" title="hide these" style="position:absolute; top:8px; right:8px; width:22px; height:22px; border-radius:50%; background:rgba(44,33,24,0.06); display:flex; align-items:center; justify-content:center; cursor:pointer; font-family:\'Archivo\',sans-serif; font-size:12px; color:#6F5E45; z-index:4;">✕</div>' +
+      '<div style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:21px; line-height:1.3; color:#2A2118; padding-right:22px; margin-top:4px;">' + esc(line) + '</div>' +
+      '<div style="flex:1; min-height:14px;"></div>' +
+      '<div style="display:flex; justify-content:flex-end;"><span style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:20px; color:#C2552F; display:inline-flex; align-items:center; gap:4px;">get the recipe<svg class="doodle-arrow" width="28" height="14" viewBox="0 0 28 14" fill="none" style="overflow:visible; margin-left:2px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>' +
+      '<div style="font-family:\'Indie Flower\',cursive; font-size:15px; color:#8A7558; margin-top:6px;">free · every week · easy unsub&nbsp;&nbsp;- Nic</div>' +
+    '</div>';
+  }
+
   // Log a "recipe_view" when a popup carrying the capture block is opened, so the Reports sheet can
   // compute views vs hides vs signups PER LINE — that's how we learn which of the 50 actually earns.
   function suRecipeView(link, comp) {
@@ -127,7 +487,7 @@
       if (!link || (comp && comp._recipeHidden) || !comp || !comp.jobs) return;
       var job = null;
       for (var j = 0; j < comp.jobs.length; j++) { if (comp.jobs[j].link === link) { job = comp.jobs[j]; break; } }
-      if (!job || !recipeShows(job._pos)) return;
+      if (!job) return;   // block shows in EVERY popup now (2026-07-18) — log every open
       // 30+ day cards don't show the block (they carry the age line instead) — don't log a view
       var src = job.posted || job.added || '';
       if (src) { var ad = new Date(String(src).trim().slice(0, 10) + 'T00:00:00'); if (!isNaN(ad.getTime()) && Math.floor((Date.now() - ad.getTime()) / 86400000) >= 30) return; }
@@ -562,6 +922,8 @@
       savedOnly: false,
       openNotes: {},
       openPanel: null,
+      adviceOpen: null,   // id of the open advice-note popup (null = closed)
+      signupOpen: null,   // hook line of the open signup popup (null = closed) — feed cards open this
       modalOpen: false,
       feedbackOpen: false,
       feedbackCo: '',
@@ -1115,9 +1477,19 @@
       return { base: base, shown: shown };
     },
 
+    // Popups live in #overlay-root; the card grid lives in #board. When a state change ONLY
+    // touches popup state, rebuilding the grid is pure waste — and with ~170 jobs plus the
+    // interleaved advice/signup cards (both cadences), that waste measured ~1 SECOND per click
+    // on localhost (Nic: "it used to be really smooth"). So: overlay-only patches re-render
+    // overlays only. Anything else (filters, search, theme, jobs) still does the full render.
+    OVERLAY_KEYS: { detailOpen: 1, detailLink: 1, feedbackOpen: 1, feedbackCo: 1, feedbackLink: 1,
+                    adviceOpen: 1, signupOpen: 1, lookOpen: 1, aboutOpen: 1, modalOpen: 1 },
     setState: function (patch) {
       Object.assign(this.state, patch);
-      this.render();
+      var overlayOnly = true;
+      for (var k in patch) { if (!this.OVERLAY_KEYS[k]) { overlayOnly = false; break; } }
+      if (overlayOnly) this.renderOverlays();
+      else this.render();
     },
 
     // =======================================================================
@@ -1338,12 +1710,35 @@
             '</div>';
           }
         }
-        html += '<a class="applylink2" href="' + esc(j.link) + '" target="_blank" rel="noopener" data-act="apply" data-co="' + esc(j.co) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 15.5px; color: ' + applyColor + '; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-left: auto;">apply<svg class="doodle-arrow" width="28" height="14" viewBox="0 0 28 14" fill="none" style="overflow: visible; margin-left: 2px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>';
+        html += '<a class="applylink2" href="' + esc(j.link) + '" target="_blank" rel="noopener" data-act="apply" data-co="' + esc(j.co) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 15.5px; color: ' + applyColor + '; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-left: auto;">Apply Now<svg class="doodle-arrow" width="28" height="14" viewBox="0 0 28 14" fill="none" style="overflow: visible; margin-left: 2px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>';
         html += '</div>';
 
         html += '</div>'; // .note
         return html;
-      }).join('');
+      });
+
+      // ---- interleave advice notes + signup cards into the feed (2026-07-18) ----
+      // Two cadences live in the same DOM: .su-ins-d (desktop: note = every 3rd row's middle
+      // slot, signup = a row-end two rows later) and .su-ins-m (mobile: J J S J J N). CSS
+      // display:none removes the hidden set from the grid flow, so each viewport only ever
+      // sees its own cadence. Saved-only view stays pure jobs (no notes, no signup cards).
+      var feedHtml = '';
+      if (!this.state.savedOnly && shown.length) {
+        var insD = suFeedSchedule(shown.length, false, !this._recipeHidden);
+        var insM = suFeedSchedule(shown.length, true, !this._recipeHidden);
+        var addIns = function (list, mode) {
+          (list || []).forEach(function (it) {
+            feedHtml += (it.t === 'note') ? adviceCardHtml(adviceAt(it.n), mode, it.n, ACC) : signupCardHtml(mode, it.n);
+          });
+        };
+        for (var fi = 0; fi < cardsHtml.length; fi++) {
+          addIns(insD[fi], 'd');
+          addIns(insM[fi], 'm');
+          feedHtml += cardsHtml[fi];
+        }
+      } else {
+        feedHtml = cardsHtml.join('');
+      }
 
       // ---- states list for the <select> ----
       var states = Array.from(new Set(this.jobs.map(function (j) { return j.state; }))).sort();
@@ -1498,9 +1893,9 @@
         '</div>';
       }
 
-      // card grid
+      // card grid (jobs + interleaved advice notes / signup cards)
       out += '<div class="job-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(298px, 1fr)); gap: 54px 40px; margin-top: 32px; padding: 12px 8px 0;">' +
-        cardsHtml +
+        feedHtml +
       '</div>';
 
       // empty state
@@ -1538,6 +1933,38 @@
 
       // ---- overlays (modal + feedback popup) live in #overlay-root ----
       this.renderOverlays();
+
+      // note/signup impressions (once per element key per page load — no scroll spam)
+      this.observeImpressions();
+    },
+
+    // Impression logging for advice notes + signup cards, per the UX rules ("note
+    // impressions, note opens, note→newsletter clicks"). IntersectionObserver at 50%
+    // visibility, each data-imp key fires ONCE per page load (re-renders reuse the same
+    // keys, so filter churn can't double-count). Hidden-cadence duplicates never
+    // intersect, so each note/card counts once no matter the viewport.
+    observeImpressions: function () {
+      if (!('IntersectionObserver' in window)) return;
+      var self = this;
+      this._impFired = this._impFired || {};
+      if (!this._impObs) {
+        this._impObs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (!en.isIntersecting) return;
+            var key = en.target.getAttribute('data-imp') || '';
+            self._impObs.unobserve(en.target);
+            if (!key || self._impFired[key]) return;
+            self._impFired[key] = 1;
+            var p = key.split('|');
+            if (typeof window.suTrack === 'function') window.suTrack(p[0] || '', (p[1] || '').slice(0, 60), (p[2] || '').slice(0, 60), '');
+          });
+        }, { threshold: 0.5 });
+      }
+      var els = document.querySelectorAll('[data-imp]');
+      for (var i = 0; i < els.length; i++) {
+        var k = els[i].getAttribute('data-imp');
+        if (k && !this._impFired[k]) this._impObs.observe(els[i]);
+      }
     },
 
     renderOverlays: function () {
@@ -1630,8 +2057,12 @@
           // Frequency + all 50 copy lines live in RECIPE_EVERY / RECIPE_COPY at the top of this
           // file. Do NOT redefine them here — that duplication is exactly what drifted before.
           // Hidden = in-memory only, so an accidental ✕ comes back on reload.
-          var _rShow = recipeShows(dj._pos) && !this._recipeHidden;
-          var _rCopy = recipeShows(dj._pos) ? recipeCopy(dj._pos) : '';
+          // EVERY job popup carries the email block now (Nic, 2026-07-18: fields live in popups,
+          // and popups should be consistent — "sometimes there is, sometimes there isn't" felt
+          // broken). The ✕ still hides it for the session. recipeShows() now only governs which
+          // grid positions get signup CARDS, not popups.
+          var _rShow = !this._recipeHidden;
+          var _rCopy = recipeCopy(dj._pos || 0);   // every popup gets a line now, whatever its position
           var _arrow = '<svg width="30" height="15" viewBox="0 0 28 14" fill="none" style="overflow: visible; margin-left: 5px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
           // Age disclaimer (Nic, 2026-07-11). We never retire a role for being old — old roles STAY on the
           // board (a fuller board), and we disclose the age here, in the popup only, never on the card face.
@@ -1690,18 +2121,71 @@
                 (_ageNote
                   ? '<span style="font-family: \'Indie Flower\', cursive; font-size: 16.5px; color: #C2552F; line-height: 1.2; text-align: left; max-width: 60%;">' + _ageNote + '</span>'
                   : '<span></span>') +
-                '<span data-act="detailApply" data-link="' + esc(dj.link) + '" data-co="' + esc(dj.co) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 21px; color: ' + _applyC + '; display: inline-flex; align-items: center; cursor: pointer; flex: none;">apply' + _arrow + '</span>' +
+                '<span data-act="detailApply" data-link="' + esc(dj.link) + '" data-co="' + esc(dj.co) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 21px; color: ' + _applyC + '; display: inline-flex; align-items: center; cursor: pointer; flex: none;">Apply Now' + _arrow + '</span>' +
               '</div>' +
               // recipe capture: rotating one-liner + Beehiiv embed. ✕ hides it until reload.
               (!_rShow ? '' :
               '<div style="margin-top: 20px; border-top: 1.5px dashed rgba(44,33,24,0.22); padding-top: 12px; position: relative;">' +
                 '<div data-act="hideRecipe" data-co="' + esc(_rCopy) + '" data-link="' + esc(dj.link) + '" title="hide this" style="position: absolute; top: 5px; right: 0; width: 20px; height: 20px; border-radius: 50%; background: rgba(44,33,24,0.06); display: flex; align-items: center; justify-content: center; cursor: pointer; font-family: \'Archivo\', sans-serif; font-size: 11px; color: #6F5E45;">✕</div>' +
                 '<div style="font-family: \'Indie Flower\', cursive; font-size: 16px; color: #2C2118; line-height: 1.3; padding-right: 26px;">' + esc(_rCopy) + '</div>' +
-                '<iframe src="https://subscribe-forms.beehiiv.com/af2e314d-125f-431d-a8e0-0020be04d97c" data-test-id="beehiiv-embed" height="50" frameborder="0" scrolling="no" style="width: 100%; max-width: 100%; border: 0; border-radius: 4px; background: transparent; margin-top: 9px; display: block; overflow: hidden;"></iframe>' +
+                '<iframe src="https://subscribe-forms.beehiiv.com/af2e314d-125f-431d-a8e0-0020be04d97c" data-test-id="beehiiv-embed" data-cta="signup:' + esc(_rCopy) + '" height="50" frameborder="0" scrolling="no" style="width: 100%; max-width: 100%; border: 0; border-radius: 4px; background: transparent; margin-top: 9px; display: block; overflow: hidden;"></iframe>' +
               '</div>') +
             '</div>' +
           '</div>';
         }
+      }
+
+      // Advice-note popup (2026-07-18) — same lined paper as the TL;DR popup. ONE more line
+      // (the why), then the newsletter funnel with the same Beehiiv embed the job popups use.
+      if (this.state.adviceOpen) {
+        var _an = null;
+        for (var _ai = 0; _ai < ADVICE_NOTES.length; _ai++) { if (ADVICE_NOTES[_ai].id === this.state.adviceOpen) { _an = ADVICE_NOTES[_ai]; break; } }
+        if (_an) {
+          var _accA = (this.THEMES[this.state.look] || this.THEMES.original).acc;
+          out += '<div data-act="closeAdvice" style="position: fixed; inset: 0; z-index: 214; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
+            '<div data-act="stop" style="margin: auto; position: relative; width: 410px; max-width: 100%; box-sizing: border-box; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 32px, rgba(96,130,170,0.20) 32px 33px); background-position: 0 92px; border-radius: 4px; box-shadow: 5px 18px 44px rgba(44,33,24,0.34); transform: rotate(-1deg); padding: 30px 30px 26px 48px;">' +
+              '<div style="position: absolute; top: 0; bottom: 0; left: 36px; width: 1.5px; background: rgba(214,80,46,0.4);"></div>' +
+              '<div style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(-2.5deg); width: 120px; height: 28px; background: rgba(228,202,128,0.6); border-left: 1px dashed rgba(255,255,255,.5); border-right: 1px dashed rgba(255,255,255,.5); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>' +
+              '<div data-act="closeAdvice" style="position: absolute; top: 11px; right: 13px; width: 27px; height: 27px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
+                '<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.4" stroke-linecap="round"></path></svg>' +
+              '</div>' +
+              '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 15px; color: #8A7558; transform: rotate(-1deg);">note to self ↓</div>' +
+              '<div style="position: relative; display: inline-block; margin-top: 8px; padding-right: 26px;">' +
+                '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 27px; line-height: 1.25; color: #2A2118;">' + esc(_an.hook) + '</div>' +
+                '<svg width="140" height="9" viewBox="0 0 140 9" fill="none" style="position: absolute; left: 0; bottom: -4px;"><path d="M2 6 C 45 2, 95 2, 138 5" stroke="' + _accA + '" stroke-width="3.5" stroke-linecap="round"></path></svg>' +
+              '</div>' +
+              (_an.sub ? '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 19px; color: #6F5E45; margin-top: 10px;">' + esc(_an.sub) + '</div>' : '') +
+              // Nic's layout note: the back felt cramped — handwriting into body text into handwriting
+              // with no air. Each section now gets real margin, and the why supports bullets.
+              adviceGraphicHtml(_an, _accA, true) +
+              adviceDoodleHtml(_an) +
+              '<div style="margin-top: 20px;">' + adviceWhyHtml(_an.why) + '</div>' +
+              '<div style="margin-top: 24px; border-top: 1.5px dashed rgba(44,33,24,0.22); padding-top: 16px;">' +
+                '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 17px; color: #2C2118; line-height: 1.4;">' + esc(_an.sell || 'the exact recipe that got me my job at Instagram ↓') + '</div>' +
+                '<iframe src="https://subscribe-forms.beehiiv.com/af2e314d-125f-431d-a8e0-0020be04d97c" data-test-id="beehiiv-embed" data-cta="note:' + esc(_an.id) + '" height="50" frameborder="0" scrolling="no" style="width: 100%; max-width: 100%; border: 0; border-radius: 4px; background: transparent; margin-top: 12px; display: block; overflow: hidden;"></iframe>' +
+                '<div style="font-family: \'Indie Flower\', cursive; font-size: 14.5px; color: #8A7558; margin-top: 8px;">free · every week · easy unsub&nbsp;&nbsp;- Nic</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }
+      }
+
+      // Signup popup (2026-07-18) — opened by tapping a grid signup card. The ONLY place outside
+      // the job/advice popups where an email field exists; the feed itself never shows one.
+      if (this.state.signupOpen) {
+        out += '<div data-act="closeSignup" style="position: fixed; inset: 0; z-index: 214; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
+          '<div data-act="stop" style="margin: auto; position: relative; width: 400px; max-width: 100%; box-sizing: border-box; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 32px, rgba(96,130,170,0.20) 32px 33px); background-position: 0 80px; border-radius: 4px; box-shadow: 5px 18px 44px rgba(44,33,24,0.34); transform: rotate(-1deg); padding: 30px 30px 26px 48px;">' +
+            '<div style="position: absolute; top: 0; bottom: 0; left: 36px; width: 1.5px; background: rgba(214,80,46,0.4);"></div>' +
+            '<div style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 120px; height: 28px; background: rgba(228,202,128,0.6); border-left: 1px dashed rgba(255,255,255,.5); border-right: 1px dashed rgba(255,255,255,.5); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>' +
+            '<div data-act="closeSignup" style="position: absolute; top: 11px; right: 13px; width: 27px; height: 27px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
+              '<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.4" stroke-linecap="round"></path></svg>' +
+            '</div>' +
+            '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 24px; line-height: 1.3; color: #2A2118; padding-right: 24px;">' + esc(this.state.signupOpen) + '</div>' +
+            '<div style="font-family: \'Poppins\', sans-serif; font-size: 14px; line-height: 1.6; color: #3a3026; margin-top: 14px;">One email a week: the exact steps I used to go from 1,500 applications and silence to a 6-figure offer at Instagram.</div>' +
+            '<iframe src="https://subscribe-forms.beehiiv.com/af2e314d-125f-431d-a8e0-0020be04d97c" data-test-id="beehiiv-embed" data-cta="signup-popup" height="50" frameborder="0" scrolling="no" style="width: 100%; max-width: 100%; border: 0; border-radius: 4px; background: transparent; margin-top: 16px; display: block; overflow: hidden;"></iframe>' +
+            '<div style="font-family: \'Indie Flower\', cursive; font-size: 14.5px; color: #8A7558; margin-top: 8px;">free · every week · easy unsub&nbsp;&nbsp;- Nic</div>' +
+          '</div>' +
+        '</div>';
       }
 
       // "Change Look?" popup (markup + copy ported verbatim from MAIN FILE)
@@ -1877,6 +2361,30 @@
             postReport('recipe_hide', el.getAttribute('data-co') || '', el.getAttribute('data-link') || '');
             self.setState({});
             break;
+          case 'hideSignupCards':
+            // ✕ on a grid signup card = hide ALL signup cards until reload (same flag as the
+            // popup capture block, so one dismissal silences every signup surface — UX rule #9)
+            e.stopPropagation();
+            self._recipeHidden = true;
+            if (typeof window.suTrack === 'function') window.suTrack('signup_hide', (el.getAttribute('data-co') || '').slice(0, 60), 'card', '');
+            self.setState({});
+            break;
+          case 'openAdvice': {
+            var _nid = el.getAttribute('data-note') || '';
+            var _no = null;
+            for (var _nj = 0; _nj < ADVICE_NOTES.length; _nj++) { if (ADVICE_NOTES[_nj].id === _nid) { _no = ADVICE_NOTES[_nj]; break; } }
+            if (typeof window.suTrack === 'function') window.suTrack('note_open', _nid, _no ? _no.hook.slice(0, 60) : '', '');
+            self.setState({ adviceOpen: _nid });
+            break;
+          }
+          case 'closeAdvice': self.setState({ adviceOpen: null }); break;
+          case 'openSignup': {
+            var _sl = el.getAttribute('data-line') || 'the exact recipe that got me my job at Instagram';
+            if (typeof window.suTrack === 'function') window.suTrack('signup_open', _sl.slice(0, 60), '', '');
+            self.setState({ signupOpen: _sl });
+            break;
+          }
+          case 'closeSignup': self.setState({ signupOpen: null }); break;
           case 'detailShare': {
             var sl = el.getAttribute('data-link'), sj = null;
             for (var si = 0; si < self.jobs.length; si++) { if (self.jobs[si].link === sl) { sj = self.jobs[si]; break; } }
@@ -2005,6 +2513,24 @@
       });
       document.addEventListener('focusout', function (e) {
         if (e.target && e.target.id === 'su-search') self._searchFocused = false;
+      });
+
+      // note→newsletter + signup-card clicks happen INSIDE the Beehiiv iframe, which we can't
+      // listen into. Proxy: when the window blurs and focus just moved to an embed iframe,
+      // that was a click into it. Fires once per iframe key per page load — no spam.
+      window.addEventListener('blur', function () {
+        try {
+          var ae = document.activeElement;
+          if (!ae || ae.tagName !== 'IFRAME') return;
+          var v = ae.getAttribute('data-cta');
+          if (!v) return;
+          self._ctaFired = self._ctaFired || {};
+          if (self._ctaFired[v]) return;
+          self._ctaFired[v] = 1;
+          var ci = v.indexOf(':');
+          var kind = ci < 0 ? v : v.slice(0, ci), val = ci < 0 ? '' : v.slice(ci + 1);
+          if (typeof window.suTrack === 'function') window.suTrack(kind === 'note' ? 'note_cta' : 'signup_cta', val.slice(0, 60), '', '');
+        } catch (e2) {}
       });
 
       // state <select> (delegated change)

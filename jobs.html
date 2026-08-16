@@ -24,9 +24,11 @@
   <meta name="twitter:image" content="https://stillunemployed.com/assets/og/original.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Warm the Beehiiv connection at load: popup email fields are iframes, and a cold TLS handshake was why a popup could open before its field appeared. -->
+  <link rel="preconnect" href="https://subscribe-forms.beehiiv.com">
   <!-- Black Ops One powers the WW2 "Change Look?" theme label (falls back to Archivo Black) -->
   <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=11">
+  <link rel="stylesheet" href="css/styles.css?v=12">
   <!-- Pre-apply the saved "Change Look?" theme before paint to avoid a color flash -->
   <script>
     (function () {
@@ -65,7 +67,7 @@
   <!-- First-party analytics: defer keeps document order, so this runs BEFORE js/app.js -->
   <script src="js/analytics.js?v=an3" defer></script>
   <!-- Google Analytics 4 (consent-gated, loads only after Accept) -->
-  <script src="js/ga.js?v=1" defer></script>
+  <script src="js/ga.js?v=2" defer></script>
 </head>
 <body>
   <!-- The board is rendered by js/app.js from jobs-data.json, reproducing the exact
@@ -91,7 +93,7 @@
     <a href="./terms.html">Terms of Service</a>
   </footer>
 
-  <script src="js/app.js?v=app32" defer></script>
+  <script src="js/app.js?v=app35" defer></script>
   <!-- Google sign-in + cross-device sync. HARD-GATED OFF on stillunemployed.com (see js/auth.js). -->
   <script type="module" src="js/auth.js?v=auth5"></script>
 </body>
