@@ -891,7 +891,7 @@
         status: 'Applied',
         notes: ''
       });
-      localStorage.setItem('su_tracker', JSON.stringify(rows));
+      if (window.SUStore) window.SUStore.saveTracker(rows); else localStorage.setItem('su_tracker', JSON.stringify(rows));
     } catch (e) { /* tracker is a bonus; never block the confirm flow */ }
   }
 
@@ -1289,7 +1289,7 @@
     toggleSave: function (key) {
       var saved = Object.assign({}, this.state.saved);
       if (saved[key]) delete saved[key]; else saved[key] = true;
-      try { localStorage.setItem('su_saved_jobs', JSON.stringify(saved)); } catch (e) {}
+      try { if (window.SUStore) window.SUStore.saveSaved(saved); else localStorage.setItem('su_saved_jobs', JSON.stringify(saved)); } catch (e) {}
       // analytics (js/analytics.js): log SAVES only, not unsaves — additive no-op without it
       if (saved[key] && typeof window.suTrack === 'function') {
         var sj = null;
@@ -1812,12 +1812,13 @@
         '</div>' +
         // the row div carries the theme nav colors as CSS vars so class-styled
         // anchors recolor with the look too
-        '<div style="position: absolute; top: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px; --su-nav-bg: ' + navBg + '; --su-nav-ink: ' + navInk + ';">' +
+        '<div class="su-main-nav" style="position: absolute; top: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px; --su-nav-bg: ' + navBg + '; --su-nav-ink: ' + navInk + ';">' +
           '<a href="./index.html" class="postit" style="--r: -3deg; background: ' + navBg + '; color: ' + navInk + '; font-family: \'Indie Flower\', cursive; font-size: 21px; letter-spacing: 0.01em; padding: 10px 20px; cursor: pointer; text-decoration: none; display: inline-block;">Home</a>' +
           '<a href="./jobs.html" class="postit" style="--r: 2.5deg; background: ' + navBg + '; color: ' + navInk + '; font-family: \'Indie Flower\', cursive; font-size: 21px; letter-spacing: 0.01em; padding: 10px 20px; cursor: pointer; text-decoration: none; display: inline-block;">Jobs</a>' +
           // Tracker tab removed Jul 3 2026 (Nic) — tracker.html + tracker.js + trackerLog() stay
           // in the repo but unlinked, so there's no UI way to reach it while we rework it.
           '<a href="./tracker.html" class="postit" style="--r: -2deg; background: ' + navBg + '; color: ' + navInk + '; font-family: \'Indie Flower\', cursive; font-size: 21px; letter-spacing: 0.01em; padding: 10px 20px; cursor: pointer; text-decoration: none;">Tracker' + suTrkBadge() + '</a>' +
+          '<span class="su-account-slot"></span>' +
         '</div>' +
       '</div>';
 
@@ -2604,6 +2605,10 @@
         var _hid = JSON.parse(localStorage.getItem('su_reported_links') || '[]');
         if (_hid.length) jobs = jobs.filter(function (j) { return _hid.indexOf(j.link) < 0; });
       } catch (eRH) {}
+      var self = this;
+      window.addEventListener('su:data-sync', function () { self.state.saved = loadSaved(); self.render(); });
+      window.addEventListener('storage', function (e) { if (e.key === 'su_saved_jobs' || e.key === 'su_tracker') { self.state.saved = loadSaved(); self.render(); } });
+      this.state.saved = loadSaved();
       this.jobs = this.shuffleFresh(jobs);
       this.bindEvents();
       // analytics: a ?theme= content preset (theme-chip) counts as an applied filter — additive

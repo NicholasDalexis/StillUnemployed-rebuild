@@ -1,0 +1,17 @@
+/* A Google icon in the navigation, moving with the page. */
+.su-account-slot:empty { display:none; }
+.su-account-slot { display:inline-flex; flex:none; align-items:center; }
+.su-auth-button { position:relative; display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; flex:none; padding:0; background:#FCFAF3; border:1px solid #dadce0; border-radius:50%; cursor:pointer; box-shadow:1px 3px 7px #2c21181c; }
+.su-auth-button svg { width:20px; height:20px; }
+.su-auth-button:focus-visible { outline:3px solid #D8502E; outline-offset:3px; }
+.su-auth-button[data-state="synced"]::after { content:""; position:absolute; bottom:1px; right:1px; width:9px; height:9px; background:#28773d; border:2px solid #FCFAF3; border-radius:50%; }
+.su-auth-button[data-state="error"]::after { content:"!"; position:absolute; right:-3px; top:-5px; color:#fff; background:#b23a1e; border-radius:50%; font:bold 12px/17px sans-serif; width:17px; }
+.su-auth-button:disabled { opacity:.55; cursor:wait; }
+@media(max-width:700px) {
+  #board > div:first-of-type > .su-main-nav { flex-wrap:nowrap !important; gap:8px !important; }
+  #board > div:first-of-type > .su-main-nav a { padding:10px 12px !important; font-size:17px !important; }
+}
+@media(max-width:360px) {
+  #board > div:first-of-type > .su-main-nav { gap:6px !important; }
+  #board > div:first-of-type > .su-main-nav a { padding:10px 9px !important; font-size:16px !important; }
+}

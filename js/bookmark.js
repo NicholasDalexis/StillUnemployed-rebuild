@@ -92,10 +92,10 @@
   function buildMobile() {
     var el = document.createElement('div');
     el.id = 'su-bm-bar';
+    el.className = 'su-bm-inline';
     el.innerHTML =
-      '<span class="su-bm-emoji">📌</span>' +
       '<span class="su-bm-txt">don’t lose this board forever. bookmark us.</span>' +
-      '<span class="su-bm-x" title="dismiss">✕</span>';
+      '<button type="button" class="su-bm-x" aria-label="Dismiss bookmark reminder">✕</button>';
     el.querySelector('.su-bm-x').addEventListener('click', function () {
       el.classList.remove('su-bm-in');
       setTimeout(function () { if (el.parentNode) el.remove(); }, 440);
@@ -114,8 +114,10 @@
     var mobile = window.innerWidth <= 640;
     if (mobile) {
       var bar = buildMobile();
-      document.body.appendChild(bar);
-      // let it paint at -100% first, then slide in
+      var stage = document.getElementById('resp-stage');
+      if (stage) stage.insertAdjacentElement('afterend', bar);
+      else document.body.appendChild(bar);
+      // Preserve the dismissal state class; the mobile reminder now sits in document flow.
       requestAnimationFrame(function () { requestAnimationFrame(function () { bar.classList.add('su-bm-in'); }); });
     } else {
       var postit = buildDesktop();

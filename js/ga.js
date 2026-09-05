@@ -100,6 +100,7 @@
   }
   window.addEventListener('pagehide', flushTime);
 
+  var isBoardPage = /\/(?:jobs(?:\/.*|\.html)?|tracker(?:\.html)?)\/?$/.test(location.pathname);
   // ---- consent banner (unchanged look; Accept now upgrades Consent Mode) ----
   if (consent() === 'granted' || consent() === 'denied') return;
   function injectStyle() {
@@ -128,18 +129,21 @@
         '.su-cc-row{gap:9px;}',
         '.su-cc-accept{font-size:11.5px;padding:4px 11px;}',
         '.su-cc-decline{font-size:11px;}}'
+      ,'.su-cc.su-cc-inline{position:relative;left:auto;right:auto;bottom:auto;width:auto;max-width:760px;margin:12px auto 0;padding:10px 16px;background:#FCFAF3;color:#2C2118;transform:none;animation:none;box-shadow:none;border-bottom:1px solid #c9bfae;border-radius:0;z-index:1;display:flex;align-items:center;gap:14px;box-sizing:border-box;}'
+      ,'.su-cc.su-cc-inline::before{display:none;}.su-cc-inline .su-cc-t{font-size:14px;margin:0;line-height:1.3;flex:1;}.su-cc-inline .su-cc-row{flex:none;gap:8px;}.su-cc-inline button{min-height:44px;font-size:14px;}.su-cc-inline .su-cc-accept{color:#FCFAF3;}'
+      ,'@media(max-width:640px){.su-cc.su-cc-inline{margin:8px 12px 0;display:block;padding:8px 10px;}.su-cc-inline .su-cc-row{justify-content:flex-end;}.su-cc-inline .su-cc-t{font-size:13px;}.su-cc-inline .su-cc-decline{padding:4px 12px;}}'
     ].join('');
     document.head.appendChild(st);
   }
   function showBanner() {
     injectStyle();
     var bar = document.createElement('div');
-    bar.className = 'su-cc';
+    bar.className = 'su-cc' + (isBoardPage ? ' su-cc-inline' : '');
     bar.setAttribute('role', 'dialog');
     bar.setAttribute('aria-label', 'Cookie notice');
     bar.innerHTML =
-      '<p class="su-cc-t">We use cookies to see how many people visit (and from where) so I can make the board better. ' +
-      'Nothing sold, no ads. <a href="./privacy.html">Privacy</a></p>' +
+      '<p class="su-cc-t">' + (isBoardPage ? 'Cookies help me improve this board. No ads, nothing sold. ' : 'We use cookies to see how many people visit (and from where) so I can make the board better. Nothing sold, no ads. ') +
+      '<a href="./privacy.html">Privacy</a></p>' +
       '<div class="su-cc-row">' +
         '<button type="button" class="su-cc-accept">Accept</button>' +
         '<button type="button" class="su-cc-decline">No thanks</button>' +
@@ -151,7 +155,8 @@
       close();
     });
     bar.querySelector('.su-cc-decline').addEventListener('click', function () { setConsent('denied'); close(); });
-    document.body.appendChild(bar);
+    if (isBoardPage) document.body.insertBefore(bar, document.body.firstChild);
+    else document.body.appendChild(bar);
   }
   if (document.body) showBanner();
   else document.addEventListener('DOMContentLoaded', showBanner);

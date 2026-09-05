@@ -27,11 +27,13 @@
   <meta name="twitter:title" content="Still Unemployed?">
   <meta name="twitter:description" content="A real human (me) opens and checks the jobs before we add them. No AI slop. Just roles I would apply to myself.">
   <meta name="twitter:image" content="https://stillunemployed.com/assets/og/home.png?v=3">
-  <link rel="stylesheet" href="css/home.css?v=nh3">
+  <link rel="stylesheet" href="css/home.css?v=nh4">
   <!-- First-party analytics: defer keeps document order, so this runs BEFORE js/home.js -->
   <script src="js/analytics.js?v=an3" defer></script>
   <!-- Google Analytics 4 (consent-gated, loads only after Accept) -->
-  <script src="js/ga.js?v=3" defer></script>
+  <script src="js/sync-store.js?v=1" defer></script>
+  <script src="js/ga.js?v=4" defer></script>
+  <link rel="stylesheet" href="css/account.css?v=1">
 </head>
 <body>
 
@@ -53,6 +55,7 @@
       <a href="./index.html" class="postit nav-postit" style="--r: -3deg;">Home</a>
       <a href="./jobs.html" class="postit nav-postit" style="--r: 2.5deg;">Jobs</a>
       <a href="./tracker.html" class="postit nav-postit" style="--r: -2deg;">Tracker</a>
+      <span class="su-account-slot"></span>
     </div>
   </div>
 
@@ -249,6 +252,7 @@
       <a href="./index.html" class="postit nav-postit" style="--r: -3deg;">Home</a>
       <a href="./jobs.html" class="postit nav-postit" style="--r: 2.5deg;">Jobs</a>
       <a href="./tracker.html" class="postit nav-postit" style="--r: -2deg;">Tracker</a>
+      <span class="su-account-slot"></span>
     </div>
   </div>
 
@@ -391,7 +395,7 @@
   .home-footer span, .home-footer a { pointer-events: auto; }
   .home-footer a { color: #8A7558; text-decoration: none; margin: 0 8px; }
   .home-footer a:hover { color: #2C2118; text-decoration: underline; }
-  @media (max-width: 640px) { .home-footer { font-size: 11px; padding: 5px 10px 8px; } }
+  @media (max-width: 640px) { .home-footer { position:relative; font-size: 11px; padding: 5px 10px 8px; } }
 </style>
 <footer class="home-footer">
   <span>&copy; 2026 Elevate Media Technologies LLC</span>
@@ -399,7 +403,7 @@
   <a href="./terms.html">Terms</a>
 </footer>
 
-<script src="js/home.js?v=nh4" defer></script>
+<script src="js/home.js?v=nh5" defer></script>
   <script>
     /* "Tracker (N)" badge on the static nav post-its — digits in Archivo, 99+ cap */
     (function () {
@@ -415,7 +419,7 @@
     })();
   </script>
   <!-- Google sign-in. Desktop-only on the homepage; hard-gated OFF on stillunemployed.com. -->
-  <script src="js/bookmark.js?v=bm1" defer></script>
-  <script type="module" src="js/auth.js?v=auth5"></script>
+  <script src="js/bookmark.js?v=bm2" defer></script>
+  <script type="module" src="js/auth.js?v=auth6"></script>
 </body>
 </html>

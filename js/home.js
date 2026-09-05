@@ -377,23 +377,26 @@
     s.innerHTML =
       '<div class="sn-arrow"><svg viewBox="0 0 52 46" fill="none"><path d="M6 40 C 4 18, 22 8, 46 12" stroke="#d34a32" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M46 12 L 37 11 M46 12 L 41 20" stroke="#d34a32" stroke-width="3" stroke-linecap="round"/></svg></div>' +
       '<div class="sn-card">' +
-        '<div class="sn-close">×</div>' +
-        '<div class="sn-label">open</div>' +
+        '<button type="button" class="sn-close" aria-label="Close note">×</button>' +
+        '<button type="button" class="sn-label" aria-expanded="false">open</button>' +
         // Signature row (Nic, 2026-07-18): circular photo of Nic (at the Instagram wall) LEFT,
         // "– Nic" beside it, row left-aligned — replaces the lone right-aligned "– Nic".
         // onerror hides the circle if assets/nic-avatar.jpg is ever missing: no broken-image icon.
         '<div class="sn-msg">Hi, I’m Nic. I spent 7 months unemployed after graduating in 2025. Today I work at Instagram and make six figures. This is the job board I wish I had, so I built it. Have fun!' +
           '<span class="sn-sig"><img class="sn-ava" src="assets/nic-avatar.jpg" alt="Nic at the Instagram office" onerror="this.style.display=\'none\'"><span class="sn-sign">– Nic</span></span>' +
+          '<a class="sn-jobs" href="./jobs.html">Just Jobs <span aria-hidden="true">→</span></a>' +
         '</div>' +
       '</div>';
     hero.appendChild(s);
     if (!window.__mStickyDelegated) {
       window.__mStickyDelegated = true;
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { s.classList.remove('open'); s.querySelector('.sn-label').setAttribute('aria-expanded', 'false'); } });
       document.addEventListener('click', function (e) {
         var s2 = document.getElementById('m-sticky'); if (!s2) return;
-        if (!s2.contains(e.target)) return;
-        if (e.target && e.target.classList && e.target.classList.contains('sn-close')) { s2.classList.remove('open'); return; }
-        s2.classList.toggle('open');
+        var inside = s2.contains(e.target);
+        if (!inside || e.target.closest('.sn-close')) s2.classList.remove('open');
+        else if (!s2.classList.contains('open')) s2.classList.add('open');
+        s2.querySelector('.sn-label').setAttribute('aria-expanded', String(s2.classList.contains('open')));
       });
     }
   }

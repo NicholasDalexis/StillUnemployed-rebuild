@@ -148,7 +148,7 @@
     } catch (e) { return []; }
   }
   function saveRows(rows) {
-    try { localStorage.setItem('su_tracker', JSON.stringify(rows)); } catch (e) {}
+    try { if (window.SUStore) window.SUStore.saveTracker(rows); else localStorage.setItem('su_tracker', JSON.stringify(rows)); } catch (e) {}
   }
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
   function todayISO() {
@@ -218,10 +218,11 @@
           '</div>' +
           '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex: none; margin-left: 2px;"><path d="M9 6l6 6-6 6" stroke="#6F5E45" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
         '</div>' +
-        '<div style="position: absolute; top: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px;">' +
+        '<div class="su-main-nav" style="position: absolute; top: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px;">' +
           '<a href="./index.html" class="postit trk-nav-a r1">Home</a>' +
           '<a href="./jobs.html" class="postit trk-nav-a r2">Jobs</a>' +
           '<a href="./tracker.html" class="postit trk-nav-a r3">Tracker' + (this.rows.length ? ' (<span style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 16px;">' + (this.rows.length > 99 ? '99+' : this.rows.length) + '</span>)' : '') + '</a>' +
+          '<span class="su-account-slot"></span>' +
                   '</div>' +
       '</div>';
 
@@ -352,7 +353,7 @@
     setField: function (id, field, value) {
       var changed = false;
       this.rows.forEach(function (r) {
-        if (r && r.id === id) { r[field] = value; changed = true; }
+        if (r && r.id === id) { r[field] = value; r.updated = new Date().toISOString(); changed = true; }
       });
       if (changed) saveRows(this.rows);
       return changed;
@@ -447,6 +448,8 @@
           self.addRow();
         }
       });
+
+      window.addEventListener('su:data-sync', function () { self.rows = loadRows(); self.render(); });
 
       // if the board tab logs an application while this tab is open, pick it up
       window.addEventListener('storage', function (e) {

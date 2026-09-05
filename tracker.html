@@ -22,7 +22,7 @@
   <meta name="twitter:image" content="https://stillunemployed.com/assets/og/home.png?v=3">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=13">
   <!-- Pre-apply the saved "Change Look?" theme before paint to avoid a color flash -->
   <script>
     (function () {
@@ -42,7 +42,9 @@
   <!-- First-party analytics: defer keeps document order, so this runs BEFORE js/tracker.js -->
   <script src="js/analytics.js?v=an3" defer></script>
   <!-- Google Analytics 4 (Consent Mode v2; added 2026-07-19 - tracker page was previously untracked) -->
-  <script src="js/ga.js?v=3" defer></script>
+  <script src="js/sync-store.js?v=1" defer></script>
+  <script src="js/ga.js?v=4" defer></script>
+  <link rel="stylesheet" href="css/account.css?v=1">
 </head>
 <body>
   <!-- The tracker is rendered by js/tracker.js from localStorage (su_tracker).
@@ -239,8 +241,8 @@
     <a href="./terms.html">Terms of Service</a>
   </footer>
 
-  <script src="js/tracker.js?v=trk2" defer></script>
+  <script src="js/tracker.js?v=trk3" defer></script>
   <!-- Google sign-in + cross-device sync. HARD-GATED OFF on stillunemployed.com (see js/auth.js). -->
-  <script type="module" src="js/auth.js?v=auth5"></script>
+  <script type="module" src="js/auth.js?v=auth6"></script>
 </body>
 </html>
