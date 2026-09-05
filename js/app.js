@@ -2606,6 +2606,10 @@
         if (_hid.length) jobs = jobs.filter(function (j) { return _hid.indexOf(j.link) < 0; });
       } catch (eRH) {}
       var self = this;
+      window.addEventListener('su:local-change', function () {
+        var trackerTab = document.querySelector('.su-main-nav a[href="./tracker.html"]');
+        if (trackerTab) trackerTab.innerHTML = 'Tracker' + suTrkBadge();
+      });
       window.addEventListener('su:data-sync', function () { self.state.saved = loadSaved(); self.render(); });
       window.addEventListener('storage', function (e) { if (e.key === 'su_saved_jobs' || e.key === 'su_tracker') { self.state.saved = loadSaved(); self.render(); } });
       this.state.saved = loadSaved();
