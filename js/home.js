@@ -293,7 +293,7 @@
   /* Featured cards + live role count use the same eligibility rules as app.js.
      An unavailable feed must not revive old jobs from a bundled snapshot. */
   var NH_SHEET_ID = '1DRfkDn_OIVlnx06xFaNpNbusXl49jvM26oJsl-qq2nU';
-  var NH_CSV = 'https://docs.google.com/spreadsheets/d/' + NH_SHEET_ID + '/gviz/tq?tqx=out:csv&headers=1';
+  var NH_CSV = 'https://docs.google.com/spreadsheets/d/' + NH_SHEET_ID + '/gviz/tq?tqx=out:csv&headers=1&gid=2134483974';
 
   function nhParseCSV(text) {
     var rows = [], row = [], field = '', inQ = false, closed = false, i, c;

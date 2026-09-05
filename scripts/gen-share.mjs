@@ -12,7 +12,7 @@ import { dirname, join, resolve } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SHEET = '1DRfkDn_OIVlnx06xFaNpNbusXl49jvM26oJsl-qq2nU';
-const CSV = `https://docs.google.com/spreadsheets/d/${SHEET}/gviz/tq?tqx=out:csv&headers=1&_=${Date.now()}`;
+const CSV = `https://docs.google.com/spreadsheets/d/${SHEET}/gviz/tq?tqx=out:csv&headers=1&gid=2134483974&_=${Date.now()}`;
 // Production must use the canonical custom domain, even when Netlify also sets
 // DEPLOY_PRIME_URL to the main branch subdomain. Keep gen-theme-pages in agreement.
 export function siteOrigin(env = process.env) {
