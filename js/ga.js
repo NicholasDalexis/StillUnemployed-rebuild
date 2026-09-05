@@ -50,6 +50,10 @@
   function labelOf(el) {
     var l = el.getAttribute && (el.getAttribute('data-act') || el.getAttribute('aria-label'));
     if (l && el.getAttribute && el.getAttribute('data-note')) l += ':' + el.getAttribute('data-note'); // per-card identity (advice cards etc.)
+    // P1-6 fix (2026-08-16): tracker rows render the VISITOR'S OWN typed URL as an <a
+    // class="trk-linka"> — sending that href to Google would ship user-entered data,
+    // contradicting privacy §5 ("never the text you type"). Send a fixed label instead.
+    if (!l && el.tagName === 'A' && el.className && /\btrk-linka\b/.test(el.className)) l = 'tracker_posting_link';
     if (!l && el.tagName === 'A') l = (el.getAttribute('href') || '').slice(0, 80);
     if (!l) l = (el.textContent || el.value || '').replace(/\s+/g, ' ').trim().slice(0, 60);
     return l || el.tagName.toLowerCase();
