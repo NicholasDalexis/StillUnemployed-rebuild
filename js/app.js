@@ -475,7 +475,7 @@
       '<div data-act="hideSignupCards" data-co="' + esc(line) + '" title="hide these" style="position:absolute; top:8px; right:8px; width:22px; height:22px; border-radius:50%; background:rgba(44,33,24,0.06); display:flex; align-items:center; justify-content:center; cursor:pointer; font-family:\'Archivo\',sans-serif; font-size:12px; color:#6F5E45; z-index:4;">✕</div>' +
       '<div style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:21px; line-height:1.3; color:#2A2118; padding-right:22px; margin-top:4px;">' + esc(line) + '</div>' +
       '<div style="flex:1; min-height:14px;"></div>' +
-      '<div style="display:flex; justify-content:flex-end;"><span style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:20px; color:#C2552F; display:inline-flex; align-items:center; gap:4px;">get the recipe<svg class="doodle-arrow" width="28" height="14" viewBox="0 0 28 14" fill="none" style="overflow:visible; margin-left:2px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>' +
+      '<div style="display:flex; justify-content:flex-end;"><span data-act="openSignup" data-line="' + esc(line) + '" aria-label="Open newsletter signup" style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:20px; color:#C2552F; display:inline-flex; align-items:center; gap:4px;">get the recipe<svg class="doodle-arrow" width="28" height="14" viewBox="0 0 28 14" fill="none" style="overflow:visible; margin-left:2px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>' +
       '<div style="font-family:\'Indie Flower\',cursive; font-size:15px; color:#8A7558; margin-top:6px;">free · every week · easy unsub&nbsp;&nbsp;- Nic</div>' +
     '</div>';
   }
@@ -784,7 +784,9 @@
   // a second, un-clickable image is just noise; the link's own thumbnail does the job. ----
   function suShareJob(job) {
     if (!job) return;
-    var deep = location.origin + '/j/' + suShareTheme() + '/' + suSlug(job.link || '') + '.html';
+    // The query also opens the live card when this job arrived after the last build.
+    var token = encodeURIComponent(btoa(unescape(encodeURIComponent(job.link || ''))));
+    var deep = location.origin + '/j/' + suShareTheme() + '/' + suSlug(job.link || '') + '.html?job=' + token + '&theme=' + suShareTheme();
     // Casual, no link/brand in the TEXT (iMessage auto-linkifies "StillUnemployed.com"
     // into a tappable link that goes to the homepage, not the job — Nic didn't want that).
     // The shared url param below still generates the Post-it thumbnail.
@@ -902,6 +904,43 @@
     if (SU_STATES[q]) return true;                          // exact state name or 2-letter code
     if (q.length >= 3) { for (var s in SU_STATES) { if (s.length > 2 && s.indexOf(q) === 0) return true; } }  // prefix like "cali", "penn"
     return false;
+  }
+
+  // Preserve the artwork while exposing the delegated controls to keyboard users.
+  function prepareActions(root) {
+    var labels = { toggleSave:'Save job', detailShare:'Share job', closeDetail:'Close job details',
+      closeLook:'Close themes', closeFeedback:'Close application feedback', closeModal:'Close founder note',
+      closeAdvice:'Close advice', closeSignup:'Close signup', closeNote:'Close note',
+      hideRecipe:'Hide newsletter signup', hideSignupCards:'Hide newsletter signup', openModal:'About Nic' };
+    root.querySelectorAll('[data-act]').forEach(function (el) {
+      var act = el.getAttribute('data-act');
+      if (act === 'stop' || act === 'openJob' || el.classList.contains('su-signup') || el.parentElement === root && /^close/.test(act)) return;
+      if (!el.matches('button,a,input,select,textarea')) {
+        el.setAttribute('role', 'button'); el.setAttribute('tabindex', '0');
+      }
+      if (labels[act]) el.setAttribute('aria-label', labels[act]);
+      if (act === 'toggleSave') {
+        var saved = !!App.state.saved[el.getAttribute('data-link')];
+        el.setAttribute('aria-pressed', String(saved));
+        el.setAttribute('aria-label', saved ? 'Unsave job' : 'Save job');
+      }
+      if (act === 'toggleSavedOnly') el.setAttribute('aria-pressed', String(!!App.state.savedOnly));
+      if (act === 'toggleCat' || act === 'toggleFilters') el.setAttribute('aria-expanded', String(App.state.openPanel === (act === 'toggleCat' ? 'cat' : 'filters')));
+    });
+    root.querySelectorAll('iframe[data-test-id="beehiiv-embed"]').forEach(function (el) { el.title = 'Newsletter signup'; });
+  }
+
+  function focusIntent(el) {
+    if (!el || !el.getAttribute) return null;
+    return { el:el, id:el.id, act:el.getAttribute('data-act'), link:el.getAttribute('data-link') || el.getAttribute('href'), value:el.getAttribute('data-val') };
+  }
+  function restoreIntent(intent) {
+    if (!intent) return;
+    var el = intent.el && intent.el.isConnected ? intent.el : intent.id ? document.getElementById(intent.id) : null;
+    if (!el && intent.act) el = Array.from(document.querySelectorAll('[data-act]')).find(function (node) {
+      return node.getAttribute('data-act') === intent.act && (node.getAttribute('data-link') || node.getAttribute('href')) === intent.link && node.getAttribute('data-val') === intent.value;
+    });
+    if (el && el.focus) el.focus({ preventScroll:true });
   }
 
   // =========================================================================
@@ -1235,23 +1274,33 @@
         { label: 'PR & Partnerships', match: 'PR & Partnerships' },
         { label: 'Video & Creative', match: 'Video & Creative' },
         { label: 'Influencer', match: 'Influencer' },
-        { label: 'Creative Tech', match: 'Creative Tech' }
+        { label: 'Creative Tech', match: 'Creative Tech' },
+        { label: 'Fashion Design', match: 'Fashion Design' },
+        { label: 'UX/UI Design', match: 'UX/UI Design' },
+        { label: 'Videography', match: 'Videography' },
+        { label: 'Photography', match: 'Photography' },
+        { label: 'Web Development', match: 'Web Development' },
+        { label: 'Artificial Intelligence', match: 'Artificial Intelligence' }
       ];
     },
 
     payTier: function (pay) {
-      if (!pay) return 'high';
-      var nums = (String(pay).match(/\d+(?:\.\d+)?/g) || []).map(Number);
-      if (!nums.length) return 'high';
+      var text = String(pay || '').replace(/,/g, '');
+      var hourly = /\/\s*(?:h|hr|hour)\b|\bper\s*hour\b|\bhourly\b/i.test(text);
+      var nums = (text.match(/\d+(?:\.\d+)?\s*[kK]?/g) || []).map(function (n) {
+        var value = parseFloat(n);
+        return /k/i.test(n) || (!hourly && value < 1000) ? value * 1000 : value;
+      });
+      if (!nums.length) return 'low';
       var top = Math.max.apply(null, nums);
-      if (top >= 100) return 'high';
-      if (top >= 80) return 'mid';
+      if (top >= 100000) return 'high';
+      if (top >= 80000) return 'mid';
       return 'low';
     },
 
     matchesBase: function (j) {
       if (this.state.theme) {
-        var def = this.themeDefs[this.state.theme];
+        var def = Object.prototype.hasOwnProperty.call(this.themeDefs, this.state.theme) ? this.themeDefs[this.state.theme] : null;
         if (def) {
           var role = (j.role || '').toLowerCase();
           var inCat = def.cats.indexOf(j.ind) !== -1;
@@ -1261,7 +1310,7 @@
       }
       var q = this.state.q.trim().toLowerCase();
       if (q) {
-        var hay = (j.co + ' ' + j.role + ' ' + j.loc + ' ' + j.state).toLowerCase();
+        var hay = (j.co + ' ' + j.role + ' ' + j.loc + ' ' + j.state + ' ' + j.ind).toLowerCase();
         if (j.state === 'NY') hay += ' nyc';
         if (hay.indexOf('san francisco') !== -1) hay += ' sf bay area';
         if (hay.indexOf('los angeles') !== -1) hay += ' la';
@@ -1486,7 +1535,7 @@
                     adviceOpen: 1, signupOpen: 1, lookOpen: 1, aboutOpen: 1, modalOpen: 1 },
     setState: function (patch) {
       Object.assign(this.state, patch);
-      var overlayOnly = true;
+      var overlayOnly = Object.keys(patch).length > 0;
       for (var k in patch) { if (!this.OVERLAY_KEYS[k]) { overlayOnly = false; break; } }
       if (overlayOnly) this.renderOverlays();
       else this.render();
@@ -1771,7 +1820,7 @@
 
       // ---- active chips ----
       var chips = [];
-      if (this.state.theme && this.themeDefs[this.state.theme]) chips.push({ label: this.themeDefs[this.state.theme].label, act: 'chipTheme' });
+      if (this.state.theme && Object.prototype.hasOwnProperty.call(this.themeDefs, this.state.theme)) chips.push({ label: this.themeDefs[this.state.theme].label, act: 'chipTheme' });
       if (this.state.ws !== 'Any') chips.push({ label: this.state.ws, act: 'chipWs' });
       if (this.state.pr !== 'Any') chips.push({ label: this.state.pr, act: 'chipPr' });
       if (this.state.fr !== 'Any') chips.push({ label: this.state.fr, act: 'chipFr' });
@@ -1783,8 +1832,9 @@
       }).join('');
 
       var showingLabel = this.state.savedOnly ? ('Showing ' + shown.length + ' saved') : ('Showing ' + shown.length + ' of ' + this.jobs.length);
-      var emptyTitle = this.state.savedOnly ? 'no saved roles yet' : "We're looking for more jobs RN, check back soon!";
-      var emptyHint = this.state.savedOnly ? 'tap the bookmark on any card to pin it here' : 'try clearing a filter, or check back in a few days';
+      var missingSaved = Object.keys(this.state.saved).filter(function (link) { return self.state.saved[link] && !self.jobs.some(function (job) { return job.link === link; }); });
+      var emptyTitle = this._loadError ? 'Jobs could not load right now' : this.state.savedOnly ? (missingSaved.length ? 'Your saved links are below' : 'no saved roles yet') : "We're looking for more jobs RN, check back soon!";
+      var emptyHint = this._loadError ? 'Your saved jobs and tracker are still here. Try loading the board again.' : this.state.savedOnly ? 'tap the bookmark on any card to pin it here' : 'try clearing a filter, or check back in a few days';
       var isEmpty = shown.length === 0;
 
       // ---- state <select> options ----
@@ -1914,6 +1964,15 @@
         '</div>';
       }
 
+      if (this._loadError) out += '<p role="status"><button type="button" data-act="retryJobs" class="tab">Try loading jobs again</button></p>';
+      if (this.state.savedOnly && missingSaved.length) {
+        out += '<section class="su-unlisted-saved"><h2>Saved links outside the current board</h2><p>These links stay saved even when their cards are not in the loaded board. Check the employer for availability.</p><ul>';
+        missingSaved.forEach(function (link) {
+          var url = safeUrl(link);
+          out += '<li>' + (url ? '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(url) + '</a>' : '<span>Saved job</span>') + '<button type="button" data-act="toggleSave" data-link="' + esc(link) + '">Remove saved link</button></li>';
+        });
+        out += '</ul></section>';
+      }
       out += '</div>'; // /header+content wrap
 
       // Capture focus intent BEFORE the innerHTML swap. Replacing innerHTML removes the
@@ -1923,7 +1982,10 @@
       var keepSearchFocus = this._searchFocused ||
         (document.activeElement && document.activeElement.id === 'su-search');
 
+      var previousFocus = focusIntent(document.activeElement);
       board.innerHTML = out;
+      prepareActions(board);
+      if (!keepSearchFocus) restoreIntent(previousFocus);
 
       // restore focus + caret to the search input after re-render
       var inp = document.getElementById('su-search');
@@ -1970,6 +2032,12 @@
 
     renderOverlays: function () {
       var root = document.getElementById('overlay-root');
+      var previousDialog = root.querySelector('[role="dialog"]');
+      var previousFocus = focusIntent(document.activeElement);
+      var dialogKey = this.state.detailOpen ? 'detail' : this.state.adviceOpen ? 'advice' : this.state.signupOpen ? 'signup' : this.state.feedbackOpen ? 'feedback' : this.state.lookOpen ? 'look' : this.state.modalOpen ? 'founder' : '';
+      if (!previousDialog && dialogKey) this._dialogReturn = previousFocus;
+      var previousKey = this._dialogKey;
+      this._dialogKey = dialogKey;
       var out = '';
 
       // About modal
@@ -2122,7 +2190,7 @@
                 (_ageNote
                   ? '<span style="font-family: \'Indie Flower\', cursive; font-size: 16.5px; color: #C2552F; line-height: 1.2; text-align: left; max-width: 60%;">' + _ageNote + '</span>'
                   : '<span></span>') +
-                '<span data-act="detailApply" data-link="' + esc(dj.link) + '" data-co="' + esc(dj.co) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 21px; color: ' + _applyC + '; display: inline-flex; align-items: center; cursor: pointer; flex: none;">Apply Now' + _arrow + '</span>' +
+                '<button type="button" data-act="detailApply" data-link="' + esc(dj.link) + '" data-co="' + esc(dj.co) + '" style="border:0; background:none; padding:0; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 21px; color: ' + _applyC + '; display: inline-flex; align-items: center; cursor: pointer; flex: none;">Apply Now' + _arrow + '</button>' +
               '</div>' +
               // recipe capture: rotating one-liner + Beehiiv embed. ✕ hides it until reload.
               (!_rShow ? '' :
@@ -2300,11 +2368,43 @@
       }
 
       root.innerHTML = out;
+      prepareActions(root);
+      var panels = Array.from(root.children);
+      var top = panels.sort(function (a,b) { return Number(a.style.zIndex) - Number(b.style.zIndex); }).pop();
+      var dialog = top && top.querySelector('[data-act="stop"]');
+      var board = document.getElementById('board');
+      if (board) board.inert = !!dialog;
+      if (dialog) {
+        dialog.setAttribute('role', 'dialog'); dialog.setAttribute('aria-modal', 'true'); dialog.tabIndex = -1;
+        dialog.setAttribute('aria-label', { detail:'Job details', advice:'Job hunt advice', signup:'Newsletter signup', feedback:'Application feedback', look:'Choose a theme', founder:'About Nic' }[dialogKey] || 'Details');
+        if (previousKey === dialogKey && previousFocus && previousFocus.act && previousFocus.act !== 'stop') restoreIntent(previousFocus);
+        if (!dialog.contains(document.activeElement)) dialog.focus({ preventScroll:true });
+      } else if (previousDialog) { restoreIntent(this._dialogReturn); this._dialogReturn = null; }
     },
 
     // ---- event wiring (single delegated listener on document) -------------
     bindEvents: function () {
       var self = this;
+
+      document.addEventListener('keydown', function (e) {
+        var dialog = document.querySelector('#overlay-root [role="dialog"]');
+        if (e.key === 'Escape') {
+          if (dialog) {
+            e.preventDefault();
+            self.setState({ detailOpen:false, feedbackOpen:false, adviceOpen:null, signupOpen:null, lookOpen:false, modalOpen:false });
+          } else if (self.state.openPanel) self.setState({ openPanel:null });
+          return;
+        }
+        if (e.key === 'Tab' && dialog) {
+          var items = Array.from(dialog.querySelectorAll('button:not(:disabled),a[href],input,select,textarea,iframe,[tabindex="0"]')).filter(function (el) { return el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden'; });
+          var first = items[0], last = items[items.length - 1];
+          if (!first) { e.preventDefault(); dialog.focus(); }
+          else if (e.shiftKey && (document.activeElement === first || document.activeElement === dialog)) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && (document.activeElement === last || document.activeElement === dialog)) { e.preventDefault(); first.focus(); }
+        }
+        var el = e.target.closest && e.target.closest('[role="button"][data-act]');
+        if (el && (e.key === 'Enter' || e.key === ' ') && !el.matches('button,a,input,select,textarea')) { e.preventDefault(); el.click(); }
+      });
 
       document.addEventListener('click', function (e) {
         var el = e.target.closest('[data-act]');
@@ -2320,6 +2420,7 @@
         }
 
         switch (act) {
+          case 'retryJobs': location.reload(); break;
           case 'openModal': self.setState({ modalOpen: true }); break;
           case 'closeModal': self.setState({ modalOpen: false }); break;
           case 'closeFeedback': self.setState({ feedbackOpen: false }); break;
@@ -2352,8 +2453,9 @@
             for (var _bi = 0; _bi < self.jobs.length; _bi++) {
               if (self.jobs[_bi].link === _bl) { self.jobs.splice(_bi, 1); break; }
             }
-            self.setState({ feedbackOpen: false });
-            suToast('Thanks — pulled it while we double-check.');
+            self.state.feedbackOpen = false;
+            self.render();
+            suToast('Thanks. Hidden while we double-check.');
             break;
           }
           case 'closeDetail': self.setState({ detailOpen: false }); break;
@@ -2428,7 +2530,7 @@
           }
           case 'toggleCat': self.setState({ openPanel: self.state.openPanel === 'cat' ? null : 'cat' }); break;
           case 'toggleFilters': self.setState({ openPanel: self.state.openPanel === 'filters' ? null : 'filters' }); break;
-          case 'clearAll': self.setState({ ws: 'Any', st: 'all', pr: 'Any', fr: 'Any', theme: null }); break;
+          case 'clearAll': self.setState({ q: '', cat: 'all', ws: 'Any', st: 'all', pr: 'Any', fr: 'Any', theme: null }); break;
 
           case 'cat': self.setState({ cat: el.getAttribute('data-val'), openPanel: null }); break;
           case 'ws': self.setState({ ws: el.getAttribute('data-val') }); break;
@@ -2616,7 +2718,7 @@
       this.jobs = this.shuffleFresh(jobs);
       this.bindEvents();
       // analytics: a ?theme= content preset (theme-chip) counts as an applied filter — additive
-      if (this.state.theme && this.themeDefs[this.state.theme] && typeof window.suTrack === 'function') {
+      if (this.state.theme && Object.prototype.hasOwnProperty.call(this.themeDefs, this.state.theme) && typeof window.suTrack === 'function') {
         window.suTrack('filter', 'theme', this.state.theme, '');
       }
       this.render();
@@ -2636,7 +2738,7 @@
   }
 
   // =========================================================================
-  // DATA SOURCE — Nic's Google Sheet (live) with a bundled JSON fallback.
+  // DATA SOURCE: live Google Sheet, validated before rendering.
   //
   // The board reads jobs straight from the Google Sheet, so Nic can add a job,
   // edit one, or flip a job to "Dead" by editing the sheet — no code change and
@@ -2653,7 +2755,16 @@
   // derive the 2-letter state (or "Remote") from a "City, ST" location string
   function deriveState(loc) {
     var s = String(loc || '').trim();
-    if (/remote/i.test(s)) return 'Remote';
+    var codes = s.match(/\b[A-Z]{2}\b/g) || [];
+    for (var c = 0; c < codes.length; c++) {
+      if (SU_STATES[codes[c].toLowerCase()]) return codes[c];
+    }
+    // Only unrestricted US remote roles match every state. Preserve a named region.
+    if (/remote/i.test(s)) {
+      var region = s.replace(/remote/ig, '').replace(/[^a-z]+/ig, ' ')
+        .replace(/\b(us|usa|united states|anywhere|nationwide)\b/ig, '').trim();
+      return region ? s : 'Remote';
+    }
     var last = s.split(',').pop().trim();
     var m = last.match(/\b([A-Z]{2})\b/);
     return m ? m[1] : last;
@@ -2661,30 +2772,41 @@
 
   // minimal CSV parser (handles quoted fields, doubled quotes, CRLF/LF)
   function parseCSV(text) {
-    var rows = [], row = [], field = '', inQ = false, i, c;
+    var rows = [], row = [], field = '', inQ = false, closed = false, i, c;
+    text = String(text).replace(/^\uFEFF/, '');
     for (i = 0; i < text.length; i++) {
       c = text[i];
       if (inQ) {
-        if (c === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else inQ = false; }
+        if (c === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else { inQ = false; closed = true; } }
         else field += c;
       } else {
-        if (c === '"') inQ = true;
-        else if (c === ',') { row.push(field); field = ''; }
-        else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
-        else if (c !== '\r') field += c;
+        if (c === ',') { row.push(field); field = ''; closed = false; }
+        else if (c === '\n' || c === '\r') {
+          if (c === '\r' && text[i + 1] === '\n') i++;
+          row.push(field); rows.push(row); row = []; field = ''; closed = false;
+        } else if (c === '"') {
+          if (field || closed) throw new Error('Malformed jobs CSV: unexpected quote');
+          inQ = true;
+        } else {
+          if (closed) throw new Error('Malformed jobs CSV: text after closing quote');
+          field += c;
+        }
       }
     }
-    if (field.length || row.length) { row.push(field); rows.push(row); }
+    if (inQ) throw new Error('Malformed jobs CSV: unterminated quoted field');
+    if (field.length || row.length || closed) { row.push(field); rows.push(row); }
     return rows;
   }
 
+
   // map sheet rows -> the job objects the board expects; keep only Active rows
   function rowsToJobs(rows) {
-    if (!rows || !rows.length) return [];
-    var COLS = ['Company', 'Job Title', 'Link', 'Location', 'Type', 'Salary', 'Years of Experience', 'Category', 'Description', 'TL;DR', 'Pick', 'Active/Dead'];
+    if (!rows || !rows.length) throw new Error('Jobs CSV has no header');
     var head = rows[0].map(function (h) { return String(h).trim().toLowerCase(); });
-    var hasHeader = head.indexOf('company') !== -1 && head.indexOf('job title') !== -1;
-    function col(name) { return hasHeader ? head.indexOf(name.toLowerCase()) : COLS.indexOf(name); }
+    ['company', 'job title', 'link', 'salary', 'active/dead'].forEach(function (name) {
+      if (head.indexOf(name) < 0 || head.indexOf(name) !== head.lastIndexOf(name)) throw new Error('Jobs CSV requires one ' + name + ' column');
+    });
+    function col(name) { return head.indexOf(name.toLowerCase()); }
     var iCo = col('Company'), iRole = col('Job Title'), iLink = col('Link'),
         iLoc = col('Location'), iType = col('Type'), iPay = col('Salary'),
         iExp = col('Years of Experience'), iCat = col('Category'),
@@ -2694,10 +2816,12 @@
         iPosted = col('Date Posted'); // when the COMPANY posted the job — drives the age disclaimer (2026-07-11)
     var get = function (cells, k) { return (k >= 0 && cells[k] != null) ? String(cells[k]).trim() : ''; };
     var jobs = [];
-    for (var r = hasHeader ? 1 : 0; r < rows.length; r++) {
-      var cells = rows[r]; if (!cells) continue;
+    for (var r = 1; r < rows.length; r++) {
+      var cells = rows[r];
+      if (cells.every(function (s) { return !s.trim(); })) continue;
+      if (cells.length !== head.length) throw new Error('Malformed jobs CSV: column count on row ' + (r + 1));
       var co = get(cells, iCo), role = get(cells, iRole);
-      if (!co && !role) continue;                                   // skip blank rows
+      if (!co || !role || !safeUrl(get(cells, iLink))) continue; // incomplete or unsafe listing
       var act = get(cells, iAct).toLowerCase();
       if (act.indexOf('dead') !== -1 || act === 'inactive' || act === 'no') continue; // hide retired jobs
       var _payv = get(cells, iPay);
@@ -2709,8 +2833,8 @@
       // HOURLY (Upd. 2026-07-11, Nic): 6-month+ CONTRACT roles are now welcome — they pay hourly, and a
       // $40/hr contract at a real company is a good early-career job. So hourly no longer means "hide."
       // Rule: $25/hr+ shows; below that it's retail-tier hourly and stays off the board.
-      if (/\/\s*hr|\bper\s*hour\b|\bhourly\b/i.test(_payv)) {
-        var _rates = (String(_payv).match(/\d+(?:\.\d+)?/g) || []).map(Number);
+      if (/\/\s*(?:h|hr|hour)\b|\bper\s*hour\b|\bhourly\b/i.test(_payv)) {
+        var _rates = (String(_payv).replace(/,/g, '').match(/\d+(?:\.\d+)?/g) || []).map(Number);
         if (!_rates.length || Math.max.apply(null, _rates) < 25) continue;
       }
       var loc = get(cells, iLoc);
@@ -2745,7 +2869,8 @@
 
   function safeUrl(u) {
     u = String(u == null ? '' : u).trim();
-    return /^https?:\/\//i.test(u) ? u : '';
+    if (!/^https?:\/\//i.test(u)) return '';
+    try { var parsed = new URL(u); return parsed.hostname && !parsed.username && !parsed.password ? u : ''; } catch (e) { return ''; }
   }
 
   function showLoadError() {
@@ -2753,25 +2878,18 @@
     if (board) board.innerHTML = '<div style="max-width:760px;margin:80px auto;padding:0 24px;font-family:\'Indie Flower\',cursive;font-size:24px;color:#B23A1E;">Could not load jobs. If you opened this file directly, serve the folder over http (e.g. <code>python3 -m http.server</code>) so the browser can fetch the data.</div>';
   }
 
-  function loadFromJson() {
-    fetch('jobs-data.json', { cache: 'no-cache' })
-      .then(function (r) { if (!r.ok) throw new Error('json ' + r.status); return r.json(); })
-      .then(function (jobs) { App.init(jobs); })
-      .catch(function (err) { console.error(err); showLoadError(); });
-  }
-
-  // ---- boot: try the live Google Sheet first, fall back to jobs-data.json ----
+  // Never silently republish the undated bundled sample during a feed outage.
   function boot() {
     fetch(SHEET_CSV_URL + '&_=' + Date.now(), { cache: 'no-cache' })  // &_=ts busts Google's server-side gviz cache so the board always sees the live sheet
       .then(function (r) { if (!r.ok) throw new Error('sheet ' + r.status); return r.text(); })
       .then(function (text) {
         var jobs = rowsToJobs(parseCSV(text));
-        if (!jobs.length) throw new Error('sheet returned 0 jobs');
         App.init(jobs);
       })
       .catch(function (err) {
-        console.warn('[StillUnemployed] live sheet unavailable, using bundled jobs-data.json:', err && err.message);
-        loadFromJson();
+        console.warn('[StillUnemployed] live sheet unavailable:', err && err.message);
+        App._loadError = true;
+        App.init([]);
       });
   }
 

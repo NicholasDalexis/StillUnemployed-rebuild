@@ -22,7 +22,7 @@
   if (isAdmin()) return; // Nic's own browsers: nothing loads, no banner.
 
   // Page identity (mirror analytics.js): /jobs* -> board
-  var PAGE = /^\/jobs/.test(location.pathname) ? 'board'
+  var PAGE = /^\/(?:jobs|j\/)/.test(location.pathname) ? 'board'
     : /tracker/.test(location.pathname) ? 'tracker'
     : (location.pathname === '/' || /index/.test(location.pathname)) ? 'home' : location.pathname;
 
@@ -100,7 +100,7 @@
   }
   window.addEventListener('pagehide', flushTime);
 
-  var isBoardPage = /\/(?:jobs(?:\/.*|\.html)?|tracker(?:\.html)?)\/?$/.test(location.pathname);
+  var isBoardPage = /^\/j\//.test(location.pathname) || /\/(?:jobs(?:\/.*|\.html)?|tracker(?:\.html)?)\/?$/.test(location.pathname);
   // ---- consent banner (unchanged look; Accept now upgrades Consent Mode) ----
   if (consent() === 'granted' || consent() === 'denied') return;
   function injectStyle() {
@@ -132,6 +132,7 @@
       ,'.su-cc.su-cc-inline{position:relative;left:auto;right:auto;bottom:auto;width:auto;max-width:760px;margin:12px auto 0;padding:10px 16px;background:#FCFAF3;color:#2C2118;transform:none;animation:none;box-shadow:none;border-bottom:1px solid #c9bfae;border-radius:0;z-index:1;display:flex;align-items:center;gap:14px;box-sizing:border-box;}'
       ,'.su-cc.su-cc-inline::before{display:none;}.su-cc-inline .su-cc-t{font-size:14px;margin:0;line-height:1.3;flex:1;}.su-cc-inline .su-cc-row{flex:none;gap:8px;}.su-cc-inline button{min-height:44px;font-size:14px;}.su-cc-inline .su-cc-accept{color:#FCFAF3;}'
       ,'@media(max-width:640px){.su-cc.su-cc-inline{margin:8px 12px 0;display:block;padding:8px 10px;}.su-cc-inline .su-cc-row{justify-content:flex-end;}.su-cc-inline .su-cc-t{font-size:13px;}.su-cc-inline .su-cc-decline{padding:4px 12px;}}'
+      ,'@media(max-width:640px){.su-cc:not(.su-cc-inline){position:relative;left:auto;right:auto;bottom:auto;width:auto;max-width:none;margin:16px 12px;padding:12px 14px;transform:none;animation:none;box-shadow:none;background:#FCFAF3;border-bottom:1px solid #c9bfae;}.su-cc:not(.su-cc-inline)::before{display:none;}.su-cc:not(.su-cc-inline) .su-cc-t{font-size:13px;}.su-cc:not(.su-cc-inline) .su-cc-row{justify-content:flex-end;}.su-cc:not(.su-cc-inline) button{font-size:14px;min-height:44px;padding:8px 14px;}}'
     ].join('');
     document.head.appendChild(st);
   }

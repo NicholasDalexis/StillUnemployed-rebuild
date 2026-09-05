@@ -1,13 +1,13 @@
-# StillUnemployed.com — static site, no build step.
-# Netlify just serves the repo root as-is.
+# StillUnemployed.com: static site with generated share and theme pages.
+# Netlify serves the repo root after the build succeeds.
 [build]
   publish = "."
   # Generate the static per-job share pages + Post-it OG images from the live sheet.
   # gen-share.mjs      = per-JOB share pages + Post-it OG images (/j/**)
   # gen-theme-pages.mjs = per-THEME board pages (/jobs/<theme>/index.html), each with its own
   #                      og:image, so sharing /jobs/casino previews the CASINO board. Crawlers
-  #                      don't run JS, so this cannot be done client-side. Kept separate because
-  #                      gen-share exits early if the Google Sheet is unreachable.
+  #                      don't run JS, so this cannot be done client-side. A feed failure stops
+  #                      the build and leaves the previous successful deployment available.
   # FIX 2026-08-16: this `command` line sat under [build.environment] (a Jul-13 merge mistake),
   # where Netlify reads it as an env var, NOT a build command — so branch builds silently
   # skipped page generation. It belongs HERE, in [build]. [[2026-07-14-Netlify-Build-Command-Nested-In-Wrong-Table]]
@@ -70,6 +70,13 @@
 # relative assets still resolve correctly under the deeper /jobs/* path.
 [[redirects]]
   from = "/jobs/*"
+  to = "/jobs.html"
+  status = 200
+
+# Newly sourced jobs may not have generated share pages yet. Existing files win;
+# otherwise the board reads the share query and opens the current live listing.
+[[redirects]]
+  from = "/j/*"
   to = "/jobs.html"
   status = 200
 

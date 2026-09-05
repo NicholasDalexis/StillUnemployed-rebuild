@@ -63,3 +63,40 @@ test('an edit from a stale tab preserves a newly added application in the other 
  a.saveTracker([{id:'first',status:'Applied'}]);b.saveTracker([{id:'second',status:'Interview'}]);
  assert.deepEqual(new Set(view(b).tracker.map(r=>r.id)),new Set(['first','second']));
 });
+function reorderMaps(value) {
+ if (Array.isArray(value)) return value.map(reorderMaps);
+ if (!value || typeof value !== 'object') return value;
+ return Object.fromEntries(Object.keys(value).sort().map(key=>[key,reorderMaps(value[key])]));
+}
+test('a remote echo with reordered saved maps and nested tracker fields does not write again',async()=>{
+ const a=S.create(memory());a.saveSaved({z:true,a:true});
+ a.saveTracker([{id:'manual',notes:'Friday',status:'Applied',details:{z:1,a:{second:2,first:1}}}]);
+ let receive,writes=0;const statuses=[];
+ const session=S.connect(a,{
+  listen:fn=>{receive=fn;return()=>{};},
+  transaction:async local=>{
+   writes++;const remote=reorderMaps(local);
+   // Bound a regression rather than letting a bad listener loop forever.
+   if(writes<5)receive(S.payload(remote));
+   return remote;
+  }
+ },s=>statuses.push(s));
+ try {await session.flush();await tick();assert.equal(writes,1);assert.equal(statuses.at(-1),'synced');}
+ finally {session.stop();}
+});
+test('reordered tracker fields create no new version or local change event',()=>{
+ let notifications=[];const a=S.create(memory(),edit=>notifications.push(edit));
+ const rows=[{id:'row',notes:'Keep this',status:'Applied',extra:{z:2,a:[{last:4,first:3}]}}];
+ a.saveTracker(rows);const before=a.snapshot();notifications=[];
+ a.saveTracker(reorderMaps(rows));
+ assert.deepEqual(a.snapshot(),before);assert.deepEqual(notifications,[]);
+ const changed=reorderMaps(rows);changed[0].extra.a.push({first:5});a.saveTracker(changed);
+ assert.ok(a.snapshot().tracker.row.at>before.tracker.row.at);assert.deepEqual(notifications,[true]);
+});
+test('receiving reordered maps does not rewrite local views or announce a remote change',()=>{
+ const storage=memory();let writes=0,notifications=[];const write=storage.setItem;
+ storage.setItem=(...args)=>{writes++;write(...args);};
+ const a=S.create(storage,edit=>notifications.push(edit));a.saveSaved({z:true,a:true});a.saveTracker([{id:'a',status:'Applied',notes:'Keep'}]);
+ writes=0;notifications=[];a.receive(reorderMaps(a.snapshot()));
+ assert.equal(writes,0);assert.deepEqual(notifications,[]);
+});

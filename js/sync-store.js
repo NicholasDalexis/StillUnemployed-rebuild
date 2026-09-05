@@ -7,6 +7,17 @@
   function empty() { return { saved: {}, tracker: {} }; }
   function id(row) { return row && (row.link || row.id); }
   function clone(v) { return JSON.parse(JSON.stringify(v)); }
+  // Firestore may return map keys in a different order. Order has meaning in an
+  // array, but never in a saved-job map or the fields of a tracker record.
+  function equal(a, b) {
+    if (a === b) return true;
+    if (!a || !b || typeof a !== 'object' || typeof b !== 'object' || Array.isArray(a) !== Array.isArray(b)) return false;
+    if (Array.isArray(a) && a.length !== b.length) return false;
+    var keys = Object.keys(a);
+    return keys.length === Object.keys(b).length && keys.every(function (k) {
+      return Object.prototype.hasOwnProperty.call(b, k) && equal(a[k], b[k]);
+    });
+  }
   function legacy(data) {
     var out = empty();
     Object.keys(data.saved || {}).forEach(function (k) {
@@ -49,12 +60,13 @@
     var lastTime = 0;
     function refresh() { records = merge(records, read(key(), empty())); }
     function persist(changed) {
-      storage.setItem(key(), JSON.stringify(records));
+      if (!equal(read(key(), null), records)) storage.setItem(key(), JSON.stringify(records));
       var v = view(records);
-      var viewChanged = storage.getItem(KEYS.saved) !== JSON.stringify(v.saved) || storage.getItem(KEYS.tracker) !== JSON.stringify(v.tracker);
-      storage.setItem(KEYS.saved, JSON.stringify(v.saved));
-      storage.setItem(KEYS.tracker, JSON.stringify(v.tracker));
-      if (notify && (changed || viewChanged)) notify(changed);
+      var savedChanged = !equal(read(KEYS.saved, null), v.saved);
+      var trackerChanged = !equal(read(KEYS.tracker, null), v.tracker);
+      if (savedChanged) storage.setItem(KEYS.saved, JSON.stringify(v.saved));
+      if (trackerChanged) storage.setItem(KEYS.tracker, JSON.stringify(v.tracker));
+      if (notify && (changed || savedChanged || trackerChanged)) notify(changed);
     }
     function stamp(value) {
       ['saved', 'tracker'].forEach(function (kind) { Object.values(records[kind]).forEach(function (op) { lastTime = Math.max(lastTime, op.at); }); });
@@ -69,12 +81,12 @@
       keys.forEach(function (k) {
         var v = kind === 'saved' ? !!next[k] : (next[k] || null);
         var previous = records[kind][k];
-        if (JSON.stringify(previous ? previous.value : (kind === 'saved' ? false : null)) !== JSON.stringify(v)) edits.push([k, v]);
+        if (!equal(previous ? previous.value : (kind === 'saved' ? false : null), v)) edits.push([k, v]);
       });
       // Apply only this view's edits. Another tab may have saved a new item since it rendered.
       refresh();
       edits.forEach(function (edit) { records[kind][edit[0]] = stamp(edit[1]); });
-      persist(true);
+      persist(edits.length > 0);
     }
     persist(false);
     return {
@@ -124,7 +136,7 @@
       if (stopped) return;
       var merged = merge(store.snapshot(), decode(remote));
       store.receive(merged);
-      if (JSON.stringify(payload(merged)) !== JSON.stringify(payload(decode(remote)))) queue();
+      if (!equal(merged, decode(remote))) queue();
       else if (!busy && !dirty) status('synced');
     }, function (e) { status('error', e); });
     queue();

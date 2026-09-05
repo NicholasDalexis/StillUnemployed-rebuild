@@ -82,7 +82,7 @@
     el.id = 'su-bm-postit';
     el.innerHTML =
       '<div class="su-bm-tape"></div>' +
-      '<div class="su-bm-x" title="dismiss">✕</div>' +
+      '<button type="button" class="su-bm-x" style="border:0;padding:0" aria-label="Dismiss bookmark reminder">✕</button>' +
       '<b>bookmark this or you’ll never find this board again</b>' +
       '<span class="su-bm-key">' + SHORTCUT + '</span>';
     el.querySelector('.su-bm-x').addEventListener('click', function () { el.remove(); remember(); log('bookmark_dismiss'); });

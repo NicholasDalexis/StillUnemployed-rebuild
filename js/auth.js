@@ -30,6 +30,8 @@
       if (errorCode) text += '. ' + errorCode;
       button.title = text; button.setAttribute('aria-label', text);
       button.dataset.state = user ? syncState : (errorCode ? 'error' : 'signed-out');
+      var label = button.querySelector('.su-auth-label');
+      if (label) label.textContent = user ? 'Account' : 'Sign In';
       button.disabled = !auth || signingIn;
     });
     var feedback = document.getElementById('su-auth-feedback');
@@ -64,7 +66,7 @@
       '<path fill="#FBBC05" d="M3.96 10.71a5.41 5.41 0 0 1 0-3.42V4.96H.96a9 9 0 0 0 0 8.08l3-2.33z"/>' +
       '<path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.96l3 2.33C4.67 5.16 6.66 3.58 9 3.58z"/></svg>';
 
-      button.innerHTML = g; button.addEventListener('click', onClick); slot.appendChild(button);
+      button.innerHTML = g + '<span class="su-auth-label" aria-hidden="true"></span>'; button.addEventListener('click', onClick); slot.appendChild(button);
     });
     render();
   }

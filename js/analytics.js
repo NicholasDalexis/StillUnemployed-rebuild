@@ -128,7 +128,7 @@
   function pageName() {
     var p = String(location.pathname || '').toLowerCase().replace(/\/+$/, '');
     if (p === '' || /\/index\.html$/.test(p)) return 'home';
-    if (/\/jobs\.html$/.test(p) || p === '/jobs' || /^\/jobs\//.test(p)) return 'board';
+    if (/\/jobs\.html$/.test(p) || p === '/jobs' || /^\/(?:jobs|j)\//.test(p)) return 'board';
     if (/\/tracker\.html$/.test(p)) return 'tracker';
     return location.pathname;
   }

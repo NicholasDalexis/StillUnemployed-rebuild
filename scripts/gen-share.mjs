@@ -6,27 +6,33 @@
 // iMessage/preview thumbnail matches the exact card they were looking at (color + pay tier).
 // Run: node scripts/gen-share.mjs [localCsvPath]
 // Cost model: pure static files on Netlify (no serverless functions, no per-share cost).
-import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
 import { mkdirSync, writeFileSync, rmSync, existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SHEET = '1DRfkDn_OIVlnx06xFaNpNbusXl49jvM26oJsl-qq2nU';
 const CSV = `https://docs.google.com/spreadsheets/d/${SHEET}/gviz/tq?tqx=out:csv&headers=1&_=${Date.now()}`;
-// Base URL: on a Netlify branch/preview deploy use that deploy's own domain so the
-// OG image/URL resolve there; fall back to production.
-const SITE = process.env.DEPLOY_PRIME_URL || process.env.URL || 'https://stillunemployed.com';
+// Production must use the canonical custom domain, even when Netlify also sets
+// DEPLOY_PRIME_URL to the main branch subdomain. Keep gen-theme-pages in agreement.
+export function siteOrigin(env = process.env) {
+  const canonical = env.URL || 'https://stillunemployed.com';
+  return (env.CONTEXT === 'production' ? canonical : (env.DEPLOY_PRIME_URL || canonical)).replace(/\/+$/, '');
+}
+const SITE = siteOrigin();
+let createCanvas, GlobalFonts;
 
 // ---- Fonts: use the real board faces so the card reads handmade, not like a plain box.
 // Registered from @fontsource woff2 (bundled in node_modules). Graceful if missing.
 function reg(p, fam) { try { GlobalFonts.registerFromPath(join(ROOT, p), fam); } catch (e) {} }
-reg('node_modules/@fontsource/archivo-black/files/archivo-black-latin-400-normal.woff2', 'SUBlack');
-reg('node_modules/@fontsource/indie-flower/files/indie-flower-latin-400-normal.woff2', 'SUHand');
-reg('node_modules/@fontsource/archivo/files/archivo-latin-400-normal.woff2', 'SUBody');
-reg('node_modules/@fontsource/archivo/files/archivo-latin-500-normal.woff2', 'SUBody');
-reg('node_modules/@fontsource/archivo/files/archivo-latin-600-normal.woff2', 'SUBody');
-reg('node_modules/@fontsource/archivo/files/archivo-latin-700-normal.woff2', 'SUBody');
+function registerFonts() {
+  reg('node_modules/@fontsource/archivo-black/files/archivo-black-latin-400-normal.woff2', 'SUBlack');
+  reg('node_modules/@fontsource/indie-flower/files/indie-flower-latin-400-normal.woff2', 'SUHand');
+  reg('node_modules/@fontsource/archivo/files/archivo-latin-400-normal.woff2', 'SUBody');
+  reg('node_modules/@fontsource/archivo/files/archivo-latin-500-normal.woff2', 'SUBody');
+  reg('node_modules/@fontsource/archivo/files/archivo-latin-600-normal.woff2', 'SUBody');
+  reg('node_modules/@fontsource/archivo/files/archivo-latin-700-normal.woff2', 'SUBody');
+}
 const F_BLACK = "'SUBlack', Archivo, sans-serif";
 const F_HAND = "'SUHand', 'Comic Sans MS', cursive";
 const F_BODY = "'SUBody', Archivo, sans-serif";
@@ -100,7 +106,7 @@ const THEME_KEYS = Object.keys(THEMES);
 // So: read app.js, pull its real theme keys, and FAIL THE BUILD if any of them is missing here.
 // A new theme now breaks the build loudly instead of shipping a broken share card quietly.
 // ---------------------------------------------------------------------------
-try {
+function checkThemeDrift() {
   const appSrc = readFileSync(join(ROOT, 'js', 'app.js'), 'utf8');
   const block = appSrc.slice(appSrc.indexOf('THEMES: {'), appSrc.indexOf('payTier:'));
   const appThemes = [...block.matchAll(/^\s{6}(\w+):\s*\{\s*acc:/gm)].map(m => m[1])
@@ -111,11 +117,9 @@ try {
     console.error('js/app.js has themes with no share-card definition here:', missing.join(', '));
     console.error('Add them to THEMES above (at minimum a `high` block = that theme\'s $100K+ card),');
     console.error('or every share from those themes falls back to the yellow original card.\n');
-    process.exit(1);
+    throw new Error('board themes are missing share-card definitions');
   }
   console.log('gen-share: theme drift check OK —', appThemes.length, 'board themes all have share cards');
-} catch (e) {
-  console.error('gen-share: theme drift check could not run (', e.message, ')');
 }
 
 function payTier(pay) {
@@ -145,13 +149,60 @@ function slugOf(str) {
 const b64 = (s) => Buffer.from(unescape(encodeURIComponent(s)), 'binary').toString('base64');
 const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-function parseCSV(text) {
-  const rows = []; let row = [], f = '', q = false;
-  for (let i = 0; i < text.length; i++) { const c = text[i];
-    if (q) { if (c === '"') { if (text[i+1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
-    else if (c === '"') q = true; else if (c === ',') { row.push(f); f = ''; }
-    else if (c === '\n') { row.push(f); rows.push(row); row = []; f = ''; } else if (c !== '\r') f += c; }
-  if (f.length || row.length) { row.push(f); rows.push(row); } return rows;
+export function parseCSV(text) {
+  const rows = []; let row = [], field = '', inQ = false, closed = false;
+  text = String(text).replace(/^\uFEFF/, '');
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQ) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i++; }
+        else { inQ = false; closed = true; }
+      } else field += c;
+    } else if (c === ',') { row.push(field); field = ''; closed = false; }
+    else if (c === '\n' || c === '\r') {
+      if (c === '\r' && text[i + 1] === '\n') i++;
+      row.push(field); rows.push(row); row = []; field = ''; closed = false;
+    } else if (c === '"') {
+      if (field || closed) throw new Error('Malformed jobs CSV: unexpected quote');
+      inQ = true;
+    } else {
+      if (closed) throw new Error('Malformed jobs CSV: text after closing quote');
+      field += c;
+    }
+  }
+  if (inQ) throw new Error('Malformed jobs CSV: unterminated quoted field');
+  if (field.length || row.length || closed) { row.push(field); rows.push(row); }
+  return rows;
+}
+
+export function rowsToJobs(rows) {
+  if (!rows.length) throw new Error('Jobs CSV has no header');
+  const head = rows[0].map(s => s.trim().toLowerCase());
+  for (const name of ['company', 'job title', 'link', 'salary', 'active/dead']) {
+    if (head.indexOf(name) < 0 || head.indexOf(name) !== head.lastIndexOf(name)) {
+      throw new Error('Jobs CSV requires one ' + name + ' column');
+    }
+  }
+  const jobs = [];
+  for (let i = 1; i < rows.length; i++) {
+    const cells = rows[i];
+    if (cells.every(s => !s.trim())) continue;
+    if (cells.length !== head.length) throw new Error('Malformed jobs CSV: column count on row ' + (i + 1));
+    const get = name => (cells[head.indexOf(name)] || '').trim();
+    const co = get('company'), role = get('job title'), link = get('link'), pay = get('salary');
+    const act = get('active/dead').toLowerCase();
+    if (!co || !role || act.includes('dead') || act === 'inactive' || act === 'no') continue;
+    try { const url = new URL(link); if (!/^https?:\/\//i.test(link) || !/^https?:$/.test(url.protocol) || !url.hostname || url.username || url.password) continue; }
+    catch (e) { continue; }
+    if (!/\d/.test(pay)) continue;
+    if (/\/\s*(?:h|hr|hour)\b|\bper\s*hour\b|\bhourly\b/i.test(pay)) {
+      const rates = (pay.replace(/,/g, '').match(/\d+(?:\.\d+)?/g) || []).map(Number);
+      if (!rates.length || Math.max(...rates) < 25) continue;
+    }
+    jobs.push({ co, role, link, pay, loc: get('location'), style: get('type'), exp: get('years of experience') });
+  }
+  return jobs;
 }
 
 function roundRect(ctx, x, y, w, h, r) {
@@ -222,9 +273,9 @@ function drawCard(job, themeKey) {
   return cv.toBuffer('image/png');
 }
 
-function stub(job, slug, themeKey) {
-  const url = `/jobs.html?job=${b64(job.link)}`;
-  const img = `${SITE}/j/og/${themeKey}/${slug}.png`;
+export function stub(job, slug, themeKey, site = SITE) {
+  const url = `/jobs.html?job=${encodeURIComponent(b64(job.link))}&theme=${encodeURIComponent(themeKey)}`;
+  const img = `${site}/j/og/${themeKey}/${slug}.png`;
   const title = `Job at ${job.co || 'a great company'}`;
   const desc = [job.pay, job.loc].filter(Boolean).join(' · ') + " — thought you'd want to see this one.";
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">
@@ -236,46 +287,56 @@ function stub(job, slug, themeKey) {
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:image" content="${img}">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta property="og:url" content="${SITE}/j/${themeKey}/${slug}.html">
+<meta property="og:url" content="${site}/j/${themeKey}/${slug}.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(desc)}">
 <meta name="twitter:image" content="${img}">
-<meta http-equiv="refresh" content="0; url=${url}">
+<meta http-equiv="refresh" content="0; url=${esc(url)}">
 <script>location.replace(${JSON.stringify(url)});</script>
 </head><body style="font-family:sans-serif;padding:40px;color:#2C2118;">Taking you to the job on StillUnemployed.com…</body></html>`;
 }
 
-// Sheet data: from a local CSV path arg (sandbox can't reach Google), else fetch live.
-// Never fail the whole deploy if the sheet is briefly unreachable.
-let text;
-try { text = process.argv[2] ? readFileSync(process.argv[2], 'utf8') : await fetch(CSV).then(r => r.text()); }
-catch (e) { console.error('gen-share: could not load sheet, skipping share-page build (', e.message, ')'); process.exit(0); }
-const rows = parseCSV(text);
-const head = rows[0].map(s => s.trim().toLowerCase());
-const col = (n) => head.indexOf(n);
-const iCo = col('company'), iRole = col('job title'), iLink = col('link'), iLoc = col('location'),
-      iType = col('type'), iPay = col('salary'), iExp = col('years of experience'), iAct = col('active/dead');
-
-// Output root: defaults to <repo>/j; SHARE_OUT lets a local test render elsewhere.
-const OUT = process.env.SHARE_OUT || join(ROOT, 'j');
-const outHtmlRoot = OUT, outImgRoot = join(OUT, 'og');
-if (existsSync(outHtmlRoot)) rmSync(outHtmlRoot, { recursive: true, force: true });
-for (const th of THEME_KEYS) { mkdirSync(join(outHtmlRoot, th), { recursive: true }); mkdirSync(join(outImgRoot, th), { recursive: true }); }
-
-let n = 0;
-for (let i = 1; i < rows.length; i++) {
-  const c = rows[i]; if (!c) continue;
-  const g = (k) => (k >= 0 && c[k] != null) ? String(c[k]).trim() : '';
-  const co = g(iCo), role = g(iRole), link = g(iLink);
-  if ((!co && !role) || !link) continue;
-  if (g(iAct).toLowerCase().includes('dead')) continue;
-  const job = { co, role, link, loc: g(iLoc), style: g(iType), pay: g(iPay), exp: g(iExp) };
-  const slug = slugOf(link);
-  for (const th of THEME_KEYS) {
-    writeFileSync(join(outImgRoot, th, slug + '.png'), drawCard(job, th));
-    writeFileSync(join(outHtmlRoot, th, slug + '.html'), stub(job, slug, th));
+export async function loadJobs(csvPath, fetcher = fetch) {
+  let text;
+  if (csvPath) text = readFileSync(csvPath, 'utf8');
+  else {
+    const response = await fetcher(CSV, { signal: AbortSignal.timeout(30000) });
+    if (!response.ok) throw new Error('Jobs CSV request failed: HTTP ' + response.status);
+    text = await response.text();
   }
-  n++;
+  return rowsToJobs(parseCSV(text));
 }
-console.log('generated', n, 'jobs x', THEME_KEYS.length, 'themes =', n * THEME_KEYS.length, 'share pages + images into /j');
+
+async function main() {
+  checkThemeDrift();
+  // Validate the entire feed before replacing output. A failed deployment leaves
+  // the previous successful site intact; it must not silently publish missing shares.
+  const jobs = await loadJobs(process.argv[2]);
+  if (jobs.length) {
+    ({ createCanvas, GlobalFonts } = await import('@napi-rs/canvas'));
+    registerFonts();
+  }
+
+  // Output root: defaults to <repo>/j; SHARE_OUT lets a local test render elsewhere.
+  const OUT = process.env.SHARE_OUT || join(ROOT, 'j');
+  const outHtmlRoot = OUT, outImgRoot = join(OUT, 'og');
+  if (existsSync(outHtmlRoot)) rmSync(outHtmlRoot, { recursive: true, force: true });
+  for (const th of THEME_KEYS) { mkdirSync(join(outHtmlRoot, th), { recursive: true }); mkdirSync(join(outImgRoot, th), { recursive: true }); }
+
+  let n = 0;
+  for (const job of jobs) {
+    const slug = slugOf(job.link);
+    for (const th of THEME_KEYS) {
+      writeFileSync(join(outImgRoot, th, slug + '.png'), drawCard(job, th));
+      writeFileSync(join(outHtmlRoot, th, slug + '.html'), stub(job, slug, th));
+    }
+    n++;
+  }
+  console.log('generated', n, 'jobs x', THEME_KEYS.length, 'themes =', n * THEME_KEYS.length, 'share pages + images into /j');
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  try { await main(); }
+  catch (e) { console.error('gen-share: build failed:', e.message); process.exitCode = 1; }
+}

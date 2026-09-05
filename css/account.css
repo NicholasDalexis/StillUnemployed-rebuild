@@ -7,6 +7,21 @@
 .su-auth-button[data-state="synced"]::after { content:""; position:absolute; bottom:1px; right:1px; width:9px; height:9px; background:#28773d; border:2px solid #FCFAF3; border-radius:50%; }
 .su-auth-button[data-state="error"]::after { content:"!"; position:absolute; right:-3px; top:-5px; color:#fff; background:#b23a1e; border-radius:50%; font:bold 12px/17px sans-serif; width:17px; }
 .su-auth-button:disabled { opacity:.55; cursor:wait; }
+.su-auth-label { display:none; }
+@media(min-width:701px) {
+  .su-auth-button { width:auto; min-width:110px; padding:0 14px; gap:9px; border-radius:22px; }
+  .su-auth-label { display:inline; font:600 14px/1 'Archivo',sans-serif; color:#2C2118; white-space:nowrap; }
+  /* Share the Saved toolbar's right edge, without making the account control sticky. */
+  #board > div:first-of-type > .su-main-nav { left:40px !important; right:40px; transform:none !important; justify-content:center; }
+  #board > div:first-of-type > .su-main-nav > .su-account-slot { position:absolute; right:0; top:0; }
+}
+@media(min-width:1025px) and (max-width:1100px) {
+  #board > div:first-of-type { height:168px !important; }
+  #board > div:first-of-type > .su-main-nav { top:100px !important; }
+}
+@media(min-width:701px) and (max-width:1024px) {
+  #board > div:first-of-type > .su-main-nav { left:24px !important; right:24px; }
+}
 @media(max-width:700px) {
   #board > div:first-of-type > .su-main-nav { flex-wrap:nowrap !important; gap:8px !important; }
   #board > div:first-of-type > .su-main-nav a { padding:10px 12px !important; font-size:17px !important; }

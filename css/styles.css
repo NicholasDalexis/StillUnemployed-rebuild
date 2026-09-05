@@ -540,6 +540,15 @@ body { margin: 0; background: #EFE6D4; }
     .fbopt:hover { transform: translateY(-5px) scale(1.045) rotate(0deg) !important; box-shadow: 4px 12px 22px rgba(44,33,24,0.28) !important; }
 
 /* ---------------- Responsive overrides (verbatim from resp-inject) ---------------- */
+[data-act]:focus-visible, .trk-input:focus-visible, .trk-status:focus-visible, .trk-notes:focus-visible { outline:3px solid #D8502E !important; outline-offset:3px; }
+.bmbtn { width:44px; height:44px; margin:-12px; }
+.su-unlisted-saved { margin:32px 0; padding:20px; background:#FCFAF3; border:1px dashed #CDB88C; color:#2C2118; }
+.su-unlisted-saved h2 { font-family:'Indie Flower',cursive; }
+.su-unlisted-saved li { display:flex; align-items:center; flex-wrap:wrap; gap:12px; margin:16px 0; }
+.su-unlisted-saved a { color:#914322; overflow-wrap:anywhere; flex:1; min-width:180px; }
+.su-unlisted-saved button { min-height:44px; background:#F2E14B; color:#2C2118; border:1px solid #CDB88C; border-radius:4px; padding:8px 12px; cursor:pointer; }
+#overlay-root [role="dialog"]:focus { outline:none; }
+#overlay-root [data-act="closeDetail"], #overlay-root [data-act="closeAdvice"], #overlay-root [data-act="closeSignup"], #overlay-root [data-act="detailShare"] { min-width:32px; min-height:32px; }
 @media (max-width: 1024px) {
     .board > div[style*="max-width: 1240px"] { padding-left: 24px !important; padding-right: 24px !important; }
     /* hide the founder/about card on tablet + below so it never overlaps the centered nav */

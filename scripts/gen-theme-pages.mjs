@@ -14,8 +14,8 @@
  * from the real board. jobs.html's own pre-paint script reads location.pathname and applies the
  * theme, so no extra JS is needed here.
  *
- * Deliberately standalone: gen-share.mjs exits early if the Google Sheet is unreachable, and these
- * pages have nothing to do with the sheet. They must never be collateral damage.
+ * Deliberately standalone: these pages do not depend on the sheet. The combined Netlify build
+ * stops if gen-share cannot validate its feed, preserving the previous successful deployment.
  */
 import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';

@@ -2,7 +2,7 @@
    StillUnemployed.com — Tracker
    The Excel sheet, retired. Every application lives in localStorage under
    su_tracker (JSON array of {id, company, role, link, source, dateApplied,
-   status, notes}) — no backend, no login, nothing ever leaves the browser.
+   status, notes}). Optional Google sign-in also syncs these rows to the account.
 
    Rows arrive two ways:
      - auto-logged by js/app.js when someone taps "I applied!" on the board
@@ -165,7 +165,41 @@
   }
   function csvField(v) {
     v = String(v == null ? '' : v);
+    // Spreadsheet apps can execute formula-like cell text even when it is CSV
+    // quoted. Export it as literal text, including after whitespace or controls.
+    if (/^[\s\x00-\x1f\x7f-\x9f]*[=+@-]/.test(v)) v = "'" + v;
     return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+  }
+  function linkKey(link) {
+    var value = String(link || '').trim();
+    if (!value) return '';
+    if (!/^https?:\/\//i.test(value)) value = 'https://' + value;
+    try { return new URL(value).href; } catch (e) { return value; }
+  }
+
+  function captureFocus(board) {
+    var active = document.activeElement;
+    if (!active || !board.contains(active)) return null;
+    return { id: active.id, row: active.getAttribute('data-id'), act: active.getAttribute('data-act'),
+      tag: active.tagName, start: active.selectionStart, end: active.selectionEnd,
+      direction: active.selectionDirection, scroll: active.scrollTop };
+  }
+  function restoreFocus(board, focus) {
+    if (!focus) return;
+    var target = focus.id ? document.getElementById(focus.id) : null;
+    if (!target && (focus.row || focus.act)) {
+      target = Array.from(board.querySelectorAll('[data-id], [data-act]')).find(function (el) {
+        return el.tagName === focus.tag && el.getAttribute('data-id') === focus.row && el.getAttribute('data-act') === focus.act;
+      });
+    }
+    if (!target && focus.row) target = document.getElementById('trk-add');
+    if (!target) return;
+    target.focus({ preventScroll: true });
+    if (typeof focus.start === 'number' && target.setSelectionRange) {
+      var length = target.value.length;
+      target.setSelectionRange(Math.min(focus.start, length), Math.min(focus.end, length), focus.direction || 'none');
+      target.scrollTop = focus.scroll;
+    }
   }
 
   var Trk = {
@@ -173,6 +207,8 @@
     look: loadLook(),
     deleting: {},   // id -> true while the strike-through goodbye plays
     expanded: {},   // id -> true while the notes field is pinned open (the ▾ arrow)
+    draft: {},
+    formMessage: '',
 
     counts: function () {
       var c = { total: this.rows.length, ints: 0, offers: 0, rejected: 0, ghosted: 0 };
@@ -186,9 +222,15 @@
       return c;
     },
 
-    render: function () {
+    render: function (options) {
       var self = this;
       var board = document.getElementById('board');
+      var focus = captureFocus(board);
+      if (options && options.clearDraft) this.draft = {};
+      else ['trk-co', 'trk-role', 'trk-link'].forEach(function (id) {
+        var input = document.getElementById(id);
+        if (input) self.draft[id] = input.value;
+      });
       var P = LOOKS[this.look] || LOOKS.original;
 
       board.className = 'board' + (P.cls ? ' ' + P.cls : '');
@@ -208,16 +250,16 @@
 
       // ---- top nav (same structure as the jobs board: aboutcard + centered post-its) ----
       out += '<div style="max-width: 1240px; margin: 0 auto; padding: 26px 40px 0; position: relative; height: 100px; box-sizing: border-box;">' +
-        '<div data-act="goHome" class="aboutcard" style="position: absolute; top: 22px; left: 40px; display: flex; align-items: center; gap: 12px; background: #E7D2A8; border-radius: 16px; padding: 9px 16px 9px 9px; cursor: pointer; box-shadow: 0 6px 18px rgba(44,33,24,0.16);">' +
-          '<div style="width: 66px; height: 42px; border-radius: 11px; overflow: hidden; flex: none;">' +
+        '<button type="button" data-act="goHome" class="aboutcard" aria-label="Home" style="position: absolute; top: 22px; left: 40px; display: flex; align-items: center; gap: 12px; background: #E7D2A8; border:0; text-align:left; border-radius: 16px; padding: 9px 16px 9px 9px; cursor: pointer; box-shadow: 0 6px 18px rgba(44,33,24,0.16);">' +
+          '<span style="display:block; width: 66px; height: 42px; border-radius: 11px; overflow: hidden; flex: none;">' +
             '<img src="assets/5037150f-ce24-477c-bae7-ef884fbc5849.jpg" alt="Nic" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 16%; transform: scale(1.55); transform-origin: 50% 26%;">' +
-          '</div>' +
-          '<div style="line-height: 1.2;">' +
-            '<div style="font-size: 14px; font-weight: 700; color: #2A2118; font-family: \'Archivo\', sans-serif;">Nic, the founder</div>' +
-            '<div style="font-size: 11px; font-weight: 500; color: #6F5E45; margin-top: 2px; font-family: \'Archivo\', sans-serif;">Currently at Instagram making 6 figures</div>' +
-          '</div>' +
+          '</span>' +
+          '<span style="display:block; line-height: 1.2;">' +
+            '<span style="display:block; font-size: 14px; font-weight: 700; color: #2A2118; font-family: \'Archivo\', sans-serif;">Nic, the founder</span>' +
+            '<span style="display:block; font-size: 11px; font-weight: 500; color: #6F5E45; margin-top: 2px; font-family: \'Archivo\', sans-serif;">Currently at Instagram making 6 figures</span>' +
+          '</span>' +
           '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex: none; margin-left: 2px;"><path d="M9 6l6 6-6 6" stroke="#6F5E45" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
-        '</div>' +
+        '</button>' +
         '<div class="su-main-nav" style="position: absolute; top: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px;">' +
           '<a href="./index.html" class="postit trk-nav-a r1">Home</a>' +
           '<a href="./jobs.html" class="postit trk-nav-a r2">Jobs</a>' +
@@ -252,11 +294,12 @@
       out += '<div class="trk-form">' +
         '<div class="trk-form-label" style="color: #1A1A1A;">applied somewhere else? log it ↓</div>' +
         '<div class="trk-form-row">' +
-          '<input id="trk-co" class="trk-input" placeholder="company">' +
-          '<input id="trk-role" class="trk-input" placeholder="role / job title">' +
-          '<input id="trk-link" class="trk-input" placeholder="link (optional)">' +
-          '<button type="button" data-act="addRow" class="trk-addbtn">+ add it</button>' +
+          '<input id="trk-co" class="trk-input" aria-label="Company" placeholder="company" value="' + esc(this.draft['trk-co'] || '') + '">' +
+          '<input id="trk-role" class="trk-input" aria-label="Role or job title" placeholder="role / job title" value="' + esc(this.draft['trk-role'] || '') + '">' +
+          '<input id="trk-link" class="trk-input" aria-label="Posting link (optional)" inputmode="url" placeholder="link (optional)" value="' + esc(this.draft['trk-link'] || '') + '">' +
+          '<button id="trk-add" type="button" data-act="addRow" class="trk-addbtn" aria-describedby="trk-form-feedback">+ add it</button>' +
         '</div>' +
+        '<p id="trk-form-feedback" role="status" aria-live="polite" style="margin:8px 0 0;color:#6F5E45;">' + esc(this.formMessage) + '</p>' +
       '</div>';
 
       // ---- rows ----
@@ -287,14 +330,14 @@
               '<div class="trk-src">' + (r.source === 'StillUnemployed' ? '<span style="color: var(--trk-star, #C2552F); font-family: \'Indie Flower\', cursive; font-weight: 700;">★</span> via StillUnemployed.com' : 'added by you') + '</div>' +
             '</div>' +
             '<div class="trk-date" title="date applied">' + esc(fmtDate(r.dateApplied)) + '</div>' +
-            '<select class="trk-status ' + statusCls(r.status) + '" data-id="' + esc(r.id) + '" aria-label="status">' + opts + '</select>' +
-            '<textarea class="trk-notes' + (self.expanded[r.id] ? ' open' : '') + '" data-id="' + esc(r.id) + '" rows="1" placeholder="notes... (recruiter name, next step)">' + esc(r.notes || '') + '</textarea>' +
-            '<div class="trk-noteexp' + (self.expanded[r.id] ? ' open' : '') + '" data-act="toggleNote" data-id="' + esc(r.id) + '" title="' + (self.expanded[r.id] ? 'collapse notes' : 'expand notes') + '">' +
+            '<select class="trk-status ' + statusCls(r.status) + '" data-id="' + esc(r.id) + '" aria-label="Application status">' + opts + '</select>' +
+            '<textarea class="trk-notes' + (self.expanded[r.id] ? ' open' : '') + '" data-id="' + esc(r.id) + '" rows="1" aria-label="Application notes" placeholder="notes... (recruiter name, next step)">' + esc(r.notes || '') + '</textarea>' +
+            '<button type="button" class="trk-noteexp' + (self.expanded[r.id] ? ' open' : '') + '" data-act="toggleNote" data-id="' + esc(r.id) + '" aria-expanded="' + !!self.expanded[r.id] + '" aria-label="' + (self.expanded[r.id] ? 'Collapse notes' : 'Expand notes') + '" style="border:0;padding:0;background:transparent;" title="' + (self.expanded[r.id] ? 'collapse notes' : 'expand notes') + '">' +
               '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="transition: transform .18s;' + (self.expanded[r.id] ? ' transform: rotate(180deg);' : '') + '"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
-            '</div>' +
-            '<div class="trk-del" data-act="delRow" data-id="' + esc(r.id) + '" title="remove">' +
+            '</button>' +
+            '<button type="button" class="trk-del" data-act="delRow" data-id="' + esc(r.id) + '" aria-label="Remove application" style="border:0;padding:0;" title="remove">' +
               '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"></path></svg>' +
-            '</div>' +
+            '</button>' +
           '</div>';
         });
         out += '</div>';
@@ -308,6 +351,7 @@
         opens[oi].style.height = 'auto';
         opens[oi].style.height = Math.max(opens[oi].scrollHeight, 34) + 'px';
       }
+      restoreFocus(board, focus);
     },
 
     addRow: function () {
@@ -323,6 +367,14 @@
         if (inp) inp.focus();
         return;
       }
+      // Another tab may have just logged the same posting. Keep its status and
+      // notes intact, and make the duplicate visible instead of losing it on sync.
+      this.rows = loadRows();
+      if (link && this.rows.some(function (r) { return r && linkKey(r.link) === linkKey(link); })) {
+        this.formMessage = 'That posting is already in your tracker. Your existing application is unchanged.';
+        this.render();
+        return;
+      }
       this.rows.unshift({
         id: 'su-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
         company: co, role: role, link: link,
@@ -331,7 +383,8 @@
       saveRows(this.rows);
       // analytics (js/analytics.js): manual add — additive no-op without it
       if (typeof window.suTrack === 'function') window.suTrack('tracker-add', co, role, '');
-      this.render();
+      this.formMessage = '';
+      this.render({ clearDraft: true });
       var again = document.getElementById('trk-co');
       if (again) again.focus();
     },
@@ -353,7 +406,7 @@
     setField: function (id, field, value) {
       var changed = false;
       this.rows.forEach(function (r) {
-        if (r && r.id === id) { r[field] = value; r.updated = new Date().toISOString(); changed = true; }
+        if (r && r.id === id && r[field] !== value) { r[field] = value; r.updated = new Date().toISOString(); changed = true; }
       });
       if (changed) saveRows(this.rows);
       return changed;
@@ -427,6 +480,12 @@
       }
       document.addEventListener('input', function (e) {
         var t = e.target;
+        if (t && (t.id === 'trk-co' || t.id === 'trk-role' || t.id === 'trk-link')) {
+          self.draft[t.id] = t.value;
+          self.formMessage = '';
+          var feedback = document.getElementById('trk-form-feedback');
+          if (feedback) feedback.textContent = '';
+        }
         if (t && t.classList && t.classList.contains('trk-notes')) {
           self.setField(t.getAttribute('data-id'), 'notes', t.value);   // save as they type
           noteSize(t, true);
