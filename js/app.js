@@ -155,9 +155,9 @@
     //    means nothing → "1,500 job applications").
     //  · No "callbacks" (sounds like acting), no "data" (too corporate), no "fluff"/"AI slop"
     //    framing, and "newsletter" never leads.
-    { id: 'no-weekends', g: 'week', hook: 'the days you shouldn\'t apply to jobs',
-      cta: 'wait, why monday?',
-      why: 'Weekend applications pile up in a closed inbox. On Monday recruiters dig out of that pile, and yours is at the bottom of it. Apply Tuesday to Thursday, early.' },
+    { id: 'no-weekends', g: 'week', hook: 'your job hunt needs days off, too',
+      cta: 'wait, why friday?',
+      why: 'My take: plan your application time for Monday through Thursday, and leave Friday and the weekend for a breather when you can. That is a routine, not a rule about when recruiters read applications. If a good role is open and your application is ready, send it. Don\'t wait for Monday or risk missing a deadline.' },
     { id: 'board-trap', g: 'cycle', hook: 'the job-board trap',
       cta: 'how to break the loop',
       sell: 'the recipe skips the loop entirely ↓',
@@ -286,13 +286,12 @@
     if (!note.g) return '';
     var s = big ? 1.12 : 1;
     if (note.g === 'week') {
-      // The scroll-stopper. Week starts SUNDAY (S M T W T F S — an S at each end, so the crossed
-      // Monday reads clearly), red hand-drawn X's on Sun / Mon / Sat that spill past the boxes on
-      // purpose (Nic: "half going off the box, a tiny bit sloppy"). Row spans the full card width.
+      // Week starts Sunday. Friday, Saturday and Sunday are Nic's suggested days off,
+      // not a claim that those application dates reduce someone's hiring chances.
       var days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-      var xOn = { 0: 1, 1: 1, 6: 1 };
+      var xOn = { 0: 1, 5: 1, 6: 1 };
       // Round 2: the big X's read too heavy ("expands out the card"). Now a single THIN red
-      // strike line through Sun / Mon / Sat, barely past the box edges. Three slightly different
+      // strike line through Sun / Fri / Sat, barely past the box edges. Three slightly different
       // angles so it doesn't look stamped.
       var strikes = [
         '<path d="M-1 22 C 7 16, 16 8, 25 3" />',
@@ -451,7 +450,7 @@
       adviceGraphicHtml(note, ACC, false) +
       adviceDoodleHtml(note) +
       '<div style="flex:1; min-height:12px;"></div>' +
-      // The flip CTA continues the thought ("wait, why monday?" · "you could just..."), it doesn't
+      // The flip CTA continues the thought ("wait, why friday?" · "you could just..."), it doesn't
       // repeat a generic "find out why" 16 times. Slightly larger than before — it's the click.
       '<div style="display:flex; justify-content:flex-end;"><span style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:20px; color:#C2552F; display:inline-flex; align-items:center; gap:4px;">' + esc(note.cta || 'find out why') + '<svg class="doodle-arrow" width="28" height="14" viewBox="0 0 28 14" fill="none" style="overflow:visible; margin-left:2px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>' +
     '</div>';
