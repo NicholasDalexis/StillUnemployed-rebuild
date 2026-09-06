@@ -178,7 +178,7 @@ export function renderHistory(data) {
     <h1>Version history</h1>
     <p class="intro">What's changed on the board.</p>
 ${cards}
-    <footer><a href="./privacy.html">Privacy</a><a href="./terms.html">Terms</a><a href="./index.html">Home</a></footer>
+    <footer><a href="./style-guide.html">For designers: check out our style guide →</a><a href="./privacy.html">Privacy</a><a href="./terms.html">Terms</a><a href="./index.html">Home</a></footer>
   </main>
 </body>
 </html>

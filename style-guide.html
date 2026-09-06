@@ -7,132 +7,39 @@
   <meta name="description" content="The colors, typography, paper details and layout conventions of StillUnemployed.com.">
   <title>Style guide | StillUnemployed.com</title>
   <link rel="stylesheet" href="css/brand.css?v=1">
-  <script src="js/release.js?v=2.1.1" defer></script>
-  <style>
-    * { box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body { margin:0; background:var(--su-bg); color:var(--su-ink); font:400 1rem/1.6 var(--su-body); }
-    a { color:var(--su-orange-text); text-underline-offset:4px; }
-    button, input { font:inherit; }
-    a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible { outline:3px solid var(--su-orange-text); outline-offset:5px; }
-    .skip { position:absolute; top:8px; left:16px; z-index:2; padding:12px; background:var(--su-paper); transform:translateY(-150%); }
-    .skip:focus { transform:none; }
-    .guide { max-width:1120px; margin:auto; padding:24px 24px 64px; }
-    .masthead { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px 24px; padding-bottom:16px; border-bottom:1px solid #cdbfa7; }
-    .wordmark { color:var(--su-ink); font:400 1.4rem/1.25 var(--su-hand); text-decoration:none; }
-    .masthead nav, .guide-footer { display:flex; flex-wrap:wrap; gap:8px 20px; align-items:center; }
-    .masthead a, .guide-footer a { display:inline-flex; align-items:center; min-height:var(--su-touch); }
-    .guide-intro { max-width:680px; padding:32px 0 8px; }
-    .eyebrow, .spec-label { font:600 .75rem/1.5 var(--su-body); letter-spacing:.07em; text-transform:uppercase; color:var(--su-muted); }
-    .eyebrow { margin:0 0 4px; }
-    h1 { margin:0; font:400 clamp(2.75rem,7vw,4rem)/1.1 var(--su-hand); }
-    .guide-intro > p:last-child { margin:12px 0 0; }
-    .section { margin-top:48px; scroll-margin-top:24px; }
-    .section-title { display:flex; align-items:baseline; gap:12px; margin:0 0 8px; font:400 2rem/1.25 var(--su-hand); }
-    .section-title > span { color:var(--su-orange-text); font:500 .85rem/1 var(--su-body); }
-    .section-intro { max-width:72ch; margin:0 0 24px; color:var(--su-muted); }
-    .two-up { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; }
-    .sheet { position:relative; min-width:0; padding:24px; background:var(--su-paper); border:1px solid #ded3c0; border-radius:3px; box-shadow:var(--su-note-shadow); }
-    .sheet h3 { margin:0 0 12px; font:400 1.5rem/1.25 var(--su-hand); }
-    .sheet p { margin:12px 0 0; }
-    .spec-label { display:block; margin:0 0 12px; }
-    .annotation { font-size:.875rem; line-height:1.55; color:var(--su-muted); }
-    code { font:500 .8125rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace; overflow-wrap:anywhere; }
-    .swatch { margin:0; min-width:0; }
-    .swatch-color { height:100px; border:1px solid #2a211825; border-radius:3px; }
-    .swatch figcaption { padding-top:8px; }
-    .swatch strong { display:block; font-size:1rem; font-weight:600; }
-    .swatch code { display:block; margin:2px 0; color:var(--su-muted); }
-    .swatch p { font-size:.875rem; margin:4px 0 0; }
-    .color-yellow { background:var(--su-yellow); }
-    .color-yellow-paper { background:var(--su-yellow-paper); }
-    .color-ink { background:var(--su-ink); }
-    .color-muted { background:var(--su-muted); }
-    .color-paper { background:var(--su-paper); }
-    .color-bg { background:var(--su-bg); }
-    .color-orange { background:var(--su-orange); }
-    .color-orange-card { background:var(--su-orange-on-card); }
-    .color-orange-text { background:var(--su-orange-text); }
-    .margin-note { margin:20px 0 0; padding-left:16px; border-left:2px solid var(--su-orange); font:400 1.25rem/1.4 var(--su-hand); }
-    .type-hand { font:400 2rem/1.2 var(--su-hand); }
-    .type-body { font:400 1rem/1.6 var(--su-body); }
-    .type-heavy { font:400 clamp(1.6rem,4vw,2.25rem)/1.15 var(--su-display); letter-spacing:-.025em; }
-    .type-poppins { font:400 1rem/1.6 'Poppins',sans-serif; }
-    .type-playfair { font:italic 800 2rem/1.2 'Playfair Display',serif; }
-    .type-newsreader { font:italic 400 1.6rem/1.3 'Newsreader',serif; }
-    .weight-row { display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:16px; font-family:var(--su-body); }
-    .demo-actions { display:flex; flex-wrap:wrap; gap:16px; align-items:center; margin:24px 0; padding:4px; }
-    .sticky { display:inline-flex; align-items:center; justify-content:center; gap:12px; min-height:48px; padding:12px 24px; border:1px solid #2a21181a; border-radius:3px; background:var(--su-yellow-paper); color:var(--su-ink); box-shadow:var(--su-note-shadow); font:400 1.375rem/1.2 var(--su-hand); text-decoration:none; transform:rotate(-1.5deg); transition:box-shadow .16s; }
-    .sticky:hover { box-shadow:3px 8px 16px #2c21182e; }
-    .sticky:active { box-shadow:1px 2px 5px #2c21182e; }
-    .sticky[disabled] { cursor:not-allowed; transform:none; background:var(--su-yellow-paper); border:1px dashed var(--su-ink); box-shadow:none; color:var(--su-ink); opacity:1; }
-    .text-link { display:inline-flex; align-items:center; min-height:var(--su-touch); font:400 1.25rem/1.3 var(--su-hand); }
-    .taped { margin:12px 0; padding-top:32px; }
-    .taped::before { content:''; position:absolute; width:88px; height:24px; left:calc(50% - 44px); top:-11px; background:var(--su-tape); transform:rotate(-3deg); }
-    .notebook { background-color:var(--su-paper); background-image:linear-gradient(90deg,transparent 23px,#dca28e88 23px,#dca28e88 24px,transparent 24px),repeating-linear-gradient(180deg,transparent 0 27px,var(--su-rule) 27px 28px); background-position:0 0,0 20px; padding:28px 24px 24px 36px; }
-    .notebook summary { min-height:var(--su-touch); cursor:pointer; font:400 1.6rem/1.25 var(--su-hand); }
-    .notebook p { font:400 1.125rem/1.55 var(--su-hand); }
-    .notebook .annotation { font:400 .875rem/1.6 var(--su-body); }
-    .note-demo { align-self:start; }
-    .sample-card { padding:24px; border-radius:3px; box-shadow:var(--su-note-shadow); color:#3A2A1B; }
-    .sample-card .spec-label { color:inherit; }
-    .sample-card h3 { margin:6px 0 8px; font:400 1.75rem/1.2 var(--su-display); }
-    .sample-card .role { margin:0 0 8px; font-weight:600; }
-    .sample-card .salary { margin:16px 0 8px; font-weight:800; font-size:1.5rem; }
-    .sample-card p:last-child { margin-bottom:0; font-size:.875rem; }
-    .salary-low { background:var(--su-salary-low-paper); }
-    .salary-mid { background:var(--su-salary-mid-paper); }
-    .salary-high { background:var(--su-yellow-paper); color:var(--su-ink); }
-    .scale { display:flex; flex-wrap:wrap; align-items:flex-end; gap:16px; margin:20px 0 8px; }
-    .scale span { display:flex; flex-direction:column; align-items:center; gap:8px; font-size:.75rem; }
-    .scale i { display:block; width:24px; height:var(--space); background:var(--su-ink); border-radius:1px; }
-    .rules { margin:0; padding-left:20px; }
-    .rules li { margin:8px 0; }
-    .layout-example { display:grid; grid-template-columns:2fr 1fr; gap:12px; min-height:104px; margin:20px 0; padding:12px; border:1px dashed #a8987f; background:var(--su-bg); }
-    .layout-example span { display:flex; align-items:center; justify-content:center; padding:12px; border:1px solid #c7b79c; background:var(--su-paper); color:var(--su-muted); font:400 1.125rem/1.3 var(--su-hand); }
-    .layout-phone { grid-template-columns:1fr; max-width:260px; }
-    .state-list { display:grid; grid-template-columns:auto 1fr; gap:16px; margin:0; }
-    .state-list dt { font-weight:600; }
-    .state-list dd { margin:0; }
-    .guide-footer { padding-top:24px; margin-top:48px; border-top:1px solid #cdbfa7; font-size:.875rem; }
-    @media(max-width:700px) { .guide { padding:16px 16px 48px; }.two-up { grid-template-columns:1fr; gap:24px; }.sheet { padding:20px; }.notebook { padding-left:32px; }.section { margin-top:32px; }.masthead nav { gap:8px 16px; }.guide-intro { padding-top:24px; }.state-list { grid-template-columns:1fr; gap:4px; }.state-list dd { margin-bottom:12px; } }
-    @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; }.sticky { transition:none; } }
-  </style>
+  <script src="js/release.js?v=2.1.2" defer></script>
+  <link rel="stylesheet" href="css/style-guide.css?v=1">
+  <script src="js/style-guide-themes.js?v=1" defer></script>
+  <script src="js/style-guide.js?v=1" defer></script>
 </head>
 <body>
   <a class="skip" href="#guide-content">Skip to the guide</a>
-  <div class="guide">
+  <div class="guide-canvas" id="guide-canvas"><div class="guide">
     <header class="masthead">
       <a class="wordmark" href="/index.html">StillUnemployed.com</a>
-      <nav aria-label="Site navigation"><a href="/index.html">Home</a><a href="/jobs.html">Jobs</a><a data-su-version href="/versions.html#version-2-1-1" aria-label="Version 2.1.1. View version history">Version 2.1.1</a></nav>
+      <nav aria-label="Site navigation"><a href="/index.html">Home</a><a href="/jobs.html">Jobs</a><a data-su-version href="/versions.html#version-2-1-2" aria-label="Version 2.1.2. View version history">Version 2.1.2</a></nav>
     </header>
     <main id="guide-content">
-      <div class="guide-intro">
-        <p class="eyebrow">The original look</p>
+      <div class="intro-row"><div class="guide-intro">
+        <p class="eyebrow" id="theme-eyebrow">The original look</p>
         <h1>Style guide</h1>
-        <p>Warm paper, useful notes and a little handwriting. A reference for keeping the board readable and recognizably ours, from a phone to a wide screen.</p>
-      </div>
+        <p id="theme-intro">Warm paper, useful notes and a little handwriting. A reference for keeping the board readable and recognizably ours, from a phone to a wide screen.</p>
+      </div><button class="theme-trigger" id="theme-trigger" type="button" aria-haspopup="dialog" aria-controls="guide-theme-dialog" hidden>Change theme <span aria-hidden="true">↓</span></button></div>
+      <p class="sr-only" role="status" id="theme-status" aria-live="polite"></p>
 
       <section class="section" aria-labelledby="colors-title">
         <h2 class="section-title" id="colors-title"><span>01</span> Colors with a job to do</h2>
-        <p class="section-intro">Use the shared palette. The warmer yellow comes from the original board’s high-salary card. Navigation and primary actions use that same paper treatment.</p>
-        <div class="two-up">
-          <figure class="swatch"><div class="swatch-color color-yellow" aria-hidden="true"></div><figcaption><strong>Yellow</strong><code>--su-yellow · #F2E14B</code><p>The shared solid accent and fallback for yellow surfaces.</p></figcaption></figure>
-          <figure class="swatch"><div class="swatch-color color-yellow-paper" aria-hidden="true"></div><figcaption><strong>Yellow paper</strong><code>--su-yellow-paper · 160deg · #F6E85F → #EFDB3D</code><p>The warm sticky-note treatment for original navigation and primary actions.</p></figcaption></figure>
-          <figure class="swatch"><div class="swatch-color color-ink" aria-hidden="true"></div><figcaption><strong>Ink</strong><code>--su-ink · #2A2118</code><p>Headings, controls and the main reading color.</p></figcaption></figure>
-          <figure class="swatch"><div class="swatch-color color-muted" aria-hidden="true"></div><figcaption><strong>Pencil</strong><code>--su-muted · #6F5E45</code><p>Supporting copy on light paper. Keep it readable at its actual size.</p></figcaption></figure>
-          <figure class="swatch"><div class="swatch-color color-paper" aria-hidden="true"></div><figcaption><strong>Note paper</strong><code>--su-paper · #FCFAF3</code><p>Notes, forms and reading surfaces.</p></figcaption></figure>
-          <figure class="swatch"><div class="swatch-color color-bg" aria-hidden="true"></div><figcaption><strong>Page</strong><code>--su-bg · #F4EEE2</code><p>A warm, quiet background behind the content.</p></figcaption></figure>
-          <figure class="swatch"><div class="swatch-color color-orange" aria-hidden="true"></div><figcaption><strong>Orange accent</strong><code>--su-orange · #C2552F</code><p>Scribbles, rules and decorative emphasis.</p></figcaption></figure>
-          <figure class="swatch"><div class="swatch-color color-orange-text" aria-hidden="true"></div><figcaption><strong>Orange text</strong><code>--su-orange-text · #A63D22</code><p>The deeper orange for readable links and focus outlines on light paper.</p></figcaption></figure>
-          <figure class="swatch"><div class="swatch-color color-orange-card" aria-hidden="true"></div><figcaption><strong>Orange on salary cards</strong><code>--su-orange-on-card · #83311B</code><p>Small Apply and Open text on tan or yellow. At least 4.65:1 contrast across the original salary surfaces.</p></figcaption></figure>
+        <p class="section-intro" id="theme-color-intro">The warmer yellow comes from the original board’s high-salary card. Navigation and primary actions share that paper treatment.</p>
+        <div class="two-up" id="theme-swatches">
+          <figure class="swatch"><div class="swatch-color color-yellow-paper" aria-hidden="true"></div><figcaption><strong>Original yellow paper</strong><code>#F6E85F → #EFDB3D</code><p>Navigation and high-salary cards share the same warm paper family.</p></figcaption></figure>
+          <figure class="swatch"><div class="swatch-color color-ink" aria-hidden="true"></div><figcaption><strong>Original ink</strong><code>#2A2118</code><p>Keep the text readable on its own surface.</p></figcaption></figure>
         </div>
-        <p class="margin-note">One yellow family. Don’t invent a separate yellow for each button.</p>
+        <p class="margin-note" id="theme-color-note">One yellow family. Don’t invent a separate yellow for each button.</p>
       </section>
 
       <section class="section" aria-labelledby="type-title">
         <h2 class="section-title" id="type-title"><span>02</span> Handwritten, then easy to read</h2>
-        <p class="section-intro">Use handwriting to invite and guide. Use a clear body face for details people need to compare. These examples use the weights actually loaded by the site.</p>
+        <p class="section-intro"><span id="theme-type-intro">Original</span> uses the same type hierarchy as the other board themes. Handwriting invites; Archivo makes roles and salaries easy to compare. The editorial faces below keep their homepage roles. These are the weights actually loaded by the site.</p>
         <div class="two-up">
           <article class="sheet"><span class="spec-label">Indie Flower · 400</span><div class="type-hand">Just jobs. A little perspective.</div><p>Navigation, short actions, notebook notes and section labels.</p><p class="annotation">Controls: 18–22px. Short headings: 28–40px. Natural weight 400; there is no separate loaded bold face.</p></article>
           <article class="sheet"><span class="spec-label">Archivo · 400 / 500 / 600 / 700</span><div class="type-body">Save a role now. Keep the company, salary and next step clear when you return.</div><div class="weight-row"><span style="font-weight:400">400 regular</span><span style="font-weight:500">500 medium</span><span style="font-weight:600">600 semibold</span><span style="font-weight:700">700 bold</span></div><p class="annotation">Body and forms: 16–18px, about 1.5–1.6 line height. Labels: 500–600. Emphasis: 700. Loaded 800/900 weights are available for short numeric or display emphasis.</p></article>
@@ -147,42 +54,47 @@
         <h2 class="section-title" id="paper-title"><span>03</span> Useful things on paper</h2>
         <p class="section-intro">One idea per note. Tape, a small tilt and a soft shadow provide character while text and controls stay clear.</p>
         <div class="two-up">
-          <article class="sheet"><h3>Sticky actions</h3><div class="demo-actions"><a class="sticky" href="/jobs.html">Just jobs <span aria-hidden="true">→</span></a><button class="sticky" type="button" disabled aria-describedby="disabled-note">Saved</button></div><p id="disabled-note" class="annotation">Disabled example: the action is unavailable. Keep its label legible and explain the reason beside the control.</p><a class="text-link" href="/jobs.html">Browse the board →</a><p class="annotation">Primary actions use yellow paper and ink. Secondary links use the deeper orange with an underline. Both examples above lead to the board.</p></article>
+          <article class="sheet"><h3>Sticky actions</h3><div class="demo-actions"><a class="sticky" data-theme-board-link href="/jobs.html">Just jobs <span aria-hidden="true">→</span></a><button class="sticky" type="button" disabled aria-describedby="disabled-note">Saved</button></div><p id="disabled-note" class="annotation">Disabled example: the action is unavailable. Keep its label legible and explain the reason beside the control.</p><a class="text-link" data-theme-board-link href="/jobs.html">Browse this board →</a><p class="annotation" id="theme-action-note">Primary actions use yellow paper and ink. Both examples lead to this theme’s board.</p></article>
           <div class="note-demo"><details class="sheet notebook taped"><summary>A note for your next move</summary><p>Keep the useful part close. A note opens where you are, gives you one idea, and lets you get back to the jobs.</p><p class="annotation">Interactive specimen: tap the heading again to close it. Keyboard users can use Enter or Space.</p></details><p class="annotation">Tape: <code>rgba(228,205,145,.62)</code><br>Note shadow: <code>3px 6px 13px rgba(44,33,24,.17)</code><br>Keep decorative lines and tape away from essential text.</p></div>
         </div>
       </section>
 
       <section class="section" aria-labelledby="salary-title">
         <h2 class="section-title" id="salary-title"><span>04</span> Job-card color means salary</h2>
-        <p class="section-intro">These are illustrative cards, not live listings. The original board assigns an annual salary band using the top of the stated range. Keep the actual salary visible; color is a second cue.</p>
+        <p class="section-intro">These are illustrative cards, not live listings. Every theme assigns an annual salary band using the top of the stated range. Keep the actual salary visible; color is a second cue.</p>
         <div class="two-up">
-          <article class="sample-card salary-low"><span class="spec-label">Example · under $80K</span><h3>Studio North</h3><p class="role">Junior designer</p><p>Remote · Full time</p><p class="salary">$65–75K</p><p>Light paper · <code>#ECDEC6 → #E0D0B2</code></p></article>
-          <article class="sample-card salary-mid"><span class="spec-label">Example · $80–99K</span><h3>Common Ground</h3><p class="role">Content strategist</p><p>New York · Hybrid</p><p class="salary">$80–95K</p><p>Tan paper · <code>#E0CBA2 → #D3BB8C</code></p></article>
-          <article class="sample-card salary-high"><span class="spec-label">Example · $100K+</span><h3>Next Chapter</h3><p class="role">Brand designer</p><p>Remote · Full time</p><p class="salary">$90–110K</p><p>Yellow paper · the upper end reaches $100K.</p></article>
-          <aside class="sheet"><h3>The pay key is a promise.</h3><p>Never recolor a job card to make a row look more balanced. A $90–110K role belongs in the high band because the range reaches $110K.</p><p>These are the original look’s treatments. Other themes have their own palettes while keeping the same salary bands.</p><p class="annotation">The yellow on navigation means “take an action.” Yellow on a job card means the stated salary reaches $100K+. Context and visible labels carry the distinction.</p></aside>
+          <article class="sample-card salary-low" data-salary-band="low"><span class="spec-label">Example · under $80K</span><h3>Studio North</h3><p class="role">Junior designer</p><p>Remote · Full time</p><p class="salary">$65–75K</p><div class="card-bottom"><div data-theme-stamp></div><span class="sample-apply" data-theme-apply>Apply Now <span aria-hidden="true">→</span></span></div><p class="card-palette" data-theme-band-value>Light paper · #ECDEC6 → #E0D0B2</p></article>
+          <article class="sample-card salary-mid" data-salary-band="mid"><span class="spec-label">Example · $80–99K</span><h3>Common Ground</h3><p class="role">Content strategist</p><p>New York · Hybrid</p><p class="salary">$80–95K</p><div class="card-bottom"><div data-theme-stamp></div><span class="sample-apply" data-theme-apply>Apply Now <span aria-hidden="true">→</span></span></div><p class="card-palette" data-theme-band-value>Tan paper · #E0CBA2 → #D3BB8C</p></article>
+          <article class="sample-card salary-high" data-salary-band="high"><span class="spec-label">Example · $100K+</span><h3>Next Chapter</h3><p class="role">Brand designer</p><p>Remote · Full time</p><p class="salary">$90–110K</p><div class="card-bottom"><div data-theme-stamp></div><span class="sample-apply" data-theme-apply>Apply Now <span aria-hidden="true">→</span></span></div><p class="card-palette" data-theme-band-value>Yellow paper · the upper end reaches $100K.</p></article>
+          <aside class="sheet"><h3>The pay key is a promise.</h3><p>Never recolor a job card to make a row look more balanced. A $90–110K role belongs in the high band because the range reaches $110K.</p><p id="theme-salary-note">These are the original look’s treatments. Other themes keep the same salary bands.</p><p class="annotation">Navigation color means “take an action.” Card color means salary band. Context and visible labels carry the distinction. These example stamps and Apply labels are decorative, not claims about real jobs.</p></aside>
         </div>
       </section>
 
       <section class="section" aria-labelledby="layout-title">
         <h2 class="section-title" id="layout-title"><span>05</span> Give the page some room</h2>
-        <p class="section-intro">Use a small spacing scale, aligned edges and natural document flow. Let copy wrap and sections grow instead of shrinking an entire desktop composition.</p>
+        <p class="section-intro"><span id="theme-layout-intro">Original</span> keeps the shared layout. Use a small spacing scale, aligned edges and natural document flow. Let copy wrap and sections grow instead of shrinking an entire desktop composition.</p>
         <div class="two-up">
           <article class="sheet"><h3>Desktop</h3><div class="layout-example" aria-label="Desktop illustration: main content beside supporting content"><span>Main content</span><span>Supporting note</span></div><ul class="rules"><li>Center the homepage hero within a 1,500px maximum width.</li><li>Use two columns where the content benefits from sitting together.</li><li>Keep paragraph width comfortable, around 60–70 characters.</li><li>Use 24–48px between sections and 16–24px inside reading surfaces.</li></ul></article>
           <article class="sheet"><h3>Phone</h3><div class="layout-example layout-phone" aria-label="Phone illustration: main content followed by its supporting note"><span>Main content</span><span>Supporting note</span></div><ul class="rules"><li>Stack related sections in reading order; preserve the important action.</li><li>Keep 16px side space where the viewport allows it.</li><li>Primary touch controls are at least 44 × 44 CSS pixels.</li><li>Check 320px width, long labels and enlarged text. Essential controls must remain visible.</li></ul></article>
           <article class="sheet"><h3>The spacing scale</h3><div class="scale" aria-label="Spacing steps in pixels: 4, 8, 12, 16, 24, 32 and 48"><span><i style="--space:4px" aria-hidden="true"></i>4</span><span><i style="--space:8px" aria-hidden="true"></i>8</span><span><i style="--space:12px" aria-hidden="true"></i>12</span><span><i style="--space:16px" aria-hidden="true"></i>16</span><span><i style="--space:24px" aria-hidden="true"></i>24</span><span><i style="--space:32px" aria-hidden="true"></i>32</span><span><i style="--space:48px" aria-hidden="true"></i>48</span></div><p class="annotation">4–8px within tight groups. 12–16px between related controls. 24–48px between bigger ideas.</p></article>
-          <article class="sheet"><h3>Notes that open over the page</h3><ul class="rules"><li>Default maximum width: 640px, with space at both viewport edges.</li><li>Limit height to the visible viewport, leaving about 24–32px outside the note.</li><li>Scroll long content inside the note and keep the close control reachable.</li><li>Support Escape, outside-tap dismissal, keyboard focus containment and focus return.</li></ul><p class="annotation">A clear close button remains available even when outside-tap dismissal is supported.</p></article>
+          <article class="sheet"><h3>Notes that open over the page</h3><ul class="rules"><li>Default maximum width: 640px, with space at both viewport edges. The four-note welcome overview may use 820px.</li><li>Limit height to the visible viewport, leaving about 24–32px outside the note.</li><li>Scroll long content inside the note and keep a clear close or back action reachable.</li><li>Support Escape, outside-tap dismissal, keyboard focus containment and focus return.</li></ul><p class="annotation">Keep one clear way out: a close button on an overview, or a Back action inside a detail note. Outside-tap dismissal is an additional convenience.</p></article>
         </div>
       </section>
 
       <section class="section" aria-labelledby="states-title">
         <h2 class="section-title" id="states-title"><span>06</span> Make every state feel considered</h2>
         <div class="two-up">
-          <article class="sheet"><h3>When someone interacts</h3><dl class="state-list"><dt>Hover</dt><dd>Change the shadow or underline. Keep the hit area stable and the label readable.</dd><dt>Focus</dt><dd>Use a clear, offset outline. Keep it visible above paper edges and outside clipped artwork.</dd><dt>Pressed</dt><dd>Reduce the shadow to suggest contact. Keep the action and its outcome clear.</dd><dt>Disabled</dt><dd>Use a native disabled control with legible text and a nearby reason. No hover invitation.</dd></dl></article>
+          <article class="sheet"><h3>When someone interacts</h3><dl class="state-list"><dt>Hover</dt><dd>Change the shadow or underline. Keep the hit area stable and the label readable.</dd><dt>Focus</dt><dd>Use a clear, offset outline with a light separation ring so it survives both dark and light paper. Keep it visible above paper edges and outside clipped artwork.</dd><dt>Pressed</dt><dd>Reduce the shadow to suggest contact. Keep the action and its outcome clear.</dd><dt>Disabled</dt><dd>Use a native disabled control with legible text and a nearby reason. No hover invitation.</dd></dl></article>
           <article class="sheet"><h3>When something takes time</h3><dl class="state-list"><dt>Loading</dt><dd>Say what is loading. Keep already available information useful.</dd><dt>Empty</dt><dd>Explain the empty result and provide a next step, such as clearing filters.</dd><dt>Error</dt><dd>Keep the person’s input. Explain what failed and provide a retry path.</dd><dt>Motion</dt><dd>Keep transitions brief and optional. Honor reduced-motion preferences.</dd></dl></article>
         </div>
+        <aside class="sheet contrast-note"><h3>Read the ink with its paper</h3><p id="theme-contrast-note">Ink colors belong to their surfaces. Check text contrast before reusing a color pair.</p></aside>
       </section>
     </main>
-    <footer class="guide-footer"><span>StillUnemployed.com · Original look</span><a href="/index.html">Home</a><a href="/jobs.html">Jobs</a><a href="/versions.html">Version history</a></footer>
-  </div>
+    <footer class="guide-footer"><span id="theme-footer">StillUnemployed.com · Original look</span><a href="/index.html">Home</a><a href="/jobs.html">Jobs</a><a href="/versions.html">Version history</a></footer>
+  </div></div>
+  <dialog class="theme-dialog" id="guide-theme-dialog" aria-labelledby="theme-dialog-title" aria-describedby="theme-dialog-note">
+    <div class="theme-dialog-head"><div><h2 id="theme-dialog-title">Choose a look</h2><p id="theme-dialog-note">Same board DNA, a different mood. This changes only the style guide.</p></div><button class="theme-close" id="theme-close" type="button" aria-label="Close theme choices">×</button></div>
+    <div class="theme-options" id="theme-options"></div>
+  </dialog>
 </body>
 </html>

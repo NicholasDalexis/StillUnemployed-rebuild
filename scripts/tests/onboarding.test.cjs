@@ -57,7 +57,9 @@ function welcome({ local = store(), session = store(), search = '', hash = '', v
     get isConnected() { return this === document.body || !!(this.parentElement && this.parentElement.isConnected); }
     set id(value) { this.attrs.id = value; } get id() { return this.attrs.id; }
     set className(value) { this.attrs.class = value; }
+    get hidden() { return this.attrs.hidden !== undefined; } set hidden(value) { if (value) this.attrs.hidden = ''; else delete this.attrs.hidden; }
     setAttribute(key, value) { this.attrs[key] = String(value); } getAttribute(key) { return this.attrs[key] ?? null; }
+    removeAttribute(key) { delete this.attrs[key]; }
     appendChild(child) { child.parentElement = this;this.children.push(child);return child; }
     addEventListener(type, listener) { (this.listeners[type] ??= []).push(listener); }
     dispatch(type, extra = {}) {
@@ -87,7 +89,7 @@ function welcome({ local = store(), session = store(), search = '', hash = '', v
     }
     closest(selector) { for (let node = this;node;node = node.parentElement) if (node.matches(selector)) return node;return null; }
     focus() { document.activeElement = this; }
-    getClientRects() { return this.style.display === 'none' ? [] : [{}]; }
+    getClientRects() { for (let el = this; el; el = el.parentElement) if (el.hidden || el.getAttribute('hidden') !== null || el.style.display === 'none') return []; return [{}]; }
     getBoundingClientRect() { return { left:10, right:750, top:20, bottom:700 }; }
     showModal() { showCalls++;if (showError) throw new Error('Cannot show dialog');this.open = true;(this.querySelector('[autofocus]') || this).focus(); }
     close() { if (!this.open) return;this.open = false;this.dispatch('close'); }
@@ -189,12 +191,13 @@ test('automatic entry from BODY returns to What’s new instead of leaving keybo
 test('Tab and Shift+Tab wrap at the current dialog boundaries after card content changes', () => {
   const w = welcome();w.window.SUWelcome.open();
   function checkBoundaries() {
-    const actions = w.dialog.querySelectorAll('button:not(:disabled),a[href]');
+    const actions = w.dialog.querySelectorAll('button:not(:disabled),a[href],[tabindex="0"]').filter(el => el.getClientRects().length);
     const first = actions[0], last = actions.at(-1);
-    assert.equal(last.getAttribute('data-su-version'), '', 'version history is the final focusable control');
+    if (actions.length === 2) assert.equal(last.getAttribute('role'), 'region', 'detail ends at its keyboard-scrollable content');
+    else assert.equal(last.getAttribute('data-su-version'), '', 'overview ends at version history');
     last.focus();assert.equal(w.dialog.dispatch('keydown', { key:'Tab' }).defaultPrevented, true);assert.equal(w.document.activeElement, first);
     first.focus();assert.equal(w.dialog.dispatch('keydown', { key:'Tab', shiftKey:true }).defaultPrevented, true);assert.equal(w.document.activeElement, last);
-    actions[1].focus();assert.notEqual(w.dialog.dispatch('keydown', { key:'Tab' }).defaultPrevented, true, 'ordinary browser tab order remains available');
+    if (actions.length > 2) { actions[1].focus();assert.notEqual(w.dialog.dispatch('keydown', { key:'Tab' }).defaultPrevented, true, 'ordinary browser tab order remains available'); }
   }
   checkBoundaries();w.click('[data-launch-feature="advice"]');checkBoundaries();
   w.click('[data-launch-back]');checkBoundaries();
@@ -208,7 +211,7 @@ test('the real release helper fills exact-version history on dynamic welcome cre
   assert.equal(link.getAttribute('aria-label'), 'Version 2.1.0. View version history');
   assert.equal(new URL(link.getAttribute('href'), 'http://localhost:8000/jobs/casino/').href, 'http://localhost:8000/versions.html#version-2-1-0');
   w.click('[data-launch-feature="sync"]');assert.equal(w.dialog.querySelector('[data-su-version]'), link);
-  w.click('[data-launch-close]');w.window.SUWelcome.open();
+  w.dialog.dispatch('cancel');w.window.SUWelcome.open();
   assert.equal(w.dialog.querySelector('[data-su-version]'), link);assert.equal(link.textContent, 'Version 2.1.0');
   const missing = welcome({ releaseAvailable:false });assert.equal(missing.window.SUWelcome.open(), true);
   assert.equal(missing.dialog.querySelector('[data-su-version]').getAttribute('href'), '/versions.html', 'history fallback survives an unavailable release script');
@@ -229,5 +232,44 @@ test('preview links use fixed trusted destinations and protect the opener of the
   assert.equal(portfolio.getAttribute('rel'), 'noopener noreferrer');
   assert.match(portfolio.getAttribute('aria-label'), /password required/);
   w.click('[data-launch-feature="sync"]');
-  assert.equal(w.dialog.querySelector('.su-launch-detail').querySelector('a').getAttribute('href'), '/tracker.html');
+  assert.equal(w.dialog.querySelector('.su-launch-detail').querySelector('a'), null, 'detail is informational, with one header Back action');
+});
+
+
+test('feature details have one visible Back action and restore the complete overview', () => {
+  const w = welcome();w.window.SUWelcome.open();
+  for (const feature of ['advice','themes','sync']) {
+    w.click('[data-launch-feature="'+feature+'"]');
+    const actions = w.dialog.querySelectorAll('button:not(:disabled),a[href]').filter(el => el.getClientRects().length);
+    assert.equal(actions.length, 1);
+    assert.equal(actions[0].getAttribute('data-launch-back'), '');
+    assert.equal(w.dialog.getAttribute('aria-labelledby'), 'su-launch-detail-title');
+    for (const selector of ['.su-launch-overview-title','.su-launch-close','.su-launch-intro','.su-launch-footer','.su-launch-reopen']) assert(w.dialog.querySelector(selector).hidden);
+    w.click('[data-launch-back]');
+    assert.equal(w.dialog.getAttribute('aria-labelledby'), 'su-launch-title');
+    assert.equal(w.document.activeElement.getAttribute('data-launch-feature'), feature);
+    assert.equal(w.dialog.querySelector('.su-launch-footer').hidden, false);
+  }
+});
+
+test('detail keyboard focus reaches its named scroll region without adding another visible action', () => {
+  const w = welcome();w.window.SUWelcome.open();
+  for (const feature of ['advice','themes','sync']) {
+    w.click('[data-launch-feature="'+feature+'"]');
+    const back = w.dialog.querySelector('[data-launch-back]');
+    const scroll = w.dialog.querySelector('.su-launch-scroll');
+    const focusable = w.dialog.querySelectorAll('button:not(:disabled),a[href],[tabindex="0"]').filter(el => el.getClientRects().length);
+    assert.deepEqual(focusable, [back, scroll]);
+    assert.equal(w.document.activeElement, back, 'Back keeps initial focus');
+    assert.notEqual(w.dialog.dispatch('keydown', { key:'Tab' }).defaultPrevented, true, 'native Tab can enter the scroll region');
+    assert.equal(scroll.getAttribute('role'), 'region');
+    assert.equal(scroll.getAttribute('aria-labelledby'), w.dialog.querySelector('#su-launch-detail-title').id);
+    scroll.focus();
+    assert.notEqual(w.dialog.dispatch('keydown', { key:'PageDown' }).defaultPrevented, true, 'native keyboard scrolling is not suppressed');
+    assert.equal(w.dialog.dispatch('keydown', { key:'Tab' }).defaultPrevented, true);
+    assert.equal(w.document.activeElement, back, 'Tab from content wraps to Back');
+    w.click('[data-launch-back]');
+    for (const attr of ['role','aria-labelledby','tabindex']) assert.equal(scroll.getAttribute(attr), null, attr+' is removed in overview');
+    assert.equal(w.document.activeElement.getAttribute('data-launch-feature'), feature);
+  }
 });
