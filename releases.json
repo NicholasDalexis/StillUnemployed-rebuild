@@ -1,7 +1,16 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.1.0",
+  "currentVersion": "2.1.1",
   "releases": [
+    {
+      "version": "2.1.1",
+      "date": "2026-09-05",
+      "title": "Back to the notebook",
+      "changes": [
+        "Shared warm yellow, handwritten welcome and suggestion notes, a visual style guide, and a shorter mobile bookmark reminder.",
+        "Featured job cards follow salary bands, with clearer action text."
+      ]
+    },
     {
       "version": "2.1.0",
       "date": "2026-09-05",
@@ -31,7 +40,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "67764d52ce764fd5c9636355f419e53ad827518a66c90ced87e5fc0cef9409f8",
-    "fileCount": 102
+    "digest": "702ff32bbe5214b47cf7e14adea1d00f49937c7cc96e719c97bbb5ce186545ed",
+    "fileCount": 105
   }
 }

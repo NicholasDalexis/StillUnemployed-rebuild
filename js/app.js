@@ -628,7 +628,7 @@
       var link = document.createElement('a');
       link.href = 'tracker.html';
       link.setAttribute('style',
-        'flex: none; background: #F2E14B; color: #2A2118; text-decoration: none;' +
+        'flex: none; background: var(--su-yellow-paper); color: #2A2118; text-decoration: none;' +
         "font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 20px;" +
         'padding: 11px 18px; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center;' +
         'transform: rotate(2deg); box-shadow: 2px 4px 9px rgba(44,33,24,0.22); cursor: pointer;');
@@ -1007,7 +1007,7 @@
     THEMES: {
       cod:      { acc:'#555B38', accInk:'#EDE7CF', cls:'cod',   ink:'#E9E3D2', sub:'#AEB29B', pay:'#AEB29B', show:'#AEB29B', navBg:'#5C6B3A', navInk:'#EDE7CF', hl:'rgba(120,140,75,0.92)', hiCard:'linear-gradient(160deg,#5C6440 0%,#4B5234 100%)', hiInk:'#F1E9D8', hiApply:'#FFFFFF', hiStamp:'#FFFFFF', payHi:'linear-gradient(160deg,#5C6440,#4B5234)' },
       girly:    { acc:'#E84B9C', accInk:'#FFF3FA', cls:'girly', ink:'#2A0E1E', sub:'#8A2B5E', pay:'#8A2B5E', show:'#8A2B5E', navBg:'#F25CA2', navInk:'#FFFFFF', hl:'rgba(233,59,146,0.92)', hiCard:'linear-gradient(160deg,#FF77BC 0%,#F23E98 100%)', hiInk:'#3A0E26', hiApply:'#3A0E26', hiStamp:'#3A0E26', payHi:'linear-gradient(160deg,#FF77BC,#F23E98)' },
-      original: { acc:'#F2E14B', accInk:'#2A2118', cls:'',      ink:'#2A2118', sub:'#6F5E45', pay:'#9C8367', show:'#3A2A1B', navBg:'#EDE93B', navInk:'#1f1c14', hl:'rgba(238,224,70,0.95)', hiCard:'linear-gradient(160deg,#F6E85F 0%,#EFDB3D 100%)', hiInk:'#2A2118', hiApply:'#D8502E', hiStamp:'#3A2A1B', payHi:'linear-gradient(160deg,#F6E85F,#EFDB3D)' },
+      original: { acc:'#F2E14B', accInk:'#2A2118', cls:'',      ink:'#2A2118', sub:'#6F5E45', pay:'#9C8367', show:'#3A2A1B', navBg:'var(--su-yellow-paper)', navInk:'#1f1c14', hl:'rgba(238,224,70,0.95)', hiCard:'var(--su-yellow-paper)', hiInk:'#2A2118', hiApply:'var(--su-orange-on-card)', hiStamp:'#3A2A1B', payHi:'var(--su-yellow-paper)' },
       // poker + mermaid extend the shape with optional card overrides (lowCard/midCard/baseInk/
       // baseApply/baseStamp) and a featured-pick treatment (pickCard/pickInk/pickApply/pickStamp/
       // pickBadge). render() falls back to the original values when a key is absent.
@@ -1674,11 +1674,11 @@
         // poker/mermaid also override the sub-$100K cards (white playing card / pearl)
         var ink = (tier === 'high') ? P.hiInk : (tier === 'mid' && P.midInk) ? P.midInk : (P.baseInk || '#3A2A1B');
         var bg = tier === 'low'
-          ? (P.lowCard || 'linear-gradient(160deg,#ECDEC6 0%,#E0D0B2 100%)')
+          ? (P.lowCard || 'var(--su-salary-low-paper)')
           : tier === 'mid'
-          ? (P.midCard || 'linear-gradient(160deg,#E0CBA2 0%,#D3BB8C 100%)')
+          ? (P.midCard || 'var(--su-salary-mid-paper)')
           : P.hiCard;
-        var applyColor = (tier === 'high') ? P.hiApply : (tier === 'mid' && P.midApply) ? P.midApply : (P.baseApply || '#D8502E');
+        var applyColor = (tier === 'high') ? P.hiApply : (tier === 'mid' && P.midApply) ? P.midApply : (P.baseApply || 'var(--su-orange-on-card)');
         var stampColor = (tier === 'high') ? P.hiStamp : (tier === 'mid' && P.midStamp) ? P.midStamp : (P.baseStamp || '#3A2A1B');
         var gStamp = (tier === 'high') ? '#FFFFFF' : '#C24A78'; // girly heart-stamp color
         var hasNote = !!noteFor[k];
@@ -1687,12 +1687,7 @@
         var tape = !hasNote && slot === 2;
         var doodleOn = !hasNote && slot === 4;
         var pick = !!j.pick;
-        // featured picks get the theme's VIP card when it defines one
-        // (poker = black + gold casino card, mermaid = deep-sea teal + pearl)
-        if (pick && P.pickCard) {
-          bg = P.pickCard; ink = P.pickInk;
-          applyColor = P.pickApply; stampColor = P.pickStamp;
-        }
+        // Featured markers never override the salary surface or its matching ink.
         var pickBadgeColor = P.pickBadge || '#D8502E';
         var pinPalette = ['#3E7BBF', '#C9A23A', '#7A9A4E'];
         var pinColor = pinPalette[k % 3];
@@ -1958,7 +1953,7 @@
           '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 18px;">what\'s the pay?</div>' +
           '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px;">' + pricesHtml + '</div>' +
           '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 18px;">which state?</div>' +
-          '<select id="su-state" style="width: 100%; box-sizing: border-box; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #3A2A1B; background: #F2E14B; border: 1.5px solid #DAC36A; border-radius: 5px; padding: 9px 12px; cursor: pointer; outline: none; margin-top: 11px;">' + stateOpts + '</select>' +
+          '<select id="su-state" style="width: 100%; box-sizing: border-box; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #3A2A1B; background: var(--su-yellow-paper); border: 1.5px solid #DAC36A; border-radius: 5px; padding: 9px 12px; cursor: pointer; outline: none; margin-top: 11px;">' + stateOpts + '</select>' +
           '<div data-act="clearAll" style="margin-top: 18px; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #B23A1E; cursor: pointer;">↺ reset all filters</div>' +
         '</div>';
       }
@@ -1968,8 +1963,8 @@
       // salary color key
       out += '<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 16px;">' +
         '<span class="pay-key-label" style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + payKeyInk + ';">pay key →</span>' +
-        '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.lowCard || 'linear-gradient(160deg,#ECDEC6,#E0D0B2)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">under $80K</span></div>' +
-        '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.midCard || 'linear-gradient(160deg,#E0CBA2,#D3BB8C)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$80–99K</span></div>' +
+        '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.lowCard || 'var(--su-salary-low-paper)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">under $80K</span></div>' +
+        '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.midCard || 'var(--su-salary-mid-paper)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$80–99K</span></div>' +
         '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + P.payHi + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$100K+</span></div>' +
       '</div>';
 
@@ -2134,7 +2129,7 @@
             '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 27px; color: #2A2118; line-height: 1.1; transform: rotate(-1deg);">welcome back!</div>' +
             '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #6F5E45; margin-top: 6px;">how\'d it go with ' + esc(this.state.feedbackCo) + '?</div>' +
             '<div style="display: flex; gap: 14px; margin-top: 22px;">' +
-              '<div data-act="markApplied" class="fbopt" style="flex: 1; cursor: pointer; background: #F2E14B; border-radius: 6px; padding: 22px 14px 18px; text-align: center; transform: rotate(-1.6deg); box-shadow: 2px 4px 9px rgba(44,33,24,0.16);">' +
+              '<div data-act="markApplied" class="fbopt" style="flex: 1; cursor: pointer; background: var(--su-yellow-paper); border-radius: 6px; padding: 22px 14px 18px; text-align: center; transform: rotate(-1.6deg); box-shadow: 2px 4px 9px rgba(44,33,24,0.16);">' +
                 '<div style="width: 40px; height: 40px; border-radius: 50%; background: #2E7D52; display: flex; align-items: center; justify-content: center; margin: 0 auto;">' +
                   '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4 4L19 7" stroke="#F4EEE2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
                 '</div>' +
@@ -2317,7 +2312,7 @@
             '<div class="look-grid" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 22px;">' +
               // --- WW2 (ARCHIVED — hidden from picker, theme code kept for future) ---
               // --- Original ---
-              '<div data-act="pickOriginal" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #F2E14B; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.6deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
+              '<div data-act="pickOriginal" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: var(--su-yellow-paper); border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.6deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
                 '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 54px; height: 16px; background: rgba(228,202,128,0.55); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
                 '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
                   '<div style="display: inline-flex; align-items: center; gap: 5px; border: 1.8px solid #3A2A1B; color: #3A2A1B; border-radius: 4px; padding: 4px 8px; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; opacity: .72; transform: rotate(-4deg);">' +

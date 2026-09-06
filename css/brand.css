@@ -1,0 +1,32 @@
+@import url("./fonts.css?v=1");
+
+/* StillUnemployed original-theme foundations. See /style-guide.html.
+   Yellow is the existing Peloton/high-salary paper, approved by Nic 2026-09-05.
+   Alternate themes and salary-band meanings remain separate. */
+:root {
+  --su-yellow: #F2E14B;
+  --su-yellow-paper: linear-gradient(160deg, #F6E85F 0%, #EFDB3D 100%);
+  --su-salary-low-paper: linear-gradient(160deg, #ECDEC6 0%, #E0D0B2 100%);
+  --su-salary-mid-paper: linear-gradient(160deg, #E0CBA2 0%, #D3BB8C 100%);
+  --su-orange-on-card: #83311B;
+  --su-ink: #2A2118;
+  --su-muted: #6F5E45;
+  --su-paper: #FCFAF3;
+  --su-bg: #F4EEE2;
+  --su-orange: #C2552F;
+  --su-orange-text: #A63D22;
+  --su-hand: 'Indie Flower', cursive;
+  --su-body: 'Archivo', sans-serif;
+  --su-display: 'Archivo Black', 'Archivo', sans-serif;
+  --su-tape: rgba(228, 205, 145, .62);
+  --su-note-shadow: 3px 6px 13px rgba(44, 33, 24, .17);
+  --su-rule: rgba(96, 130, 170, .24);
+  --su-touch: 44px;
+  --su-space-1: 4px;
+  --su-space-2: 8px;
+  --su-space-3: 12px;
+  --su-space-4: 16px;
+  --su-space-6: 24px;
+  --su-space-8: 32px;
+  --su-space-12: 48px;
+}

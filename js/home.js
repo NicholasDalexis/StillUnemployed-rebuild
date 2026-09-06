@@ -383,6 +383,22 @@
     return window.SUJobIdentity ? window.SUJobIdentity.groupJobs(jobs).map(function (group) { return group.job; }) : jobs;
   }
 
+  // Keep the board's App.payTier policy: the top listed amount determines the
+  // salary band, and hourly or missing salaries are not annualized here.
+  function nhPayTier(pay) {
+    var text = String(pay || '').replace(/,/g, '');
+    var hourly = /\/\s*(?:h|hr|hour)\b|\bper\s*hour\b|\bhourly\b/i.test(text);
+    var nums = (text.match(/\d+(?:\.\d+)?\s*[kK]?/g) || []).map(function (n) {
+      var value = parseFloat(n);
+      return /k/i.test(n) || (!hourly && value < 1000) ? value * 1000 : value;
+    });
+    if (!nums.length) return 'low';
+    var top = Math.max.apply(null, nums);
+    if (top >= 100000) return 'high';
+    if (top >= 80000) return 'mid';
+    return 'low';
+  }
+
   function nhRenderJobs(jobs) {
     var total = $('#nh-total');
     if (total) total.textContent = String(jobs.length);
@@ -398,13 +414,16 @@
     picks = picks.slice(0, 3);
     var rot = [-1.5, 1, -1];
     picks.forEach(function (j, k) {
+      var tier = nhPayTier(j.pay);
+      var paper = tier === 'high' ? 'var(--su-yellow-paper)' :
+        tier === 'mid' ? 'var(--su-salary-mid-paper)' : 'var(--su-salary-low-paper)';
       var card = document.createElement('a');
       card.className = 'hoverlift';
       card.href = j.link;
       card.target = '_blank';
       card.rel = 'noopener noreferrer';
       card.setAttribute('aria-label', j.role + ' at ' + j.co + ' (opens in a new tab)');
-      card.style.cssText = 'flex:1; position:relative; cursor:pointer; background:linear-gradient(160deg,#F6E85F,#EFDB3D); color:#2A2118; border-radius:3px; padding:26px 24px 22px; box-sizing:border-box; transform:rotate(' + rot[k % 3] + 'deg); box-shadow:3px 8px 20px rgba(44,33,24,0.2); min-height:184px;';
+      card.style.cssText = 'flex:1; position:relative; cursor:pointer; background:' + paper + '; color:#2A2118; border-radius:3px; padding:26px 24px 22px; box-sizing:border-box; transform:rotate(' + rot[k % 3] + 'deg); box-shadow:3px 8px 20px rgba(44,33,24,0.2); min-height:184px;';
       card.style.textDecoration = 'none';
       var meta = [j.loc, j.style].filter(Boolean).join('  ·  ');
       card.innerHTML =
@@ -414,7 +433,7 @@
         '<div style="font-family:\'Archivo\', sans-serif; font-weight:800; font-size:22px; letter-spacing:-0.4px; margin-top:14px;"></div>' +
         '<div style="font-size:13.5px; opacity:0.8; font-family:\'Poppins\', sans-serif; margin-top:5px;"></div>' +
         '<div style="display:flex; justify-content:flex-end; align-items:center; margin-top:16px;">' +
-          '<div style="font-family:\'Archivo\', sans-serif; font-weight:800; font-size:15px; color:#D8502E; display:inline-flex; align-items:center; gap:4px;">open ' +
+          '<div style="font-family:\'Archivo\', sans-serif; font-weight:800; font-size:15px; color:var(--su-orange-on-card); display:inline-flex; align-items:center; gap:4px;">open ' +
             '<svg width="26" height="13" viewBox="0 0 28 14" fill="none" style="overflow:visible;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>' +
         '</div>';
       // text via textContent so job data can never inject markup
@@ -505,13 +524,7 @@
         } catch (e) { return ''; }
       })() + '</a>';
     hero.appendChild(n);
-    var utilities = document.createElement('div');
-    utilities.id = 'm-home-utilities';
-    utilities.setAttribute('aria-label', 'Board utilities');
-    utilities.innerHTML = '<button type="button" class="su-bookmark-trigger" data-bookmark-help="su-bm-bar" aria-controls="su-bm-bar" aria-expanded="false">Bookmark</button>' +
-      '<a href="./suggest.html">Suggest Jobs</a>';
-    hero.appendChild(utilities);
-    document.dispatchEvent(new Event('su:home-utilities-ready'));
+
   }
 
   function injectSticky(hero) {

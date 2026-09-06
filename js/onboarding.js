@@ -34,17 +34,18 @@
     portfolio: '<div class="su-launch-tier"><small>EXAMPLE FEEDBACK</small><div><b>A</b><span><i>First impression</i><i>Mobile</i><i>Performance</i></span></div><div><b>B</b><span><i>Positioning</i></span></div><div><b>C</b><span><i>Text hard to read</i></span></div></div>'
   };
   var features = {
-    advice: { label: 'Advice along the way', tag: 'A little perspective', text: 'A useful pause between applications. Open a note for a job-hunt tip while you browse. Want more? Each note connects to The Job Hunt Recipe, our optional newsletter.', cta: 'Back to the jobs' },
-    themes: { label: 'Make it feel like you', tag: 'More ways to make it yours', text: 'Different looks. The same jobs. From Casino to Mermaid to Chess, find a board that feels like you. Use “change theme” on the board whenever you want a new look.', cta: 'Back to the jobs' },
-    sync: { label: 'Your hunt, in sync', tag: 'Google sign-in + your job tracker', text: 'Save a role on your phone. Pick it up on your computer. Sign in with the same Google account on both devices to sync Saved and Tracker. Keep applications, notes and next steps together, without building a spreadsheet.', cta: 'Open your tracker', href: '/tracker.html' }
+    advice: { label: 'Advice along the way', short: 'Advice notes', tag: 'A little perspective', text: 'A useful pause between applications. Open a note for a job-hunt tip while you browse. Want more? Each note connects to The Job Hunt Recipe, our optional newsletter.', cta: 'Back to the jobs' },
+    themes: { label: 'Make it feel like you', short: 'More themes', tag: 'More ways to make it yours', text: 'Different looks. The same jobs. From Casino to Mermaid to Chess, find a board that feels like you. Use “change theme” on the board whenever you want a new look.', cta: 'Back to the jobs' },
+    sync: { label: 'Your hunt, in sync', short: 'Google + your tracker', tag: 'Google sign-in + your job tracker', text: 'Save a role on your phone. Pick it up on your computer. Sign in with the same Google account on both devices to sync Saved and Tracker. Keep applications, notes and next steps together, without building a spreadsheet.', cta: 'Open your tracker', href: '/tracker.html' }
   };
   function preview(key) { return '<div class="su-launch-preview" aria-hidden="true">' + previews[key] + '</div>'; }
   function overview() {
     return '<div class="su-launch-grid">' + ['advice','themes','sync'].map(function (key) {
-      return '<button type="button" class="su-launch-card" data-launch-feature="'+key+'" aria-label="'+features[key].label+'. Learn more">'+preview(key)+'<span class="su-launch-card-label">'+features[key].label+'<span aria-hidden="true">↗</span></span><span class="su-launch-card-hint">Tap to turn over</span></button>';
+      return '<button type="button" class="su-launch-card" data-launch-feature="'+key+'" aria-label="'+features[key].label+'. Learn more">'+preview(key)+'<span class="su-launch-card-label">'+features[key].short+'<span aria-hidden="true">↗</span></span></button>';
     }).join('') + '<a class="su-launch-card su-launch-pg" href="https://portfoliograded.com/" target="_blank" rel="noopener noreferrer" aria-label="Portfolio Graded, coming soon. Open private preview, password required, in a new tab">'+preview('portfolio')+'<span class="su-launch-card-label">Portfolio Graded<span aria-hidden="true">↗</span></span><span class="su-launch-card-hint">Coming soon · private preview</span></a></div>';
   }
   function renderOverview(focusCard) {
+    dialog.querySelector('.su-launch-intro').hidden = false;
     dialog.querySelector('.su-launch-stage').innerHTML = overview();
     dialog.querySelector('.su-launch-scroll').scrollTop = 0;
     if (focusCard) dialog.querySelector('[data-launch-feature="'+focusCard+'"]').focus({ preventScroll:true });
@@ -53,7 +54,8 @@
     var feature = features[key];
     if (!feature) return;
     lastCard = key;
-    dialog.querySelector('.su-launch-stage').innerHTML = '<section class="su-launch-detail"><button type="button" class="su-launch-back" data-launch-back>← All four updates</button><div class="su-launch-detail-art">'+preview(key)+'<small>'+ (key === 'themes' ? 'Theme previews only' : 'Illustrative preview') +'</small></div><p class="su-launch-eyebrow">'+feature.tag+'</p><h3>'+feature.label+'</h3><p>'+feature.text+'</p>'+(feature.href ? '<a class="su-launch-primary" href="'+feature.href+'">'+feature.cta+' →</a>' : '<button type="button" class="su-launch-primary" data-launch-close>'+feature.cta+' →</button>')+'</section>';
+    dialog.querySelector('.su-launch-intro').hidden = true;
+    dialog.querySelector('.su-launch-stage').innerHTML = '<section class="su-launch-detail"><button type="button" class="su-launch-back" data-launch-back>← All four updates</button><div class="su-launch-detail-art">'+preview(key)+'<small>'+ (key === 'themes' ? 'Theme previews only' : 'Illustrative preview') +'</small></div><p class="su-launch-eyebrow">'+feature.tag+'</p><h3>'+feature.label+'</h3><p>'+feature.text+'</p>'+(feature.href ? '<a class="su-launch-back" href="'+feature.href+'">'+feature.cta+' →</a>' : '')+'</section>';
     dialog.querySelector('.su-launch-scroll').scrollTop = 0;
     dialog.querySelector('[data-launch-back]').focus({ preventScroll:true });
   }
@@ -63,7 +65,7 @@
     dialog = doc.createElement('dialog');
     dialog.id = 'su-launch'; dialog.className = 'su-launch';
     dialog.setAttribute('aria-labelledby','su-launch-title');
-    dialog.innerHTML = '<header class="su-launch-header"><div><p class="su-launch-eyebrow">A new chapter for your job hunt</p><h2 id="su-launch-title">Version 2 is here!</h2></div><button type="button" class="su-launch-close" data-launch-close aria-label="Close Version 2 welcome" autofocus>×</button></header><div class="su-launch-scroll"><p class="su-launch-intro">A few new things to make the search feel better.</p><div class="su-launch-stage"></div><footer class="su-launch-footer"><a href="/suggest.html">Suggest Jobs →</a><button type="button" class="su-launch-primary" data-launch-close>Let’s find a role →</button></footer><p class="su-launch-reopen">Miss anything? Find “What’s new” above the jobs. <a href="/versions.html" data-su-version>Version history</a></p></div>';
+    dialog.innerHTML = '<header class="su-launch-header"><div><h2 id="su-launch-title">Version 2 is here!</h2></div><button type="button" class="su-launch-close" data-launch-close aria-label="Close Version 2 welcome" autofocus>×</button></header><div class="su-launch-scroll"><p class="su-launch-intro">pick a note to see what’s new ↓</p><div class="su-launch-stage"></div><footer class="su-launch-footer"><a href="/suggest.html">Suggest Jobs →</a><button type="button" class="su-launch-primary" data-launch-close>Let’s find a role →</button></footer><p class="su-launch-reopen"><a href="/versions.html" data-su-version>Version history</a></p></div>';
     doc.body.appendChild(dialog);
     if (global.SURelease) global.SURelease.render();
     dialog.addEventListener('click', function (event) {

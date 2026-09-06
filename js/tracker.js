@@ -27,7 +27,7 @@
 
   // ---- "Change Look?" palettes — the slice of app.js THEMES the tracker needs ----
   var LOOKS = {
-    original: { cls: '',        ink: '#2A2118', sub: '#6F5E45', acc: '#F2E14B', accInk: '#2A2118', navBg: '#EDE93B', navInk: '#1f1c14', star: '#C2552F', hl: 'rgba(238,224,70,0.95)' },
+    original: { cls: '',        ink: '#2A2118', sub: '#6F5E45', acc: '#F2E14B', accInk: '#2A2118', navBg: 'var(--su-yellow-paper)', navInk: '#1f1c14', star: '#C2552F', hl: 'rgba(238,224,70,0.95)' },
     cod:      { cls: 'cod',     ink: '#E9E3D2', sub: '#AEB29B', acc: '#555B38', accInk: '#EDE7CF', navBg: '#5C6B3A', navInk: '#EDE7CF', star: '#AEB29B', hl: 'rgba(120,140,75,0.92)' },
     girly:    { cls: 'girly',   ink: '#2A0E1E', sub: '#8A2B5E', acc: '#E84B9C', accInk: '#FFF3FA', navBg: '#F25CA2', navInk: '#FFFFFF', star: '#D6277E', hl: 'rgba(233,59,146,0.92)' },
     poker:    { cls: 'poker',   ink: '#F2E4C8', sub: '#D9B989', acc: '#D4AF37', accInk: '#2A1810', navBg: '#D4AF37', navInk: '#2A1810', star: '#D4AF37', hl: 'rgba(31,107,58,0.92)' },
