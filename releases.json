@@ -1,7 +1,16 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.1.8",
+  "currentVersion": "2.1.9",
   "releases": [
+    {
+      "version": "2.1.9",
+      "date": "2026-09-06",
+      "title": "A calmer application routine",
+      "changes": [
+        "Kept Monday clear and moved the calendar cross-out to Friday, alongside Saturday and Sunday.",
+        "Reworded the advice as a suggested routine, with a reminder to apply when ready and respect deadlines."
+      ]
+    },
     {
       "version": "2.1.8",
       "date": "2026-09-06",
@@ -106,7 +115,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "e96cc26c2144857b7c982693010e2429af9ea7d3e32fcbd681e64f594f61f90f",
+    "digest": "970694d972e54d4ebdf56eb1e44f8daec38835cc5187dee8547ee66397ec5260",
     "fileCount": 123
   }
 }

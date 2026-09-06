@@ -27,7 +27,7 @@
   // A normal Jobs visit can introduce the release later; manual reopening always works.
   var considered = incomingTask(location.search, location.hash);
   var previews = {
-    advice: '<div class="su-launch-paper"><small>note to self ↓</small><strong>the days you shouldn’t<br>apply to jobs</strong><span class="su-launch-days"><i>S</i><i>M</i><i>T</i><i>W</i><i>T</i><i>F</i><i>S</i></span><em>wait, why monday? →</em></div>',
+    advice: '<div class="su-launch-paper"><small>note to self ↓</small><strong>your job hunt needs<br>days off, too</strong><span class="su-launch-days"><i>S</i><i>M</i><i>T</i><i>W</i><i>T</i><i>F</i><i>S</i></span><em>wait, why friday? →</em></div>',
     themes: '<div class="su-launch-swatches"><span class="su-launch-original">Original</span><span class="su-launch-casino">Casino</span><span class="su-launch-beauty">Beauty</span><span class="su-launch-mermaid">Mermaid</span><span class="su-launch-bratt">bratt</span><span class="su-launch-chess">Chess</span></div>',
     sync: '<div class="su-launch-tracker"><div class="su-launch-tracker-head"><strong>My job tracker</strong><span>↗</span></div><div><span>Designer</span><b>Applied</b></div><div><span>Content lead</span><b>Interview</b></div><div><span>Next move</span><b>Saved</b></div><small>one less spreadsheet</small></div>',
     portfolio: '<div class="su-launch-tier"><small>EXAMPLE FEEDBACK</small><div><b>A</b><span><i>First impression</i><i>Mobile</i><i>Performance</i></span></div><div><b>B</b><span><i>Positioning</i></span></div><div><b>C</b><span><i>Text hard to read</i></span></div></div>'

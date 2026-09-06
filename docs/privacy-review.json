@@ -1,20 +1,19 @@
 {
-  "version": "2.1.8",
+  "version": "2.1.9",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-06T18:03:55.920Z",
-  "reviewer": "Codex/Astra Job Board with independent Original artwork and alternate-theme parity review",
-  "sourceDigest": "e96cc26c2144857b7c982693010e2429af9ea7d3e32fcbd681e64f594f61f90f",
+  "reviewedAt": "2026-09-06T18:13:53.524Z",
+  "reviewer": "Codex/Astra Job Board with independent primary-source timing research",
+  "sourceDigest": "970694d972e54d4ebdf56eb1e44f8daec38835cc5187dee8547ee66397ec5260",
   "sourceFileCount": 123,
   "privacyChanged": false,
   "termsChanged": false,
   "checks": {
     "integratedTests": 349,
-    "styleGuideTests": 23,
-    "nativeBrowser": "Original guide specimens visually inspected at 320px phone and 1800px desktop CSS widths; board first-figure clearance inspected at 320px phone and 1440px desktop. No horizontal page overflow at checked widths. Viewport override reset after review. Private gallery was not visually inspected; automated local-file navigation was blocked by browser policy.",
-    "build": "Configured static build passed: style-guide/version/privacy gates, 486 jobs across 8 themes, 4120 share pages/images including aliases, 7 alternate board pages and allowlisted publish output. The current feed changed during independent sourcing publication; this board-art task made no feed writes. Private checker scanned 4166 public text files with zero campaign matches, verified six draft cards and 40 local assets."
+    "nativeBrowser": "Desktop native screenshot confirms revised calendar/explanation. DOM inspection confirms Sun/Fri/Sat strike marks and Monday clear on feed and Version 2 preview. At 400px CSS width the advice dialog remains within the page horizontally; mobile screenshot capture was unreliable, so no mobile visual acceptance claim. Temporary viewport override reset.",
+    "release": "Catalog/version/privacy and generated-theme/public-output checks run for the narrow copy/artwork change; share-image generator is unchanged and not rerun in this increment."
   },
-  "scope": "Restores Original artwork, matching public guide specimens and source-parity validation. Other seven themes are unchanged. No event, provider, consent, storage, account or recommendation change. Privacy and Terms reviewed against this narrow static-artwork change; no wording change needed. Private Portfolio Graded campaign remains outside the public source and output. No deployment.",
-  "baselineReview": "docs/privacy-reviews/2.1.7.json",
+  "scope": "Only one advice note and its Version 2 preview change: Sun/Fri/Sat crosses, Monday clear, personal-routine copy and deadline reminder. Stable note ID and existing interaction/analytics behavior retained. Privacy and Terms reviewed against this scope; no new collection, consent, provider, account or recommendation behavior and no policy wording change needed. No campaign activation or deployment.",
+  "baselineReview": "docs/privacy-reviews/2.1.8.json",
   "openItems": [
     "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
     "Function-scoped Firebase and Netlify configuration and actual owner UID",
