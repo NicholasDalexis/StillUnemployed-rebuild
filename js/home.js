@@ -330,6 +330,7 @@
   }
 
   function nhRowsToJobs(rows) {
+    if (!window.SUJobIdentity) throw new Error('Job identity check unavailable. Refresh to retry.');
     if (!rows || !rows.length) throw new Error('Jobs CSV has no header');
     var head = rows[0].map(function (h) { return String(h).trim().toLowerCase(); });
     ['company', 'job title', 'link', 'salary', 'active/dead'].forEach(function (name) {
@@ -362,7 +363,8 @@
         pick: get(cells, iPick).toLowerCase() === 'featured'
       });
     }
-    return jobs;
+    // Keep one original listing per verified requisition; source rows stay intact.
+    return window.SUJobIdentity ? window.SUJobIdentity.groupJobs(jobs).map(function (group) { return group.job; }) : jobs;
   }
 
   function nhRenderJobs(jobs) {

@@ -6,6 +6,8 @@ const path = require('node:path');
 const vm = require('node:vm');
 const { spawnSync } = require('node:child_process');
 const { pathToFileURL } = require('node:url');
+const identity = require('../../js/job-identity.js');
+const aliasPairs = require('./fixtures/job-aliases.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const generator = path.join(root, 'scripts/gen-share.mjs');
@@ -15,12 +17,12 @@ const row = (changes = {}) => Object.assign({ Company: 'Example', 'Job Title': '
 const csv = (records = [], columns = header) => [columns, ...records.map(record => columns.map(key => record[key] || ''))]
   .map(cells => cells.map(value => '"' + value.replace(/"/g, '""') + '"').join(',')).join('\r\n');
 
-function homeFeed(fetcher = async () => { throw new Error('offline'); }) {
+function homeFeed(fetcher = async () => { throw new Error('offline'); }, identityAvailable = true) {
   const total = { textContent: 'old count' };
   const featured = { innerHTML: 'old jobs', textContent: '', children: [], appendChild(child) { this.children.push(child); } };
   const sandbox = {
     URL, fetch: fetcher, console: { warn() {} }, setInterval() {},
-    window: { addEventListener() {} },
+    window: { SUJobIdentity: identityAvailable ? identity : undefined, addEventListener() {} },
     document: {
       readyState: 'loading', addEventListener() {},
       querySelector(selector) { return selector === '#nh-total' ? total : selector === '#nh-featured' ? featured : null; },
@@ -127,5 +129,36 @@ test('homepage outage clears old cards and shows unavailable without fetching st
   assert.equal(calls.length, 1);
   assert.equal(home.featured.innerHTML, '');
   assert.equal(home.total.textContent, '…');
+  assert.match(home.featured.children[0].textContent, /Could not load the latest roles/);
+});
+
+test('home and share loaders collapse confirmed aliases after eligibility, retaining every old share hash', async () => {
+  const build = await helpers, home = homeFeed();
+  const records = aliasPairs.flatMap(pair => pair.links.map(Link => row({ Company: pair.co, 'Job Title': pair.role, Link })));
+  records.unshift(row({ Company: 'Glossier', Link: aliasPairs[0].links[0], Salary: '' }));
+  records.push(row({ Company: 'Glossier', 'Job Title': aliasPairs[0].role, Link: 'https://boards.greenhouse.io/glossier/jobs/8054876' }));
+  const text = csv(records), jobs = build.rowsToJobs(build.parseCSV(text));
+  assert.equal(jobs.length, 6);
+  assert.deepEqual(jobs.map(j => j.link), Array.from(home.rowsToJobs(home.parseCSV(text)), j => j.link));
+  for (const pair of aliasPairs) {
+    const job = jobs.find(j => j.link === pair.links[0]);
+    assert.deepEqual(job._aliases, pair.links);
+    const entries = build.shareEntries(job);
+    assert.deepEqual(entries.map(entry => entry.link), pair.links);
+    assert.equal(new Set(entries.map(entry => entry.slug)).size, 2);
+    for (const entry of entries) {
+      const html = build.stub(job, entry.slug, 'poker', 'https://preview.example');
+      assert(html.includes('/j/poker/' + entry.slug + '.html'));
+      const redirect = JSON.parse(html.match(/location\.replace\(("[^"]+")\)/)[1]);
+      assert.equal(Buffer.from(new URL(redirect, 'https://preview.example').searchParams.get('job'), 'base64').toString(), pair.links[0]);
+    }
+  }
+});
+
+test('homepage missing identity dependency clears stale content instead of rendering unchecked duplicates', async () => {
+  const pair = aliasPairs[0], text = csv(pair.links.map(Link => row({ Link }))), calls = [];
+  const home = homeFeed(async url => { calls.push(url); return { ok: true, text: async () => text }; }, false);
+  assert.throws(() => home.rowsToJobs(home.parseCSV(text)), /identity check unavailable/);
+  await home.load();assert.equal(calls.length, 1);assert.equal(home.total.textContent, '…');assert.equal(home.featured.innerHTML, '');
   assert.match(home.featured.children[0].textContent, /Could not load the latest roles/);
 });

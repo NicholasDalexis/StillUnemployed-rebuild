@@ -3,6 +3,8 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
+const identity=require('../../js/job-identity.js');
+const aliasPairs=require('./fixtures/job-aliases.cjs');
 
 const source=fs.readFileSync(path.join(__dirname,'../../js/app.js'),'utf8');
 const HEADERS=['Company','Job Title','Link','Location','Type','Salary','Years of Experience','Category','Description','TL;DR','Pick','Active/Dead'];
@@ -13,9 +15,9 @@ const tick=()=>new Promise(resolve=>setImmediate(resolve));
 
 // An offline DOM adapter executes the real rendering/event handlers. It models
 // attributes, descendants, replaced nodes and focus, but makes no visual claims.
-function board({search='',saved={},look='original',response,fetchError}={}) {
- const events={},windowEvents={},requests=[],opened=[],shared=[];
- const data=new Map([['su_saved_jobs',JSON.stringify(saved)],['su_look',look]]);
+function board({search='',saved={},tracker=[],look='original',response,fetchError,identityAvailable=true}={}) {
+ const events={},windowEvents={},requests=[],opened=[],shared=[],timers=[];
+ const data=new Map([['su_saved_jobs',JSON.stringify(saved)],['su_tracker',JSON.stringify(tracker)],['su_look',look]]);
  const localStorage={getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,String(v)),removeItem:k=>data.delete(k),key:i=>[...data.keys()][i],get length(){return data.size;}};
  const decode=s=>String(s).replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
  let document;
@@ -47,7 +49,7 @@ function board({search='',saved={},look='original',response,fetchError}={}) {
   querySelectorAll(selector){const out=[];const visit=node=>{for(const c of node.children){if(c.matches(selector))out.push(c);visit(c);}};visit(this);return out;}
   querySelector(selector){return this.querySelectorAll(selector)[0]||null;}
   closest(selector){for(let n=this;n;n=n.parentElement)if(n.matches(selector))return n;return null;}
-  focus(){document.activeElement=this;}setSelectionRange(){}getClientRects(){return this.style.display==='none'?[]:[{}];}
+  focus(){document.activeElement=this;}setSelectionRange(){}scrollIntoView(){this.scrolled=true;}getClientRects(){return this.style.display==='none'?[]:[{}];}
   click(){fire('click',this);}
   set innerHTML(html){
    this.writes++;this.html=html;this.text='';for(const c of this.children)c.parentElement=null;this.children=[];
@@ -74,16 +76,16 @@ function board({search='',saved={},look='original',response,fetchError}={}) {
  };
  document.body=new Element('body');document.head=new Element('head');document.activeElement=document.body;
  const grid=document.body.appendChild(new Element('div',{id:'board'})),overlay=document.body.appendChild(new Element('div',{id:'overlay-root'}));
- const window={innerWidth:390,innerHeight:844,addEventListener(k,f){(windowEvents[k]??=[]).push(f);},matchMedia(){return{matches:true};},open(...args){opened.push(args);}};
+ const window={SUJobIdentity:identityAvailable?identity:undefined,innerWidth:390,innerHeight:844,addEventListener(k,f){(windowEvents[k]??=[]).push(f);},matchMedia(){return{matches:true};},open(...args){opened.push(args);}};
  const location={origin:'https://preview--stillunemployed.netlify.app',hostname:'preview--stillunemployed.netlify.app',pathname:'/jobs.html',search,hash:''};
  const fetch=async(url,options)=>{requests.push({url,options});if(fetchError)throw fetchError;return response||{ok:true,status:200,text:async()=>csv([row()])};};
  const quiet={warn(){},debug(){},error(){},log(){}};
  const context={window,document,localStorage,location,fetch,URL,URLSearchParams,Date,Math,Set,Map,console:quiet,
   navigator:{share:async value=>{shared.push(value);}},btoa:s=>Buffer.from(s,'binary').toString('base64'),atob:s=>Buffer.from(s,'base64').toString('binary'),
-  setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,clearInterval(){},requestAnimationFrame:()=>0,performance:{now:()=>0},getComputedStyle:el=>({visibility:el.style.visibility||'visible'})};
+  setTimeout:(fn,delay)=>{timers.push({fn,delay});return timers.length;},clearTimeout(){},setInterval:()=>0,clearInterval(){},requestAnimationFrame:()=>0,performance:{now:()=>0},getComputedStyle:el=>({visibility:el.style.visibility||'visible'})};
  const instrumented=source.replace('window.SUApp = App;','window.SUApp = App; window.boardHelpers = {parseCSV, rowsToJobs, deriveState, suShareJob};');
  assert.notEqual(instrumented,source,'debug export hook is present');vm.runInNewContext(instrumented,context,{filename:'js/app.js'});
- return{app:window.SUApp,helpers:window.boardHelpers,grid,overlay,document,localStorage,requests,opened,shared,fire,
+ return{app:window.SUApp,helpers:window.boardHelpers,grid,overlay,document,localStorage,requests,opened,shared,fire,runTimers(delay){for(const timer of timers.filter(t=>t.delay===delay))timer.fn();},
   init(jobs=[job()]){window.SUApp.init(jobs);},async boot(){for(const f of events.DOMContentLoaded||[])f();await tick();await tick();}};
 }
 
@@ -161,4 +163,76 @@ test('the final Apply control is native and opens the posting from the accessibl
  const b=board();b.init();b.grid.querySelector('[data-act="apply"]').click();const apply=b.overlay.querySelector('[data-act="detailApply"]');assert.equal(apply.tagName,'BUTTON');assert.equal(apply.getAttribute('type'),'button');
  assert(b.overlay.querySelector('[role="dialog"]'));assert.equal(b.grid.inert,true);apply.click();assert.equal(b.opened.length,1);assert.equal(b.opened[0][0],'https://example.com/job');assert.equal(b.opened[0][2],'noopener');assert.equal(b.app.state.feedbackOpen,true);
  b.fire('keydown',b.document.activeElement,{key:'Escape'});assert.equal(b.overlay.querySelector('[role="dialog"]'),null);assert.equal(b.grid.inert,false);
+});
+
+test('the five confirmed alias pairs render once each without combining distinct requisitions',()=>{
+ const b=board();
+ const candidates=aliasPairs.flatMap(pair=>pair.links.map(link=>row({Company:pair.co,'Job Title':pair.role,Link:link})));
+ candidates.push(row({Company:'Glossier','Job Title':'Social Media Manager',Link:'https://boards.greenhouse.io/glossier/jobs/8054876'}));
+ const jobs=b.helpers.rowsToJobs(b.helpers.parseCSV(csv(candidates)));
+ assert.equal(jobs.length,6);b.init(jobs);assert.equal(b.app.jobs.length,6);
+ assert.equal(b.grid.querySelectorAll('.note[data-link]').length,6);
+ for(const pair of aliasPairs){
+  const representative=b.app.jobs.find(j=>j.link===pair.links[0]);assert(representative,pair.role);
+  assert.deepEqual(Array.from(representative._aliases),pair.links);
+ }
+});
+
+test('existing Saved aliases remain raw, select the visible card and unsave together on request',()=>{
+ for(const pair of aliasPairs){
+  const saved=Object.fromEntries(pair.links.map(link=>[link,true]));
+  const b=board({saved});const original=b.localStorage.getItem('su_saved_jobs');
+  b.init(pair.links.map(link=>job({co:pair.co,role:pair.role,link})));
+  assert.equal(b.localStorage.getItem('su_saved_jobs'),original,'viewing never migrates saved keys');
+  b.app.setState({savedOnly:true});assert.equal(b.app.computeShown().shown.length,1);
+  assert.equal(b.grid.querySelector('.su-unlisted-saved'),null);
+  assert.deepEqual(b.grid.querySelector('[data-act="toggleSavedOnly"]').textContent.match(/\d+/g),['1']);
+  const save=b.grid.querySelector('[data-act="toggleSave"]');assert.equal(save.getAttribute('aria-pressed'),'true');save.click();
+  assert.deepEqual(JSON.parse(b.localStorage.getItem('su_saved_jobs')),{});
+ }
+});
+
+test('a saved alias still matches when only its representative remains in the current feed',()=>{
+ const pair=aliasPairs[3],b=board({saved:{[pair.links[1]]:true}});b.init([job({link:pair.links[0]})]);
+ b.app.setState({savedOnly:true});assert.equal(b.app.computeShown().shown.length,1);assert.equal(b.grid.querySelector('.su-unlisted-saved'),null);
+ b.app.toggleSave(pair.links[0]);assert.deepEqual(JSON.parse(b.localStorage.getItem('su_saved_jobs')),{});
+ b.app.toggleSave(pair.links[0]);assert.deepEqual(JSON.parse(b.localStorage.getItem('su_saved_jobs')),{[pair.links[0]]:true});
+});
+
+test('an old alias share highlights the representative and alias details remain available',()=>{
+ const pair=aliasPairs[1],b=board({search:'?job='+encodeURIComponent(Buffer.from(pair.links[1]).toString('base64'))});
+ b.init(pair.links.map(link=>job({co:pair.co,role:pair.role,link})));b.runTimers(900);
+ const card=b.grid.querySelector('.note[data-link]');assert.equal(card.getAttribute('data-link'),pair.links[0]);assert.equal(card.scrolled,true);
+ b.app.setState({detailOpen:true,detailLink:pair.links[1]});
+ assert.equal(b.overlay.querySelector('[data-act="detailApply"]').getAttribute('data-link'),pair.links[0]);
+});
+
+test('applying through a URL alias preserves an existing tracker application and its notes',()=>{
+ const pair=aliasPairs[4],existing={id:'existing',company:pair.co,role:pair.role,link:pair.links[1],source:'Me',dateApplied:'2026-09-01',status:'Interview 2',notes:'Keep these notes'};
+ const b=board({tracker:[existing]});b.init([job({co:pair.co,role:pair.role,link:pair.links[0]})]);
+ const before=b.localStorage.getItem('su_tracker');b.app.setState({feedbackOpen:true,feedbackCo:pair.co,feedbackLink:pair.links[0]});
+ b.overlay.querySelector('[data-act="markApplied"]').click();assert.equal(b.localStorage.getItem('su_tracker'),before);
+});
+
+test('a prior local unavailable report hides every alias without changing stored report URLs',()=>{
+ const pair=aliasPairs[0],b=board();b.localStorage.setItem('su_reported_links',JSON.stringify([pair.links[1]]));
+ b.init(pair.links.map(link=>job({link})));assert.equal(b.app.jobs.length,0);
+ assert.deepEqual(JSON.parse(b.localStorage.getItem('su_reported_links')), [pair.links[1]]);
+});
+
+test('a missing identity dependency shows feed recovery while existing Saved links remain accessible',async()=>{
+ const link='https://example.com/already-saved',b=board({identityAvailable:false,saved:{[link]:true}});
+ await b.boot();assert.equal(b.app._loadError,true);assert.equal(b.app.jobs.length,0);assert(b.grid.querySelector('[data-act="retryJobs"]'));
+ assert.equal(b.requests.length,1);assert.deepEqual(JSON.parse(b.localStorage.getItem('su_saved_jobs')),{[link]:true});
+ b.app.setState({savedOnly:true});const saved=b.grid.querySelector('.su-unlisted-saved');assert(saved);
+ saved.querySelector('[data-act="toggleSave"]').click();assert.deepEqual(JSON.parse(b.localStorage.getItem('su_saved_jobs')),{});
+});
+
+test('missing identity blocks a new board tracker entry and avoids falsely claiming it was logged',()=>{
+ const existing={id:'keep',company:'Existing',link:'https://example.com/previous',status:'Interview 1',notes:'Keep me'};
+ const b=board({identityAvailable:false,tracker:[existing]});b.init();const before=b.localStorage.getItem('su_tracker');
+ b.app.setState({feedbackOpen:true,feedbackCo:'Example',feedbackLink:'https://example.com/job'});
+ b.overlay.querySelector('[data-act="markApplied"]').click();
+ assert.equal(b.localStorage.getItem('su_tracker'),before);assert.equal(b.localStorage.getItem('su_tracker_nudged'),null);
+ assert.match(b.document.body.textContent,/Tracker could not load/);
 });

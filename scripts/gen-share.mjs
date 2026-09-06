@@ -9,6 +9,7 @@
 import { mkdirSync, writeFileSync, rmSync, existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
+import SUJobIdentity from '../js/job-identity.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SHEET = '1DRfkDn_OIVlnx06xFaNpNbusXl49jvM26oJsl-qq2nU';
@@ -202,7 +203,13 @@ export function rowsToJobs(rows) {
     }
     jobs.push({ co, role, link, pay, loc: get('location'), style: get('type'), exp: get('years of experience') });
   }
-  return jobs;
+  return SUJobIdentity.groupJobs(jobs).map(group => ({ ...group.job, _aliases: group.aliases }));
+}
+
+// Keep every previously shareable raw-URL hash. Alias pages use the same
+// representative listing, so a saved old share still reaches the visible card.
+export function shareEntries(job) {
+  return [...new Set(job._aliases || [job.link])].map(link => ({ link, slug: slugOf(link) }));
 }
 
 function roundRect(ctx, x, y, w, h, r) {
@@ -326,14 +333,17 @@ async function main() {
 
   let n = 0;
   for (const job of jobs) {
-    const slug = slugOf(job.link);
     for (const th of THEME_KEYS) {
-      writeFileSync(join(outImgRoot, th, slug + '.png'), drawCard(job, th));
-      writeFileSync(join(outHtmlRoot, th, slug + '.html'), stub(job, slug, th));
+      const image = drawCard(job, th);
+      for (const { slug } of shareEntries(job)) {
+        writeFileSync(join(outImgRoot, th, slug + '.png'), image);
+        writeFileSync(join(outHtmlRoot, th, slug + '.html'), stub(job, slug, th));
+      }
     }
     n++;
   }
-  console.log('generated', n, 'jobs x', THEME_KEYS.length, 'themes =', n * THEME_KEYS.length, 'share pages + images into /j');
+  const aliases = jobs.reduce((sum, job) => sum + shareEntries(job).length, 0);
+  console.log('generated', n, 'jobs x', THEME_KEYS.length, 'themes;', aliases * THEME_KEYS.length, 'share pages + images including URL aliases into /j');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -47,6 +47,7 @@ function tracker(initialRows=[]) {
  };
  const window={addEventListener(type,fn){(windowEvents[type]??=[]).push(fn);},matchMedia(){return{matches:true};}};
  window.SUStore=Sync.create(storage);
+ window.SUJobIdentity=require('../../js/job-identity.js');
  class TestURL extends URL {}
  TestURL.createObjectURL=blob=>{exportedBlob=blob;return'blob:tracker-test';};TestURL.revokeObjectURL=()=>{};
  const context={window,document,localStorage:storage,URL:TestURL,Blob,Date,console,setTimeout,clearTimeout,location:{href:''}};
@@ -102,6 +103,23 @@ test('a new manual posting is added once and clears the completed draft',()=>{
  t.app.addRow();const rows=JSON.parse(t.storage.getItem('su_tracker'));
  assert.equal(rows.length,2);assert.equal(rows.find(r=>r.link==='https://example.com/second').company,'New employer');
  assert.equal(t.input('trk-co').value,'');assert.equal(t.input('trk-role').value,'');assert.equal(t.input('trk-link').value,'');assert.equal(t.document.activeElement,t.input('trk-co'));
+});
+test('manual tracker addition recognizes a different URL for the same requisition without altering existing user state',()=>{
+ const existing={...application,link:'https://boards.greenhouse.io/glossier/jobs/8054875'};
+ const t=tracker([existing]);const before=t.storage.getItem('su_tracker');
+ t.input('trk-co').value='Glossier';t.input('trk-role').value='Social Media Manager';
+ t.input('trk-link').value='https://boards.greenhouse.io/glossier/jobs/8054875?gh_jid=8054875';
+ t.app.addRow();assert.equal(t.storage.getItem('su_tracker'),before);
+ assert.match(t.app.formMessage,/already in your tracker/);
+ t.input('trk-link').value='https://boards.greenhouse.io/glossier/jobs/8077849';
+ t.app.addRow();const rows=JSON.parse(t.storage.getItem('su_tracker'));
+ assert.equal(rows.length,2);assert.deepEqual(rows.find(r=>r.id==='existing'),existing);
+});
+test('missing identity dependency prevents an unchecked linked tracker addition',()=>{
+ const t=tracker();delete t.window.SUJobIdentity;
+ t.input('trk-co').value='Example';t.input('trk-role').value='Role';t.input('trk-link').value='https://example.com/job';
+ t.app.addRow();assert.equal(JSON.parse(t.storage.getItem('su_tracker')).length,0);
+ assert.match(t.app.formMessage,/Reload and try again/);
 });
 test('note expansion and removal render as named native buttons',()=>{
  const t=tracker([application]);const expand=t.rowControl('BUTTON','existing','toggleNote'),remove=t.rowControl('BUTTON','existing','delRow');

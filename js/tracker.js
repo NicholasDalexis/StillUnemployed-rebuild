@@ -6,7 +6,7 @@
 
    Rows arrive two ways:
      - auto-logged by js/app.js when someone taps "I applied!" on the board
-       (source: 'StillUnemployed', deduped by link)
+       (source: 'StillUnemployed', deduped by verified posting identity)
      - added by hand with the form on this page (source: 'Me')
 
    The page follows the same conventions as js/app.js: one big render()
@@ -370,7 +370,12 @@
       // Another tab may have just logged the same posting. Keep its status and
       // notes intact, and make the duplicate visible instead of losing it on sync.
       this.rows = loadRows();
-      if (link && this.rows.some(function (r) { return r && linkKey(r.link) === linkKey(link); })) {
+      if (link && !window.SUJobIdentity) {
+        this.formMessage = 'Could not check this job link. Reload and try again.';
+        this.render();
+        return;
+      }
+      if (link && this.rows.some(function (r) { return r && (linkKey(r.link) === linkKey(link) || window.SUJobIdentity.equivalent(linkKey(r.link), linkKey(link))); })) {
         this.formMessage = 'That posting is already in your tracker. Your existing application is unchanged.';
         this.render();
         return;

@@ -486,7 +486,7 @@
     try {
       if (!link || (comp && comp._recipeHidden) || !comp || !comp.jobs) return;
       var job = null;
-      for (var j = 0; j < comp.jobs.length; j++) { if (comp.jobs[j].link === link) { job = comp.jobs[j]; break; } }
+      for (var j = 0; j < comp.jobs.length; j++) { if (jobHasLink(comp.jobs[j], link)) { job = comp.jobs[j]; break; } }
       if (!job) return;   // block shows in EVERY popup now (2026-07-18) — log every open
       // 30+ day cards don't show the block (they carry the age line instead) — don't log a view
       var src = job.posted || job.added || '';
@@ -873,15 +873,44 @@
     document.body.appendChild(box);
   }
 
+  // Identity is for matching only. Saved/Tracker keep the original URL keys so
+  // existing account records, notes and removal timestamps are never rewritten.
+  function identityKeys(link) {
+    if (!link) return [];
+    var keys = ['raw:' + link];
+    if (window.SUJobIdentity) keys = keys.concat(window.SUJobIdentity.keys(link).map(function (key) { return 'job:' + key; }));
+    return keys;
+  }
+  function linkIndex(links) {
+    var index = new Set();
+    links.forEach(function (link) { identityKeys(link).forEach(function (key) { index.add(key); }); });
+    return index;
+  }
+  function indexHasLink(index, link) { return identityKeys(link).some(function (key) { return index.has(key); }); }
+  function sameJobLink(a, b) { return !!a && !!b && (a === b || !!(window.SUJobIdentity && window.SUJobIdentity.equivalent(a, b))); }
+  function jobHasLink(job, link) { return (job._aliases || [job.link]).some(function (alias) { return sameJobLink(alias, link); }); }
+  function uniqueJobs(jobs) {
+    if (!window.SUJobIdentity) return jobs;
+    return window.SUJobIdentity.groupJobs(jobs).map(function (group) {
+      var aliases = new Set(group.aliases);
+      group.members.forEach(function (job) { (job._aliases || []).forEach(function (link) { aliases.add(link); }); });
+      return Object.assign({}, group.job, { _aliases: Array.from(aliases) });
+    });
+  }
+
   // "I applied" ALSO logs the job into the on-device application Tracker
   // (localStorage key su_tracker, read by tracker.html). Rows dedupe by link so a
   // double-tap never double-logs. Purely additive — the POST above is untouched.
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
   function trackerLog(co, link, role) {
+    if (!window.SUJobIdentity) {
+      suToast('Tracker could not load. Refresh before logging this application.');
+      return false;
+    }
     try {
       var rows = JSON.parse(localStorage.getItem('su_tracker') || '[]');
       if (!Array.isArray(rows)) rows = [];
-      if (link && rows.some(function (r) { return r && r.link === link; })) return;
+      if (link && rows.some(function (r) { return r && sameJobLink(r.link, link); })) return true;
       var d = new Date();
       rows.unshift({
         id: 'su-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
@@ -894,7 +923,8 @@
         notes: ''
       });
       if (window.SUStore) window.SUStore.saveTracker(rows); else localStorage.setItem('su_tracker', JSON.stringify(rows));
-    } catch (e) { /* tracker is a bonus; never block the confirm flow */ }
+      return true;
+    } catch (e) { return false; /* tracker is a bonus; never block the confirm flow */ }
   }
 
   // US states (name + 2-letter code) so a state search also surfaces remote-anywhere roles.
@@ -920,7 +950,7 @@
       }
       if (labels[act]) el.setAttribute('aria-label', labels[act]);
       if (act === 'toggleSave') {
-        var saved = !!App.state.saved[el.getAttribute('data-link')];
+        var saved = App.isSaved(el.getAttribute('data-link'));
         el.setAttribute('aria-pressed', String(saved));
         el.setAttribute('aria-label', saved ? 'Unsave job' : 'Save job');
       }
@@ -1335,15 +1365,27 @@
       return true;
     },
 
+    isSaved: function (link) {
+      if (this._savedMap !== this.state.saved) {
+        this._savedMap = this.state.saved;
+        this._savedIndex = linkIndex(Object.keys(this.state.saved).filter(function (key) { return App.state.saved[key]; }));
+      }
+      return indexHasLink(this._savedIndex, link);
+    },
+
     toggleSave: function (key) {
       var saved = Object.assign({}, this.state.saved);
-      if (saved[key]) delete saved[key]; else saved[key] = true;
+      var alreadySaved = this.isSaved(key);
+      // An explicit Unsave removes every saved URL alias for this posting. No
+      // background migration occurs merely because a duplicate card is hidden.
+      if (alreadySaved) Object.keys(saved).forEach(function (link) { if (sameJobLink(link, key)) delete saved[link]; });
+      else saved[key] = true;
       try { if (window.SUStore) window.SUStore.saveSaved(saved); else localStorage.setItem('su_saved_jobs', JSON.stringify(saved)); } catch (e) {}
       // analytics (js/analytics.js): log SAVES only, not unsaves — additive no-op without it
       if (saved[key] && typeof window.suTrack === 'function') {
         var sj = null;
         for (var si = 0; si < this.jobs.length; si++) {
-          if (this.jobs[si].link === key) { sj = this.jobs[si]; break; }
+          if (jobHasLink(this.jobs[si], key)) { sj = this.jobs[si]; break; }
         }
         window.suTrack('save', sj ? sj.co : '', sj ? sj.role : '', key);
       }
@@ -1513,7 +1555,7 @@
       var base = this.jobs.filter(function (j) { return self.matchesBase(j); });
       var cat = this.state.cat;
       var shown = base.filter(function (j) { return cat === 'all' || j.ind === cat; });
-      if (this.state.savedOnly) shown = shown.filter(function (j) { return !!self.state.saved[j.link]; });
+      if (this.state.savedOnly) shown = shown.filter(function (j) { return self.isSaved(j.link); });
 
       if (this.state.fr === 'Recently added') {
         // "Recently added" is a SORT, not a filter: show ALL roles, newest (highest sheet row) first
@@ -1625,7 +1667,7 @@
         // shuffling and filtering, with no clusters and no gaps.
         j._pos = k;
         var key = j.link;
-        var saved = !!self.state.saved[key];
+        var saved = self.isSaved(key);
         var tier = self.payTier(j.pay);
         var rot = rots[k % rots.length];
         // high-pay cards take their ink/bg/apply/stamp from the active theme palette;
@@ -1791,7 +1833,8 @@
 
       // ---- states list for the <select> ----
       var states = Array.from(new Set(this.jobs.map(function (j) { return j.state; }))).sort();
-      var savedCount = Object.keys(this.state.saved).filter(function (k) { return self.state.saved[k]; }).length;
+      var savedJobs = uniqueJobs(Object.keys(this.state.saved).filter(function (k) { return self.state.saved[k]; }).map(function (link) { return { link:link }; }));
+      var savedCount = savedJobs.length;
 
       var savedBtnBase = "font-family:'Indie Flower',cursive; font-weight:700; font-size:19px; padding:11px 17px; transform:rotate(3deg); box-shadow:2px 4px 9px rgba(44,33,24,0.2); white-space:nowrap; position:relative; top:8px; flex:none; cursor:pointer; border-radius:2px;";
       var savedBtnStyle = savedBtnBase + (this.state.savedOnly ? 'background:#2A2118; color:#F4E9C9;' : ('background:' + ACC + '; color:' + ACC_INK + ';'));
@@ -1832,7 +1875,7 @@
       }).join('');
 
       var showingLabel = this.state.savedOnly ? ('Showing ' + shown.length + ' saved') : ('Showing ' + shown.length + ' of ' + this.jobs.length);
-      var missingSaved = Object.keys(this.state.saved).filter(function (link) { return self.state.saved[link] && !self.jobs.some(function (job) { return job.link === link; }); });
+      var missingSaved = savedJobs.filter(function (saved) { return !self.jobs.some(function (job) { return jobHasLink(job, saved.link); }); }).map(function (job) { return job.link; });
       var emptyTitle = this._loadError ? 'Jobs could not load right now' : this.state.savedOnly ? (missingSaved.length ? 'Your saved links are below' : 'no saved roles yet') : "We're looking for more jobs RN, check back soon!";
       var emptyHint = this._loadError ? 'Your saved jobs and tracker are still here. Try loading the board again.' : this.state.savedOnly ? 'tap the bookmark on any card to pin it here' : 'try clearing a filter, or check back in a few days';
       var isEmpty = shown.length === 0;
@@ -2109,7 +2152,7 @@
       if (this.state.detailOpen) {
         var _P = this.THEMES[this.state.look] || this.THEMES.original;
         var dj = null;
-        for (var di = 0; di < this.jobs.length; di++) { if (this.jobs[di].link === this.state.detailLink) { dj = this.jobs[di]; break; } }
+        for (var di = 0; di < this.jobs.length; di++) { if (jobHasLink(this.jobs[di], this.state.detailLink)) { dj = this.jobs[di]; break; } }
         if (dj) {
           var dmeta = [dj.loc, dj.style, dj.exp].filter(Boolean).join(' · ');
           var tld = dj.tldr || dj.desc || '';
@@ -2429,12 +2472,12 @@
             // also drop the application into the on-device Tracker (tracker.html)
             var tj = null;
             for (var ti = 0; ti < self.jobs.length; ti++) {
-              if (self.jobs[ti].link === self.state.feedbackLink) { tj = self.jobs[ti]; break; }
+              if (jobHasLink(self.jobs[ti], self.state.feedbackLink)) { tj = self.jobs[ti]; break; }
             }
-            trackerLog(self.state.feedbackCo, self.state.feedbackLink, tj ? tj.role : '');
+            var tracked = trackerLog(self.state.feedbackCo, self.state.feedbackLink, tj ? tj.role : '');
             self.setState({ feedbackOpen: false });
             suConfetti();       // short celebratory burst; popup closes so they keep browsing
-            suTrackerNudge();   // FIRST TIME ONLY: tell them the tracker exists (it already logged)
+            if (tracked) suTrackerNudge(); // Only promise a tracker entry when it exists.
             break;
           }
           case 'reportBroken': {
@@ -2451,7 +2494,7 @@
               if (_rl2.indexOf(_bl) < 0) { _rl2.push(_bl); localStorage.setItem('su_reported_links', JSON.stringify(_rl2)); }
             } catch (eRB) {}
             for (var _bi = 0; _bi < self.jobs.length; _bi++) {
-              if (self.jobs[_bi].link === _bl) { self.jobs.splice(_bi, 1); break; }
+              if (jobHasLink(self.jobs[_bi], _bl)) { self.jobs.splice(_bi, 1); break; }
             }
             self.state.feedbackOpen = false;
             self.render();
@@ -2490,7 +2533,7 @@
           case 'closeSignup': self.setState({ signupOpen: null }); break;
           case 'detailShare': {
             var sl = el.getAttribute('data-link'), sj = null;
-            for (var si = 0; si < self.jobs.length; si++) { if (self.jobs[si].link === sl) { sj = self.jobs[si]; break; } }
+            for (var si = 0; si < self.jobs.length; si++) { if (jobHasLink(self.jobs[si], sl)) { sj = self.jobs[si]; break; } }
             suShareJob(sj);
             break;
           }
@@ -2662,9 +2705,11 @@
           if (_jp) {
             var _wanted = decodeURIComponent(escape(atob(decodeURIComponent(_jp))));
             setTimeout(function () {
+              var sharedJob = self.jobs.find(function (job) { return jobHasLink(job, _wanted); });
+              var targetLink = sharedJob ? sharedJob.link : _wanted;
               var cards = document.querySelectorAll('.note[data-link]');
               for (var ci = 0; ci < cards.length; ci++) {
-                if (cards[ci].getAttribute('data-link') === _wanted) {
+                if (sameJobLink(cards[ci].getAttribute('data-link'), targetLink)) {
                   cards[ci].scrollIntoView({ behavior: 'smooth', block: 'center' });
                   cards[ci].style.outline = '3px solid #D8502E'; cards[ci].style.outlineOffset = '3px';
                   (function (c) { setTimeout(function () { c.style.outline = ''; }, 2800); })(cards[ci]);
@@ -2705,7 +2750,7 @@
       // happens when the triage agent verifies at the source and marks the sheet).
       try {
         var _hid = JSON.parse(localStorage.getItem('su_reported_links') || '[]');
-        if (_hid.length) jobs = jobs.filter(function (j) { return _hid.indexOf(j.link) < 0; });
+        if (_hid.length) jobs = jobs.filter(function (j) { return !_hid.some(function (link) { return jobHasLink(j, link); }); });
       } catch (eRH) {}
       var self = this;
       window.addEventListener('su:local-change', function () {
@@ -2715,7 +2760,7 @@
       window.addEventListener('su:data-sync', function () { self.state.saved = loadSaved(); self.render(); });
       window.addEventListener('storage', function (e) { if (e.key === 'su_saved_jobs' || e.key === 'su_tracker') { self.state.saved = loadSaved(); self.render(); } });
       this.state.saved = loadSaved();
-      this.jobs = this.shuffleFresh(jobs);
+      this.jobs = this.shuffleFresh(uniqueJobs(jobs));
       this.bindEvents();
       // analytics: a ?theme= content preset (theme-chip) counts as an applied filter — additive
       if (this.state.theme && Object.prototype.hasOwnProperty.call(this.themeDefs, this.state.theme) && typeof window.suTrack === 'function') {
@@ -2801,6 +2846,7 @@
 
   // map sheet rows -> the job objects the board expects; keep only Active rows
   function rowsToJobs(rows) {
+    if (!window.SUJobIdentity) throw new Error('Job identity check unavailable. Refresh to retry.');
     if (!rows || !rows.length) throw new Error('Jobs CSV has no header');
     var head = rows[0].map(function (h) { return String(h).trim().toLowerCase(); });
     ['company', 'job title', 'link', 'salary', 'active/dead'].forEach(function (name) {
@@ -2847,7 +2893,7 @@
         posted: get(cells, iPosted)   // yyyy-mm-dd — when the COMPANY posted it (from the ATS API)
       });
     }
-    return jobs;
+    return uniqueJobs(jobs);
   }
 
   // Security: only let http(s) job links reach the DOM. Blocks a malicious sheet
