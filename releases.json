@@ -1,7 +1,17 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.1.9",
+  "currentVersion": "2.2.0",
   "releases": [
+    {
+      "version": "2.2.0",
+      "date": "2026-09-06",
+      "title": "A board that gets to know your interests",
+      "changes": [
+        "Added optional account preferences, personal job hiding and returning-visitor suggestions on enabled previews.",
+        "Opened an internship section with separate review, eligibility and compensation details; its first listings are still being checked.",
+        "Added six illustrated lessons about experience during college and expanded drawings across the advice notes."
+      ]
+    },
     {
       "version": "2.1.9",
       "date": "2026-09-06",
@@ -115,7 +125,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "970694d972e54d4ebdf56eb1e44f8daec38835cc5187dee8547ee66397ec5260",
-    "fileCount": 123
+    "digest": "2d57ba6cc581a9e3f8ef69b0e93b0f0dec96ea8abdba32b54c4872d7cb85458f",
+    "fileCount": 131
   }
 }
