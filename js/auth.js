@@ -21,6 +21,7 @@
   window.SUAuth = { signedIn:function(){return !!user;}, getToken:function(){return user ? user.getIdToken() : Promise.reject(new Error('Sign in required'));} };
   function notifyAuth(){var changed=false;try{var owner=user?user.uid:'guest',prior=sessionStorage.getItem('su_analytics_auth_owner');changed=prior!==null&&prior!==owner;sessionStorage.setItem('su_analytics_auth_owner',owner);}catch(e){}if(window.dispatchEvent && typeof CustomEvent !== 'undefined')window.dispatchEvent(new CustomEvent('su:auth-changed',{detail:{signedIn:!!user,accountChanged:changed}}));}
   function loginResult(result){if(result && window.SUAnalytics)window.SUAnalytics.emit('auth_login',{});return result;}
+  var feedbackFocus = null;
   function status(next, error) {
     syncState = next; errorCode = error ? String(error.code || error.message || 'unavailable') : '';
     if (error) console.warn('[su-auth]', errorCode);
@@ -38,30 +39,78 @@
       if (label) label.textContent = user ? 'Signed In' : 'Sign In';
       button.disabled = !auth || signingIn;
     });
+    // The post-apply note offers sign-in only while signed out and auth is ready.
+    // Its fallback X is real board markup, so production/SDK failures stay dismissible.
+    // Toggle the two controls in place: never rebuild the note or its response state.
+    document.querySelectorAll('.su-feedback-account').forEach(function (slot) {
+      var google = slot.querySelector('.su-auth-button');
+      var close = slot.querySelector('.su-feedback-close');
+      if (!google || !close) return;
+      var showGoogle = !!auth && !user;
+      google.hidden = !showGoogle; close.hidden = showGoogle;
+      var hidden = showGoogle ? close : google;
+      if (document.activeElement === hidden) (showGoogle ? google : close).focus({ preventScroll:true });
+    });
+    // Disabling the initiating button can send browser focus to BODY. Return it
+    // after completion/cancellation, unless the visitor chose another control.
+    if (feedbackFocus && (user || !signingIn)) {
+      if (feedbackFocus.isConnected) {
+        var active = document.activeElement;
+        if (active === feedbackFocus || active === document.body || active === document.documentElement) {
+          var slot = feedbackFocus.closest('.su-feedback-account');
+          var target = slot && slot.querySelector(user ? '.su-feedback-close' : '.su-auth-button');
+          if (target && !target.hidden && !target.disabled) target.focus({ preventScroll:true });
+        }
+      }
+      feedbackFocus = null;
+    }
     var feedback = document.getElementById('su-auth-feedback');
     if (feedback) { feedback.textContent = syncState === 'error' ? 'Sync could not finish. Your jobs are saved on this device. Tap Google to retry.' : ''; }
   }
-  function onClick() {
+  function signInError(e) {
+    status('error', e);
+    alert('Google sign-in could not finish. Your jobs are still saved on this device. ' + (e.code || 'Please try again.'));
+  }
+  function onClick(event) {
     if (user) {
       if (syncState === 'error') { startSync(); return; }
       if (confirm('Signed in as ' + (user.email || user.displayName) + '. Sign out? Your jobs stay saved in this account.')) {if(window.SUAnalytics){window.SUAnalytics.emit('auth_logout',{});window.SUAnalytics.flush();}sdk.signOut(auth);}
       return;
     }
     if (!auth || signingIn) return;
+    var trigger = event && event.currentTarget;
+    var feedbackSlot = trigger && trigger.closest('.su-feedback-account');
+    var active = document.activeElement;
+    feedbackFocus = active && active.closest && active.closest('.su-feedback-account') ? active : null;
     signingIn = true; errorCode = ''; render();
     var provider = new sdk.GoogleAuthProvider();
     sdk.signInWithPopup(auth, provider).then(loginResult).catch(function (e) {
-      if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') return sdk.signInWithRedirect(auth, provider);
+      if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') {
+        var board = feedbackSlot && window.SUApp;
+        if (feedbackSlot) {
+          // A visitor may already have answered/closed while the popup was pending.
+          if (!feedbackSlot.isConnected || !board || !board.state.feedbackOpen) return;
+          if (!board.rememberFeedbackRedirect()) {
+            status('error', e);
+            alert('Please allow popups and try Google again. You can still answer this note without signing in.');
+            return;
+          }
+        }
+        return sdk.signInWithRedirect(auth, provider).catch(function (redirectError) {
+          if (board) board.clearFeedbackRedirect();
+          signInError(redirectError);
+        });
+      }
       if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
-        status('error', e);
-        alert('Google sign-in could not finish. Your jobs are still saved on this device. ' + (e.code || 'Please try again.'));
+        signInError(e);
       }
     }).finally(function () { signingIn = false; render(); });
   }
   function mount() {
-    // Nav rows are rebuilt after filtering or editing. Mount one accessible button per visible nav.
+    // Nav rows and feedback notes can be rebuilt. Keep one auth control per slot,
+    // including feedback slots that already contain their always-available fallback X.
     document.querySelectorAll('.su-account-slot').forEach(function (slot) {
-      if (slot.firstElementChild) return;
+      if (slot.querySelector('.su-auth-button')) return;
       var button = document.createElement('button');
       button.type = 'button'; button.className = 'su-auth-button';
     var g = '<svg width="16" height="16" viewBox="0 0 18 18" style="flex:none;">' +
@@ -102,7 +151,7 @@
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && session) session.queue(); });
   function bootUI() {
     mount();
-    // Observe only nav-replacing renders, not character/status changes.
+    // Observe slot-replacing renders, not character/status changes.
     new MutationObserver(function (changes) {
       if (changes.some(function (c) { return Array.from(c.addedNodes).some(function (n) { return n.nodeType === 1 && (n.matches('.su-account-slot') || n.querySelector('.su-account-slot')); }); })) mount();
     }).observe(document.body, { childList: true, subtree: true });

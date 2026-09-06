@@ -5,11 +5,11 @@ import {resolve,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 export function prepare(root){const dest=join(root,'dist');rmSync(dest,{recursive:true,force:true});mkdirSync(dest,{recursive:true});
   for(const name of readdirSync(root)){
-    const publicFile=['index.html','jobs.html','tracker.html','suggest.html','privacy.html','terms.html','versions.html','analytics.html','404.html'].includes(name)||['jobs-data.json','releases.json','robots.txt','sitemap.xml','favicon.ico','_redirects','_headers','site.webmanifest'].includes(name);
+    const publicFile=['index.html','jobs.html','tracker.html','suggest.html','privacy.html','terms.html','versions.html','analytics.html','style-guide.html','404.html'].includes(name)||['jobs-data.json','releases.json','robots.txt','sitemap.xml','favicon.ico','_redirects','_headers','site.webmanifest'].includes(name);
     const publicDirectory=['js','css','assets','__','j','jobs'].includes(name);
     if(!publicFile&&!publicDirectory)continue;
     const source=join(root,name);if(lstatSync(source).isSymbolicLink())throw Error('Public symlink rejected');
-    cpSync(source,join(dest,name),{recursive:true,filter:p=>{const stat=lstatSync(p);if(stat.isSymbolicLink())throw Error('Public symlink rejected');return !p.includes('/assets/og-src/')&&!/\/style-guide(?:[./-]|$)/.test(p);}});
+    cpSync(source,join(dest,name),{recursive:true,filter:p=>{const stat=lstatSync(p);if(stat.isSymbolicLink())throw Error('Public symlink rejected');return !p.includes('/assets/og-src/');}});
   }
   return dest;
 }

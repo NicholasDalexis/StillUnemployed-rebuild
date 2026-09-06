@@ -14,3 +14,15 @@ test('scheduled cleanup deletes expired analytics only',async()=>{const d=deps()
 test('outbound unknown intervals never become zero or completed applications',()=>{const base={actor:'a',session:'s',at:now,analytics:true};const out=C.reduceRows([{...base,name:'outbound_started',outboundId:'x'},{...base,name:'outbound_started',outboundId:'y'},{...base,name:'outbound_return',outboundId:'y',seconds:900,capped:true},{...base,at:now-31*86400000,name:'page_view'}],30,now);assert.equal(out.totals.events,3);assert.deepEqual(out.timing,{returned:1,unknown:1,capped:1,meanAwaySeconds:900});assert.equal(out.totals.reported_applied,0);});
 test('same-origin browser GET without Origin accepted; foreign site denied',()=>{assert.doesNotThrow(()=>C.authorizeOrigin({httpMethod:'GET',headers:{host:'localhost:8013','sec-fetch-site':'same-origin'}},{SU_ALLOWED_ORIGINS:'http://localhost:8013'}));assert.throws(()=>C.authorizeOrigin({httpMethod:'GET',headers:{host:'localhost:8013','sec-fetch-site':'cross-site'}},{SU_ALLOWED_ORIGINS:'http://localhost:8013'}));});
 module.exports={database,deps,request,jobId,now};
+
+test('signal expiry survives unrelatedday89activity and keepsnewersignals duringday91cleanup',async()=>{
+ const d=deps();let time=now;d.now=()=>time;
+ await S.collect(request(),d);
+ const newer={...job,link:'https://job-boards.greenhouse.io/acme/jobs/23456'},newId=C.jobId(newer);d.jobs={...d.jobs,...C.catalog([newer])};
+ time=now+50*86400000;await S.collect(request('alice',[{id:'newer-event-123456',name:'job_open',jobId:newId,occurredAt:time}]),d);
+ time=now+89*86400000;await S.collect(request('alice',[{id:'pageview-event-123456',name:'page_view',occurredAt:time}],{consent:{analytics:true,personalization:false}}),d);
+ const actor=S.hmac(d.env,'account:alice'),ref='suAnalyticsProfiles/'+actor;
+ assert.equal(+d.db.data.get(ref).expiresAt,now+179*86400000);assert.equal(+d.db.data.get(ref).nextSignalExpiryAt,now+90*86400000);
+ time=now+91*86400000;const result=await S.cleanup(d);assert.equal(result.pruned,1);
+ const retained=d.db.data.get(ref);assert.equal(retained.jobs[jobId],undefined);assert.equal(retained.jobs[newId].at,now+50*86400000);assert.equal(+retained.nextSignalExpiryAt,now+140*86400000);
+});

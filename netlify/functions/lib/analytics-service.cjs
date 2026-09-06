@@ -11,6 +11,7 @@ async function liveCatalog(){
   try{const jobs=await loadJobs(null,(url)=>fetch(url,{signal:AbortSignal.timeout(5000)}));jobsCache=Core.catalog(jobs);jobsCacheAt=Date.now();return jobsCache;}catch{if(jobsCache&&Date.now()-jobsCacheAt<3600000)return jobsCache;throw error(503,'Job catalog temporarily unavailable');}
 }
 function error(status,message){return Object.assign(new Error(message),{status});}
+function nextSignalExpiry(jobs,fallback){const dates=Object.values(jobs||{}).map(job=>job.at+90*DAY).filter(Number.isFinite);return new Date(dates.length?Math.min(...dates):fallback);}
 function dependencies(env=process.env) {
   if(!env.SU_ANALYTICS_ENABLED || env.SU_ANALYTICS_ENABLED!=='true' || !env.SU_FIREBASE_SERVICE_ACCOUNT || !env.SU_ANALYTICS_SECRET)throw error(503,'Analytics is not configured');
   const {initializeApp,getApps,cert}=require('firebase-admin/app');
@@ -71,7 +72,7 @@ async function collect(request,d) {
         }
       }
     }
-    tx.set(ref,{jobs:profile,signupRecorded,resetAt:old.resetAt||0,expiresAt,updatedAt:now});
+    tx.set(ref,{jobs:profile,signupRecorded,resetAt:old.resetAt||0,expiresAt,nextSignalExpiryAt:nextSignalExpiry(profile,now+90*DAY),updatedAt:now});
     tx.set(rateRef,{window,count:used+cleaned.length,expiresAt:new Date(now+DAY)});
     return {accepted,receivedAt:new Date(now).toISOString()};
   });
@@ -85,7 +86,7 @@ async function profile(request,d) {
     if(uid&&/^[a-zA-Z0-9_-]{16,64}$/.test(input.visitor||'')){const guest=hmac(d.env,'guest:'+input.visitor);if(guest!==actor)actors.push(guest);}
     let deleted=0;
     for(const target of actors){
-      await d.db.doc('suAnalyticsProfiles/'+target).set({jobs:{},resetAt:d.now(),updatedAt:d.now(),expiresAt:new Date(d.now()+90*DAY)},{merge:true});
+      await d.db.doc('suAnalyticsProfiles/'+target).set({jobs:{},resetAt:d.now(),updatedAt:d.now(),expiresAt:new Date(d.now()+90*DAY),nextSignalExpiryAt:new Date(d.now()+90*DAY)},{merge:true});
       while(true){const docs=await d.db.collection('suAnalyticsEvents').where('actor','==',target).limit(400).get();if(docs.empty)break;const batch=d.db.batch();docs.docs.forEach(doc=>batch.delete(doc.ref));await batch.commit();deleted+=docs.size;if(deleted>=20000)throw error(503,'Reset is still processing. Please retry.');}
     }
     return {reset:true,deleted};
@@ -106,13 +107,31 @@ async function admin(request,d) {
   return {...Core.reduceRows(rows,days,d.now()),coverage:{label:'Only visitors who opted into analytics',dimensionSuppression:'Field, role and theme groups with fewer than 5 visitors are withheld',complete:true}};
 }
 async function cleanup(d) {
-  let deleted=0;
+  let deleted=0,pruned=0;
+  // Signal expiry is independent of profile activity. A day89 page view cannot
+  // postpone a day0 interest signal until day179. Transactions preserve any
+  // fresh signals written concurrently and replace the whole owned jobs map.
+  for(let pass=0;pass<5;pass++){
+    const due=await d.db.collection('suAnalyticsProfiles').where('nextSignalExpiryAt','<=',new Date(d.now())).limit(100).get();
+    if(due.empty)break;
+    for(const document of due.docs){
+      pruned+=await d.db.runTransaction(async tx=>{
+        const current=await tx.get(document.ref);if(!current.exists)return 0;
+        const data=current.data(),jobs={};let removed=0;
+        for(const [id,signal] of Object.entries(data.jobs||{})){if(Number.isFinite(signal.at)&&signal.at>d.now()-90*DAY)jobs[id]=signal;else removed++;}
+        tx.set(document.ref,{...data,jobs,nextSignalExpiryAt:nextSignalExpiry(jobs,d.now()+90*DAY)});
+        return removed;
+      });
+    }
+  }
+
   for(const collection of ['suAnalyticsEvents','suAnalyticsProfiles','suAnalyticsRates']) {
     // Bounded scheduling work. Read paths independently reject expired records.
     for(let pass=0;pass<5;pass++){const rows=await d.db.collection(collection).where('expiresAt','<=',new Date(d.now())).limit(400).get();if(rows.empty)break;const batch=d.db.batch();rows.docs.forEach(doc=>batch.delete(doc.ref));await batch.commit();deleted+=rows.size;}
   }
   for(const collection of ['suAnalyticsEvents','suAnalyticsProfiles','suAnalyticsRates']){const remainder=await d.db.collection(collection).where('expiresAt','<=',new Date(d.now())).limit(1).get();if(!remainder.empty)throw error(503,'Retention backlog requires another run');}
-  return {deleted};
+  const due=await d.db.collection('suAnalyticsProfiles').where('nextSignalExpiryAt','<=',new Date(d.now())).limit(1).get();if(!due.empty)throw error(503,'Signal retention backlog requires another run');
+  return {deleted,pruned};
 }
 function handler(action,methods){return async request=>{
   const headers={'Content-Type':'application/json','Cache-Control':'private, no-store','Vary':'Origin, Authorization','X-Content-Type-Options':'nosniff'};

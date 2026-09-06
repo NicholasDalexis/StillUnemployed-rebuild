@@ -5,11 +5,11 @@
     {
       "version": "2.1.2",
       "date": "2026-09-05",
-      "title": "Your interests, your choices",
+      "title": "Every theme, with a clearer welcome",
       "changes": [
-        "Optional personalized ordering follows the career fields and roles you explore, with higher disclosed pay among comparable jobs.",
-        "Separate analytics and recommendation controls, a history reset, and clearer privacy explanations.",
-        "A private owner dashboard summarizes measured activity and answers supported questions."
+        "Explore all eight themes in the style guide, now linked from Version History.",
+        "A roomier Version 2 welcome puts the tracker first and gives each feature one clear way back.",
+        "Optional Google sign-in in the application feedback note keeps your unanswered question through sign-in."
       ]
     },
     {
@@ -50,7 +50,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "ccf2ea73a5c3a9a5e1ec2a0d9369d1cc494fd710f467ab29ce326f84b93da5b1",
-    "fileCount": 117
+    "digest": "77a74897eadcff30faa04ad428e12b52b50cc320b5e9d2e1fc38a8f8206f7773",
+    "fileCount": 109
   }
 }

@@ -21,6 +21,8 @@
   'use strict';
 
   // ---- tiny helpers ---------------------------------------------------------
+  var FEEDBACK_REDIRECT_KEY = 'su_feedback_auth_redirect_v1';
+  var FEEDBACK_REDIRECT_TTL = 10 * 60 * 1000;
   var esc = function (s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -1578,7 +1580,50 @@
     // overlays only. Anything else (filters, search, theme, jobs) still does the full render.
     OVERLAY_KEYS: { detailOpen: 1, detailLink: 1, feedbackOpen: 1, feedbackCo: 1, feedbackLink: 1,
                     adviceOpen: 1, signupOpen: 1, lookOpen: 1, aboutOpen: 1, modalOpen: 1 },
+    clearFeedbackRedirect: function () {
+      try {
+        var storage = window.sessionStorage;
+        if (!storage) return false;
+        if (storage.getItem(FEEDBACK_REDIRECT_KEY) !== null) storage.removeItem(FEEDBACK_REDIRECT_KEY);
+        return storage.getItem(FEEDBACK_REDIRECT_KEY) === null;
+      } catch (e) { return false; }
+    },
+    // Called only immediately before a Google redirect from the feedback icon.
+    // Tab-local, short-lived and independent of Saved/Tracker/account storage.
+    rememberFeedbackRedirect: function () {
+      if (!this.state.feedbackOpen) return false;
+      var link = this.state.feedbackLink;
+      var job = this.jobs.find(function (j) { return jobHasLink(j, link); });
+      if (!job) return false;
+      var co = String(job.co || '').trim().replace(/\s+/g, ' ');
+      link = safeUrl(job.link);
+      if (!co || co.length > 200 || !link || link.length > 4096) return false;
+      if (!this.clearFeedbackRedirect()) return false;
+      try {
+        var storage = window.sessionStorage;
+        var value = JSON.stringify({ v:1, at:Date.now(), co:co, link:link });
+        storage.setItem(FEEDBACK_REDIRECT_KEY, value);
+        if (storage.getItem(FEEDBACK_REDIRECT_KEY) === value) return true;
+      } catch (e) { /* Stay on the question if a redirect receipt cannot be kept. */ }
+      this.clearFeedbackRedirect();
+      return false;
+    },
+    restoreFeedbackRedirect: function () {
+      try {
+        var raw = window.sessionStorage && window.sessionStorage.getItem(FEEDBACK_REDIRECT_KEY);
+        // Consume before parsing/rendering. Failed removal must not create a loop.
+        if (raw == null || !this.clearFeedbackRedirect()) return;
+        var pending = JSON.parse(raw), age = Date.now() - pending.at;
+        if (pending.v !== 1 || typeof pending.at !== 'number' || !Number.isFinite(age) || age < 0 || age > FEEDBACK_REDIRECT_TTL ||
+            typeof pending.co !== 'string' || !pending.co.trim() || pending.co.length > 200 ||
+            typeof pending.link !== 'string' || pending.link.length > 4096 || !safeUrl(pending.link)) return;
+        this.state.feedbackOpen = true;
+        this.state.feedbackCo = pending.co.trim().replace(/\s+/g, ' ');
+        this.state.feedbackLink = safeUrl(pending.link);
+      } catch (e) { /* Missing or malformed tab storage never blocks the board. */ }
+    },
     setState: function (patch) {
+      if (patch.feedbackOpen === false || (patch.feedbackLink && patch.feedbackLink !== this.state.feedbackLink)) this.clearFeedbackRedirect();
       Object.assign(this.state, patch);
       var overlayOnly = Object.keys(patch).length > 0;
       for (var k in patch) { if (!this.OVERLAY_KEYS[k]) { overlayOnly = false; break; } }
@@ -2088,6 +2133,11 @@
       if (!previousDialog && dialogKey) this._dialogReturn = previousFocus;
       var previousKey = this._dialogKey;
       this._dialogKey = dialogKey;
+      // Account activation/sync can refresh the board while this note is open.
+      // Preserve its controls and focus when the application question is unchanged.
+      var feedbackIdentity = dialogKey === 'feedback' ? JSON.stringify([this.state.feedbackCo, this.state.feedbackLink]) : null;
+      if (previousDialog && previousKey === 'feedback' && dialogKey === 'feedback' && this._feedbackIdentity === feedbackIdentity) return;
+      this._feedbackIdentity = feedbackIdentity;
       var out = '';
 
       // About modal
@@ -2132,10 +2182,12 @@
       if (this.state.feedbackOpen) {
         out += '<div data-act="closeFeedback" style="position: fixed; inset: 0; z-index: 210; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
           '<div data-act="stop" style="margin: auto;width: 460px; max-width: 100%; background: #F4EEE2; border-radius: 8px; padding: 30px 30px 28px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.7deg);">' +
-            '<div data-act="closeFeedback" style="position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%; background: rgba(44,33,24,0.06); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
-              '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.2" stroke-linecap="round"></path></svg>' +
-            '</div>' +
-            '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 27px; color: #2A2118; line-height: 1.1; transform: rotate(-1deg);">welcome back!</div>' +
+            '<span class="su-account-slot su-feedback-account">' +
+              '<button type="button" class="su-feedback-close" data-act="closeFeedback" title="Close application feedback" aria-label="Close application feedback">' +
+                '<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path></svg>' +
+              '</button>' +
+            '</span>' +
+            '<div style="padding-right: 40px; font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 27px; color: #2A2118; line-height: 1.1; transform: rotate(-1deg);">welcome back!</div>' +
             '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #6F5E45; margin-top: 6px;">how\'d it go with ' + esc(this.state.feedbackCo) + '?</div>' +
             '<div style="display: flex; gap: 14px; margin-top: 22px;">' +
               '<div data-act="markApplied" class="fbopt" style="flex: 1; cursor: pointer; background: var(--su-yellow-paper); border-radius: 6px; padding: 22px 14px 18px; text-align: center; transform: rotate(-1.6deg); box-shadow: 2px 4px 9px rgba(44,33,24,0.16);">' +
@@ -2496,6 +2548,7 @@
             break;
           }
           case 'reportBroken': {
+            self.clearFeedbackRedirect();
             var _bl = self.state.feedbackLink;
             // SPAM GUARD (Nic, 2026-07-11): max 3 reports/min and 10/day per visitor. Over the
             // limit the UI still says thanks (looks registered) but nothing is logged — shadow
@@ -2784,6 +2837,7 @@
       window.addEventListener('su:auth-changed',function(){self._profileGeneration=-1;self._feedInteracted=false;self.render();});
       window.addEventListener('su:consent-changed',function(){self._profileGeneration=-1;self._feedInteracted=false;self.render();});
       this.bindEvents();
+      this.restoreFeedbackRedirect();
       // analytics: a ?theme= content preset (theme-chip) counts as an applied filter — additive
       if (this.state.theme && Object.prototype.hasOwnProperty.call(this.themeDefs, this.state.theme) && typeof window.suTrack === 'function') {
         window.suTrack('filter', 'theme', this.state.theme, '');
