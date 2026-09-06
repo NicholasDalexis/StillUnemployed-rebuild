@@ -39,7 +39,7 @@
     function render(){if(App){App._profileGeneration=-1;App.render();}}
     function hidden(job){var value=disposition(job);return !!(value&&value.hidden);}
     function count(){var d=data();return Object.keys(d).filter(function(k){return k.indexOf('job:')===0&&d[k]&&d[k].confirmed;}).length;}
-    function rememberVisit(){if(!signed()||!root.SUAuth.syncReady()||visitReady||!App||App._loadError||App.internships)return;visitReady=true;
+    function rememberVisit(){if(!signed()||!root.SUAuth.syncReady()||visitReady||!App||App._loadError||!App.jobs.length||App.internships)return;visitReady=true;
       var d=data(),now=Date.now(),last=d.visits||{},newSession=now-(last.lastAt||0)>=1800000,ids=App.jobs.map(function(j){return canonical(j.link);});
       if(newSession){var prior=Array.isArray(last.seen)?last.seen:[];var previousAt=last.lastAt||0;var number=(last.count||0)+1;
         if(number>=3&&previousAt&&last.snapshotComplete!==false&&ids.length<=2000&&last.remindedDay!==Math.floor(now/DAY))recommendations=App.jobs.filter(function(j){return prior.indexOf(canonical(j.link))<0&&!hidden(j);});
@@ -47,7 +47,7 @@
       }else write('visits',Object.assign({},last,{lastAt:now}));
     }
     function useProfile(){return signed()?profile(data().profile):profile();}
-    function order(jobs,P,interest){var prefs=useProfile(),boost=fieldBoost(prefs),major=prefs.major.toLowerCase();
+    function order(jobs,P,interest){if(!signed()||!root.SUAnalytics||!root.SUAnalytics.choices||!root.SUAnalytics.choices().personalization)interest={};var prefs=useProfile(),boost=fieldBoost(prefs),major=prefs.major.toLowerCase();
       // A posting can explicitly welcome a major outside the small adjacency dictionary.
       var directFields={};if(major.length>=3)jobs.forEach(function(j){if(String(j.desc||'').toLowerCase().indexOf(major)>=0)directFields[P.classify(j).field]=true;});
       Object.keys(directFields).forEach(function(field){boost[field]=(boost[field]||0)+3;});
@@ -66,7 +66,7 @@
       if((form||automatic)&&!blocked()){
         var v=draft||p;out+='<form class="su-discovery-note" id="su-discovery-form"><button type="button" class="su-discovery-close" data-discovery="skip" aria-label="Skip preferences">×</button><h2>Make this board a little more you.</h2><p>Every answer is optional. Your major and related interests help sort roles, never rule you out.</p><label for="su-major">Major or area of study <span>(optional)</span></label><input id="su-major" name="major" maxlength="100" value="'+esc(v.major)+'" placeholder="e.g. communications"><label for="su-location">Preferred location <span>(optional)</span></label><input id="su-location" name="location" maxlength="100" value="'+esc(v.location)+'" placeholder="e.g. Chicago"><label for="su-info">Anything else you want to explore? <span>(optional)</span></label><textarea id="su-info" name="info" maxlength="300" placeholder="Roles or creative skills you enjoy">'+esc(v.info)+'</textarea><p class="su-discovery-small">A few role and study keywords guide ordering. This is not a qualifications check. Avoid private or sensitive details. You can edit or clear these answers here.</p><div class="su-discovery-tools"><button type="submit">Save preferences</button><button type="button" data-discovery="skip">Skip for now</button><button type="button" data-discovery="clear">Clear answers</button></div></form>';
       }else if(recommendations.length&&!blocked()){
-        out+='<div class="su-discovery-note"><button class="su-discovery-close" type="button" data-discovery="dismiss-recos" aria-label="Dismiss new jobs note">×</button><h2>A few new pages in your notebook.</h2><p>New to the loaded board since your last visit. Want to see up to three that fit your interests?</p><button type="button" data-discovery="recommend">'+(recOpen?'Close suggestions':'Show my new picks')+'</button>';
+        out+='<div class="su-discovery-note"><button class="su-discovery-close" type="button" data-discovery="dismiss-recos" aria-label="Dismiss new jobs note">×</button><h2>A few new pages in your notebook.</h2><p>New to the loaded board since your last visit. Want to see up to three? Your written preferences can help choose them.</p><button type="button" data-discovery="recommend">'+(recOpen?'Close suggestions':'Show my new picks')+'</button>';
         if(recOpen){out+='<ol class="su-discovery-picks">';order(recommendations,root.SUPersonalization,root.SUAnalytics?root.SUAnalytics.profile():{}).filter(function(j){return !hidden(j)&&App.matchesBase(j)&&(App.state.cat==='all'||j.ind===App.state.cat);}).slice(0,3).forEach(function(j){out+='<li><button type="button" data-act="openJob" data-link="'+esc(j.link)+'"><strong>'+esc(j.co)+'</strong><span>'+esc(j.role)+'</span><span>'+esc(j.pay)+'</span></button></li>';});out+='</ol>';}
         out+='</div>';
       }return out+'</section>';

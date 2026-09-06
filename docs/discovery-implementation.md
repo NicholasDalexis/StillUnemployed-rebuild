@@ -1,0 +1,36 @@
+# Discovery and internship candidate
+
+Local candidate, September 6, 2026. No production account rollout, deployment, Sheet mutation or authenticated cloud data write was performed for this implementation.
+
+## Person and task
+
+A student or early-career visitor should see a useful range of real creative jobs, then spend less time reopening jobs they have already dealt with. Phone is the first design target. Keep the existing notebook, salary surfaces, themes and advice cadence. Preferences are a small in-page paper note, never another automatic modal.
+
+## Implemented behavior
+
+- The initial starter order takes one real job from each available lane: marketing, graphic design, broad product/UX/UI/creative technology, photography, social, copy. Within a lane, conservative annual pay minima of at least $100K are prioritized, then comparable salary minima. A missing lane does not invent a replacement posting. Remaining jobs use a deterministic link order. Explicit filters and Recently added still win.
+- Enabled accounts can optionally enter a major (100 characters), preferred location (100), and additional roles/skills (300). A small transparent keyword dictionary boosts related career fields; a major substring in the public description can boost that field too. This is keyword matching, not proof of degree eligibility or semantic understanding of every degree. No job is excluded based on these hints. Location is a positive preference within comparable role groups, not an eligibility restriction. Written preferences can be cleared separately from behavioral history.
+- Three distinct explicit “I applied!” confirmations offer the optional questions. An outbound Apply click never creates a confirmation. Applied, not-fit and unavailable choices hide the card for the current account, with Undo and Show hidden jobs/restore. Existing tracker entries stay intact. Signed-out dismissals use a separate browser cache; they do not migrate into an account. Old local unavailable reports are preserved as guest state.
+- After three account board visits, a small optional new-job note can offer up to three cards once per day. Visits are board navigations separated by at least 30 minutes. It waits for account sync and compares complete catalog snapshots, not row order or a fabricated “new” flag. Empty/error/incomplete feeds do not create newness. Snapshots are capped at 2,000 public IDs; larger feeds suppress the claim until a complete strategy is available. At most one note is offered that day, even if it is dismissed. Explicit filters apply to its picks. Behavioral history is used only with the separate personalization choice; written preferences and catalog newness are requested account features.
+- Internships uses the same board renderer, themes, saves and tracker, but a separate validated `internships-data.json` source. Main navigation is Jobs / Tracker / Internships; Home remains in the footer. This candidate has an honest empty `awaiting_verification` snapshot. The existing July seed rows and the new private internship golden-review candidates are not published here.
+- The internship contract supports Paid, Unpaid and Not disclosed, prioritizes paid opportunities, preserves exact pay and units, and shows student eligibility, cycle and deadline in details. A current Active Sheet cell alone does not admit a record. A Human-verified stamp additionally requires explicit human reviewer provenance. The private review Sheet is a separate input to later approval and source verification.
+- The current canonical Original artwork and Friday/Saturday/Sunday calendar fix are merged. Monday remains uncrossed. Root-owned advice content and illustrations are loaded through their shared modules.
+
+## Account, transport and privacy boundary
+
+Operational preferences are additional per-item versioned `records.discovery` fields in the existing Firebase `users/{uid}` account document. Existing saved/tracker schema compatibility and transaction merging remain in place. Firebase Authentication selects the UID; Firestore security rules must enforce `request.auth.uid == uid`. No new unauthenticated fallback exists. Account activation occurs before the auth notification; pending writes from a stopped account session cannot update the newly activated account's local view. Written text never enters analytics requests, public assets or owner aggregate reports.
+
+The first-party collector's server catalog combines the main public feed with the same validated internship snapshot. Its event page enum includes internships. This avoids rejecting an approved internship's job ID when a future verified snapshot is published. No private golden-review rows are used by the collector. Production auth remains disabled by the existing host gate; hosted Firebase ownership rules and this new schema's real cloud round trip still require authenticated staging verification before rollout.
+
+Privacy and Terms describe the optional form, confirmations, separate written hints, bounded returning-visit snapshot, internship eligibility and compensation, clear/reset differences, and current preview-only account availability. Local storage includes account caches; signing out is not deletion. These are product implementation statements, not legal certification.
+
+## Validation
+
+- 369 automated tests passed after the main integration, including existing board, auth redirect, sync, consent, collector, retention and publish-boundary coverage.
+- 22 focused discovery tests pass, including the two final additions: empty successful feeds preserve prior snapshots and declined personalization ignores stale behavioral history. Other tests cover six-lane ordering, unique confirmations, guest/A/B isolation, stale-device clear, delayed old-account writes, URL punctuation, explicit filter foundation, unpaid/undisclosed distinctions, unsafe URLs and closed deadlines.
+- Real local browser pages passed 45 checks at 320, 390 and 1440 CSS pixels using synthetic CSV and synthetic account state. Confirmed cards hide, tracker count remains three, optional forms save, hidden cards restore, a second account sees no prior answers, internship empty state and navigation are correct, no horizontal overflow or runtime errors. Browser auth/remote requests were intercepted. This is not a live sign-in or cloud-sync receipt.
+- Evidence: `docs/private-review/discovery-qa/results.json` and phone/desktop screenshots. Root has separate advice-card/guide visual evidence. Private docs and fixtures are excluded by the publish allowlist.
+
+## Boundaries and follow-up
+
+No internship is currently eligible for this public snapshot merely because it is present in the golden review. Publication needs owner approval and verified official posting evidence. The Sheet-to-reviewed-snapshot publishing adapter, hosted account round trip, production rollout, and deployed account rule check remain separate work. Major matching is deliberately limited keyword matching; missing qualification text is unknown. The newness counter is a service feature rather than an analytics conversion metric, and concurrent devices use last-write-wins preferences rather than a global atomic visit counter. A full cloud analytics funnel, automatic cross-user ranking learning and demographic inference are not claimed.
