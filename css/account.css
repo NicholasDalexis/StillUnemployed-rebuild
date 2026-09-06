@@ -8,13 +8,16 @@
 .su-auth-button[data-state="error"]::after { content:"!"; position:absolute; right:-3px; top:-5px; color:#fff; background:#b23a1e; border-radius:50%; font:bold 12px/17px sans-serif; width:17px; }
 .su-auth-button:disabled { opacity:.55; cursor:wait; }
 .su-auth-label { display:none; }
-/* Optional Google sign-in replaces the feedback note's X only while signed out.
-   Keep the compact icon at every width; the navigation's desktop label is separate. */
-.su-feedback-account { position:absolute; top:14px; right:14px; }
-.su-feedback-account .su-auth-button, .su-feedback-close { width:44px; min-width:44px; height:44px; padding:0; border-radius:50%; }
+/* Optional, labeled sign-in replaces this note's X only while signed out. */
+.su-feedback-header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+.su-feedback-heading { flex:1; min-width:0; font:700 27px/1.1 'Indie Flower',cursive; color:#2A2118; transform:rotate(-1deg); }
+.su-feedback-account { margin:-16px -16px 0 0; }
+.su-feedback-account .su-auth-button { width:auto; min-width:110px; height:44px; padding:0 14px; gap:9px; border-radius:22px; }
+.su-feedback-account .su-auth-label { display:inline; font:600 14px/1 'Archivo',sans-serif; color:#2C2118; white-space:nowrap; }
+.su-feedback-close { width:44px; min-width:44px; height:44px; padding:0; border-radius:50%; }
 .su-feedback-close { display:inline-flex; align-items:center; justify-content:center; border:0; background:rgba(44,33,24,.06); color:var(--su-muted); cursor:pointer; }
 .su-feedback-close:focus-visible { outline:3px solid var(--su-orange-text); outline-offset:3px; }
-.su-feedback-account .su-auth-label, .su-feedback-account [hidden] { display:none; }
+.su-feedback-account [hidden] { display:none; }
 @media(min-width:701px) {
   .su-auth-button { width:auto; min-width:110px; padding:0 14px; gap:9px; border-radius:22px; }
   .su-auth-label { display:inline; font:600 14px/1 'Archivo',sans-serif; color:#2C2118; white-space:nowrap; }

@@ -31,7 +31,7 @@
           description: 'Warm beige paper with two offset layers of tiny brown dots, repeated every 9 pixels.',
           usage: 'Use on the board canvas. Keep salary cards on their separate paper colors and place small stick figures in spare margins.'
         },
-        // Exact specimens from the Original board pose table, not new artwork.
+        // Exact specimens from the Original board pose table, including intentional pose updates.
         icons: [
           {
             "id": "original-legacy-0",
@@ -40,8 +40,8 @@
           },
           {
             "id": "original-legacy-10",
-            "label": "Figure doing a push-up",
-            "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 90\" width=\"64\" height=\"90\" aria-hidden=\"true\" focusable=\"false\"><g fill=\"none\" stroke=\"#2A2118\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\" opacity=\"0.78\"><circle cx=\"14\" cy=\"30\" r=\"6\"></circle><path d=\"M19 32 L48 40\"></path><path d=\"M24 36 L21 50\"></path><path d=\"M40 38 L42 52\"></path><path d=\"M48 40 L60 35\"></path></g></svg>"
+            "label": "Figure taking a coffee break",
+            "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 90\" width=\"64\" height=\"90\" aria-hidden=\"true\" focusable=\"false\"><g fill=\"none\" stroke=\"#2A2118\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\" opacity=\"0.78\"><circle cx=\"24\" cy=\"14\" r=\"7\"></circle><path d=\"M24 21 L24 50\"></path><path d=\"M24 28 L14 38 L33 38\"></path><path d=\"M24 28 L34 32\"></path><path d=\"M24 50 L17 70\"></path><path d=\"M24 50 L33 70\"></path><path d=\"M33 29 L46 29 L45 42 L34 42 Z\" stroke=\"#C2552F\"></path><path d=\"M46 32 C55 30 55 40 46 39\" stroke=\"#C2552F\"></path><path d=\"M37 24 Q34 20 38 17\" stroke=\"#C2552F\"></path></g></svg>"
           },
           {
             "id": "original-legacy-13",

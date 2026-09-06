@@ -287,12 +287,12 @@ test('the seven alternate themes render their shared drawings as noninteractive 
  }
 });
 
-test('Original preserves its historical pose table, full-feed cadence, artwork and placement with shared art loaded',()=>{
+test('Original preserves its pose table and cadence with the requested coffee-break replacement',()=>{
  const b=board({look:'original'});
- assert.equal(b.app.POSES.length,16,'all sixteen historical poses remain available');
+ assert.equal(b.app.POSES.length,16,'all sixteen pose slots remain available');
  const knownPoses={
   0:{w:40,pos:{top:'-46px',left:'34%'},parts:[['c',24,16,7],['p','M24 23 L24 52'],['p','M24 28 L40 18'],['p','M40 6 L40 40',1],['p','M40 6 L55 11 L40 16 Z',1],['p','M24 52 L16 72'],['p','M24 52 L33 68']]},
-  10:{w:50,pos:{top:'-24px',left:'36%'},parts:[['c',14,30,6],['p','M19 32 L48 40'],['p','M24 36 L21 50'],['p','M40 38 L42 52'],['p','M48 40 L60 35']]},
+  10:{w:40,pos:{top:'-44px',left:'36%'},parts:[['c',24,14,7],['p','M24 21 L24 50'],['p','M24 28 L14 38 L33 38'],['p','M24 28 L34 32'],['p','M24 50 L17 70'],['p','M24 50 L33 70'],['p','M33 29 L46 29 L45 42 L34 42 Z',1],['p','M46 32 C55 30 55 40 46 39',1],['p','M37 24 Q34 20 38 17',1]]},
   13:{w:50,pos:{top:'-44px',right:'40px'},parts:[['c',16,12,6],['p','M16 18 L18 38'],['p','M18 38 L12 56'],['p','M18 38 L24 56'],['p','M17 24 L40 20'],['p','M40 20 L60 10'],['p','M60 10 Q61 34 57 50',1],['p','M54 50 l3 5 l3 -5',1]]}
  };
  for(const [index,pose]of Object.entries(knownPoses))assert.deepEqual(JSON.parse(JSON.stringify(b.app.POSES[index])),pose,'historical pose '+index+' is unchanged');

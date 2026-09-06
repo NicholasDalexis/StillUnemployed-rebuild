@@ -1073,7 +1073,8 @@
       "Almost didn't post this one. Too good to bury further down."
     ],
 
-    // Doodle pose table (verbatim from DCLogic). Each pose: width, position, and
+    // Original DCLogic pose table; pose 10 replaces the push-up Nic rejected.
+    // Each pose: width, position, and
     // parts. Part ['c',cx,cy,r] = circle; ['p',d] = path; trailing 1 => accent stroke.
     POSES: [
       { w: 40, pos: { top: '-46px', left: '34%' }, parts: [['c',24,16,7],['p','M24 23 L24 52'],['p','M24 28 L40 18'],['p','M40 6 L40 40',1],['p','M40 6 L55 11 L40 16 Z',1],['p','M24 52 L16 72'],['p','M24 52 L33 68']] },
@@ -1086,7 +1087,7 @@
       { w: 42, pos: { top: '-38px', left: '34%' }, parts: [['c',32,14,7],['p','M32 21 L27 46'],['p','M30 28 L16 24'],['p','M30 30 L46 34'],['p','M27 46 L42 56'],['p','M27 46 L14 60 L18 50'],['p','M4 30 l9 0',1],['p','M2 40 l11 0',1]] },
       { w: 34, pos: { left: '-18px', bottom: '24px' }, parts: [['c',26,14,7],['p','M26 21 L26 50'],['p','M26 27 L40 12'],['p','M26 28 L16 38'],['p','M26 50 L18 70'],['p','M26 50 L34 70']] },
       { w: 46, pos: { bottom: '-6px', right: '-18px' }, parts: [['c',24,18,7],['p','M24 24 L31 46'],['p','M24 30 L14 44'],['p','M27 34 L37 46'],['p','M31 46 L23 66'],['p','M31 46 L41 64'],['p','M6 40 h15 v13 h-15 Z',1]] },
-      { w: 50, pos: { top: '-24px', left: '36%' }, parts: [['c',14,30,6],['p','M19 32 L48 40'],['p','M24 36 L21 50'],['p','M40 38 L42 52'],['p','M48 40 L60 35']] },
+      { w: 40, pos: { top: '-44px', left: '36%' }, parts: [['c',24,14,7],['p','M24 21 L24 50'],['p','M24 28 L14 38 L33 38'],['p','M24 28 L34 32'],['p','M24 50 L17 70'],['p','M24 50 L33 70'],['p','M33 29 L46 29 L45 42 L34 42 Z',1],['p','M46 32 C55 30 55 40 46 39',1],['p','M37 24 Q34 20 38 17',1]] },
       { w: 42, pos: { top: '-34px', right: '28%' }, rot: 30, parts: [['c',30,16,7],['p','M30 22 L30 50'],['p','M30 30 L10 30'],['p','M30 30 L50 30'],['p','M30 50 L14 64'],['p','M30 50 L46 64']] },
       { w: 40, pos: { top: '-38px', left: '40%' }, parts: [['c',20,14,6],['p','M20 20 L20 40'],['p','M20 26 L8 34'],['p','M20 26 L32 34'],['p','M20 40 L38 46'],['p','M20 40 L34 40']] },
       { w: 50, pos: { top: '-44px', right: '40px' }, parts: [['c',16,12,6],['p','M16 18 L18 38'],['p','M18 38 L12 56'],['p','M18 38 L24 56'],['p','M17 24 L40 20'],['p','M40 20 L60 10'],['p','M60 10 Q61 34 57 50',1],['p','M54 50 l3 5 l3 -5',1]] },
@@ -2233,12 +2234,11 @@
       if (this.state.feedbackOpen) {
         out += '<div data-act="closeFeedback" style="position: fixed; inset: 0; z-index: 210; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
           '<div data-act="stop" style="margin: auto;width: 460px; max-width: 100%; background: #F4EEE2; border-radius: 8px; padding: 30px 30px 28px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.7deg);">' +
-            '<span class="su-account-slot su-feedback-account">' +
+            '<div class="su-feedback-header"><div class="su-feedback-heading">welcome back!</div><span class="su-account-slot su-feedback-account">' +
               '<button type="button" class="su-feedback-close" data-act="closeFeedback" title="Close application feedback" aria-label="Close application feedback">' +
                 '<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path></svg>' +
               '</button>' +
-            '</span>' +
-            '<div style="padding-right: 40px; font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 27px; color: #2A2118; line-height: 1.1; transform: rotate(-1deg);">welcome back!</div>' +
+            '</span></div>' +
             '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #6F5E45; margin-top: 6px;">how\'d it go with ' + esc(this.state.feedbackCo) + '?</div>' +
             '<div style="display: flex; gap: 14px; margin-top: 22px;">' +
               '<div data-act="markApplied" class="fbopt" style="flex: 1; cursor: pointer; background: var(--su-yellow-paper); border-radius: 6px; padding: 22px 14px 18px; text-align: center; transform: rotate(-1.6deg); box-shadow: 2px 4px 9px rgba(44,33,24,0.16);">' +

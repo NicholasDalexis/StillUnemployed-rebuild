@@ -70,8 +70,8 @@
           },
           {
             "id": "original-legacy-10",
-            "label": "Figure doing a push-up",
-            "svg": "\u003csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 90\" width=\"64\" height=\"90\" aria-hidden=\"true\" focusable=\"false\">\u003cg fill=\"none\" stroke=\"#2A2118\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\" opacity=\"0.78\">\u003ccircle cx=\"14\" cy=\"30\" r=\"6\">\u003c/circle>\u003cpath d=\"M19 32 L48 40\">\u003c/path>\u003cpath d=\"M24 36 L21 50\">\u003c/path>\u003cpath d=\"M40 38 L42 52\">\u003c/path>\u003cpath d=\"M48 40 L60 35\">\u003c/path>\u003c/g>\u003c/svg>"
+            "label": "Figure taking a coffee break",
+            "svg": "\u003csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 90\" width=\"64\" height=\"90\" aria-hidden=\"true\" focusable=\"false\">\u003cg fill=\"none\" stroke=\"#2A2118\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\" opacity=\"0.78\">\u003ccircle cx=\"24\" cy=\"14\" r=\"7\">\u003c/circle>\u003cpath d=\"M24 21 L24 50\">\u003c/path>\u003cpath d=\"M24 28 L14 38 L33 38\">\u003c/path>\u003cpath d=\"M24 28 L34 32\">\u003c/path>\u003cpath d=\"M24 50 L17 70\">\u003c/path>\u003cpath d=\"M24 50 L33 70\">\u003c/path>\u003cpath d=\"M33 29 L46 29 L45 42 L34 42 Z\" stroke=\"#C2552F\">\u003c/path>\u003cpath d=\"M46 32 C55 30 55 40 46 39\" stroke=\"#C2552F\">\u003c/path>\u003cpath d=\"M37 24 Q34 20 38 17\" stroke=\"#C2552F\">\u003c/path>\u003c/g>\u003c/svg>"
           },
           {
             "id": "original-legacy-13",
