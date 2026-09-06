@@ -807,10 +807,9 @@
     } else { window.prompt('Copy this link:', deep); }
   }
 
-  // ---- Theme analytics: dwell time + a "do you like this look?" vote ----
-  // Logs how long each look is used (theme_time) and a 👍/👎 vote (themevote) via
-  // suTrack, so both respect the admin/non-prod exclusion. The vote pops once per
-  // theme per visitor, after they switch to a non-default look and scroll past 10 jobs.
+  // Theme votes use the optional analytics collector. Ask only with analytics
+  // enabled, once per non-default theme, after ten jobs. Legacy theme_time calls
+  // below are intentionally not accepted by the current analytics transport.
   var THEME_T0 = 0, THEME_CUR = '';
   function logThemeTime() {
     if (!THEME_CUR || !THEME_T0) return;
@@ -828,25 +827,33 @@
     });
     window.addEventListener('pagehide', logThemeTime);
   }
-  var _voteArmed = false, _voteLook = '', _voteShown = false, _voteTick = 0;
+  var _voteArmed = false, _voteLook = '', _voteShown = false, _voteTick = 0, _voteClose = null;
+  function canAskThemeVote() {
+    try { return localStorage.getItem('su_admin') !== '1' && !!(window.SUAnalytics && window.SUAnalytics.choices().analytics); } catch (e) { return false; }
+  }
   function armThemeVote(look) {
+    if (_voteClose) _voteClose();
     _voteArmed = false; _voteShown = false;
+    if (!canAskThemeVote()) return;
     if (look === 'original') return;                      // only the fun themes ask
     try { if (localStorage.getItem('su_tv_' + look) === '1') return; } catch (e) {}  // once per theme
     _voteArmed = true; _voteLook = look;
   }
   function onThemeScroll() {
     if (!_voteArmed || _voteShown) return;
+    if (!canAskThemeVote()) { armThemeVote(_voteLook); return; }
+    if (document.querySelector('[aria-modal="true"],dialog[open]')) return;
     var now = Date.now(); if (now - _voteTick < 250) return; _voteTick = now;         // throttle
     var cards = document.querySelectorAll('.note[data-act="openJob"]');
     if (cards.length < 10) return;
     if (cards[9].getBoundingClientRect().bottom < 0) showThemeVote(_voteLook);         // 10 cards scrolled past
   }
   function showThemeVote(look) {
-    if (_voteShown) return;
+    if (_voteShown || !canAskThemeVote()) return;
     _voteShown = true; _voteArmed = false;
     try { localStorage.setItem('su_tv_' + look, '1'); } catch (e) {}
     var box = document.createElement('div');
+    box.id = 'su-theme-vote';
     box.setAttribute('role', 'dialog');
     box.setAttribute('aria-label', 'Theme feedback');
     box.style.cssText = 'position:fixed;left:50%;bottom:20px;transform:translateX(-50%) rotate(-1.2deg);z-index:2147482000;' +
@@ -857,16 +864,24 @@
     var row = document.createElement('div'); row.style.cssText = 'display:flex;gap:12px;';
     var up = document.createElement('button'); up.type = 'button'; up.textContent = '👍';
     var dn = document.createElement('button'); dn.type = 'button'; dn.textContent = '👎';
-    var bstyle = 'cursor:pointer;border:1.5px solid #E4D6B4;background:#F6EFDD;border-radius:10px;font-size:19px;padding:3px 16px;line-height:1;';
+    up.setAttribute('aria-label', 'I like this theme');
+    dn.setAttribute('aria-label', 'I don’t like this theme');
+    var bstyle = 'cursor:pointer;border:1.5px solid #E4D6B4;background:#F6EFDD;border-radius:10px;font-size:19px;padding:8px 16px;min-width:44px;min-height:44px;line-height:1;';
     up.style.cssText = bstyle; dn.style.cssText = bstyle;
-    function close() { if (box.parentNode) box.parentNode.removeChild(box); }
-    up.addEventListener('click', function () {
+    function close() { if (box.parentNode) box.parentNode.removeChild(box); if (_voteClose === close) _voteClose = null; }
+    _voteClose = close;
+    var voted = false;
+    up.addEventListener('click', function (event) {
+      event.stopPropagation();
+      if (voted || !canAskThemeVote()) { close(); return; } voted = true;
       try { if (typeof window.suTrack === 'function') window.suTrack('themevote', look, 'up', ''); } catch (e) {}
       suConfetti();                                       // theme-aware burst
       msg.textContent = 'yay 🎉'; row.style.display = 'none';
       setTimeout(close, 1300);
     });
-    dn.addEventListener('click', function () {
+    dn.addEventListener('click', function (event) {
+      event.stopPropagation();
+      if (voted || !canAskThemeVote()) { close(); return; } voted = true;
       try { if (typeof window.suTrack === 'function') window.suTrack('themevote', look, 'down', ''); } catch (e) {}
       box.innerHTML = '';
       var t = document.createElement('div'); t.style.cssText = 'font-size:15px;max-width:210px;text-align:center;line-height:1.35;';
@@ -1020,7 +1035,7 @@
       // Casino (poker): salary tiers by top-of-range — <$80K white, $80-99K green, $100K+ black.
       poker:    { acc:'#D4AF37', accInk:'#2A1810', cls:'poker', ink:'#F2E4C8', sub:'#D9B989', pay:'#D9B989', show:'#D9B989', navBg:'#D4AF37', navInk:'#2A1810', hl:'rgba(31,107,58,0.92)', hiCard:'linear-gradient(160deg,#26262B 0%,#101014 100%)', hiInk:'#E9D9A6', hiApply:'#D4AF37', hiStamp:'#D4AF37', payHi:'linear-gradient(160deg,#26262B,#101014)', lowCard:'linear-gradient(160deg,#FFFFFF 0%,#F1ECDE 100%)', midCard:'linear-gradient(160deg,#1F6B3A 0%,#155229 100%)', midInk:'#EAF6E4', midApply:'#FFD98A', midStamp:'#F2E7C8', baseInk:'#23242C', baseApply:'#C0303A', baseStamp:'#23242C', pickCard:'linear-gradient(160deg,#26262B 0%,#101014 100%)', pickInk:'#E9D9A6', pickApply:'#D4AF37', pickStamp:'#D4AF37', pickBadge:'#D4AF37' },
       mermaid:  { acc:'#FF7E67', accInk:'#4A160D', cls:'mermaid', ink:'#0E4A5C', sub:'#1B6B7D', pay:'#1B6B7D', show:'#1B6B7D', navBg:'#0E4A5C', navInk:'#E9FBFF', hl:'rgba(255,126,103,0.85)', hiCard:'linear-gradient(160deg,#177287 0%,#0E4A5C 100%)', hiInk:'#F2FBFA', hiApply:'#FFC7B8', hiStamp:'#EAF7F4', payHi:'linear-gradient(160deg,#177287,#0E4A5C)', lowCard:'linear-gradient(160deg,#FFFFFF 0%,#EAF6F6 55%,#F5EEF7 100%)', midCard:'linear-gradient(160deg,#FDFEFF 0%,#DFF2F1 55%,#F0E7F4 100%)', baseInk:'#0E4A5C', baseApply:'#D9553C', baseStamp:'#0E4A5C', pickCard:'linear-gradient(160deg,#177287 0%,#0E4A5C 100%)', pickInk:'#F2FBFA', pickApply:'#FFC7B8', pickStamp:'#EAF7F4', pickBadge:'#D9553C' },
-      // "bratt" theme — Charli XCX BRAT album green #8ACE00 (verified). Named double-t to dodge the trademark.
+      // "bratt" is the existing public theme key; preserve its bright lime palette.
       // $100K+ card = brat green with near-black lowercase-energy text; board accents + highlight are the green.
       bratt:    { acc:'#8ACE00', accInk:'#0A1400', cls:'bratt', ink:'#0A0A0A', sub:'#4A6A10', pay:'#4A6A10', show:'#2E4A00', navBg:'#8ACE00', navInk:'#0A1400', hl:'rgba(138,206,0,0.95)', hiCard:'linear-gradient(160deg,#96DB0A 0%,#8ACE00 100%)', hiInk:'#0A1400', hiApply:'#0A1400', hiStamp:'#0A1400', payHi:'linear-gradient(160deg,#96DB0A,#8ACE00)', lowCard:'linear-gradient(160deg,#FFFFFF 0%,#F4FBE4 100%)', midCard:'linear-gradient(160deg,#EAF7C4 0%,#DCEF9E 100%)', baseInk:'#1A2A0A', baseApply:'#3A7A00', baseStamp:'#1A2A0A', pickCard:'linear-gradient(160deg,#96DB0A,#8ACE00)', pickInk:'#0A1400', pickApply:'#0A1400', pickStamp:'#0A1400', pickBadge:'#0A1400' },
       // "Noir" — black luxury (not gothic). Cream board, $100K+ card black with silver letters.
@@ -1413,7 +1428,24 @@
       this.setState({ look: look, lookOpen: false });
     },
 
-    // Build the doodle SVG markup (string) for a given pose index, mirroring doodleEl().
+    // Canonical artwork is shared with the guide; palette ink belongs to the
+    // canvas because these small marks sit above the card, away from job text.
+    themeDoodleEl: function (look, idx) {
+      var art = window.SUThemeArt && window.SUThemeArt.themes[look];
+      if (!art || !art.icons.length) return '';
+      var icon = art.icons[idx % art.icons.length];
+      var ink = (this.THEMES[look] || this.THEMES.original).ink;
+      var size = idx === 0 ? 48 : 64, top = idx === 0 ? -40 : -54;
+      var svg = icon.svg.replace('width="64" height="64"', 'width="' + size + '" height="' + size + '"');
+      return '<div class="doodle theme-motif" data-theme-motif="' + icon.id + '" aria-hidden="true" style="position:absolute;top:' + top + 'px;' + (idx % 2 ? 'right:8%;' : 'left:6%;') + 'width:' + size + 'px;height:' + size + 'px;pointer-events:none;z-index:4;color:' + ink + ';transform:rotate(' + (idx % 2 ? 6 : -6) + 'deg)">' + svg + '</div>';
+    },
+    brattPhraseEl: function (idx) {
+      var phrases = ['fresh to the core', 'not rotten', 'brat summer', 'pure brat', '365 energy', 'party girl', 'lime green', 'so brat', 'it girl', 'no filter', 'club ready', 'raw + real', 'brat forever', 'no rules', 'stay brat'];
+      if (idx >= phrases.length) return '';
+      return '<div class="doodle" aria-hidden="true" style="position:absolute;top:-32px;right:7%;pointer-events:none;z-index:4;transform:rotate(5deg);font:400 20px Arial,Helvetica,sans-serif;color:#141414;opacity:.9;white-space:nowrap;letter-spacing:-.5px;filter:blur(.4px)">' + phrases[idx] + '</div>';
+    },
+
+    // Legacy decorations remain as a fallback if the shared asset cannot load.
     doodleEl: function (idx) {
       var P = this.POSES[((idx % this.POSES.length) + this.POSES.length) % this.POSES.length];
       var h = Math.round(P.w * 90 / 64);
@@ -1771,7 +1803,10 @@
         // Prevents décor from repeating (Nic: brat scribbles must never say the same thing twice).
         var dIdx = (k === 0) ? 0 : (Math.floor(k / 6) + 1);
         if (k === 0 || doodleOn) {
-          doodleHtml = cod ? self.codDoodleEl(dIdx) : girly ? self.girlyDoodleEl(dIdx) : poker ? self.pokerDoodleEl(dIdx) : mermaid ? self.mermaidDoodleEl(dIdx) : bratt ? self.brattDoodleEl(dIdx) : noir ? self.noirDoodleEl(dIdx) : beauty ? self.beautyDoodleEl(dIdx) : chess ? self.chessDoodleEl(dIdx) : self.doodleEl(k === 0 ? 13 : k);
+          // Bratt keeps its short phrases between drawings without repeating copy.
+          if (bratt && dIdx % 2 === 1) doodleHtml = self.brattPhraseEl(Math.floor(dIdx / 2));
+          if (!doodleHtml) doodleHtml = self.themeDoodleEl(self.state.look, bratt ? Math.floor(dIdx / 2) : dIdx);
+          if (!doodleHtml) doodleHtml = cod ? self.codDoodleEl(dIdx) : girly ? self.girlyDoodleEl(dIdx) : poker ? self.pokerDoodleEl(dIdx) : mermaid ? self.mermaidDoodleEl(dIdx) : bratt ? self.brattDoodleEl(dIdx) : noir ? self.noirDoodleEl(dIdx) : beauty ? self.beautyDoodleEl(dIdx) : chess ? self.chessDoodleEl(dIdx) : self.doodleEl(k === 0 ? 13 : k);
         }
 
         var pinStyle = 'position:absolute; top:-9px; left:50%; transform:translateX(-50%); width:17px; height:17px; ' +
@@ -2130,6 +2165,7 @@
       var previousDialog = root.querySelector('[role="dialog"]');
       var previousFocus = focusIntent(document.activeElement);
       var dialogKey = this.state.detailOpen ? 'detail' : this.state.adviceOpen ? 'advice' : this.state.signupOpen ? 'signup' : this.state.feedbackOpen ? 'feedback' : this.state.lookOpen ? 'look' : this.state.modalOpen ? 'founder' : '';
+      if (dialogKey && _voteClose) _voteClose();
       if (!previousDialog && dialogKey) this._dialogReturn = previousFocus;
       var previousKey = this._dialogKey;
       this._dialogKey = dialogKey;
@@ -2492,6 +2528,7 @@
       var self = this;
 
       document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && _voteClose) { _voteClose(); return; }
         if (document.querySelector('#su-launch[open]')) return;
         var dialog = document.querySelector('#overlay-root [role="dialog"]');
         if (e.key === 'Escape') {
@@ -2513,6 +2550,7 @@
       });
 
       document.addEventListener('click', function (e) {
+        if (_voteClose && !e.target.closest('#su-theme-vote')) _voteClose();
         var el = e.target.closest('[data-act]');
         if (!el) return;
         var act = el.getAttribute('data-act');
@@ -2835,7 +2873,7 @@
       window.addEventListener('su:profile-ready',function(event){if(event.detail&&event.detail.reset){self._personalOrder=null;self._profileGeneration=-1;self._feedInteracted=false;}if(!self._feedInteracted)self.render();});
       document.addEventListener('pointerdown',function(){self._feedInteracted=true;},{once:true});
       window.addEventListener('su:auth-changed',function(){self._profileGeneration=-1;self._feedInteracted=false;self.render();});
-      window.addEventListener('su:consent-changed',function(){self._profileGeneration=-1;self._feedInteracted=false;self.render();});
+      window.addEventListener('su:consent-changed',function(){armThemeVote(self.state.look);self._profileGeneration=-1;self._feedInteracted=false;self.render();});
       this.bindEvents();
       this.restoreFeedbackRedirect();
       // analytics: a ?theme= content preset (theme-chip) counts as an applied filter — additive

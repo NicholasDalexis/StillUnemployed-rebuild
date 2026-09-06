@@ -85,3 +85,17 @@ test('static dashboard contains no analytics tracker, third-party question endpo
   assert.match(js,/serial !== request/);
   assert.match(html,/Sample data\. These are invented numbers\./);
 });
+
+test('vote breakdowns preserve missing versus suppressed, public labels, and action-count meaning',()=>{
+ const data=sample();
+ assert.match(dashboard.answer('Which theme has the most likes?',data),/Casino leads with 36 recorded like votes/);
+ assert.match(dashboard.answer('Which theme has the most dislikes?',data),/Casino leads with 9 recorded dislike votes/);
+ assert.match(dashboard.answer('Favorite theme?',data),/vote events, not unique voters/);
+ assert.match(dashboard.answer('Which theme is most popular?',data),/Original leads with 320 recorded theme selections/);
+ delete data.themeVotes;let cleaned=dashboard.normalize(data);assert.equal(cleaned.themeVotes,null);
+ assert.match(dashboard.answer('Which theme has the most likes?',cleaned),/unavailable.*Missing votes are not zero/);
+ data.themeVotes={up:[],down:[]};cleaned=dashboard.normalize(data);
+ assert.match(dashboard.answer('Which theme has the most dislikes?',cleaned),/below the privacy threshold/);
+ data.themeVotes={up:[{label:'noir',count:5},{label:'poker',count:5}],down:[]};cleaned=dashboard.normalize(data);
+ assert.match(dashboard.answer('Which theme has the most likes?',cleaned),/Black Cat, Casino tie at 5/);
+});

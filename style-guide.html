@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <meta name="description" content="The colors, typography, paper details and layout conventions of StillUnemployed.com.">
+  <meta name="description" content="The colors, typography, textures, drawn details and layout conventions of StillUnemployed.com.">
   <title>Style guide | StillUnemployed.com</title>
   <link rel="stylesheet" href="css/brand.css?v=1">
-  <script src="js/release.js?v=2.1.5" defer></script>
-  <link rel="stylesheet" href="css/style-guide.css?v=1">
-  <script src="js/style-guide-themes.js?v=1" defer></script>
-  <script src="js/style-guide.js?v=1" defer></script>
+  <script src="js/release.js?v=2.1.6" defer></script>
+  <link rel="stylesheet" href="css/style-guide.css?v=2">
+  <script src="js/style-guide-themes.js?v=2" defer></script>
+  <script src="js/style-guide.js?v=2" defer></script>
 </head>
 <body>
   <a class="skip" href="#guide-content">Skip to the guide</a>
   <div class="guide-canvas" id="guide-canvas"><div class="guide">
     <header class="masthead">
       <a class="wordmark" href="/index.html">StillUnemployed.com</a>
-      <nav aria-label="Site navigation"><a href="/index.html">Home</a><a href="/jobs.html">Jobs</a><a data-su-version href="/versions.html#version-2-1-5" aria-label="Version 2.1.5. View version history">Version 2.1.5</a></nav>
+      <nav aria-label="Site navigation"><a href="/index.html">Home</a><a href="/jobs.html">Jobs</a><a data-su-version href="/versions.html#version-2-1-6" aria-label="Version 2.1.6. View version history">Version 2.1.6</a></nav>
     </header>
     <main id="guide-content">
       <div class="intro-row"><div class="guide-intro">
@@ -50,8 +50,17 @@
         </div>
       </section>
 
+      <section class="section" aria-labelledby="textures-title">
+        <h2 class="section-title" id="textures-title"><span>03</span> Texture, quietly in the background</h2>
+        <p class="section-intro">A little grain, felt or light makes the board feel like a place. Keep the surface gentle enough for the notes to lead.</p>
+        <div class="two-up texture-layout">
+          <figure class="sheet texture-figure"><div class="texture-preview" id="theme-texture-preview" aria-hidden="true"></div><figcaption><h3 id="theme-texture-name">Original paper</h3><p id="theme-texture-description">A warm canvas with a fine, repeated grain.</p><details class="texture-source"><summary>Background layers</summary><code id="theme-texture-layers">The original board uses two fine dot layers.</code></details></figcaption></figure>
+          <article class="sheet"><h3>How the surface works</h3><dl class="texture-specs"><dt>Layer size</dt><dd><code id="theme-texture-size">9px 9px, 9px 9px</code></dd><dt>Layer offsets</dt><dd><code id="theme-texture-position">0 0, 4.5px 4.5px</code></dd><dt>Repeat</dt><dd><code id="theme-texture-repeat">repeat</code></dd></dl><p class="annotation">Sizes and offsets follow the background layers in their CSS order. Keep the small grain at this scale; stretching it changes the texture.</p><p id="theme-texture-motion">This texture stays still.</p><p id="theme-texture-usage">Keep the grain behind the notes, with clear paper under job details.</p></article>
+        </div>
+      </section>
+
       <section class="section" aria-labelledby="paper-title">
-        <h2 class="section-title" id="paper-title"><span>03</span> Useful things on paper</h2>
+        <h2 class="section-title" id="paper-title"><span>04</span> Useful things on paper</h2>
         <p class="section-intro">One idea per note. Tape, a small tilt and a soft shadow provide character while text and controls stay clear.</p>
         <div class="two-up">
           <article class="sheet"><h3>Sticky actions</h3><div class="demo-actions"><a class="sticky" data-theme-board-link href="/jobs.html">Just jobs <span aria-hidden="true">→</span></a><button class="sticky" type="button" disabled aria-describedby="disabled-note">Saved</button></div><p id="disabled-note" class="annotation">Disabled example: the action is unavailable. Keep its label legible and explain the reason beside the control.</p><a class="text-link" data-theme-board-link href="/jobs.html">Browse this board →</a><p class="annotation" id="theme-action-note">Primary actions use yellow paper and ink. Both examples lead to this theme’s board.</p></article>
@@ -59,8 +68,15 @@
         </div>
       </section>
 
+      <section class="section" aria-labelledby="icons-title">
+        <h2 class="section-title" id="icons-title"><span>05</span> A few drawn details</h2>
+        <p class="section-intro" id="theme-icons-intro">Small drawings give the notes personality. Keep them separate from the information someone needs to act on.</p>
+        <div class="icon-specimens" id="theme-icon-specimens"></div>
+        <p class="margin-note">Use a small accent at a card edge. Keep names, salaries and actions clear. Drawings never stand in for a button label, salary band or verification stamp.</p>
+      </section>
+
       <section class="section" aria-labelledby="salary-title">
-        <h2 class="section-title" id="salary-title"><span>04</span> Job-card color means salary</h2>
+        <h2 class="section-title" id="salary-title"><span>06</span> Job-card color means salary</h2>
         <p class="section-intro">These are illustrative cards, not live listings. Every theme assigns an annual salary band using the top of the stated range. Keep the actual salary visible; color is a second cue.</p>
         <div class="two-up">
           <article class="sample-card salary-low" data-salary-band="low"><span class="spec-label">Example · under $80K</span><h3>Studio North</h3><p class="role">Junior designer</p><p>Remote · Full time</p><p class="salary">$65–75K</p><div class="card-bottom"><div data-theme-stamp></div><span class="sample-apply" data-theme-apply>Apply Now <span aria-hidden="true">→</span></span></div><p class="card-palette" data-theme-band-value>Light paper · #ECDEC6 → #E0D0B2</p></article>
@@ -71,7 +87,7 @@
       </section>
 
       <section class="section" aria-labelledby="layout-title">
-        <h2 class="section-title" id="layout-title"><span>05</span> Give the page some room</h2>
+        <h2 class="section-title" id="layout-title"><span>07</span> Give the page some room</h2>
         <p class="section-intro"><span id="theme-layout-intro">Original</span> keeps the shared layout. Use a small spacing scale, aligned edges and natural document flow. Let copy wrap and sections grow instead of shrinking an entire desktop composition.</p>
         <div class="two-up">
           <article class="sheet"><h3>Desktop</h3><div class="layout-example" aria-label="Desktop illustration: main content beside supporting content"><span>Main content</span><span>Supporting note</span></div><ul class="rules"><li>Center the homepage hero within a 1,500px maximum width.</li><li>Use two columns where the content benefits from sitting together.</li><li>Keep paragraph width comfortable, around 60–70 characters.</li><li>Use 24–48px between sections and 16–24px inside reading surfaces.</li></ul></article>
@@ -82,7 +98,7 @@
       </section>
 
       <section class="section" aria-labelledby="states-title">
-        <h2 class="section-title" id="states-title"><span>06</span> Make every state feel considered</h2>
+        <h2 class="section-title" id="states-title"><span>08</span> Make every state feel considered</h2>
         <div class="two-up">
           <article class="sheet"><h3>When someone interacts</h3><dl class="state-list"><dt>Hover</dt><dd>Change the shadow or underline. Keep the hit area stable and the label readable.</dd><dt>Focus</dt><dd>Use a clear, offset outline with a light separation ring so it survives both dark and light paper. Keep it visible above paper edges and outside clipped artwork.</dd><dt>Pressed</dt><dd>Reduce the shadow to suggest contact. Keep the action and its outcome clear.</dd><dt>Disabled</dt><dd>Use a native disabled control with legible text and a nearby reason. No hover invitation.</dd></dl></article>
           <article class="sheet"><h3>When something takes time</h3><dl class="state-list"><dt>Loading</dt><dd>Say what is loading. Keep already available information useful.</dd><dt>Empty</dt><dd>Explain the empty result and provide a next step, such as clearing filters.</dd><dt>Error</dt><dd>Keep the person’s input. Explain what failed and provide a retry path.</dd><dt>Motion</dt><dd>Keep transitions brief and optional. Honor reduced-motion preferences.</dd></dl></article>

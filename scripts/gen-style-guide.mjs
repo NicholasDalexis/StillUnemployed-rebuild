@@ -44,10 +44,21 @@ export function buildCatalog(root = ROOT) {
   const brand = readFileSync(join(root, 'css/brand.css'), 'utf8');
   const html = readFileSync(join(root, 'jobs.html'), 'utf8');
   const share = readFileSync(join(root, 'scripts/gen-theme-pages.mjs'), 'utf8');
+  const artSource = readFileSync(join(root, 'js/theme-art.js'), 'utf8');
+  const artwork = JSON.parse(JSON.stringify(evaluate(artSource + '\nmodule.exports.themes', { module:{ exports:{} } })));
   const palettes = object(app, 'THEMES:'), pages = object(share, 'const THEMES =');
   const aliases = object(html, 'var SLUG2LOOK ='), enabled = object(html, 'var VALID =');
   const publicThemes = [{ slug:'original', look:'original', label:'Original' }, ...Object.entries(pages).map(([slug, label]) => ({ slug, look:aliases[slug], label }))];
   const publicLooks = publicThemes.map(theme => theme.look);
+  if (JSON.stringify(Object.keys(artwork).sort()) !== JSON.stringify([...publicLooks].sort())) throw new Error('Theme artwork and public guide coverage disagree');
+  for (const [look, art] of Object.entries(artwork)) {
+    if (!art.texture || ['name','description','usage'].some(key => typeof art.texture[key] !== 'string' || !art.texture[key].trim())) throw new Error('Theme texture description is incomplete: ' + look);
+    if (!Array.isArray(art.icons) || art.icons.length < 2 || art.icons.length > 3 || new Set(art.icons.map(icon => icon.id)).size !== art.icons.length) throw new Error('Theme needs two or three distinct drawn icons: ' + look);
+    for (const icon of art.icons) {
+      if (!/^[a-z][a-z0-9-]+$/.test(icon.id) || typeof icon.label !== 'string' || !icon.label.trim() || typeof icon.svg !== 'string' || !icon.svg.startsWith('<svg ') || !icon.svg.endsWith('</svg>') || !icon.svg.includes('viewBox="0 0 64 64"') || !icon.svg.includes('aria-hidden="true"') || !icon.svg.includes('focusable="false"') || /<(?:script|foreignObject|image|use|style|text)\b|\bon\w+\s*=|\bhref\s*=|url\s*\(/i.test(icon.svg)) throw new Error('Theme icon must be a static decorative drawing: ' + look);
+      for (const tag of icon.svg.matchAll(/<\/?([\w:-]+)/g)) if (!['svg','g','path','circle','ellipse','line','polyline','polygon','rect'].includes(tag[1])) throw new Error('Theme icon contains a non-static shape: ' + look);
+    }
+  }
   if (new Set(publicLooks).size !== publicLooks.length || publicLooks.some(look => !palettes[look])) throw new Error('Public theme routes and palettes disagree');
   for (const look of Object.keys(enabled)) if (!publicLooks.includes(look)) throw new Error('Public theme lacks guide/share coverage: ' + look);
   for (const look of Object.keys(palettes)) if (look !== 'cod' && !publicLooks.includes(look)) throw new Error('Unclassified theme needs public guide coverage: ' + look);
@@ -116,7 +127,7 @@ export function buildCatalog(root = ROOT) {
       const stamp = resolveTokens(context.html).replace(/Human[- ]verified/gi, 'Example stamp');
       return [tier, { ...Object.fromEntries(Object.entries(band).map(([key, value]) => [key, resolveTokens(value)])), stampHTML:stamp }];
     }));
-    return { ...theme, gutter, canvas:canvasStyle, palette, bands };
+    return { ...theme, gutter, canvas:canvasStyle, palette, bands, art:artwork[theme.look] };
   });
   let motion = '';
   if (themes.some(theme => theme.canvas.animation)) {

@@ -56,6 +56,29 @@
       if(ink)paint.style.color=ink;paint.setAttribute('aria-hidden','true');figure.appendChild(paint);
       var caption=element('figcaption');caption.appendChild(element('strong','',title));caption.appendChild(element('code','',value));caption.appendChild(element('p','',note));figure.appendChild(caption);return figure;
     }
+    function renderArt(theme) {
+      if (!theme.art) return;
+      var texture=theme.art.texture, preview=doc.getElementById('theme-texture-preview');
+      canvasStyle(preview,theme,true);
+      setText('theme-texture-name',texture.name);setText('theme-texture-description',texture.description);
+      setText('theme-texture-layers',theme.canvas['background-image']);
+      setText('theme-texture-size',theme.canvas['background-size'] || 'auto');
+      setText('theme-texture-position',theme.canvas['background-position'] || '0% 0%');
+      setText('theme-texture-repeat',theme.canvas['background-repeat'] || 'repeat');
+      var animation=theme.canvas.animation, duration=animation && animation.match(/(?:^|\s)([\d.]+m?s)(?=\s|$)/);
+      setText('theme-texture-motion',animation?'Slow, alternating movement'+(duration?' ('+duration[1]+')':'')+'. Reduced-motion preferences keep this texture still.':'This texture stays still. No movement is needed to give it character.');
+      setText('theme-texture-usage',texture.usage);
+      setText('theme-icons-intro',theme.label+' uses these drawn accents around the board’s notes. They add character while the company, role and next step stay in charge.');
+      var icons=doc.getElementById('theme-icon-specimens');icons.textContent='';
+      theme.art.icons.forEach(function(icon){
+        var figure=element('figure','sheet icon-specimen'), stage=element('div','icon-stage'), drawing=element('div','icon-drawing');
+        figure.setAttribute('data-theme-icon',icon.id);canvasStyle(stage,theme,false);stage.style.color=theme.palette.ink;
+        stage.setAttribute('aria-hidden','true');
+        // These fixed SVGs come only from the shared, generated artwork catalog, never visitor text.
+        drawing.innerHTML=icon.svg;stage.appendChild(drawing);figure.appendChild(stage);
+        var caption=element('figcaption');caption.appendChild(element('h3','',icon.label));figure.appendChild(caption);icons.appendChild(figure);
+      });
+    }
     function render(theme,announce) {
       current=theme;var P=theme.palette, info=details[theme.slug], navInk=safeInk(P.navInk,P.navBg);
       canvasStyle(canvas,theme,true);canvas.setAttribute('data-guide-theme',theme.slug);
@@ -65,10 +88,11 @@
       setText('theme-eyebrow',theme.label+' look');setText('theme-intro',info.intro);setText('theme-color-intro',info.colors);
       setText('theme-color-note',info.note);setText('theme-type-intro',theme.label);setText('theme-layout-intro',theme.label);setText('theme-salary-note',info.salary);
       setText('theme-footer','StillUnemployed.com · '+theme.label+' look');
+      renderArt(theme);
       setText('theme-action-note','The '+theme.label+' navigation surface is '+P.navBg+'. '+(navInk!==P.navInk?'The live guide uses '+navInk+' for readable control text; the board’s current nav ink '+P.navInk+' is documented in the palette above. ':'Its matching ink is '+P.navInk+'. ')+'These links open the '+theme.label+' board.');
       doc.querySelectorAll('[data-theme-board-link]').forEach(function(link){link.setAttribute('href',boardRoute(theme));});
       var swatches=doc.getElementById('theme-swatches');swatches.textContent='';
-      swatches.appendChild(swatch('Board canvas',theme.canvas['background-color']+' · '+theme.canvas['background-image'],info.colors,theme.canvas));
+      swatches.appendChild(swatch('Board canvas',theme.canvas['background-color'],info.colors+' See the texture section for its background layers.',theme.canvas));
       swatches.appendChild(swatch('Navigation paper',P.navBg,'The source navigation surface for '+theme.label+'.',P.navBg));
       swatches.appendChild(swatch('Navigation ink',P.navInk,'Read it against navigation paper. Current contrast: '+contrast(P.navInk,P.navBg).toFixed(2)+':1.',P.navInk));
       swatches.appendChild(swatch('Board heading ink',P.ink,'Headings on this theme’s canvas. Supporting ink: '+P.sub+'.',P.ink));

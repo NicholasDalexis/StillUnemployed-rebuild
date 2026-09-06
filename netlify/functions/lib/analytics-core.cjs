@@ -16,6 +16,7 @@ function cleanEvent(input, jobs) {
   if(input.jobId) { if(!ID.test(input.jobId)||!jobs[input.jobId])throw Object.assign(new Error('Unknown job'),{status:400});out.jobId=input.jobId;out.field=jobs[input.jobId].field;out.role=jobs[input.jobId].role;out.company=jobs[input.jobId].company;out.jobLabel=jobs[input.jobId].jobLabel; }
   if(/^(job_|apply_click|application_reported|outbound_)/.test(out.name) && !out.jobId)throw Object.assign(new Error('Job required'),{status:400});
   if(input.theme && THEMES.has(input.theme))out.theme=input.theme;
+  if(out.name==='theme_vote' && (!out.theme || !['up','down'].includes(input.vote)))throw Object.assign(new Error('Theme and vote required'),{status:400});
   if(['category','workstyle','pay','freshness','state','theme','saved'].includes(input.filter))out.filter=input.filter;
   if(['Applied','Interviewing','Offer','Rejected','Withdrawn','Ghosted'].includes(input.status))out.status=input.status;
   if(Number.isFinite(input.seconds))out.seconds=Math.max(0,Math.min(900,Math.round(input.seconds)));
@@ -32,7 +33,7 @@ function authorizeOrigin(request, env) {
   if ((!origin || !allowed.includes(origin)) && !sameOriginGet) throw Object.assign(new Error('Origin denied'),{status:403});
 }
 function reduceRows(rows, days=30, now=Date.now()) {
-  const counts={},daily={},fields={},roles={},themes={},jobs={},companies={},pageTiming={},visitors=new Set(),visits=new Set(),tracker=new Set(), signups=new Set(), logins=new Set();
+  const counts={},daily={},fields={},roles={},themes={},themeVotes={up:{},down:{}},jobs={},companies={},pageTiming={},visitors=new Set(),visits=new Set(),tracker=new Set(), signups=new Set(), logins=new Set();
   let returned=0,unknown=0,capped=0,seconds=0,events=0;const started=new Set(),finished=new Set();
   for(const e of rows) {
     if(e.at < now-days*86400000 || e.at>now)continue;
@@ -47,11 +48,17 @@ function reduceRows(rows, days=30, now=Date.now()) {
     if(e.name==='page_engagement'){pageTiming[e.page] ||= {count:0,seconds:0,actors:new Set(),sessions:new Set()};pageTiming[e.page].count++;pageTiming[e.page].seconds+=e.seconds||0;pageTiming[e.page].actors.add(e.actor);pageTiming[e.page].sessions.add(e.actor+e.session);}
     if(e.name.startsWith('tracker_'))tracker.add(e.actor);
     if(e.theme&&e.name==='theme_change'){themes[e.theme] ||= {count:0,actors:new Set()};themes[e.theme].count++;themes[e.theme].actors.add(e.actor);}
+    if(e.name==='theme_vote'&&THEMES.has(e.theme)&&['up','down'].includes(e.vote)){
+      const group=themeVotes[e.vote][e.theme] ||= {count:0,actors:new Set()};group.count++;group.actors.add(e.actor);
+    }
     if(e.name==='outbound_return'){if(e.outboundId)finished.add(e.actor+e.outboundId);returned++;seconds+=e.seconds||0;if(e.capped)capped++;}
     if(e.name==='outbound_unknown'&&e.outboundId)started.add(e.actor+e.outboundId);
   }
   unknown=Array.from(started).filter(id=>!finished.has(id)).length;
   const dimension = map=>Object.entries(map).filter(([,v])=>v.actors.size>=5).map(([label,v])=>({label,count:v.count})).sort((a,b)=>b.count-a.count);
-  return {windowDays:days,generatedAt:new Date(now).toISOString(),tracking:'consent-only',totals:{events:events,visits:visits.size,visitors:visitors.size,signups:signups.size,logins:logins.size,job_opens:counts.job_open||0,saves:counts.job_save||0,apply_clicks:counts.apply_click||0,reported_applied:counts.application_reported||0,tracker_users:tracker.size},daily:Object.values(daily).sort((a,b)=>a.date.localeCompare(b.date)),fields:dimension(fields),roles:dimension(roles),themes:dimension(themes),jobs:dimension(jobs),companies:dimension(companies),pageTiming:Object.entries(pageTiming).filter(([,v])=>v.actors.size>=5).map(([label,v])=>({label,count:v.count,meanActiveSeconds:Math.round(v.seconds/v.sessions.size)})),events:Object.entries(counts).map(([label,count])=>({label,count})),timing:{returned,unknown,capped,meanAwaySeconds:returned?Math.round(seconds/returned):null},privacy:{rawRetentionDays:90,minimumCohort:5},questions:[]};
+  // Suppress each direction separately. Publishing a per-theme total could reveal
+  // a withheld small dislike/like group by subtraction. Counts are vote events.
+  const votes={up:dimension(themeVotes.up),down:dimension(themeVotes.down)};
+  return {windowDays:days,generatedAt:new Date(now).toISOString(),tracking:'consent-only',totals:{events:events,visits:visits.size,visitors:visitors.size,signups:signups.size,logins:logins.size,job_opens:counts.job_open||0,saves:counts.job_save||0,apply_clicks:counts.apply_click||0,reported_applied:counts.application_reported||0,tracker_users:tracker.size},daily:Object.values(daily).sort((a,b)=>a.date.localeCompare(b.date)),fields:dimension(fields),roles:dimension(roles),themes:dimension(themes),themeVotes:votes,jobs:dimension(jobs),companies:dimension(companies),pageTiming:Object.entries(pageTiming).filter(([,v])=>v.actors.size>=5).map(([label,v])=>({label,count:v.count,meanActiveSeconds:Math.round(v.seconds/v.sessions.size)})),events:Object.entries(counts).map(([label,count])=>({label,count})),timing:{returned,unknown,capped,meanAwaySeconds:returned?Math.round(seconds/returned):null},privacy:{rawRetentionDays:90,minimumCohort:5},questions:[]};
 }
 module.exports={EVENTS,hash,jobId,catalog,cleanEvent,authorizeOrigin,reduceRows};

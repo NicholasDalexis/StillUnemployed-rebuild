@@ -1,7 +1,17 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.1.5",
+  "currentVersion": "2.1.6",
   "releases": [
+    {
+      "version": "2.1.6",
+      "date": "2026-09-06",
+      "title": "Texture, character and theme feedback",
+      "changes": [
+        "Added texture guides and three matching drawings for every theme, shared with the job board.",
+        "Separated optional theme likes and dislikes from theme selections in the analytics dashboard.",
+        "Made theme feedback easier to dismiss and kept it out of job detail windows."
+      ]
+    },
     {
       "version": "2.1.5",
       "date": "2026-09-06",
@@ -78,7 +88,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "49e38f2fffcd304a9c873c8f778396f410cfad81440a32d26563c54479cd11d6",
-    "fileCount": 121
+    "digest": "8b73d1e9f03053587f0b2f780be21133c6192979528306baa1c8c53000befa16",
+    "fileCount": 122
   }
 }

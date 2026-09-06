@@ -7,6 +7,8 @@
 })(typeof window !== 'undefined' ? window : null, function () {
   'use strict';
   var COUNT_KEYS = ['events', 'visits', 'visitors', 'signups', 'logins', 'job_opens', 'saves', 'apply_clicks', 'reported_applied', 'tracker_users'];
+  var THEME_NAMES = {original:'Original',girly:'For the girlies',poker:'Casino',mermaid:'Mermaidcore',bratt:'bratt',noir:'Black Cat',beauty:'Beauty',chess:'Chess'};
+  function themeRows(rows) { return rows.map(function(row){return {label:THEME_NAMES[row.label] || row.label,count:row.count};}); }
   function count(value) { return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? Math.floor(value) : null; }
   function format(value) { var n = count(value); return n === null ? 'N/A' : n.toLocaleString('en-US'); }
   function percent(value, maximum) { var n = count(value), max = count(maximum); return n === null || !max ? 0 : Math.min(100, 100 * n / max); }
@@ -32,6 +34,7 @@
         return { date: d.date, visits: count(d.visits), job_opens: count(d.job_opens), apply_clicks: count(d.apply_clicks) };
       }).sort(function (a, b) { return a.date.localeCompare(b.date); }),
       fields: list(raw.fields), roles: list(raw.roles), themes: list(raw.themes), events: list(raw.events), jobs: list(raw.jobs), companies: list(raw.companies),
+      themeVotes: raw.themeVotes && Array.isArray(raw.themeVotes.up) && Array.isArray(raw.themeVotes.down) ? {up:list(raw.themeVotes.up),down:list(raw.themeVotes.down)} : null,
       pageTiming: Array.isArray(raw.pageTiming) ? raw.pageTiming.slice(0, 20).filter(function (x) { return x && ['home','board','tracker','privacy','terms','suggest','other'].indexOf(x.label) >= 0; }).map(function (x) { return { label: x.label, count: count(x.count), meanActiveSeconds: count(x.meanActiveSeconds) }; }) : [],
       timing: { returned: count(timing.returned), unknown: count(timing.unknown), capped: count(timing.capped), meanAwaySeconds: count(timing.meanAwaySeconds) },
       privacy: { rawRetentionDays: count(privacy.rawRetentionDays), minimumCohort: count(privacy.minimumCohort) },
@@ -43,15 +46,24 @@
     if (!data) return 'Load an authorized analytics window or explicitly preview sample data first.';
     var q = String(question || '').toLowerCase().replace(/[?!.]/g, '').replace(/\s+/g, ' ').trim();
     var period = data.windowDays ? ' in the selected ' + data.windowDays + '-day window' : ' in this window';
-    var unsupported = 'I can look up totals, the top field, role, job, company or theme, legal-page active time, and observed away time in this window. I cannot answer demographic questions, compare time windows or link people to specific jobs from these aggregates. Try one of the suggested questions.';
+    var unsupported = 'I can look up totals, the top field, role, job, company or theme, theme likes and dislikes, legal-page active time, and observed away time in this window. I cannot answer demographic questions, compare time windows or link people to specific jobs from these aggregates. Try one of the suggested questions.';
+    var voteDirection = /^(which|what) theme (has|had|got|received) (the )?most (likes|upvotes)$|^(most liked|favorite) theme$/.test(q) ? 'up' : /^(which|what) theme (has|had|got|received) (the )?most (dislikes|downvotes)$|^most disliked theme$/.test(q) ? 'down' : null;
+    if(voteDirection){
+      if(!data.themeVotes)return 'Theme vote breakdowns are unavailable in this response. Missing votes are not zero.';
+      var votes=themeRows(data.themeVotes[voteDirection]).filter(function(row){return row.count!==null&&row.count>0;});
+      if(!votes.length)return 'No reportable '+(voteDirection==='up'?'likes':'dislikes')+period+'. There may be no recorded votes, or this theme and direction may be below the privacy threshold.';
+      var highest=votes[0].count,winners=votes.filter(function(row){return row.count===highest;});
+      return winners.map(function(row){return row.label;}).join(', ')+(winners.length>1?' tie at ':' leads with ')+format(highest)+' recorded '+(voteDirection==='up'?'like':'dislike')+' votes'+period+'. Counts are vote events, not unique voters; each theme and direction must meet the privacy threshold. Theme selections are measured separately.';
+    }
     var dimension;
     if (/^(which|what) (career )?field (is|was) (the )?most popular$|^(top|most popular|popular) field$/.test(q)) dimension = 'fields';
     if (/^(which|what) (job )?role (is|was) (the )?most popular$|^(top|most popular|popular) role$/.test(q)) dimension = 'roles';
-    if (/^(which|what) theme (is|was) (the )?most popular$|^(top|most popular|favorite) theme$/.test(q)) dimension = 'themes';
+    if (/^(which|what) theme (is|was) (the )?most popular$|^(top|most popular) theme$/.test(q)) dimension = 'themes';
     if (/^(which|what) (job|posting) (is|was) (the )?most popular$|^(top|most popular) (job|posting)$|^which job was opened most$/.test(q)) dimension = 'jobs';
     if (/^(which|what) company (is|was) (the )?most popular$|^(top|most popular) company$/.test(q)) dimension = 'companies';
     if (dimension) {
       var rows = data[dimension].filter(function (r) { return r.count !== null && r.count > 0; });
+      if(dimension==='themes')rows=themeRows(rows);
       if (!rows.length) return 'No reportable ' + dimension + period + '. There may be no recorded activity, or groups may be below the privacy threshold.';
       var top = rows[0], ties = rows.filter(function (r) { return r.count === top.count; });
       return ties.map(function (r) { return r.label; }).join(', ') + (ties.length > 1 ? ' tie at ' : ' leads with ') + format(top.count) + ' recorded ' + (dimension === 'themes' ? 'theme selections' : dimension === 'jobs' || dimension === 'companies' ? 'card opens' : 'card opens') + period + '. Small groups are withheld; counts are actions, not unique people.';
@@ -79,7 +91,7 @@
   function fixture(days) {
     var daily = Array.from({ length: days }, function (_, i) { return { date: new Date(Date.UTC(2026, 7, 31 - days + i)).toISOString().slice(0, 10), visits: 36 + (i * 17 % 43), job_opens: 52 + (i * 23 % 97), apply_clicks: 13 + (i * 13 % 29) }; });
     function sum(k) { return daily.reduce(function (s, d) { return s + d[k]; }, 0); }
-    return normalize({ jobs: [{label: 'Social Media Coordinator at Sample Studio', count: 89}, {label: 'Associate Product Designer at Example Company', count: 73}, {label: 'Assistant Fashion Designer at Sample House', count: 64}], companies: [{label: 'Sample Studio', count: 142}, {label: 'Example Company', count: 119}, {label: 'Sample House', count: 86}], pageTiming: [{label: 'board', count: 684, meanActiveSeconds: 172}, {label: 'tracker', count: 247, meanActiveSeconds: 136}, {label: 'privacy', count: 62, meanActiveSeconds: 38}, {label: 'terms', count: 41, meanActiveSeconds: 27}], windowDays: days, generatedAt: new Date().toISOString(), tracking: 'consent-only', totals: { events: sum('job_opens') * 3, visits: sum('visits'), visitors: 842, signups: 126, logins: 313, job_opens: sum('job_opens'), saves: 397, apply_clicks: sum('apply_clicks'), reported_applied: 214, tracker_users: 168 }, daily: daily, fields: [{ label: 'Marketing', count: 1218 }, { label: 'UX / UI Design', count: 642 }, { label: 'Fashion Design', count: 388 }, { label: 'Photography', count: 241 }, { label: 'Creative Technology', count: 173 }], roles: [{ label: 'Social & Community', count: 684 }, { label: 'Brand Marketing', count: 532 }, { label: 'Product Design', count: 407 }, { label: 'Content & Copy', count: 294 }, { label: 'Apparel Design', count: 227 }], themes: [{ label: 'Original', count: 320 }, { label: 'Casino', count: 197 }, { label: 'Beauty', count: 134 }, { label: 'Chess', count: 98 }], events: [{ label: 'job_open', count: sum('job_opens') }, { label: 'apply_click', count: sum('apply_clicks') }, { label: 'save', count: 397 }, { label: 'privacy_open', count: 62 }, { label: 'theme_change', count: 749 }], timing: { returned: 326, unknown: 82, capped: 48, meanAwaySeconds: 242 }, privacy: { rawRetentionDays: 90, minimumCohort: 5 }, coverage: { complete: true } });
+    return normalize({ jobs: [{label: 'Social Media Coordinator at Sample Studio', count: 89}, {label: 'Associate Product Designer at Example Company', count: 73}, {label: 'Assistant Fashion Designer at Sample House', count: 64}], companies: [{label: 'Sample Studio', count: 142}, {label: 'Example Company', count: 119}, {label: 'Sample House', count: 86}], pageTiming: [{label: 'board', count: 684, meanActiveSeconds: 172}, {label: 'tracker', count: 247, meanActiveSeconds: 136}, {label: 'privacy', count: 62, meanActiveSeconds: 38}, {label: 'terms', count: 41, meanActiveSeconds: 27}], windowDays: days, generatedAt: new Date().toISOString(), tracking: 'consent-only', totals: { events: sum('job_opens') * 3, visits: sum('visits'), visitors: 842, signups: 126, logins: 313, job_opens: sum('job_opens'), saves: 397, apply_clicks: sum('apply_clicks'), reported_applied: 214, tracker_users: 168 }, daily: daily, fields: [{ label: 'Marketing', count: 1218 }, { label: 'UX / UI Design', count: 642 }, { label: 'Fashion Design', count: 388 }, { label: 'Photography', count: 241 }, { label: 'Creative Technology', count: 173 }], roles: [{ label: 'Social & Community', count: 684 }, { label: 'Brand Marketing', count: 532 }, { label: 'Product Design', count: 407 }, { label: 'Content & Copy', count: 294 }, { label: 'Apparel Design', count: 227 }], themes: [{ label: 'original', count: 320 }, { label: 'poker', count: 197 }, { label: 'beauty', count: 134 }, { label: 'chess', count: 98 }], themeVotes: {up:[{label:'poker',count:36},{label:'beauty',count:24},{label:'noir',count:18}],down:[{label:'poker',count:9},{label:'beauty',count:7}]}, events: [{ label: 'job_open', count: sum('job_opens') }, { label: 'apply_click', count: sum('apply_clicks') }, { label: 'save', count: 397 }, { label: 'privacy_open', count: 62 }, { label: 'theme_change', count: 749 }, {label:'theme_vote',count:94}], timing: { returned: 326, unknown: 82, capped: 48, meanAwaySeconds: 242 }, privacy: { rawRetentionDays: 90, minimumCohort: 5 }, coverage: { complete: true } });
   }
   function mount(win) {
     var doc = win.document, data = null, demo = false, request = 0, controller = null;
@@ -89,7 +101,7 @@
     function text(id, value) { el(id).textContent = value; }
     function state(kind, title, detail) { el('service-state').hidden = !kind; el('service-state').dataset.state = kind || ''; text('state-title', title || ''); text('state-detail', detail || ''); }
     function cancel() { request += 1; if (controller) controller.abort(); controller = null; }
-    function clear() { data = null; el('dashboard-data').hidden = true; el('freshness').hidden = true; ['metrics','daily-chart','daily-axis','daily-table','journey','fields','roles','themes','popular-jobs','companies','page-timing','events','timing-stats','away-average','trend-summary','freshness','cohort-note','retention-note'].forEach(function (id) { el(id).replaceChildren(); }); text('question-answer', 'Try a suggested question to get started.'); el('question').value = ''; }
+    function clear() { data = null; el('dashboard-data').hidden = true; el('freshness').hidden = true; ['metrics','daily-chart','daily-axis','daily-table','journey','fields','roles','themes','theme-likes','theme-dislikes','popular-jobs','companies','page-timing','events','timing-stats','away-average','trend-summary','freshness','cohort-note','retention-note'].forEach(function (id) { el(id).replaceChildren(); }); text('question-answer', 'Try a suggested question to get started.'); el('question').value = ''; }
     function bars(id, rows, empty) {
       var parent = el(id); parent.replaceChildren();
       if (!rows.length) { parent.appendChild(node('li', empty || 'No reportable groups in this window. Empty groups may be below the privacy threshold.', 'empty-chart')); return; }
@@ -109,7 +121,9 @@
       text('freshness', demo ? 'SYNTHETIC PREVIEW · All counts are invented. Dates and windows are illustrative.' : (isStale ? 'STALE OR UNKNOWN REFRESH TIME · ' : '') + (data.generatedAt ? 'Generated ' + new Date(data.generatedAt).toLocaleString() + ' · ' : 'Refresh time unavailable · ') + (data.windowDays ? 'Last ' + data.windowDays + ' days · ' : '') + 'UTC daily buckets · Consented activity only');
       el('metrics').replaceChildren();
       [['visits','Visits','Recorded browsing sessions'], ['visitors','Visitors','Distinct analytics visitors'], ['job_opens','Job opens','Cards explored'], ['signups','Sign-ups','New accounts with analytics consent'], ['tracker_users','Tracker users','Distinct analytics visitors']].forEach(function (m) { var card = node('div', undefined, 'metric'); card.append(node('p', m[1], 'metric-label'), node('strong', format(data.totals[m[0]]), 'metric-value'), node('p', m[2], 'metric-note')); el('metrics').appendChild(card); });
-      ['fields','roles','themes','events'].forEach(function (id) { bars(id, data[id]); });
+      ['fields','roles','events'].forEach(function (id) { bars(id, data[id]); });
+      bars('themes',themeRows(data.themes));
+      ['up','down'].forEach(function(direction){bars(direction==='up'?'theme-likes':'theme-dislikes',data.themeVotes?themeRows(data.themeVotes[direction]):[],data.themeVotes?'No reportable votes in this direction. Activity may be absent or below the privacy threshold.':'Theme vote breakdowns are unavailable in this response. Missing votes are not zero.');});
       bars('popular-jobs', data.jobs.slice(0, 10)); bars('companies', data.companies.slice(0, 10));
       el('page-timing').replaceChildren(); var pageNames = { home: 'Home', board: 'Jobs board', tracker: 'Tracker', privacy: 'Privacy Policy', terms: 'Terms of Service', suggest: 'Suggest a job', other: 'Other pages' };
       var pageMax = data.pageTiming.reduce(function (n, r) { return Math.max(n, r.meanActiveSeconds || 0); }, 0);
@@ -118,7 +132,7 @@
       bars('journey', [['Job opens','job_opens'],['Saves','saves'],['Apply clicks','apply_clicks'],['Reported applied','reported_applied']].map(function (r) { return { label: r[0], count: data.totals[r[1]] }; }));
       el('daily-table').replaceChildren(); data.daily.forEach(function (d) { var tr = node('tr'), th = node('th', d.date); th.scope = 'row'; tr.appendChild(th); ['visits','job_opens','apply_clicks'].forEach(function (key) { tr.appendChild(node('td', format(d[key]))); }); el('daily-table').appendChild(tr); }); drawTrend();
       text('away-average', duration(data.timing.meanAwaySeconds)); el('timing-stats').replaceChildren(); [['Returned','returned'],['No observed return','unknown'],['Reached 15-minute cap','capped']].forEach(function (r) { var div = node('div'); div.append(node('dt', r[0]), node('dd', format(data.timing[r[1]]))); el('timing-stats').appendChild(div); });
-      text('cohort-note', data.privacy.minimumCohort !== null ? 'Field, role, theme, job, company and page-timing groups with fewer than ' + data.privacy.minimumCohort + ' distinct visitors are withheld. Visible bars do not show the whole audience.' : 'Small groups are withheld. The reporting threshold was not returned.');
+      text('cohort-note', data.privacy.minimumCohort !== null ? 'Field, role, theme, job, company and page-timing groups with fewer than ' + data.privacy.minimumCohort + ' distinct visitors are withheld. Theme votes apply this threshold separately to each like/dislike direction. Visible bars do not show the whole audience.' : 'Small groups are withheld. The reporting threshold was not returned.');
       text('retention-note', data.privacy.rawRetentionDays !== null ? 'Reporting/use window and retention target: up to ' + data.privacy.rawRetentionDays + ' days. Physical deletion depends on the cleanup schedule and may lag.' : 'The reporting/use window and retention target were not returned.');
       text('question-answer', 'Try a suggested question to get started.');
       if (data.coverage.complete === false) state('error', 'This response is incomplete.', 'Some measurements could not be returned. Treat the visible numbers as partial and refresh to try again.');

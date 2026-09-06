@@ -33,7 +33,7 @@ function page({search='',stored='original',blocked=false}={}) {
 
 function sourceFixture() {
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'su-style-guide-'));
- for(const name of ['js/app.js','css/styles.css','css/brand.css','css/fonts.css','jobs.html','scripts/gen-theme-pages.mjs','js/style-guide-themes.js']){
+ for(const name of ['js/app.js','js/theme-art.js','css/styles.css','css/brand.css','css/fonts.css','jobs.html','scripts/gen-theme-pages.mjs','js/style-guide-themes.js']){
   const dest=path.join(dir,name);fs.mkdirSync(path.dirname(dest),{recursive:true});fs.copyFileSync(path.join(root,name),dest);
  }
  return dir;
@@ -131,4 +131,55 @@ test('guide changes keep marked public release/history links intact',()=>{
  const p=page();vm.runInNewContext(fs.readFileSync(path.join(root,'js/release.js'),'utf8'),{window:p.win,document:p.document});
  const version=p.document.querySelector('[data-su-version]');assert(version);const before=version.getAttribute('href');assert.match(before,/^\/versions\.html#version-/);
  p.dispatch(p.document.querySelector('[data-guide-choice="casino"]'),'click');p.win.SURelease.render();assert.equal(version.getAttribute('href'),before);assert.match(version.textContent,/^Version /);
+});
+
+test('every public theme has a dedicated texture explanation and two or three fixed drawn icon specimens',()=>{
+ assert.equal(catalog.themes.reduce((count,theme)=>count+theme.art.icons.length,0),24,'the current eight looks supply 24 drawings');
+ for(const theme of catalog.themes){
+  assert(theme.art,theme.label+' art coverage');
+  for(const key of ['name','description','usage'])assert.equal(typeof theme.art.texture[key],'string',theme.label+' texture '+key);
+  assert(theme.art.texture.description.length>20);assert(theme.art.texture.usage.length>20);
+  assert(theme.art.icons.length>=2&&theme.art.icons.length<=3,theme.label+' has two or three drawn specimens');assert.equal(new Set(theme.art.icons.map(icon=>icon.id)).size,theme.art.icons.length);
+  for(const icon of theme.art.icons){assert(icon.id&&icon.label);assert.match(icon.svg,/^<svg\b/);assert.match(icon.svg,/<\/svg>$/);}
+ }
+});
+
+test('catalog generation rejects animated drawings, incomplete textures, duplicate icons and artwork outside public coverage',async()=>{
+ const {buildCatalog,generate}=await import('../gen-style-guide.mjs');
+ for(const [mutation,reason]of [
+  ['module.exports.themes.original.icons[0].svg=module.exports.themes.original.icons[0].svg.replace("</g>","<animate attributeName=\\\"opacity\\\" values=\\\"0;1\\\" dur=\\\"1s\\\" repeatCount=\\\"indefinite\\\"/></g>");',/non-static shape/],
+  ['delete module.exports.themes.original.texture;',/texture description/],
+  ['module.exports.themes.original.icons[1].id=module.exports.themes.original.icons[0].id;',/distinct drawn icons/],
+  ['module.exports.themes.newlook=module.exports.themes.original;',/coverage disagree/]
+ ]){
+  const dir=sourceFixture();try{const target=path.join(dir,'js/theme-art.js');fs.appendFileSync(target,'\nmodule.exports=JSON.parse(JSON.stringify(module.exports));\n'+mutation);assert.throws(()=>buildCatalog(dir),reason);}finally{fs.rmSync(dir,{recursive:true,force:true});}
+ }
+ const dir=sourceFixture();try{
+  fs.appendFileSync(path.join(dir,'js/theme-art.js'),'\nmodule.exports=JSON.parse(JSON.stringify(module.exports));\nmodule.exports.themes.original.texture.description="Updated description of the same warm paper texture.";');
+  assert.throws(()=>generate(dir),/catalog is stale/,'artwork metadata changes require regenerating the public catalog');generate(dir,true);assert.doesNotThrow(()=>generate(dir));
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+test('theme changes replace texture layers, motion guidance and exact icon specimens without touching board or account state',()=>{
+ const p=page(),before=JSON.stringify(catalog);
+ for(const theme of catalog.themes){
+  p.dispatch(p.document.querySelector('[data-guide-choice="'+theme.slug+'"]'),'click');
+  const preview=p.el('theme-texture-preview');
+  for(const property of ['background-color','background-image','background-size','background-position','background-repeat','animation'])assert.equal(preview.style[property],theme.canvas[property]||(property==='animation'?'none':''),theme.label+' texture '+property);
+  assert.equal(p.el('theme-texture-name').textContent,theme.art.texture.name);assert.equal(p.el('theme-texture-description').textContent,theme.art.texture.description);assert.equal(p.el('theme-texture-usage').textContent,theme.art.texture.usage);
+  assert.equal(p.el('theme-texture-layers').textContent,theme.canvas['background-image']);assert.equal(p.el('theme-texture-size').textContent,theme.canvas['background-size']||'auto');assert.equal(p.el('theme-texture-repeat').textContent,theme.canvas['background-repeat']||'repeat');
+  const motion=p.el('theme-texture-motion').textContent;if(theme.canvas.animation){assert.match(motion,/Reduced-motion/);const duration=theme.canvas.animation.match(/(?:^|\s)([\d.]+m?s)(?=\s|$)/);assert(duration);assert(motion.includes(duration[1]));}else assert.match(motion,/stays still/);
+  const figures=p.el('theme-icon-specimens').children;assert.equal(figures.length,theme.art.icons.length);
+  theme.art.icons.forEach((icon,index)=>{const figure=figures[index];assert.equal(figure.getAttribute('data-theme-icon'),icon.id);assert.equal(figure.querySelector('h3').textContent,icon.label);assert.equal(figure.querySelector('.icon-drawing').innerHTML,icon.svg);assert.equal(figure.querySelector('.icon-stage').style.color,theme.palette.ink);assert.equal(figure.querySelector('.icon-stage').getAttribute('aria-hidden'),'true');assert.equal(figure.querySelector('.icon-stage').style['animation'],'none');});
+  assert(p.el('theme-icons-intro').textContent.includes(theme.label));
+ }
+ assert.equal(JSON.stringify(catalog),before,'rendering leaves the immutable source catalog unchanged');assert(p.writes.every(([key])=>key===guide.key));assert.equal(p.data.get('su_look'),'poker');assert.equal(p.data.get('su_saved_jobs'),'{"keep":true}');assert.equal(p.data.get('su_tracker'),'[{"url":"keep"}]');
+});
+
+test('texture descriptions and icon labels render as text, while only fixed catalog SVG becomes markup',()=>{
+ const p=page(),theme=JSON.parse(JSON.stringify(catalog.themes[0]));
+ theme.art.texture.name='<img src=x>';theme.art.texture.description='<script>unexpected()</script>';theme.art.texture.usage='<svg onload=unexpected()>';
+ theme.art.icons[0].label='<button>unexpected action</button>';p.control.render(theme,false);
+ assert.equal(p.el('theme-texture-name').textContent,theme.art.texture.name);assert.equal(p.el('theme-texture-name').children.length,0);assert.equal(p.el('theme-texture-description').children.length,0);assert.equal(p.el('theme-texture-usage').children.length,0);
+ const specimen=p.el('theme-icon-specimens').children[0];assert.equal(specimen.querySelector('h3').textContent,theme.art.icons[0].label);assert.equal(specimen.querySelector('button'),null);assert.equal(specimen.querySelector('.icon-drawing').innerHTML,catalog.themes[0].art.icons[0].svg);
 });

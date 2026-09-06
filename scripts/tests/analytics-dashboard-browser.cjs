@@ -35,6 +35,9 @@ const server=http.createServer((req,res)=> {
     await page.locator('#load-sample').focus();await page.keyboard.press('Enter');
     check('keyboard explicitly opens synthetic sample',await page.locator('#sample-banner').isVisible());
     check('sample uses no aggregate request',requests.length===0);
+    check('sample has separate public-name like and dislike bars',(await page.locator('#theme-likes').textContent()).includes('Casino36') && (await page.locator('#theme-dislikes').textContent()).includes('Casino9'));
+    await page.getByRole('button',{name:'Most liked theme?'}).click();
+    check('vote answer names vote events and selected window',(await page.locator('#question-answer').textContent()).includes('36 recorded like votes in the selected 30-day window'));
     await page.getByRole('button',{name:'Most popular field?'}).click();
     check('sample answers are explicitly labeled',(await page.locator('#question-answer').textContent()).startsWith('SAMPLE DATA: Marketing'));
     await page.screenshot({path:path.join(output,'desktop-synthetic.png'),fullPage:true});
@@ -67,9 +70,10 @@ const server=http.createServer((req,res)=> {
     await page.setViewportSize({width:1440,height:1000});
     payload.generatedAt='2020-01-01T00:00:00Z';await page.locator('#refresh').click();await page.waitForSelector('#freshness[data-stale="true"]');
     check('stale data prominently labeled',(await page.locator('#freshness').textContent()).includes('STALE'));
-    payload=dashboard.fixture(30);Object.keys(payload.totals).forEach(k=>payload.totals[k]=0);payload.timing.meanAwaySeconds=null;payload.fields=[];payload.roles=[];payload.themes=[];payload.events=[];payload.daily=[];
+    payload=dashboard.fixture(30);Object.keys(payload.totals).forEach(k=>payload.totals[k]=0);payload.timing.meanAwaySeconds=null;payload.fields=[];payload.roles=[];payload.themes=[];payload.themeVotes={up:[],down:[]};payload.events=[];payload.daily=[];
     await page.locator('#refresh').click();await page.waitForSelector('#service-state[data-state="empty"]');
     check('successful empty data remains visible with empty explanation',await page.locator('#dashboard-data').isVisible());
+    check('suppressed vote groups are not presented as zero',(await page.locator('#theme-likes').textContent()).includes('No reportable votes'));
     check('missing away average is not zero',(await page.locator('#away-average').textContent())==='N/A');
     check('empty charts do not emit NaN/Infinity',!(await page.locator('#dashboard-data').innerHTML()).match(/(?:NaN|Infinity)/));
     status=503;await page.locator('#refresh').click();await page.waitForSelector('#service-state[data-state="error"]');
@@ -79,7 +83,7 @@ const server=http.createServer((req,res)=> {
     check('unauthorized account shows permission denial',await page.locator('#dashboard-data').isHidden());
     status=200;payload=dashboard.fixture(30);await page.locator('#refresh').click();await page.waitForSelector('#dashboard-data:not([hidden])');
     await page.evaluate(()=>{window.__signed=false;window.dispatchEvent(new CustomEvent('su:auth-changed'));});
-    check('auth loss immediately removes data from DOM',await page.locator('.metric').count()===0 && await page.locator('#dashboard-data').isHidden() && await page.locator('#away-average').textContent()==='' && await page.locator('#page-timing').textContent()==='' && await page.locator('#popular-jobs').textContent()==='');
+    check('auth loss immediately removes data from DOM',await page.locator('.metric').count()===0 && await page.locator('#dashboard-data').isHidden() && await page.locator('#away-average').textContent()==='' && await page.locator('#page-timing').textContent()==='' && await page.locator('#popular-jobs').textContent()==='' && await page.locator('#theme-likes').textContent()==='' && await page.locator('#theme-dislikes').textContent()==='');
     delay=300;await page.evaluate(()=>{window.__signed=true;window.dispatchEvent(new CustomEvent('su:auth-changed'));});
     await page.waitForSelector('#service-state[data-state="loading"]');await page.evaluate(()=>{window.__signed=false;window.dispatchEvent(new CustomEvent('su:auth-changed'));});await page.waitForTimeout(500);
     check('late response after sign-out cannot repopulate private data',await page.locator('.metric').count()===0 && await page.locator('#dashboard-data').isHidden());

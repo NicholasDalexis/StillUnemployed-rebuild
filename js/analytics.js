@@ -74,9 +74,15 @@
   window.SUAnalytics={emit:emit,job:jobEvent,registerJobs:registerJobs,flush:flush,choices:choices,profile:function(){return profile;},generation:function(){return generation;},reset:reset,loadProfile:loadProfile};
   window.suTrack=function(action,company,role,link){
     if(action==='cta'){var eventName={newsletter:'newsletter_click',story:'founder_open',carousel:'board_open'}[company];if(eventName)emit(eventName,{});return;}
-    var maps={save:'job_save','tracker-add':'tracker_add','tracker-export':'tracker_export','tracker-status':'tracker_status',look:'theme_change',themevote:'theme_vote',filter:'filter_change',search:'search_used',note_open:'advice_open',note_view:'advice_impression',signup_open:'newsletter_open',signup_cta:'newsletter_click',note_cta:'newsletter_click'};
+    if(action==='themevote'){
+      // Explicit feedback still follows the analytics choice. Send promptly, but
+      // do not claim storage success: offline/disabled services remain possible.
+      if(!choices().analytics||excluded()||['original','girly','poker','mermaid','bratt','noir','beauty','chess'].indexOf(company)<0||['up','down'].indexOf(role)<0)return;
+      emit('theme_vote',{theme:company,vote:role});return flush();
+    }
+    var maps={save:'job_save','tracker-add':'tracker_add','tracker-export':'tracker_export','tracker-status':'tracker_status',look:'theme_change',filter:'filter_change',search:'search_used',note_open:'advice_open',note_view:'advice_impression',signup_open:'newsletter_open',signup_cta:'newsletter_click',note_cta:'newsletter_click'};
     if(action==='save'){jobEvent('job_save',link);return;}
-    if(maps[action])emit(maps[action],action==='look'?{theme:company}:action==='themevote'?{theme:company,vote:role}:action==='filter'?{filter:company}:action==='tracker-status'?{status:role}:{});
+    if(maps[action])emit(maps[action],action==='look'?{theme:company}:action==='filter'?{filter:company}:action==='tracker-status'?{status:role}:{});
   };
   window.addEventListener('su:auth-changed',function(event){authEpoch++;queue=[];pending=[];seen={};profile={};outbound=null;generation++;activeSeconds=0;activeAt=Date.now();lastActivity=Date.now();if(event.detail&&event.detail.accountChanged){session=null;try{sessionStorage.removeItem('su_analytics_session');}catch(e){}}loadProfile();if(choices().analytics){emit('page_view',{});if(page()==='tracker')emit('tracker_open',{});if(page()==='privacy')emit('privacy_open',{});}});
   window.addEventListener('su:consent-changed',function(){authEpoch++;queue=[];pending=[];seen={};profile={};outbound=null;generation++;activeSeconds=0;activeAt=Date.now();lastActivity=Date.now();if(!choices().analytics){put('su_analytics_visitor',null);visitor=null;session=null;try{sessionStorage.removeItem('su_analytics_session');}catch(e){}}loadProfile();if(choices().analytics)emit('page_view',{});});

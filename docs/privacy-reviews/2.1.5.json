@@ -1,0 +1,27 @@
+{
+  "version": "2.1.5",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-06T04:45:14.921Z",
+  "reviewer": "Codex/Astra Job Board with independent privacy behavior review",
+  "sourceDigest": "49e38f2fffcd304a9c873c8f778396f410cfad81440a32d26563c54479cd11d6",
+  "sourceFileCount": 121,
+  "privacyChanged": true,
+  "termsChanged": false,
+  "checks": {
+    "integratedTests": 319,
+    "privacyChoiceRegressions": 15,
+    "analyticsClientRegressions": 5,
+    "nativeBrowser": "Fresh compact notice, deliberate settings, X/Escape focus return, decline/reload, independent choices, allow both and withdrawal; mobile notice/bookmark/navigation fit at 320x740; desktop photo hover/leave and no popup; keyboard focus reaches figure. GPC, blocked storage, reset states and account transitions use offline fixtures.",
+    "beforeConsentLocalRequests": "No optional backend requests observed in the fresh local HTTP-server access log before choices."
+  },
+  "scope": "Local UI and source review. Existing measurement, ranking, auth and backend protocols unchanged. Compact Allow optional explicitly chooses both purposes; Choose retains independent controls, and GPC keeps analytics off. Privacy wording updated to describe the real controls. Terms reviewed, no wording change needed. Backend activation and authenticated hosted behavior remain unverified.",
+  "baselineReview": "docs/privacy-reviews/2.1.4.json",
+  "openItems": [
+    "Function-scoped Firebase and Netlify configuration and actual owner UID",
+    "Real authenticated collector, profile and aggregate readback with cross-account/direct-client denials",
+    "Hosted retention, reset and account-deletion execution; legacy logs and backups",
+    "Actual Netlify function packaging/runtime and deployment readback",
+    "Six moderate dependency findings; no high or critical advisories in saved audit"
+  ],
+  "policySummary": "Separate optional analytics and recommendations; no typed text in events; truthful observed-away timing; per-signal expiry; private aggregate access; sanctioned public visual guide with private internal files excluded"
+}
