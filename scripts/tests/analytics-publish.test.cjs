@@ -3,6 +3,19 @@ test('static deploy allowlist excludes server, private docs and fixtures while i
 
 // Synthetic content only: real unpublished copy and private workspace paths
 // must never be embedded in a repository test or its failure output.
+test('hosted static output cannot bypass internship status suppression',async()=>{
+ const {prepare}=await import('../prepare-publish.mjs');
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'su-internship-publish-'));
+ try{
+  fs.writeFileSync(path.join(dir,'internships.html'),'<p>Internship board</p>');
+  fs.writeFileSync(path.join(dir,'internships-data.json'),'SYNTHETIC_REVIEWED_SNAPSHOT');
+  const dest=prepare(dir);
+  assert.equal(fs.existsSync(path.join(dest,'internships.html')),true);
+  assert.equal(fs.existsSync(path.join(dest,'internships-data.json')),false);
+  assert.equal(fs.readFileSync(path.join(dir,'internships-data.json'),'utf8'),'SYNTHETIC_REVIEWED_SNAPSHOT','function bundling and localhost retain the source snapshot');
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});
+
 function privateBoundaryFixture(){
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'su-publish-boundary-'));
  const site=path.join(dir,'site'),privateDir=path.join(dir,'drafts');

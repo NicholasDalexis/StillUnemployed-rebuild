@@ -1,7 +1,17 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.2.4",
+  "currentVersion": "2.2.5",
   "releases": [
+    {
+      "version": "2.2.5",
+      "date": "2026-09-06",
+      "title": "The first internships are on the board",
+      "changes": [
+        "Browse 46 source-checked internships with exact pay, eligibility and application dates.",
+        "A separate internship inventory keeps unavailable and held listings out of the board while preserving their review records.",
+        "Clearer empty states and program-pay labels, with current internship status checked before hosted listings load."
+      ]
+    },
     {
       "version": "2.2.4",
       "date": "2026-09-06",
@@ -164,7 +174,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "cd149c054803a657410aaaf562c0980a2ebeb7895e0dcc3949756e79a1d12f20",
-    "fileCount": 133
+    "digest": "26040b16d6862c92b82711e26ffb375b1bd6e295c1b857abb194d1cff4829105",
+    "fileCount": 136
   }
 }

@@ -1,34 +1,37 @@
 {
-  "version": "2.2.4",
+  "version": "2.2.5",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-06T21:14:32.198920+00:00",
-  "reviewer": "Codex/Astra with independent projection, UI and browser reviews",
-  "sourceDigest": "cd149c054803a657410aaaf562c0980a2ebeb7895e0dcc3949756e79a1d12f20",
-  "sourceFileCount": 133,
+  "reviewedAt": "2026-09-06T22:20:43.777Z",
+  "reviewer": "Codex/Astra with independent publisher, catalog and blue-team reviews",
+  "sourceDigest": "26040b16d6862c92b82711e26ffb375b1bd6e295c1b857abb194d1cff4829105",
+  "sourceFileCount": 136,
   "privacyChanged": false,
-  "termsChanged": true,
+  "termsChanged": false,
   "checks": {
-    "integratedTests": 431,
-    "internshipUI": 15,
-    "internshipContractProjection": 19,
-    "syntheticBrowser": 55,
-    "preferencesBrowserRegression": 42,
-    "browser": "Synthetic real-browser desktop1280,390,320 and short320x480; exact pay, full eligibility, statuses, Saved, share, action/feedback guards and iframe keyboard focus. No real account or cloud writes.",
-    "release": "Full configured local build exit0:486jobs across8themes,4120share/alias pages and images,7theme routes,8368allowlisted publish files. Not deployed."
+    "integratedTests": 469,
+    "internshipPublication": 15,
+    "internshipCatalog": 18,
+    "internshipContractProjection": 20,
+    "appsScriptSyntheticTests": 48,
+    "browser": "Native local 46-card board at actual DOM widths1280,390,320: count, no overflow, exact pay, complete Disney requirements, modal containment and Escape focus restoration. IAB image capture clips at existing80%zoom; DOM geometry and text independently checked.",
+    "packaging": "Final Netlify esbuild bundle after pay fix executes fixed live Google CSV status lookup: GET 200, 46 entries, 351 ms; POST 405; no-store. Local bundle only, not deployed.",
+    "fullBuild": "Passed: 486 main jobs x 8 themes; 4120 share/alias pages and images, 7 theme routes, 8367 allowlisted files; raw internship snapshot excluded from static dist.",
+    "appsScriptLive": "Two manual production-mode batches:26+40checks with overlap cover all46active records;0closures. Request timeout and cursor continuation verified; five unique uncertain responses kept for review. Full native A1:AA50 unchanged afterward. First scheduled firing not observed."
   },
-  "scope": "Internship pay/eligibility, timing states, public projection and modal keyboard containment.",
-  "baselineReview": "docs/privacy-reviews/2.2.3.json",
+  "scope": "First source-admitted internship inventory and local feed; atomic publisher; hosted status suppression; additive separate Apps Script checker.",
+  "baselineReview": "docs/privacy-reviews/2.2.4.json",
   "openItems": [
     "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
     "Function-scoped Firebase and Netlify configuration and actual owner UID",
     "Real authenticated collector, profile and aggregate readback with cross-account/direct-client denials",
     "Hosted retention, reset and account-deletion execution; legacy logs and backups",
-    "Actual Netlify function packaging/runtime and deployment readback",
+    "Hosted Netlify functions and deployment readback; internship catalog packaging and local bundle runtime are verified",
     "Six moderate dependency findings; no high or critical advisories in saved audit",
     "Actual new discovery-schema Firestore round trip and deployed ownership rules",
     "Main-board inherited Human verified badges lack audited per-row historical provenance in this change",
-    "Approved internship publication snapshot and hosted integration; offline projection tested but golden candidates remain unpublished",
-    "Live report-triage delivery and concurrent-device visit-counter limitations"
+    "Live report-triage delivery and concurrent-device visit-counter limitations",
+    "Hosted internship endpoint rollout and real Saved/Tracker round trip for admitted listings",
+    "First scheduled internship-maintenance firing; installed and manual production-mode execution verified"
   ],
-  "policySummary": "No new personal collection, analytics event or account authorization. Terms now distinguish upcoming employer announcements from open applications and preserve original pay periods. Private admission evidence never enters the public projection. Calendar state is not an automated source recheck. Hosted activation, publication, account/retention and delivery limits remain open."
+  "policySummary": "Reviewed, no wording change needed. Only public employer-listing facts enter source checks and the public feed. Endpoint reads fixed Link/Active/Dead/Application Status fields, never account/analytics inputs; private admissions and Golden commentary remain outside public artifacts. Sheet suppression is not a fresh employer check on every page load. Existing account, retention, report-triage and deployment limitations remain."
 }

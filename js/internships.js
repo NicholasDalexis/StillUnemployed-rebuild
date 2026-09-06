@@ -58,7 +58,7 @@
     if(/(?:\/\s*|\bper\s+)(?:week|wk)\b|\bweekly\b/i.test(value))out.push('week');
     if(/(?:\/\s*|\bper\s+)(?:month|mo)\b|\bmonthly\b/i.test(value))out.push('month');
     if(/(?:\/\s*|\bper\s+)(?:year|yr)\b|\bannual(?:ized|ly)?\b/i.test(value))out.push('annualized_year');
-    if(/\bfor\s+(?:the\s+)?(?:\d+(?:\.\d+)?\s+(?:days?|weeks?|months?)|(?:whole\s+)?program)\b|\bprogram (?:total|stipend)\b/i.test(value))out.push('program');
+    if(/\bfor\s+(?:the\s+)?(?:\d+(?:\.\d+)?(?:\s+|[-–])(?:days?|weeks?|months?)|(?:whole\s+)?program)\b|\bprogram (?:total|stipend)\b/i.test(value))out.push('program');
     return out;
   }
   function payLabel(job){

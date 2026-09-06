@@ -18,6 +18,8 @@ const themeScripts = inlineScripts.map(match => match[1]).filter(script => scrip
 assert.equal(themeScripts.length, 1, 'the actual page owns one theme bootstrap');
 const themeBootstrap = themeScripts[0];
 const internshipFixture = fixture.replace("pathname:'/jobs.html'", "pathname:'/internships.html'")
+  .replace("response,fetchError,", "response,fetchError,hostname='preview--stillunemployed.netlify.app',")
+  .replace("hostname:'preview--stillunemployed.netlify.app'", "hostname")
   .replace('vm.runInNewContext(instrumented,context', "document.documentElement=document.createElement('html');vm.runInNewContext(themeBootstrap,context,{filename:'internships.html'});vm.runInNewContext(instrumented,context");
 assert.notEqual(internshipFixture, fixture, 'the internship route is set before app.js initializes');
 const fixtureModule = { exports:{} };
@@ -26,6 +28,30 @@ vm.runInNewContext(internshipFixture + '\nmodule.exports={board};', {
   Buffer, URL, URLSearchParams, setImmediate, themeBootstrap
 }, { filename:fixturePath });
 const { board } = fixtureModule.exports;
+
+test('hosted internships honor the live catalog and never fall back after a status failure', async () => {
+  const b = board({fetchError:new Error('status service unavailable')});
+  b.window.SUInternships=I;await b.boot();
+  assert.equal(b.requests.length,1);
+  assert.equal(b.requests[0].url,'/.netlify/functions/internships-catalog');
+  assert.equal(b.app.jobs.length,0);assert.equal(b.app._loadError,true);
+  assert(b.grid.querySelector('[data-act="retryJobs"]'));
+});
+
+test('an explicitly empty reviewed feed has a current empty state, distinct from initial preparation', async () => {
+  for(const [status,copy] of [['verified','No internships listed right now.'],['awaiting_verification','The internship notebook is getting ready.']]){
+    const b=board({response:{ok:true,json:async()=>({schemaVersion:2,status,jobs:[]})}});
+    b.window.SUInternships=I;await b.boot();
+    assert.equal(b.app._loadError,undefined);assert(b.grid.textContent.includes(copy));
+  }
+});
+
+test('localhost previews load only the reviewed local snapshot', async () => {
+  const b=board({hostname:'localhost',response:{ok:true,json:async()=>({schemaVersion:2,status:'verified',jobs:[]})}});
+  b.window.SUInternships=I;await b.boot();
+  assert.equal(b.requests.length,1);assert.equal(b.requests[0].url,'./internships-data.json');
+  assert.equal(b.app.jobs.length,0);
+});
 const day = offset => new Date(Date.now() + offset * 86400000).toISOString().slice(0, 10);
 function listing(extra = {}) {
   const link = extra.link || 'https://example.com/program/design';

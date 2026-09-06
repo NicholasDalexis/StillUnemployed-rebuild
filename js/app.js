@@ -2131,7 +2131,10 @@
       '</div>';
 
       // empty state
-      if(INTERNSHIPS && !this.jobs.length){emptyTitle=this._loadError?'Internships could not load.':'The internship notebook is getting ready.';emptyHint=this._loadError?'Please retry in a moment.':'We are checking current student opportunities before adding cards. Browse Jobs while we get this page ready.';}
+      if(INTERNSHIPS && !this.jobs.length){
+        emptyTitle=this._loadError?'Internships could not load.':this._internshipStatus==='verified'?'No internships listed right now.':'The internship notebook is getting ready.';
+        emptyHint=this._loadError?'Please retry in a moment.':this._internshipStatus==='verified'?'Browse Jobs for more opportunities, or check back for new internships.':'We are checking current student opportunities before adding cards. Browse Jobs while we get this page ready.';
+      }
       if (isEmpty) {
         out += '<div style="display: flex; justify-content: center; padding: 64px 20px 48px;">' +
           '<div style="position: relative; width: 560px; max-width: 100%; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 39px, rgba(96,130,170,0.30) 39px 40.5px); background-position: 0 38px; border-radius: 3px; box-shadow: 4px 12px 30px rgba(44,33,24,0.24); padding: 44px 48px 40px; transform: rotate(-1deg); box-sizing: border-box;">' +
@@ -3119,7 +3122,13 @@
 
   // Never silently republish the undated bundled sample during a feed outage.
   function boot() {
-    if(INTERNSHIPS){fetch('./internships-data.json',{cache:'no-cache'}).then(function(r){if(!r.ok)throw Error('Internship feed unavailable');return r.json();}).then(function(data){if(!window.SUInternships)throw Error('Internship validator unavailable');App._internshipStatus=data.status;App.init(window.SUInternships.jobs(data));}).catch(function(){App._loadError=true;App.init([]);});return;}
+    if(INTERNSHIPS){
+      // Local static previews use the reviewed snapshot. Hosted pages must also
+      // respect current Sheet removals; a failed status check has no fallback.
+      var localPreview=['localhost','127.0.0.1','[::1]'].includes(location.hostname)||location.protocol==='file:';
+      var internshipFeed=localPreview?'./internships-data.json':'/.netlify/functions/internships-catalog';
+      fetch(internshipFeed,{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('Internship feed unavailable');return r.json();}).then(function(data){if(!window.SUInternships)throw Error('Internship validator unavailable');App._internshipStatus=data.status;App.init(window.SUInternships.jobs(data));}).catch(function(){App._loadError=true;App.init([]);});return;
+    }
     fetch(SHEET_CSV_URL + '&_=' + Date.now(), { cache: 'no-cache' })  // &_=ts busts Google's server-side gviz cache so the board always sees the live sheet
       .then(function (r) { if (!r.ok) throw new Error('sheet ' + r.status); return r.text(); })
       .then(function (text) {

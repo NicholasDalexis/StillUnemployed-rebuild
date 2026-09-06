@@ -11,18 +11,27 @@ function operational(extra={}){return {...Object.fromEntries(P.HEADERS.map(h=>[h
 function admission(extra={}){return {publicationApproved:true,officialSourceChecked:true,sourceLink:row().link,sourceUrl:'https://example.org/internships',timingSourceUrl:'https://example.org/internships',checkedAt:'2030-09-06T15:00:00Z',applicationStatus:'open',...extra};}
 function table(record,headers=P.HEADERS){return {schemaVersion:2,headers,rows:[headers.map(h=>record[h]===undefined?'':record[h])]};}
 
-test('v1 remains readable and the shipped awaiting-verification feed stays empty',()=>{
+test('v1 remains readable and the shipped feed validates every admitted record',()=>{
  const old={co:'Example',role:'Intern',link:'https://example.org/job',loc:'US',eligibility:'See employer eligibility',payStatus:'paid',pay:'$22.50/hour',verification:{status:'open',checkedAt:'2030-09-06T15:00:00Z'}};
  assert.equal(I.jobs(feed([old],1),NOW)[0].pay,old.pay);
  assert.deepEqual(I.jobs({...feed([row()]),status:'awaiting_verification'},NOW),[]);
  assert.throws(()=>I.jobs({...feed([]),schemaVersion:99},NOW),/Invalid internship feed/);
  const shipped=JSON.parse(fs.readFileSync(require.resolve('../../internships-data.json'),'utf8'));
- assert.deepEqual(I.jobs(shipped,NOW),[]);
+ assert.ok(['awaiting_verification','verified'].includes(shipped.status));
+ if(shipped.status==='awaiting_verification')assert.deepEqual(shipped.jobs,[]);
+ else assert.equal(shipped.schemaVersion,2);
+ assert.equal(I.jobs(shipped,Date.now()).length,shipped.jobs.length);
 });
 test('accepting-now roles may start months later without a major-brand exception',()=>{
  const accepted=I.jobs(feed([row()]),NOW);assert.equal(accepted.length,1);
  assert.equal(I.applicationState(accepted[0],NOW),'accepting');assert.equal(I.canApply(accepted[0],NOW),true);
  assert.equal(accepted[0].startDate,'January 4, 2031');assert.deepEqual(accepted[0].duties,row().duties);
+});
+test('a stated nine-week program amount does not repeat the program label',()=>{
+ const pay='$9,000 for the 9-week summer program';
+ const accepted=I.jobs(feed([row({pay,payBasis:'program'})]),NOW);
+ assert.equal(I.payLabel(accepted[0]),pay);
+ assert.equal(I.payLabel(row({pay:'$9,000',payBasis:'program'})),'$9,000 for the program');
 });
 test('upcoming permits source-announced partial or unannounced dates and unknown duties',()=>{
  for(const applicationsOpen of ['Fall 2030','Not announced']){
