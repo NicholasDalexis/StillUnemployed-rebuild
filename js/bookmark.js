@@ -42,9 +42,10 @@
       '.su-bm-x:focus-visible,#su-bm-mobile-action:focus-visible{outline:2px solid var(--su-orange);outline-offset:2px;}' +
       '#su-bm-bar{display:none;}' +
       '@media(max-width:640px){#su-bm-postit{display:none!important;}#su-bm-bar{display:block;position:relative;box-sizing:border-box;padding:calc(4px + env(safe-area-inset-top,0px)) 12px 4px;background:var(--su-bg);color:var(--su-ink);font:18px/1.2 var(--su-hand);}' +
-      '#su-bm-bar .su-bm-prompt{display:flex;align-items:center;justify-content:center;gap:10px;min-height:44px;}' +
-      '#su-bm-mobile-action{display:inline-flex;align-items:center;min-height:44px;border:0;padding:0 5px;background:none;color:var(--su-ink);font:inherit;text-decoration:underline;text-decoration-color:var(--su-orange);text-underline-offset:3px;cursor:pointer;}' +
-      '#su-bm-mobile-help{display:block;max-width:340px;margin:0 auto;padding:1px 8px 6px;text-align:center;color:var(--su-muted);font-size:16px;}' +
+      '#su-bm-bar .su-bm-prompt{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;}' +
+      '#su-bm-bar .su-bm-prompt>span{flex:1;min-width:0;max-width:230px;}' +
+      '#su-bm-mobile-action{display:inline-flex;flex:none;white-space:nowrap;align-items:center;min-height:44px;border:0;padding:0 5px;background:none;color:var(--su-ink);font:inherit;text-decoration:underline;text-decoration-color:var(--su-orange);text-underline-offset:3px;cursor:pointer;}' +
+      '#su-bm-mobile-help{display:block;max-width:340px;margin:0 auto;padding:1px 8px 6px;text-align:center;color:var(--su-muted);font:400 16px/1.45 var(--su-body);}' +
       '#su-bm-mobile-help[hidden]{display:none;}}';
     document.head.appendChild(css);
     var slot = document.getElementById('nh-bookmark-slot');
@@ -59,7 +60,7 @@
     }
     var mobile = document.createElement('aside');
     mobile.id = 'su-bm-bar'; mobile.hidden = dismissed; mobile.setAttribute('aria-label', 'Bookmark this board');
-    mobile.innerHTML = '<div class="su-bm-prompt"><span>Keep this board?</span><button id="su-bm-mobile-action" type="button" aria-controls="su-bm-mobile-help" aria-expanded="false">Bookmark</button><button type="button" class="su-bm-x" aria-label="Dismiss bookmark prompt">×</button></div><span id="su-bm-mobile-help" hidden>Share (or menu) → Bookmark</span>';
+    mobile.innerHTML = '<div class="su-bm-prompt"><span>You might never see us again…</span><button id="su-bm-mobile-action" type="button" aria-controls="su-bm-mobile-help" aria-expanded="false">Bookmark us</button><button type="button" class="su-bm-x" aria-label="Dismiss bookmark prompt">×</button></div><span id="su-bm-mobile-help" hidden>Share or Menu → Bookmark</span>';
     mobile.querySelector('.su-bm-x').addEventListener('click', function () { lastTrigger = null; dismiss(); });
     mobile.querySelector('#su-bm-mobile-action').addEventListener('click', function () {
       var hint = document.getElementById('su-bm-mobile-help');

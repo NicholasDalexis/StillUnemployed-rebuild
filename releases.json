@@ -1,7 +1,17 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.1.4",
+  "currentVersion": "2.1.5",
   "releases": [
+    {
+      "version": "2.1.5",
+      "date": "2026-09-06",
+      "title": "Quieter notices and a familiar homepage",
+      "changes": [
+        "Replaced the automatic privacy form with a short notice and optional detailed choices.",
+        "Restored graduation-photo enlargement within the homepage, without a popup.",
+        "Updated the mobile bookmark prompt and made its instructions easier to read."
+      ]
+    },
     {
       "version": "2.1.4",
       "date": "2026-09-06",
@@ -68,7 +78,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "6a7770b545053c747ca04784952770420e6de6d8b57afed4bd34bab603e7500a",
+    "digest": "49e38f2fffcd304a9c873c8f778396f410cfad81440a32d26563c54479cd11d6",
     "fileCount": 121
   }
 }

@@ -28,14 +28,14 @@
   <meta name="twitter:description" content="Salary up front. Filters that get you closer. Your next move, all in one place.">
   <meta name="twitter:image" content="https://stillunemployed.com/assets/og/home.png?v=3">
   <link rel="stylesheet" href="css/brand.css?v=1">
-  <link rel="stylesheet" href="css/home.css?v=nh7">
+  <link rel="stylesheet" href="css/home.css?v=nh8">
   <!-- First-party analytics: defer keeps document order, so this runs BEFORE js/home.js -->
   <script src="js/personalization.js?v=1" defer></script>
 <script src="js/analytics.js?v=an5" defer></script>
-  <!-- Google Analytics 4: analytics storage remains denied until Accept. -->
+  <!-- Compact privacy notice; optional features stay off until chosen. -->
   <script src="js/job-identity.js?v=2" defer></script>
   <script src="js/sync-store.js?v=2" defer></script>
-  <script src="js/ga.js?v=5" defer></script>
+  <script src="js/ga.js?v=7" defer></script>
   <link rel="stylesheet" href="css/account.css?v=3">
 </head>
 <body class="su-home">
@@ -90,10 +90,10 @@
     <div id="nh-bookmark-slot"></div>
   </section>
   <section class="nh-photos" aria-label="Explore the board">
-  <button id="nh-grad-open" class="nh-grad-photo" type="button" aria-label="Open Nic's graduation photo">
+  <figure id="nh-grad-photo" class="nh-grad-photo" tabindex="0" aria-labelledby="nh-grad-caption">
     <span class="nh-grad-print"><img id="nh-grad" src="assets/grad-1.jpg" alt="Nic on graduation day"><span>before I knew how hard the job market would be</span></span>
-  </button>
-  <button id="nh-grad-cue" class="nh-grad-cue" type="button" aria-label="Open Nic's graduation photo">me on grad day <span aria-hidden="true">↘</span></button>
+    <figcaption id="nh-grad-caption" class="nh-grad-cue">me on grad day <span aria-hidden="true">↘</span></figcaption>
+  </figure>
 
   <!-- washi tape corners -->
   <div style="position: absolute; right: 452px; top: 150px; width: 108px; height: 30px; background: rgba(232,203,140,0.62); transform: rotate(-24deg); z-index: 19; box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>
@@ -223,13 +223,6 @@
   </div>
 
 
-<div id="nh-grad-modal" hidden>
-  <div id="nh-grad-dialog" class="nh-grad-dialog">
-    <button id="nh-grad-close" type="button" aria-label="Close graduation photo">✕</button>
-    <img id="nh-grad-full" src="assets/grad-1.jpg" alt="Nic on graduation day">
-    <p>Me on grad day, before I knew how hard the job market would be.</p>
-  </div>
-</div>
 </div>
 
 <!-- =========================================================================
@@ -411,12 +404,12 @@
   <span>&copy; 2026 Elevate Media Technologies LLC</span>
   <a href="./privacy.html">Privacy</a>
   <a href="./terms.html">Terms</a>
-  <a data-su-version href="/versions.html#version-2-1-4" aria-label="Version 2.1.4. View version history">Version 2.1.4</a>
+  <a data-su-version href="/versions.html#version-2-1-5" aria-label="Version 2.1.5. View version history">Version 2.1.5</a>
   <a href="./suggest.html">Suggest Jobs</a>
 </footer>
 
-<script src="js/release.js?v=2.1.4" defer></script>
-<script src="js/home.js?v=nh11" defer></script>
+<script src="js/release.js?v=2.1.5" defer></script>
+<script src="js/home.js?v=nh12" defer></script>
   <script>
     /* "Tracker (N)" badge on the static nav post-its — digits in Archivo, 99+ cap */
     (function () {
@@ -436,7 +429,7 @@
     })();
   </script>
   <!-- Google sign-in. Desktop-only on the homepage; hard-gated OFF on stillunemployed.com. -->
-  <script src="js/bookmark.js?v=bm6" defer></script>
+  <script src="js/bookmark.js?v=bm7" defer></script>
   <script type="module" src="js/auth.js?v=auth9"></script>
 </body>
 </html>

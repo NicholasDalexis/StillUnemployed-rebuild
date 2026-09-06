@@ -280,22 +280,6 @@
       x.addEventListener('click', function (e) { e.stopPropagation(); nhSetModal(false); });
     });
 
-    // The exposed graduation photo keeps a stable hit area; only its shadow changes on hover.
-    var gradOverlay = $('#nh-grad-modal'), gradDialog = $('#nh-grad-dialog'), gradClose = $('#nh-grad-close');
-    function closeGrad() { if (gradOverlay) gradOverlay.hidden = true; closeDialog(gradDialog); }
-    ['#nh-grad-open', '#nh-grad-cue'].forEach(function (selector) {
-      var opener = $(selector);
-      if (opener) opener.addEventListener('click', function () {
-        var full = $('#nh-grad-full'), preview = $('#nh-grad');
-        if (!gradOverlay || !gradDialog || !full || !preview) return;
-        full.src = preview.src;
-        gradOverlay.hidden = false;
-        openDialog(gradDialog, opener, "Nic on graduation day", closeGrad);
-      });
-    });
-    if (gradClose) gradClose.addEventListener('click', closeGrad);
-    if (gradOverlay) gradOverlay.addEventListener('click', function (e) { if (e.target === gradOverlay) closeGrad(); });
-
     // newsletter fold inside the modal
     var tab = $('#nh-nl-tab'), note = $('#nh-nl-note'), close = $('#nh-nl-close');
     accessibleButton(tab, 'Open newsletter note');

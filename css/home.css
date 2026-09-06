@@ -131,7 +131,7 @@ div[data-screen-label="Hero"] { transform-origin: top center; flex: none; }
     div[data-screen-label="Hero"] {
       transform: none !important;
       width: 100% !important;
-      height: calc(100svh - var(--su-mobile-bookmark-height, 0px)) !important;
+      height: calc(100svh - var(--su-mobile-bookmark-height, 0px) - var(--su-mobile-notice-height, 0px)) !important;
       min-height: 420px !important;
       overflow: hidden !important;
       padding: 0 !important;
@@ -379,12 +379,17 @@ body:has(#m-sticky.open) .su-cc { visibility:hidden; }
   .nh-photos > div[style*="right: 452px"] { right:auto !important; left:10%; }
   .nh-photos > div[style*="right: 96px"] { right:18% !important; }
   #nh-cta { right:8%; top:auto; bottom:0; font-size:clamp(17px,1.5vw,24px); max-width:87%; white-space:normal; }
-  .nh-grad-photo { position:absolute; right:0; top:4%; width:44%; height:68%; border:0; padding:0; background:none; cursor:pointer; z-index:14; }
-  .nh-grad-print { display:block; padding:12px 12px 24px; background:#FBF7EE; box-shadow:0 16px 30px rgba(44,33,24,.24); transform:rotate(7deg); transition:box-shadow .2s; }
+  .nh-grad-photo { position:absolute; right:0; top:4%; width:44%; height:68%; margin:0; padding:0; cursor:zoom-in; z-index:14; }
+  .nh-grad-print { display:block; padding:12px 12px 24px; background:#FBF7EE; box-shadow:0 16px 30px rgba(44,33,24,.24); transform:rotate(7deg); transform-origin:right 35%; transition:transform .25s ease,box-shadow .25s ease; pointer-events:none; }
   .nh-grad-print img { display:block; width:100%; aspect-ratio:4/5; object-fit:cover; object-position:50% 24%; }
   .nh-grad-print > span { display:block; font:16px/1.25 'Indie Flower',cursive; padding-top:8px; color:#6F5E45; }
-  .nh-grad-photo:hover .nh-grad-print { box-shadow:0 18px 36px rgba(44,33,24,.35); }
-  .nh-grad-cue { position:absolute; right:4%; top:-5%; display:flex; align-items:center; gap:12px; background:none; border:0; padding:8px; color:#7A4A2C; font:22px/1.2 'Indie Flower',cursive; cursor:pointer; z-index:25; }
+  /* Transform the print within a stable figure/caption hit area, so hovering
+     the exposed photo or its caption cannot make the enlargement jitter. */
+  .nh-grad-photo:hover,.nh-grad-photo:focus-visible { z-index:40; }
+  .nh-grad-photo:hover .nh-grad-print,.nh-grad-photo:focus-visible .nh-grad-print { transform:translateY(-7px) rotate(0deg) scale(1.12); box-shadow:0 24px 42px rgba(44,33,24,.35); }
+  .nh-grad-photo:focus-visible { outline:none; }
+  .nh-grad-photo:focus-visible .nh-grad-print { outline:3px solid var(--su-orange-text); outline-offset:5px; }
+  .nh-grad-cue { position:absolute; right:9%; top:-13.25%; display:flex; align-items:center; gap:12px; padding:8px; color:#7A4A2C; font:22px/1.2 'Indie Flower',cursive; white-space:nowrap; }
   .nh-grad-cue > span { font-size:44px; transform:rotate(15deg); }
   .nh-proof { padding-top:20px; grid-column:1/-1; display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; margin-top:4px; }
   #nh-founder { position:relative !important; left:auto !important; top:auto !important; width:100% !important; max-width:560px; }
@@ -399,12 +404,6 @@ body:has(#m-sticky.open) .su-cc { visibility:hidden; }
   #nh-modal { position:fixed !important; inset:0 !important; padding:28px 18px; overflow:auto; align-items:flex-start !important; }
   #nh-modal-card { margin:auto; max-width:100%; }
 }
-#nh-grad-modal { position:fixed; inset:0; z-index:150; background:rgba(44,33,24,.66); display:flex; align-items:center; justify-content:center; padding:24px; }
-.nh-grad-dialog { position:relative; max-width:520px; max-height:92svh; overflow:auto; padding:14px 14px 24px; background:#FCFAF3; box-shadow:0 24px 80px #21180f55; }
-.nh-grad-dialog > img { display:block; max-width:100%; max-height:70svh; margin:auto; object-fit:contain; }
-.nh-grad-dialog > p { font:22px/1.3 'Indie Flower',cursive; padding:18px 8px 0; color:#5C4033; }
-#nh-grad-close { position:absolute; right:20px; top:20px; border:0; border-radius:50%; width:44px; height:44px; cursor:pointer; color:#2C2118; background:#FCFAF3; font-size:20px; }
-.nh-grad-photo:focus-visible,.nh-grad-cue:focus-visible,#nh-grad-close:focus-visible { outline:3px solid #D8502E; outline-offset:5px; }
 @media (min-width:641px) and (max-width:1050px) {
   #hero-desktop.nh-page { grid-template-columns:1fr; max-width:780px; padding-inline:32px; gap:32px; }
   .nh-intro { max-width:610px; padding-top:0; }
@@ -420,13 +419,6 @@ body:has(#m-sticky.open) .su-cc { visibility:hidden; }
 @media (prefers-reduced-motion:reduce) {
   .nh-grad-print,.nh-main-photo { transition:none; }
 }
-/* Keep consent at the end of the homepage, where it cannot cover content. */
-.su-home > .su-cc:not(.su-cc-inline) { position:relative; left:auto; right:auto; bottom:auto; width:calc(100% - 24px); max-width:680px; box-sizing:border-box; margin:0 auto 24px; padding:16px; transform:none; animation:none; box-shadow:none; background:#FCFAF3; border:1px solid #c9bfae; }
-.su-home > .su-cc:not(.su-cc-inline)::before { display:none; }
-.su-home > .su-cc:not(.su-cc-inline) .su-cc-t { font-size:14px; }
-.su-home > .su-cc:not(.su-cc-inline) .su-cc-row { justify-content:flex-end; }
-.su-home > .su-cc:not(.su-cc-inline) button { min-height:44px; padding:8px 14px; font-size:14px; }
-
 /* Desktop utilities remain alongside the primary actions. Mobile guidance has
    its own flow row above the hero, so it never covers the heading or tabs. */
 .nh-utilities { display:flex; align-items:center; gap:24px; margin-top:16px; }
@@ -439,5 +431,5 @@ body:has(#m-sticky.open) .su-cc { visibility:hidden; }
   #m-nav-bottom a { min-height:44px; display:inline-flex; align-items:center; justify-content:center; padding:8px 14px; }
   #m-sticky { bottom:calc(124px + env(safe-area-inset-bottom, 0px)); }
   #m-sticky.open { bottom:calc(106px + env(safe-area-inset-bottom, 0px)); }
-  #m-sticky.open .sn-msg { max-height:calc(100svh - var(--su-mobile-bookmark-height, 0px) - 138px - env(safe-area-inset-bottom, 0px)); overflow-y:auto; }
+  #m-sticky.open .sn-msg { max-height:calc(100svh - var(--su-mobile-bookmark-height, 0px) - var(--su-mobile-notice-height, 0px) - 138px - env(safe-area-inset-bottom, 0px)); overflow-y:auto; }
 }
