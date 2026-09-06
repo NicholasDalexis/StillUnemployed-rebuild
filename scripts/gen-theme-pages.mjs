@@ -52,7 +52,7 @@ const THEMES = {
   chess:    'Chess',
 };
 
-const DESC = 'Opened and checked by a human (me). Every role has a real salary. No AI slop.';
+const DESC = 'Find roles with salary information. Save the ones that fit and keep your applications together.';
 const board = readFileSync(join(ROOT, 'jobs.html'), 'utf8');
 
 let made = 0;

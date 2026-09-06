@@ -653,7 +653,7 @@ div[data-screen-label="Hero"] { transform-origin: top center; flex: none; }
     }
     /* ---- nav tabs pinned at bottom ---- */
     #m-nav-bottom {
-      position: absolute !important; bottom: 50px; left: 0; right: 0; z-index: 25;
+      position: absolute !important; bottom: 64px; left: 0; right: 0; z-index: 25;
       display: flex !important; justify-content: center; gap: 12px; padding: 0 16px;
     }
     #m-nav-bottom a {
@@ -706,7 +706,7 @@ div[data-screen-label="Hero"] { transform-origin: top center; flex: none; }
     div[data-screen-label="Hero"] > div[style*="z-index: 100"] > div[style*="width: 600px"] { width: 92vw !important; max-width: 92vw !important; }
     /* ---- sticky note overlay ---- */
     #m-sticky {
-      position: absolute !important; bottom: 124px; right: 16px; z-index: 30;
+      position: absolute !important; bottom: 150px; right: 16px; z-index: 30;
       width: 92px; height: 66px;
       cursor: pointer;
       transform: rotate(-4deg);
@@ -755,33 +755,23 @@ div[data-screen-label="Hero"] { transform-origin: top center; flex: none; }
 
     /* ---- expanded (open) state ---- */
     #m-sticky.open {
-      width: min(84vw, 296px); height: auto;
-      transform: rotate(-1.5deg); bottom: 84px; right: 24px;
+      width: min(calc(100vw - 40px), 320px); height: auto;
+      transform: rotate(-1.5deg); bottom: 128px; right: 20px;
       overflow: visible !important;
     }
     #m-sticky.open .sn-arrow { display: none; }
     #m-sticky.open .sn-card {
-      width: 100%; height: auto; min-height: 190px;
+      width: 100%; height: auto; min-height: 0;
       border-radius: 5px; overflow: visible;
     }
     #m-sticky.open .sn-label { display: none; }
     #m-sticky.open .sn-msg {
       display: block; position: relative;
       font-family: 'Indie Flower', cursive; font-size: 17px;
-      color: #2a2a2a; line-height: 1.62;
-      padding: 16px 18px 14px 26px; text-align: left;
+      color: #2a2a2a; line-height: 1.5;
+      padding: 14px 16px 6px 24px; text-align: left;
     }
-    /* signature row (2026-07-18): round photo of Nic left + "– Nic" beside it, left-aligned
-       (was a lone right-aligned "– Nic"). Photo = assets/nic-avatar.jpg, cropped square,
-       circled here with border-radius. */
-    #m-sticky.open .sn-sig {
-      display: flex; align-items: center; gap: 10px; margin-top: 12px;
-    }
-    #m-sticky.open .sn-ava {
-      width: 44px; height: 44px; border-radius: 50%; object-fit: cover; flex: none;
-      border: 2px solid rgba(42,42,42,0.75); box-shadow: 0 2px 6px rgba(0,0,0,0.22);
-      background: #e8e2d4;
-    }
+    /* The signature shares the last line with the job-board action. */
     #m-sticky.open .sn-sign {
       display: block; text-align: left;
       font-family: 'Indie Flower', cursive; font-size: 17px; color: #2a2a2a;
@@ -789,7 +779,7 @@ div[data-screen-label="Hero"] { transform-origin: top center; flex: none; }
     #m-sticky.open .sn-close {
       display: flex; align-items: center; justify-content: center;
       position: absolute; top: -11px; right: -6px;
-      width: 28px; height: 28px; border-radius: 50%;
+      width: 44px; height: 44px; border-radius: 50%;
       background: #3a2e22; color: #fff; font-size: 16px; line-height: 1;
       box-shadow: 0 2px 6px rgba(0,0,0,0.3); z-index: 2;
     }
@@ -799,7 +789,9 @@ div[data-screen-label="Hero"] { transform-origin: top center; flex: none; }
 /* Mobile note actions and the inline bookmark reminder. */
 #m-sticky .sn-label { border:0; background:none; width:100%; cursor:pointer; }
 #m-sticky .sn-close { border:0; cursor:pointer; }
-#m-sticky .sn-jobs { display:block; margin-top:10px; text-align:right; color:#D8502E; font-weight:700; text-decoration:none; min-height:32px; }
+#m-sticky .sn-note-footer { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:6px; }
+#m-sticky .sn-sign { white-space:nowrap; }
+#m-sticky .sn-jobs { display:inline-flex; align-items:center; gap:8px; color:#A43E21; font-weight:700; text-decoration:none; min-height:44px; white-space:nowrap; }
 #m-sticky .sn-jobs:focus-visible { outline:2px solid #D8502E; }
 @media(max-width:640px) {
   #su-bm-bar.su-bm-inline { position:static; display:flex; align-items:center; gap:8px; margin:0 auto 12px; padding:4px 12px; max-width:364px; box-sizing:border-box; background:none; color:#5c402e; box-shadow:none; transform:none; font-family:'Indie Flower',cursive; font-size:18px; font-weight:400; line-height:1.3; }
@@ -816,18 +808,18 @@ body:has(#m-sticky.open) .su-cc { visibility:hidden; }
     background-image:radial-gradient(rgba(120,92,54,.065) 1px, transparent 1.7px),radial-gradient(rgba(120,92,54,.045) 1px, transparent 1.7px);
     background-size:9px 9px; background-position:0 0,4.5px 4.5px;
   }
-  #hero-desktop.nh-page { width:100%; max-width:2560px; height:auto; margin:0 auto; padding:28px clamp(30px,5vw,128px) 56px; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:64px clamp(42px,5vw,160px); transform:none; overflow:visible; }
+  #hero-desktop.nh-page { width:100%; max-width:1500px; height:auto; margin:0 auto; padding:24px 48px 48px; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:32px 64px; transform:none; overflow:visible; }
   .nh-nav { grid-column:1/-1; display:flex; justify-content:center; align-items:center; gap:18px; padding-bottom:12px; }
-  .nh-intro { align-self:center; min-width:0; padding-bottom:24px; }
+  .nh-intro { align-self:start; min-width:0; padding-top:40px; padding-bottom:12px; }
   .nh-intro > .nh-eyebrow,.nh-intro > .nh-headline,.nh-intro > .nh-summary,.nh-intro > .nh-actions { position:relative !important; left:auto !important; top:auto !important; }
   .nh-intro > .nh-eyebrow { margin-bottom:18px; font-size:22px !important; transform:none !important; display:flex; align-items:center; gap:9px; }
   .nh-eyebrow > span { font-size:29px; }
-  .nh-headline > div:first-child { font-size:clamp(106px,10vw,210px) !important; }
-  .nh-headline > div:last-child > div { font-size:clamp(52px,5.1vw,106px) !important; }
+  .nh-headline > div:first-child { font-size:clamp(106px,10vw,148px) !important; }
+  .nh-headline > div:last-child > div { font-size:clamp(52px,5vw,74px) !important; }
   .nh-headline svg { width:100%; }
-  .nh-intro > .nh-summary { width:auto !important; max-width:580px; margin-top:40px; padding:0 !important; clip-path:none !important; background:none !important; transform:none !important; box-shadow:none !important; }
-  .nh-summary > div { font-size:clamp(18px,1.25vw,22px) !important; line-height:1.6 !important; }
-  .nh-intro > .nh-actions { margin-top:30px; display:flex; flex-wrap:wrap; gap:24px !important; }
+  .nh-intro > .nh-summary { width:auto !important; max-width:500px; margin-top:28px; padding:0 !important; clip-path:none !important; background:none !important; transform:none !important; box-shadow:none !important; }
+  .nh-summary > div { font-size:20px !important; line-height:1.6 !important; }
+  .nh-intro > .nh-actions { margin-top:24px; display:flex; flex-wrap:wrap; gap:20px !important; }
   .nh-browse { font-size:24px; padding:15px 22px; }
   #nh-open-story { font-size:20px !important; }
   .nh-photos { position:relative; min-width:0; width:100%; max-width:920px; justify-self:end; align-self:center; aspect-ratio:1/1.12; }
@@ -847,7 +839,7 @@ body:has(#m-sticky.open) .su-cc { visibility:hidden; }
   .nh-grad-photo:hover .nh-grad-print { box-shadow:0 18px 36px rgba(44,33,24,.35); }
   .nh-grad-cue { position:absolute; right:4%; top:-5%; display:flex; align-items:center; gap:12px; background:none; border:0; padding:8px; color:#7A4A2C; font:22px/1.2 'Indie Flower',cursive; cursor:pointer; z-index:25; }
   .nh-grad-cue > span { font-size:44px; transform:rotate(15deg); }
-  .nh-proof { grid-column:1/-1; display:grid; grid-template-columns:1fr 1fr; gap:clamp(48px,9vw,220px); align-items:center; margin-top:4px; }
+  .nh-proof { padding-top:20px; grid-column:1/-1; display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; margin-top:4px; }
   #nh-founder { position:relative !important; left:auto !important; top:auto !important; width:100% !important; max-width:560px; }
   .nh-newsletter { position:relative !important; left:auto !important; top:auto !important; width:100% !important; max-width:560px; justify-self:end; }
   .nh-featured-section { grid-column:1/-1; display:grid; grid-template-columns:1fr auto; gap:36px 24px; padding-top:14px; }
@@ -867,8 +859,8 @@ body:has(#m-sticky.open) .su-cc { visibility:hidden; }
 #nh-grad-close { position:absolute; right:20px; top:20px; border:0; border-radius:50%; width:44px; height:44px; cursor:pointer; color:#2C2118; background:#FCFAF3; font-size:20px; }
 .nh-grad-photo:focus-visible,.nh-grad-cue:focus-visible,#nh-grad-close:focus-visible { outline:3px solid #D8502E; outline-offset:5px; }
 @media (min-width:641px) and (max-width:1050px) {
-  #hero-desktop.nh-page { grid-template-columns:1fr; max-width:780px; gap:44px; }
-  .nh-intro { max-width:610px; }
+  #hero-desktop.nh-page { grid-template-columns:1fr; max-width:780px; padding-inline:32px; gap:32px; }
+  .nh-intro { max-width:610px; padding-top:0; }
   .nh-headline > div:first-child { font-size:132px !important; }
   .nh-headline > div:last-child > div { font-size:66px !important; }
   .nh-photos { width:88%; margin-top:14px; justify-self:center; }
@@ -887,3 +879,19 @@ body:has(#m-sticky.open) .su-cc { visibility:hidden; }
 .su-home > .su-cc:not(.su-cc-inline) .su-cc-t { font-size:14px; }
 .su-home > .su-cc:not(.su-cc-inline) .su-cc-row { justify-content:flex-end; }
 .su-home > .su-cc:not(.su-cc-inline) button { min-height:44px; padding:8px 14px; font-size:14px; }
+
+/* v2.1 utilities stay secondary to Home / Jobs / Tracker, but remain discoverable. */
+.nh-utilities, #m-home-utilities { display:flex; align-items:center; gap:24px; }
+.nh-utilities { margin-top:16px; }
+.nh-utilities a, .su-bookmark-trigger, #m-home-utilities a { display:inline-flex; align-items:center; min-height:44px; padding:0; border:0; background:none; color:#674C35; font:18px/1.3 'Indie Flower',cursive; text-decoration:underline; text-underline-offset:4px; cursor:pointer; }
+.nh-utilities a:hover, .su-bookmark-trigger:hover { color:#A43E21; }
+.nh-utilities a:focus-visible, .su-bookmark-trigger:focus-visible, #m-home-utilities a:focus-visible { outline:2px solid #A43E21; outline-offset:4px; }
+@media(max-width:640px) {
+  #m-home-utilities { position:absolute; z-index:25; bottom:8px; left:16px; right:16px; justify-content:center; gap:28px; }
+  #m-home-utilities a, #m-home-utilities .su-bookmark-trigger { color:#FCFAF3; text-shadow:0 1px 5px #000; font-size:17px; }
+  #hero-dots { bottom:120px !important; }
+  #m-nav-bottom { gap:10px; }
+  #m-nav-bottom a { min-height:44px; display:inline-flex; align-items:center; justify-content:center; padding:8px 14px; }
+  #m-home-utilities a:focus-visible, #m-home-utilities .su-bookmark-trigger:focus-visible { outline-color:#FCFAF3; }
+  #m-sticky.open .sn-msg { max-height:calc(100svh - 166px); overflow-y:auto; }
+}

@@ -505,6 +505,13 @@
         } catch (e) { return ''; }
       })() + '</a>';
     hero.appendChild(n);
+    var utilities = document.createElement('div');
+    utilities.id = 'm-home-utilities';
+    utilities.setAttribute('aria-label', 'Board utilities');
+    utilities.innerHTML = '<button type="button" class="su-bookmark-trigger" data-bookmark-help="su-bm-bar" aria-controls="su-bm-bar" aria-expanded="false">Bookmark</button>' +
+      '<a href="./suggest.html">Suggest Jobs</a>';
+    hero.appendChild(utilities);
+    document.dispatchEvent(new Event('su:home-utilities-ready'));
   }
 
   function injectSticky(hero) {
@@ -516,12 +523,10 @@
       '<div class="sn-card">' +
         '<button type="button" class="sn-close" aria-label="Close note">×</button>' +
         '<button type="button" class="sn-label" aria-expanded="false">open</button>' +
-        // Signature row (Nic, 2026-07-18): circular photo of Nic (at the Instagram wall) LEFT,
-        // "– Nic" beside it, row left-aligned — replaces the lone right-aligned "– Nic".
-        // onerror hides the circle if assets/nic-avatar.jpg is ever missing: no broken-image icon.
+        // Keep the signature and job action together so the note ends on one line.
         '<div class="sn-msg">Hi, I’m Nic. I spent 7 months unemployed after graduating in 2025. Today I work at Instagram and make six figures. This is the job board I wish I had, so I built it. Have fun!' +
-          '<span class="sn-sig"><img class="sn-ava" src="assets/nic-avatar.jpg" alt="Nic at the Instagram office" onerror="this.style.display=\'none\'"><span class="sn-sign">– Nic</span></span>' +
-          '<a class="sn-jobs" href="./jobs.html">Just Jobs <span aria-hidden="true">→</span></a>' +
+          '<div class="sn-note-footer"><span class="sn-sign">- Nic</span>' +
+          '<a class="sn-jobs" href="./jobs.html">Apply to Jobs <span aria-hidden="true">→</span></a></div>' +
         '</div>' +
       '</div>';
     hero.appendChild(s);
@@ -564,7 +569,7 @@
           '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="m-check"><span class="ic">&#10003;</span> Roles are checked by (me) a human.</div>' +
+      '<div class="m-check"><span class="ic">&#10003;</span> Human Verified</div>' +
       '<div id="m-founder-card">' +
         (src ? '<img src="' + src + '" alt="Nic">' : '') +
         '<div><div class="fc-t1">Nic, the founder</div><div class="fc-t2">Currently at Instagram making 6 figures</div></div>' +

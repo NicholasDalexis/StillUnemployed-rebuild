@@ -1,7 +1,18 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2",
+  "currentVersion": "2.1.0",
   "releases": [
+    {
+      "version": "2.1.0",
+      "date": "2026-09-05",
+      "title": "Meet Version 2",
+      "changes": [
+        "A welcome on your first Jobs visit introduces advice, themes, Google sync and Tracker, plus a Portfolio Graded preview.",
+        "A tighter homepage, Apply to Jobs beside Nic’s signature, and easier access to Bookmark and Suggest Jobs.",
+        "Version history is available from the founder note, board footer and welcome.",
+        "Six additional verified job URL variants now group into their original postings."
+      ]
+    },
     {
       "version": "2",
       "date": "2026-09-05",
@@ -20,7 +31,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "63aea54ce6188643733105b08715210da57a1b2d815549605928e461a1697b84",
-    "fileCount": 100
+    "digest": "67764d52ce764fd5c9636355f419e53ad827518a66c90ced87e5fc0cef9409f8",
+    "fileCount": 102
   }
 }

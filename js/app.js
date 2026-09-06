@@ -161,7 +161,7 @@
       // Nic explicitly rejected the "pick 5 roles" advice (his philosophy is volume on a strong
       // base resume). The trap ISN'T applying too much — it's that every board is the same
       // recycled LinkedIn listings. Which conveniently positions THIS board as the way out.
-      why: 'You use LinkedIn. You get bored of LinkedIn. You find a shiny new job board, and it\'s the same jobs reposted. Most boards are mirrors of each other. This one is checked by a human, every role has a real salary, and I only add jobs I\'d actually apply to.' },
+      why: 'You use LinkedIn. You get bored of LinkedIn. You find a shiny new job board, and it\'s the same jobs reposted. Most boards are mirrors of each other. This board brings salary information, saved roles and your application tracker together.' },
     { id: 'grad-school', g: 'figures', hook: 'thinking grad school will save you?',
       cta: 'run the numbers',
       why: '2 out of 5 master\'s programs leave grads financially worse off than if they\'d just started working. Grad school is a plan, not a hiding spot. Run the numbers before you sign anything.' },
@@ -1922,7 +1922,7 @@
           '<div style="position: relative;">' +
             '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 22px; color: ' + (girly ? '#D6277E' : '#C2552F') + '; transform: rotate(-2deg); display: inline-block;">★ StillUnemployed.com</div>' +
             '<h1 style="font-family: \'Archivo Black\', \'Archivo\', sans-serif; font-weight: 900; font-size: 66px; line-height: 0.95; letter-spacing: -0.03em; color: ' + boardInk + '; margin: 8px 0 0; max-width: 760px;">Roles I\'d <span style="-webkit-box-decoration-break: clone; box-decoration-break: clone; padding: 0 .12em; background: linear-gradient(98deg, transparent 1.5%, ' + HLC + ' 1.5% 98.5%, transparent 98.5%); background-repeat: no-repeat; background-size: 100% 62%; background-position: 0 80%;">actually</span> apply to.</h1>' +
-            '<div class="board-subtitle" style="font-family: \'Indie Flower\', cursive; font-size: 22px; color: ' + subInk + '; margin-top: 14px; transform: rotate(-0.6deg);">opened &amp; checked by a human (me) · updated weekly →</div>' +
+            '<div class="board-subtitle" style="font-family: \'Indie Flower\', cursive; font-size: 22px; color: ' + subInk + '; margin-top: 14px; transform: rotate(-0.6deg);">Salary up front. Your next move, all in one place.</div>' +
           '</div>' +
           '<div style="display: flex; align-items: flex-start; gap: 12px; flex: none;">' +
             '<div data-act="openLook" class="tab" style="' + changeLookBtnStyle + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M4 7l5-3 6 3 5-3v13l-5 3-6-3-5 3V7z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path><path d="M9 4v13M15 7v13" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path></svg>change theme</div>' +
@@ -1977,6 +1977,7 @@
       out += '<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 18px; min-height: 30px;">' +
         chipsHtml +
         '<a href="./suggest.html" style="display:inline-flex; align-items:center; min-height:44px; font-family: \'Indie Flower\', cursive; font-size:18px; text-underline-offset:4px; color:' + showInk + ';">Suggest Jobs</a>' +
+        '<button type="button" class="su-whats-new" data-act="openWelcome" style="color:' + showInk + ';">What’s new</button>' +
         '<div style="margin-left: auto; font-family: \'Indie Flower\', cursive; font-size: 18px; color: ' + showInk + ';">' + esc(showingLabel) + '</div>' +
       '</div>';
 
@@ -2109,7 +2110,7 @@
                 '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 32px; line-height: 1.06; letter-spacing: -0.02em; color: #2C2118; width: 300px;">Hey, I\'m Nic. I built this.</div>' +
                 '<svg width="220" height="12" viewBox="0 0 220 12" fill="none" style="position: absolute; left: 4px; bottom: -8px;"><path d="M3 7 C 55 2, 120 2, 217 6" stroke="#F2C231" stroke-width="4" stroke-linecap="round"></path></svg>' +
               '</div>' +
-              '<div style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 18px;">I sent <strong style="font-weight: 800; color: #2C2118;">1,500 applications</strong> and got ghosted more times than I can count. Seven months later, <strong style="font-weight: 800; color: #2C2118;">Instagram</strong> said yes. <strong style="font-weight: 800; color: #2C2118;">StillUnemployed</strong> is the board I wish I\'d had. Roles here are <strong style="font-weight: 800; color: #2C2118;">opened and verified by a human</strong>, and that human is me. No AI slop, just jobs I\'d <strong style="font-weight: 800; color: #2C2118;">actually apply to</strong>.</div>' +
+              '<div style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 18px;">I sent <strong style="font-weight: 800; color: #2C2118;">1,500 applications</strong> and got ghosted more times than I can count. Seven months later, <strong style="font-weight: 800; color: #2C2118;">Instagram</strong> said yes. <strong style="font-weight: 800; color: #2C2118;">StillUnemployed</strong> is the board I wish I\'d had. Find roles with salary information, save the ones that fit and keep your applications together.</div>' +
               '<div style="font-size: 13px; font-weight: 600; color: #6f6253; letter-spacing: 0.01em; margin-top: 18px;">Content Specialist at Instagram · Class of 2025</div>' +
               '<div style="display: flex; align-items: center; gap: 16px; margin-top: 22px; flex-wrap: wrap;">' +
                 '<a href="https://NicholasAlexis.com" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 11px; background: #5C4033; color: #F4EEE2; font-size: 16px; font-weight: 700; padding: 15px 26px; border-radius: 12px; cursor: pointer; box-shadow: 0 10px 24px rgba(44,33,24,0.22); text-decoration: none; transform: rotate(-1deg); font-family: \'Archivo\', sans-serif;">View My Portfolio' +
@@ -2117,6 +2118,7 @@
                 '</a>' +
                 '<div style="font-family: \'Indie Flower\', cursive; font-size: 22px; color: #6F5E45; transform: rotate(-2deg);">- Nic</div>' +
               '</div>' +
+              '<div class="su-founder-release"><a href="/versions.html" data-su-version>Version history</a><button type="button" data-act="openWelcome">What’s new</button></div>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -2414,6 +2416,7 @@
 
       root.innerHTML = out;
       prepareActions(root);
+      if (window.SURelease) window.SURelease.render();
       var panels = Array.from(root.children);
       var top = panels.sort(function (a,b) { return Number(a.style.zIndex) - Number(b.style.zIndex); }).pop();
       var dialog = top && top.querySelector('[data-act="stop"]');
@@ -2425,6 +2428,7 @@
         if (previousKey === dialogKey && previousFocus && previousFocus.act && previousFocus.act !== 'stop') restoreIntent(previousFocus);
         if (!dialog.contains(document.activeElement)) dialog.focus({ preventScroll:true });
       } else if (previousDialog) { restoreIntent(this._dialogReturn); this._dialogReturn = null; }
+      if (!dialog && window.SUWelcome) window.SUWelcome.maybeShow();
     },
 
     // ---- event wiring (single delegated listener on document) -------------
@@ -2432,6 +2436,7 @@
       var self = this;
 
       document.addEventListener('keydown', function (e) {
+        if (document.querySelector('#su-launch[open]')) return;
         var dialog = document.querySelector('#overlay-root [role="dialog"]');
         if (e.key === 'Escape') {
           if (dialog) {
@@ -2466,6 +2471,10 @@
 
         switch (act) {
           case 'retryJobs': location.reload(); break;
+          case 'openWelcome':
+            self.setState({ modalOpen:false });
+            if (window.SUWelcome) window.SUWelcome.open();
+            break;
           case 'openModal': self.setState({ modalOpen: true }); break;
           case 'closeModal': self.setState({ modalOpen: false }); break;
           case 'closeFeedback': self.setState({ feedbackOpen: false }); break;

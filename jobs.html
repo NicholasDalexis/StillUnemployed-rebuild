@@ -6,21 +6,21 @@
   <!-- Root base so /jobs/<theme> deep-links resolve assets (css/js) + links from site root -->
   <base href="/">
   <title>StillUnemployed.com — Roles I'd actually apply to</title>
-  <meta name="description" content="Roles here are opened and checked by a human (me). No AI slop, just jobs I'd actually apply to.">
+  <meta name="description" content="Find roles with salary information. Save the ones that fit and keep your applications together.">
   <!-- SHARE PREVIEW (og:image) — the ORIGINAL theme board. Crawlers read raw HTML and do NOT run JS,
        so the theme in the preview can't be swapped client-side. That's why each /jobs/<theme> URL gets
        its OWN generated page with its OWN og:image (see scripts/gen-share.mjs → theme board pages). -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="StillUnemployed.com">
   <meta property="og:title" content="Roles I'd actually apply to">
-  <meta property="og:description" content="Opened and checked by a human (me). Every role has a real salary. No AI slop.">
+  <meta property="og:description" content="Find roles with salary information. Save the ones that fit and keep your applications together.">
   <meta property="og:url" content="https://stillunemployed.com/jobs">
   <meta property="og:image" content="https://stillunemployed.com/assets/og/original.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Roles I'd actually apply to">
-  <meta name="twitter:description" content="Opened and checked by a human (me). Every role has a real salary. No AI slop.">
+  <meta name="twitter:description" content="Find roles with salary information. Save the ones that fit and keep your applications together.">
   <meta name="twitter:image" content="https://stillunemployed.com/assets/og/original.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,10 +67,11 @@
   <!-- First-party analytics: defer keeps document order, so this runs BEFORE js/app.js -->
   <script src="js/analytics.js?v=an4" defer></script>
   <!-- Google Analytics 4: analytics storage remains denied until Accept. -->
-  <script src="js/job-identity.js?v=1" defer></script>
+  <script src="js/job-identity.js?v=2" defer></script>
   <script src="js/sync-store.js?v=2" defer></script>
   <script src="js/ga.js?v=5" defer></script>
   <link rel="stylesheet" href="css/account.css?v=2">
+  <link rel="stylesheet" href="css/onboarding.css?v=1">
 </head>
 <body>
   <!-- The board is rendered by js/app.js from jobs-data.json, reproducing the exact
@@ -94,9 +95,12 @@
     <span>&copy; 2026 Elevate Media Technologies LLC</span> &nbsp;&middot;&nbsp;
     <a href="./privacy.html">Privacy Policy</a>
     <a href="./terms.html">Terms of Service</a>
+    <a data-su-version href="/versions.html#version-2-1-0" aria-label="Version 2.1.0. View version history">Version 2.1.0</a>
   </footer>
 
-  <script src="js/app.js?v=app41" defer></script>
+  <script src="js/release.js?v=2.1.0" defer></script>
+  <script src="js/onboarding.js?v=1" defer></script>
+  <script src="js/app.js?v=app42" defer></script>
   <!-- Google sign-in + cross-device sync. HARD-GATED OFF on stillunemployed.com (see js/auth.js). -->
   <script type="module" src="js/auth.js?v=auth8"></script>
 </body>

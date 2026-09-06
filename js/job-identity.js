@@ -13,6 +13,13 @@ var SUJobIdentity = (function () {
   var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   var TENANT = /^[A-Za-z0-9][A-Za-z0-9_.-]*$/;
   var AMBIGUOUS = {};
+  // These exact short links were observed redirecting to the named employer
+  // paths on 2026-09-05. Unknown shortcodes never infer an employer or share a
+  // globally unscoped ID key with every Workable tenant.
+  var WORKABLE_SHORT_ALIASES = {
+    '9E2D6ACC47': 'magicspoon',
+    'A6CF4192C0': 'petlab-co'
+  };
 
   function has(object, key) { return Object.prototype.hasOwnProperty.call(object, key); }
   function encoded(value) {
@@ -130,7 +137,9 @@ var SUJobIdentity = (function () {
       match = path.match(/^\/(?:[a-z]{2}(?:-[A-Za-z]{2})?\/)?([^\/]+)\/job\/(.+)$/);
       if (!match || parsed.pairs.length || !TENANT.test(match[1])) return null;
       var slug = match[2].split('/').pop();
-      var requisition = slug.match(/_([A-Za-z][A-Za-z0-9-]*[0-9][A-Za-z0-9-]*)$/);
+      // Workday also issues wholly numeric requisitions (for example Madewell
+      // 125248). Preserve the complete ID and its tenant/site namespace.
+      var requisition = slug.match(/_([0-9]+|[A-Za-z][A-Za-z0-9-]*[0-9][A-Za-z0-9-]*)$/);
       if (!requisition) return null;
       // Keep tenant host, job-board/site and the complete requisition suffix.
       return 'ats:workday:' + host + ':' + match[1] + ':' + requisition[1];
@@ -141,6 +150,10 @@ var SUJobIdentity = (function () {
       return null;
     }
     if (host === 'apply.workable.com') {
+      match = path.match(/^\/j\/([A-Za-z0-9]+)$/);
+      if (match && !parsed.pairs.length && has(WORKABLE_SHORT_ALIASES, match[1])) {
+        return atsKey('workable', WORKABLE_SHORT_ALIASES[match[1]], match[1]);
+      }
       match = path.match(/^\/([^\/]+)\/j\/([A-Za-z0-9]+)$/);
       if (match && !parsed.pairs.length) return atsKey('workable', match[1], match[2]);
     }

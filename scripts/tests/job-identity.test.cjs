@@ -19,7 +19,28 @@ for (const [label, a, b] of observed) test('observed duplicate: ' + label, () =>
   assert.equal(identity.keys(a)[0], identity.keys(b)[0]);
 });
 
+// Exact paths from the preserved September 5 board CSV. Each pair's only URL
+// difference is /en-US; the distinct numeric requisitions must remain separate.
+const numericWorkday = [
+  ['125248', 'Associate-Designer---Madewell-Women-s-Knits_125248'],
+  ['124054', 'Assistant-Designer---Washed-Product_124054'],
+  ['121754', 'Assistant-Womens-Denim-Designer_121754'],
+  ['125740', 'Men-s-Denim-Assistant-Designer_125740'],
+].map(([id, slug]) => [id,
+  'https://jcrew.wd1.myworkdayjobs.com/MadewellCareers/job/New-York-NY-USA-Headquarters/' + slug,
+  'https://jcrew.wd1.myworkdayjobs.com/en-US/MadewellCareers/job/New-York-NY-USA-Headquarters/' + slug]);
+for (const [id, a, b] of numericWorkday) test('observed numeric Workday locale duplicate: ' + id, () => {
+  assert.equal(identity.equivalent(a, b), true);
+  assert.equal(identity.equivalent(b, a), true);
+  assert.equal(identity.keys(a)[0], 'ats:workday:jcrew.wd1.myworkdayjobs.com:MadewellCareers:' + id);
+  assert.equal(identity.keys(a)[0], identity.keys(b)[0]);
+});
+
 const equal = [
+  // Fresh unauthenticated HTTPS reads on September 5 followed both short URLs
+  // to these exact employer-scoped paths (HTTP 200). No global shortcode rule.
+  ['verified Magic Spoon Workable short alias', 'https://apply.workable.com/j/9E2D6ACC47', 'https://apply.workable.com/magicspoon/j/9E2D6ACC47/'],
+  ['verified PetLab Workable short alias', 'https://apply.workable.com/j/A6CF4192C0', 'https://apply.workable.com/petlab-co/j/A6CF4192C0'],
   ['Workday locale', 'https://unilever.wd3.myworkdayjobs.com/TMICC/job/Englewood-Cliffs-NJ/NA-Marketing-Innovation_R-1182430', 'https://unilever.wd3.myworkdayjobs.com/en-US/TMICC/job/Englewood-Cliffs-NJ/NA-Marketing-Innovation_R-1182430'],
   ['Workday changed location and slug, same full requisition', 'https://umusic.wd5.myworkdayjobs.com/UMGUS/job/City/Old-Title_UMG-26451', 'https://umusic.wd5.myworkdayjobs.com/en-US/UMGUS/job/Other-City/New-Title_UMG-26451'],
   ['Greenhouse embedded job query', 'https://boards.greenhouse.io/embed/job_app?for=glossier&token=8054875', 'https://job-boards.greenhouse.io/glossier/jobs/8054875'],
@@ -44,10 +65,23 @@ const different = [
   ['Lever employer scope', 'https://jobs.lever.co/one/12345678-abcd-abcd-abcd-123456789012', 'https://jobs.lever.co/two/12345678-abcd-abcd-abcd-123456789012'],
   ['Ashby employer scope', 'https://jobs.ashbyhq.com/one/12345678-abcd-abcd-abcd-123456789012', 'https://jobs.ashbyhq.com/two/12345678-abcd-abcd-abcd-123456789012'],
   ['Workable employer scope', 'https://apply.workable.com/one/j/ABC123/', 'https://apply.workable.com/two/j/ABC123/'],
+  ['unknown Workable short alias does not infer employer', 'https://apply.workable.com/j/ABC123', 'https://apply.workable.com/employer/j/ABC123'],
+  ['known Workable short alias does not match another employer', 'https://apply.workable.com/j/9E2D6ACC47', 'https://apply.workable.com/another-employer/j/9E2D6ACC47'],
+  ['Workable verified employers stay separate even with identical ID', 'https://apply.workable.com/magicspoon/j/9E2D6ACC47', 'https://apply.workable.com/petlab-co/j/9E2D6ACC47'],
+  ['Workable alias does not erase different requisition', 'https://apply.workable.com/j/9E2D6ACC47', 'https://apply.workable.com/magicspoon/j/9E2D6ACC48'],
+  ['Workable alias does not discard meaningful query', 'https://apply.workable.com/j/9E2D6ACC47?job_id=another', 'https://apply.workable.com/magicspoon/j/9E2D6ACC47'],
+  ['Workable alias does not discard hash route', 'https://apply.workable.com/j/A6CF4192C0#/jobs/another', 'https://apply.workable.com/petlab-co/j/A6CF4192C0'],
   ['Workday full suffix', 'https://example.wd5.myworkdayjobs.com/Careers/job/City/Title_R-12345-1', 'https://example.wd5.myworkdayjobs.com/Careers/job/City/Title_R-12345-2'],
   ['Workday different tenant', 'https://one.wd5.myworkdayjobs.com/Careers/job/City/Title_R-12345', 'https://two.wd5.myworkdayjobs.com/Careers/job/City/Title_R-12345'],
   ['Workday different job board', 'https://one.wd5.myworkdayjobs.com/External/job/City/Title_R-12345', 'https://one.wd5.myworkdayjobs.com/Internal/job/City/Title_R-12345'],
   ['Workday locale stripping does not erase requisition', 'https://one.wd5.myworkdayjobs.com/en-US/Careers/job/City/Title_R123', 'https://one.wd5.myworkdayjobs.com/Careers/job/City/Title_R124'],
+  ['numeric Workday different tenant', 'https://one.wd1.myworkdayjobs.com/Careers/job/City/Title_125248', 'https://two.wd1.myworkdayjobs.com/en-US/Careers/job/City/Title_125248'],
+  ['numeric Workday different job board', 'https://one.wd1.myworkdayjobs.com/External/job/City/Title_125248', 'https://one.wd1.myworkdayjobs.com/en-US/Internal/job/City/Title_125248'],
+  ['numeric Workday different requisition', 'https://one.wd1.myworkdayjobs.com/Careers/job/City/Title_125248', 'https://one.wd1.myworkdayjobs.com/en-US/Careers/job/City/Title_124054'],
+  ['numeric Workday complete suffix remains significant', 'https://one.wd1.myworkdayjobs.com/Careers/job/City/Title_125248-1', 'https://one.wd1.myworkdayjobs.com/Careers/job/City/Title_125248-2'],
+  ['numeric Workday leading zero remains significant', 'https://one.wd1.myworkdayjobs.com/Careers/job/City/Title_0125248', 'https://one.wd1.myworkdayjobs.com/Careers/job/City/Title_125248'],
+  ['numeric Workday meaningful query is not discarded', 'https://one.wd1.myworkdayjobs.com/Careers/job/City/Title_125248?job_id=one', 'https://one.wd1.myworkdayjobs.com/en-US/Careers/job/City/Title_125248?job_id=two'],
+  ['numeric Workday hash route is not discarded', 'https://one.wd1.myworkdayjobs.com/Careers/job/City/Title_125248#/jobs/one', 'https://one.wd1.myworkdayjobs.com/en-US/Careers/job/City/Title_125248#/jobs/two'],
   ['arbitrary gh_jid cannot infer employer', 'https://untrusted.example/careers?gh_jid=8054875', 'https://boards.greenhouse.io/glossier/jobs/8054875'],
   ['arbitrary gh_jid across hosts', 'https://one.example/careers?gh_jid=123', 'https://two.example/careers?gh_jid=123'],
   ['untrusted custom path on trusted host', 'https://www.codeandtheory.com/blog?gh_jid=8558982002', 'https://boards.greenhouse.io/codeandtheory/jobs/8558982002'],
@@ -120,6 +154,17 @@ test('groupJobs collapses all five observed pairs without mixing employers', () 
   const groups = identity.groupJobs(jobs);
   assert.equal(groups.length, 5);
   assert.ok(groups.every(g => g.members.length === 2 && g.aliases.length === 2));
+});
+
+test('numeric Workday grouping preserves four separate jobs and all original URLs', () => {
+  const jobs = numericWorkday.flatMap(([id, a, b]) => [Object.freeze({ Link: a, id }), Object.freeze({ Link: b, id })]);
+  const groups = identity.groupJobs(Object.freeze(jobs));
+  assert.equal(groups.length, 4);
+  groups.forEach((group, i) => {
+    assert.equal(group.job, jobs[i * 2]);
+    assert.deepEqual(group.members, jobs.slice(i * 2, i * 2 + 2));
+    assert.deepEqual(group.aliases, numericWorkday[i].slice(1));
+  });
 });
 
 test('groupJobs supports caller URL selector and preserves stable membership order', () => {

@@ -56,14 +56,16 @@ export function inventoryPublicSource(root) {
 }
 
 function fingerprintBytes(path, bytes) {
+  if (!/\.html?$/i.test(path)) return bytes;
+  let html = bytes.toString('utf8');
   if (path === 'index.html' || path === 'jobs.html' || path === 'tracker.html') {
     // gen-theme-pages changes these exact origins in the build output. The
     // destination host varies per deploy; page content and paths remain covered.
-    let html = bytes.toString('utf8').replace(/https:\/\/(?:[A-Za-z0-9-]+--)?stillunemployed\.netlify\.app\//g, 'https://stillunemployed.com/');
-    if (path === 'index.html') html = refreshVersionLinks(html, 'PUBLIC_RELEASE');
-    return Buffer.from(html);
+    html = html.replace(/https:\/\/(?:[A-Za-z0-9-]+--)?stillunemployed\.netlify\.app\//g, 'https://stillunemployed.com/');
   }
-  return bytes;
+  // Labels, history anchors and script cache keys are derived release output
+  // wherever a public source page opts in, including board and tracker pages.
+  return Buffer.from(refreshVersionLinks(html, 'PUBLIC_RELEASE'));
 }
 export function publicSourceFingerprint(root, overrides = new Map()) {
   const files = inventoryPublicSource(root).map(path => {
@@ -77,7 +79,7 @@ export function nextVersion(version) {
   if (typeof version !== 'string' || !VERSION.test(version)) throw new Error('Invalid public version: ' + version);
   const parts = version.split('.').map(Number);
   if (!parts.every(Number.isSafeInteger)) throw new Error('Version number is too large');
-  if (parts.length === 1) return version + '.1.1';
+  if (parts.length === 1) return version + '.1.0';
   const [major, minor, patch] = parts;
   if (patch < 9) return `${major}.${minor}.${patch + 1}`;
   if (!Number.isSafeInteger(minor + 1)) throw new Error('Version number is too large');
@@ -127,10 +129,12 @@ export function renderReleaseScript(data) {
   function render() {
     document.querySelectorAll('[data-su-version]').forEach(function (link) {
       link.textContent = 'Version ' + version;
-      link.setAttribute('href', './versions.html#version-' + version.replace(/\\./g, '-'));
+      link.setAttribute('href', '/versions.html#version-' + version.replace(/\\./g, '-'));
       link.setAttribute('aria-label', 'Version ' + version + '. View version history');
     });
   }
+  // The board calls render after replacing its markup. No observer is needed.
+  window.SURelease = Object.freeze({ version: version, render: render });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', render);
   else render();
 })();
@@ -182,7 +186,10 @@ ${cards}
 }
 
 export function refreshVersionLinks(html, version) {
-  return html.replace(/(<a\b[^>]*\bdata-su-version(?=\s|=|>)(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+))?[^>]*>)[^<]*(<\/a>)/g, (_match, open, close) => open + label(version) + close)
+  return html.replace(/(<a\b[^>]*\bdata-su-version(?=\s|=|>)(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+))?[^>]*>)[^<]*(<\/a>)/g, (_match, open, close) => {
+    const attributes = open.slice(0, -1).replace(/\s+(?:href|aria-label)\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+    return attributes + ' href="/versions.html#' + anchor(version) + '" aria-label="' + esc(label(version) + '. View version history') + '">' + label(version) + close;
+  })
     .replace(/(js\/release\.js\?v=)[^"'\s>]+/g, (_match, prefix) => prefix + version);
 }
 export function applyRelease(root = ROOT, options = {}) {
@@ -197,9 +204,11 @@ export function applyRelease(root = ROOT, options = {}) {
     ['js/release.js', renderReleaseScript(data)],
     ['versions.html', renderHistory(data)]
   ]);
-  // Keep the homepage fallback correct even with JavaScript disabled. This only
-  // touches the explicitly marked version link and this script's cache key.
-  if (existsSync(join(root, 'index.html'))) files.set('index.html', refreshVersionLinks(readFileSync(join(root, 'index.html'), 'utf8'), data.currentVersion));
+  // Keep every opted-in static page correct even with JavaScript disabled.
+  // Generated /j and /jobs pages stay excluded and inherit their source page.
+  for (const path of inventoryPublicSource(root).filter(path => /\.html?$/i.test(path))) {
+    files.set(path, refreshVersionLinks(readFileSync(join(root, path), 'utf8'), data.currentVersion));
+  }
   const fingerprint = publicSourceFingerprint(root, files);
   if (options.seal || options.bump) {
     data = validateRelease({ ...data, sourceFingerprint:fingerprint });

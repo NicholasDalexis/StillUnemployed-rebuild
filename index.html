@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>StillUnemployed.com — Still Unemployed?</title>
-  <meta name="description" content="The job board I wish I'd had. Roles are opened and checked by a human (me). No AI slop, just jobs I'd actually apply to.">
+  <meta name="description" content="Salary up front. Filters that get you closer. Your next move, all in one place.">
   <!-- SHARE PREVIEW (og:image). Social crawlers read raw HTML and do NOT run JS, so this MUST be a
        static tag. Image = a real screenshot of the desktop homepage, cropped to 1200x630 (the size
        iMessage / Instagram / LinkedIn / X all crop to). -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="StillUnemployed.com">
   <meta property="og:title" content="Still Unemployed?">
-  <meta property="og:description" content="A real human (me) opens and checks the jobs before we add them. No AI slop. Just roles I would apply to myself.">
+  <meta property="og:description" content="Salary up front. Filters that get you closer. Your next move, all in one place.">
   <meta property="og:url" content="https://stillunemployed.com/">
   <!-- ?v=3 (2026-07-12): the "STILL UNEMPLOYED?" hero photo, 4:5 PORTRAIT (1200x1500).
        NOT 1200x630. 1.91:1 is a *recommendation*, not a rule — Apple Messages renders a tall card at
@@ -25,13 +25,13 @@
   <meta property="og:image:height" content="1500">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Still Unemployed?">
-  <meta name="twitter:description" content="A real human (me) opens and checks the jobs before we add them. No AI slop. Just roles I would apply to myself.">
+  <meta name="twitter:description" content="Salary up front. Filters that get you closer. Your next move, all in one place.">
   <meta name="twitter:image" content="https://stillunemployed.com/assets/og/home.png?v=3">
-  <link rel="stylesheet" href="css/home.css?v=nh5">
+  <link rel="stylesheet" href="css/home.css?v=nh6">
   <!-- First-party analytics: defer keeps document order, so this runs BEFORE js/home.js -->
   <script src="js/analytics.js?v=an4" defer></script>
   <!-- Google Analytics 4: analytics storage remains denied until Accept. -->
-  <script src="js/job-identity.js?v=1" defer></script>
+  <script src="js/job-identity.js?v=2" defer></script>
   <script src="js/sync-store.js?v=2" defer></script>
   <script src="js/ga.js?v=5" defer></script>
   <link rel="stylesheet" href="css/account.css?v=2">
@@ -70,7 +70,7 @@
 
   <!-- torn subhead strip -->
   <div class="nh-summary" style="position: absolute; left: 60px; top: 452px; width: 520px; z-index: 21; background: #FCFAF3; padding: 20px 26px 24px; box-shadow: 3px 7px 16px rgba(44,33,24,0.16); transform: rotate(-0.7deg); clip-path: polygon(0 6%, 4% 0, 30% 5%, 52% 0, 74% 6%, 100% 2%, 99% 96%, 72% 100%, 46% 95%, 22% 100%, 2% 96%);">
-    <div style="font-family: 'Poppins', sans-serif; font-size: 20px; line-height: 1.5; color: #3A3026; font-weight: 500;">A real human <strong style="font-weight: 700; color: #2C2118;">(me)</strong> opens and checks the jobs before we add them. Active links, roles still open. No AI slop. Just roles I would apply to myself.</div>
+    <div style="font-family: 'Poppins', sans-serif; font-size: 20px; line-height: 1.5; color: #3A3026; font-weight: 500;">Salary up front. Filters that get you closer. Your next move, all in one place.</div>
   </div>
 
   <!-- CTA row -->
@@ -81,6 +81,10 @@
     <div id="nh-open-story" class="brklink" style="font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 22px; color: #6F5E45; cursor: pointer; transition: color .15s;">read Nic's story →</div>
   </div>
 
+    <div class="nh-utilities" aria-label="Board utilities">
+      <button type="button" class="su-bookmark-trigger" data-bookmark-help="su-bm-postit" aria-controls="su-bm-postit" aria-expanded="false">Bookmark</button>
+      <a href="./suggest.html">Suggest Jobs</a>
+    </div>
     <div id="nh-bookmark-slot"></div>
   </section>
   <section class="nh-photos" aria-label="Explore the board">
@@ -154,10 +158,10 @@
   <section class="nh-featured-section" aria-label="Featured jobs">
   <!-- ============ FEATURED ROLES ============ -->
   <div class="nh-featured-title" style="position: absolute; left: 60px; top: 1096px; z-index: 20; display: flex; align-items: center; gap: 16px;">
-    <div style="font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 30px; color: #2C2118;">fresh on the board this week</div>
+    <div style="font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 30px; color: #2C2118;">a few roles to start with</div>
     <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M3 11 C 20 5, 40 5, 54 10" stroke="#C2552F" stroke-width="3" stroke-linecap="round"></path><path d="M47 5 L56 10 L48 16" stroke="#C2552F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
   </div>
-  <a href="./jobs.html" class="postit nh-seeall" style="--r: 3deg;">see all <span id="nh-total">59</span> roles →</a>
+  <a href="./jobs.html" class="postit nh-seeall" style="--r: 3deg;">see all <span id="nh-total">…</span> roles →</a>
 
   <div id="nh-featured" style="position: absolute; left: 56px; right: 56px; top: 1148px; z-index: 20; display: flex; gap: 34px;"></div>
 
@@ -186,7 +190,7 @@
           <div style="font-family: 'Archivo Black', sans-serif; font-weight: 900; font-size: 32px; line-height: 1.06; letter-spacing: -0.02em; color: #2C2118; width: 300px;">Hey, I'm Nic. I built this.</div>
           <svg width="220" height="12" viewBox="0 0 220 12" fill="none" style="position: absolute; left: 4px; bottom: -8px;"><path d="M3 7 C 55 2, 120 2, 217 6" stroke="#F2C231" stroke-width="4" stroke-linecap="round"></path></svg>
         </div>
-        <div style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 18px;">I sent <strong style="font-weight: 800; color: #2C2118;">1,500 applications</strong> and got ghosted more times than I can count. Seven months later, <strong style="font-weight: 800; color: #2C2118;">Instagram</strong> said yes. <strong style="font-weight: 800; color: #2C2118;">StillUnemployed</strong> is the board I wish I'd had. Roles here are <strong style="font-weight: 800; color: #2C2118;">opened and verified by a human</strong>, and that human is me. No AI slop, just jobs I'd <strong style="font-weight: 800; color: #2C2118;">actually apply to</strong>.</div>
+        <div style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 18px;">I sent <strong style="font-weight: 800; color: #2C2118;">1,500 applications</strong> and got ghosted more times than I can count. Seven months later, <strong style="font-weight: 800; color: #2C2118;">Instagram</strong> said yes. <strong style="font-weight: 800; color: #2C2118;">StillUnemployed</strong> is the board I wish I'd had. Salary up front. Filters that get you closer. Your next move, all in one place.</div>
         <div style="font-size: 13px; font-weight: 600; color: #6f6253; letter-spacing: 0.01em; margin-top: 18px;">Content Specialist at Instagram · Class of 2025</div>
         <div style="display: flex; align-items: center; gap: 16px; margin-top: 24px; flex-wrap: wrap;">
           <a href="https://NicholasAlexis.com" target="_blank" rel="noopener" class="nh-portfolio-btn">View My Portfolio
@@ -308,7 +312,7 @@
       <div style="width: 24px; height: 24px; border-radius: 50%; border: 2px solid #E8502E; display: flex; align-items: center; justify-content: center; flex: none;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="#E8502E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
       </div>
-      <div style="font-size: 18.5px; font-weight: 800; color: #2C2118;">Roles are checked by (me) a human.</div>
+      <div style="font-size: 18.5px; font-weight: 800; color: #2C2118;">Human Verified</div>
     </div>
 
   </div>
@@ -362,7 +366,7 @@
       <!-- body -->
       <div style="padding: 32px 44px 40px;">
         <div style="font-family: 'Archivo Black', sans-serif; font-weight: 900; font-size: 32px; line-height: 1.06; letter-spacing: -0.02em; color: #2C2118; width: 300px;">Hey, I'm Nic. I built this.</div>
-        <div style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 16px;">I sent <strong style="font-weight: 800; color: #2C2118;">1,500 applications</strong> and got ghosted more times than I can count. Seven months later, <strong style="font-weight: 800; color: #2C2118;">Instagram</strong> said yes. <strong style="font-weight: 800; color: #2C2118;">StillUnemployed</strong> is the board I wish I'd had. Roles here are <strong style="font-weight: 800; color: #2C2118;">opened and verified by a human</strong>, and that human is me. No AI slop, just jobs I'd <strong style="font-weight: 800; color: #2C2118;">actually apply to</strong>.</div>
+        <div style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 16px;">I sent <strong style="font-weight: 800; color: #2C2118;">1,500 applications</strong> and got ghosted more times than I can count. Seven months later, <strong style="font-weight: 800; color: #2C2118;">Instagram</strong> said yes. <strong style="font-weight: 800; color: #2C2118;">StillUnemployed</strong> is the board I wish I'd had. Salary up front. Filters that get you closer. Your next move, all in one place.</div>
         <div style="font-size: 13px; font-weight: 600; color: #6f6253; letter-spacing: 0.01em; margin-top: 16px;">Content Specialist at Instagram · Class of 2025</div>
         <a href="https://NicholasAlexis.com" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 11px; background: #5C4033; color: #F4EEE2; font-size: 16px; font-weight: 700; padding: 15px 26px; border-radius: 14px; cursor: pointer; margin-top: 24px; box-shadow: 0 10px 24px rgba(44,33,24,0.22); text-decoration: none;">
           View My Portfolio
@@ -405,12 +409,12 @@
   <span>&copy; 2026 Elevate Media Technologies LLC</span>
   <a href="./privacy.html">Privacy</a>
   <a href="./terms.html">Terms</a>
-  <a href="./versions.html" data-su-version>Version 2</a>
+  <a data-su-version href="/versions.html#version-2-1-0" aria-label="Version 2.1.0. View version history">Version 2.1.0</a>
   <a href="./suggest.html">Suggest Jobs</a>
 </footer>
 
-<script src="js/release.js?v=2" defer></script>
-<script src="js/home.js?v=nh9" defer></script>
+<script src="js/release.js?v=2.1.0" defer></script>
+<script src="js/home.js?v=nh10" defer></script>
   <script>
     /* "Tracker (N)" badge on the static nav post-its — digits in Archivo, 99+ cap */
     (function () {
@@ -430,7 +434,7 @@
     })();
   </script>
   <!-- Google sign-in. Desktop-only on the homepage; hard-gated OFF on stillunemployed.com. -->
-  <script src="js/bookmark.js?v=bm4" defer></script>
+  <script src="js/bookmark.js?v=bm5" defer></script>
   <script type="module" src="js/auth.js?v=auth8"></script>
 </body>
 </html>
