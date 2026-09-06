@@ -93,7 +93,7 @@ for(const theme of catalog.themes)test(theme.label+' guide salary specimens matc
   const realStamp=card.querySelectorAll('div').find(el=>/^Human[- ]verified$/i.test(el.textContent.trim()));
   const sampleStamp=specimen.querySelector('[data-theme-stamp]').children[0];assert(realStamp);assert(sampleStamp);
   assert.equal(sampleStamp.style.color,resolveToken(realStamp.style.color));assert.equal(sampleStamp.style.fontFamily,realStamp.style.fontFamily);assert.equal(sampleStamp.style.borderRadius,realStamp.style.borderRadius);
-  assert.match(sampleStamp.textContent,/Example stamp/i);
+  assert.match(sampleStamp.textContent,/Human verified/i);
  }
  assert.equal(p.el('guide-canvas').style['background-color'],theme.canvas['background-color']);
  assert(p.el('theme-swatches').textContent.includes(theme.palette.navBg));

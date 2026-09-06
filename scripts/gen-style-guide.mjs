@@ -162,7 +162,7 @@ export function buildCatalog(root = ROOT) {
       const band = evaluate(bandCode + '\n({background:bg,ink:ink,apply:applyColor,stamp:stampColor})', context);
       evaluate(stampColorCode + '\n' + stampCode, context);
       if (context.girly) band.stamp=context.gStamp;
-      const stamp = resolveTokens(context.html).replace(/Human[- ]verified/gi, 'Example stamp');
+      const stamp = resolveTokens(context.html).replace(/Human[- ]verified/gi, 'Human verified');
       return [tier, { ...Object.fromEntries(Object.entries(band).map(([key, value]) => [key, resolveTokens(value)])), stampHTML:stamp }];
     }));
     return { ...theme, gutter, canvas:canvasStyle, palette, bands, art:artwork[theme.look] };
