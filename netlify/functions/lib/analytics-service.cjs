@@ -8,7 +8,7 @@ let jobsCache=null,jobsCacheAt=0;
 async function liveCatalog(){
   if(jobsCache&&Date.now()-jobsCacheAt<300000)return jobsCache;
   const {loadJobs}=await import('../../../scripts/gen-share.mjs');
-  try{const jobs=await loadJobs(null,(url)=>fetch(url,{signal:AbortSignal.timeout(5000)}));jobsCache=Core.catalog(jobs);jobsCacheAt=Date.now();return jobsCache;}catch{if(jobsCache&&Date.now()-jobsCacheAt<3600000)return jobsCache;throw error(503,'Job catalog temporarily unavailable');}
+  try{const jobs=await loadJobs(null,(url)=>fetch(url,{signal:AbortSignal.timeout(5000)}));const internships=require('../../../js/internships.js').jobs(require('../../../internships-data.json'));jobsCache=Core.catalog(jobs.concat(internships));jobsCacheAt=Date.now();return jobsCache;}catch{if(jobsCache&&Date.now()-jobsCacheAt<3600000)return jobsCache;throw error(503,'Job catalog temporarily unavailable');}
 }
 function error(status,message){return Object.assign(new Error(message),{status});}
 function nextSignalExpiry(jobs,fallback){const dates=Object.values(jobs||{}).map(job=>job.at+90*DAY).filter(Number.isFinite);return new Date(dates.length?Math.min(...dates):fallback);}

@@ -10,7 +10,7 @@
   function excluded(){return stored('su_admin')==='1';}
   function signedIn(){return !!(window.SUAuth&&window.SUAuth.signedIn());}
   function randomId(){if(!window.crypto||!window.crypto.getRandomValues)return null;var a=new Uint8Array(16);window.crypto.getRandomValues(a);return Array.from(a).map(function(x){return x.toString(16).padStart(2,'0');}).join('');}
-  function page(){var p=location.pathname;return /^\/(jobs|j\/)/.test(p)?'board':/tracker/.test(p)?'tracker':/privacy/.test(p)?'privacy':/terms/.test(p)?'terms':/suggest/.test(p)?'suggest':p==='/'||/index/.test(p)?'home':'other';}
+  function page(){var p=location.pathname;return /^\/internships/.test(p)?'internships':/^\/(jobs|j\/)/.test(p)?'board':/tracker/.test(p)?'tracker':/privacy/.test(p)?'privacy':/terms/.test(p)?'terms':/suggest/.test(p)?'suggest':p==='/'||/index/.test(p)?'home':'other';}
   function identifiers(){if(!session){try{var prior=JSON.parse(sessionStorage.getItem('su_analytics_session')||'null');if(prior&&Date.now()-prior.at<1800000){session=prior.id;sessionAt=prior.at;}}catch(e){}}if(!visitor){visitor=stored('su_analytics_visitor')||randomId();if(visitor&&choices().analytics)put('su_analytics_visitor',visitor);}if(!session||Date.now()-sessionAt>1800000){session=randomId();}sessionAt=Date.now();try{sessionStorage.setItem('su_analytics_session',JSON.stringify({id:session,at:sessionAt}));}catch(e){}return !!visitor&&!!session;}
   function consentEnabled(){var c=choices();return !excluded()&&(c.analytics||(c.personalization&&signedIn()));}
   function emit(name,params){

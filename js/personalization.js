@@ -67,6 +67,7 @@
     options=options||{};
     if(options.recent) return jobs.slice().sort(function(a,b){return (b._idx||0)-(a._idx||0);});
     var p=preferences(profile, options.now || Date.now());
+    Object.keys(options.fieldBoost || {}).forEach(function(field){var boost=options.fieldBoost[field];if(Number.isFinite(boost)&&boost>0)p.fields[field]=(p.fields[field]||0)+Math.min(12,boost);});
     if(!Object.keys(p.fields).length) return jobs.slice();
     var fields={};
     jobs.forEach(function(job){var m=classify(job);if(!fields[m.field])fields[m.field]={};if(!fields[m.field][m.role])fields[m.field][m.role]=[];fields[m.field][m.role].push(job);});

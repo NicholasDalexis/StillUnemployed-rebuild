@@ -4,7 +4,8 @@
 (function (root) {
   'use strict';
   var KEYS = { saved: 'su_saved_jobs', tracker: 'su_tracker' };
-  function empty() { return { saved: {}, tracker: {} }; }
+  var KINDS = ['saved', 'tracker', 'discovery'];
+  function empty() { return { saved: {}, tracker: {}, discovery: {} }; }
   function id(row) { return row && (row.link || row.id); }
   function clone(v) { return JSON.parse(JSON.stringify(v)); }
   // Firestore may return map keys in a different order. Order has meaning in an
@@ -33,7 +34,7 @@
   }
   function merge(a, b) {
     var out = empty();
-    ['saved', 'tracker'].forEach(function (kind) {
+    KINDS.forEach(function (kind) {
       [a || empty(), b || empty()].forEach(function (src) {
         Object.keys(src[kind] || {}).forEach(function (k) {
           var v = src[kind][k], old = out[kind][k];
@@ -56,7 +57,7 @@
     var owner = read('su_sync_owner', null), device = read('su_sync_device', null);
     if (!device) { device = Math.random().toString(36).slice(2); storage.setItem('su_sync_device', JSON.stringify(device)); }
     function key() { return 'su_sync_v2:' + (owner || 'guest'); }
-    var records = read(key(), null) || legacy({ saved: read(KEYS.saved, {}), tracker: read(KEYS.tracker, []) });
+    var records = merge(empty(), read(key(), null) || legacy({ saved: read(KEYS.saved, {}), tracker: read(KEYS.tracker, []) }));
     var lastTime = 0;
     function refresh() { records = merge(records, read(key(), empty())); }
     function persist(changed) {
@@ -69,7 +70,7 @@
       if (notify && (changed || savedChanged || trackerChanged)) notify(changed);
     }
     function stamp(value) {
-      ['saved', 'tracker'].forEach(function (kind) { Object.values(records[kind]).forEach(function (op) { lastTime = Math.max(lastTime, op.at); }); });
+      KINDS.forEach(function (kind) { Object.values(records[kind] || {}).forEach(function (op) { lastTime = Math.max(lastTime, op.at); }); });
       lastTime = Math.max(Date.now(), lastTime + 1);
       return { value: clone(value), at: lastTime, tag: device };
     }
@@ -92,12 +93,16 @@
     return {
       saveSaved: function (v) { save('saved', v); },
       saveTracker: function (v) { save('tracker', v); },
+      // Operational preferences stay account-owned. Never import these from a guest.
+      discovery: function () { refresh(); var out={}; Object.keys(records.discovery || {}).forEach(function(k){if(records.discovery[k].value !== null) out[k]=clone(records.discovery[k].value);}); return out; },
+      setDiscovery: function (k, value) { if(!owner) return false; if(!/^[a-zA-Z0-9:%_.~-]{1,2000}$/.test(k) || k === '__proto__') throw Error('Invalid preference key'); refresh(); records.discovery[k]=stamp(value); persist(true); return true; },
       snapshot: function () { refresh(); return clone(records); },
       receive: function (v) { refresh(); records = merge(records, v); persist(false); },
       activate: function (uid) {
         // Guest data is imported once. Never import a previous account into a different account.
         refresh(); storage.setItem(key(), JSON.stringify(records));
-        var guest = owner === null ? records : empty();
+        var guest = owner === null ? merge(empty(), records) : empty();
+        guest.discovery = {};
         if (uid && owner === null) storage.setItem('su_sync_v2:guest', JSON.stringify(empty()));
         owner = uid || null;
         records = merge(read(key(), empty()), guest);

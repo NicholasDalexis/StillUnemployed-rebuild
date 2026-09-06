@@ -18,14 +18,16 @@
 
   var user = null, session = null, auth, sdk, store = window.SUStore;
   var syncState = 'loading', errorCode = '', signingIn = false;
-  window.SUAuth = { signedIn:function(){return !!user;}, getToken:function(){return user ? user.getIdToken() : Promise.reject(new Error('Sign in required'));} };
+  window.SUAuth = { signedIn:function(){return !!user;}, syncReady:function(){return !!user&&syncState==='synced';}, getToken:function(){return user ? user.getIdToken() : Promise.reject(new Error('Sign in required'));} };
   function notifyAuth(){var changed=false;try{var owner=user?user.uid:'guest',prior=sessionStorage.getItem('su_analytics_auth_owner');changed=prior!==null&&prior!==owner;sessionStorage.setItem('su_analytics_auth_owner',owner);}catch(e){}if(window.dispatchEvent && typeof CustomEvent !== 'undefined')window.dispatchEvent(new CustomEvent('su:auth-changed',{detail:{signedIn:!!user,accountChanged:changed}}));}
   function loginResult(result){if(result && window.SUAnalytics)window.SUAnalytics.emit('auth_login',{});return result;}
   var feedbackFocus = null;
   function status(next, error) {
+    var becameReady=next==='synced'&&syncState!=='synced';
     syncState = next; errorCode = error ? String(error.code || error.message || 'unavailable') : '';
     if (error) console.warn('[su-auth]', errorCode);
     render();
+    if(becameReady && window.dispatchEvent && typeof CustomEvent!=='undefined')window.dispatchEvent(new CustomEvent('su:account-ready'));
   }
   function render() {
     document.querySelectorAll('.su-auth-button').forEach(function (button) {
@@ -169,8 +171,8 @@
     sdk.onAuthStateChanged(auth, function (next) {
       if (session) session.stop(); session = null;
       user = next || null;
-      notifyAuth();
       if (store && store.owner() !== (user ? user.uid : null)) store.activate(user ? user.uid : null);
+      notifyAuth();
       if (user) startSync(); else status('signed-out');
       render();
     });

@@ -100,7 +100,7 @@ test('signed-out feedback uses the existing Google popup action and changes to X
 test('all three feedback responses work while signed out without opening Google',async()=>{
   for(const response of ['markApplied','reportBroken','notFit']){
     const ui=await feedbackUI();const {b}=ui;
-    const action=response==='notFit'?ui.dialog().querySelectorAll('[data-act="closeFeedback"]').find(el=>el!==ui.close()):ui.dialog().querySelector('[data-act="'+response+'"]');
+    const action=ui.dialog().querySelector('[data-act="'+response+'"]');
     action.click();assert.equal(b.app.state.feedbackOpen,false,response+' closes normally');
     assert.equal(ui.calls.popups,0);assert.equal(ui.calls.redirects,0);
     if(response==='markApplied')assert.equal(JSON.parse(b.localStorage.getItem('su_tracker'))[0].link,'https://example.com/job');
@@ -244,7 +244,7 @@ test('redirect rejection and every feedback dismissal invalidate the pending que
     if(action==='escape')ui.b.fire('keydown',ui.dialog(),{key:'Escape'});
     else if(action==='backdrop')ui.b.overlay.children[0].click();
     else if(action==='x'){ui.signIn({uid:'mock-user'});ui.close().click();}
-    else if(action==='notFit')ui.dialog().querySelectorAll('[data-act="closeFeedback"]').find(el=>el!==ui.close()).click();
+    else if(action==='notFit')ui.dialog().querySelector('[data-act="notFit"]').click();
     else ui.dialog().querySelector('[data-act="'+action+'"]').click();
     assert.equal(ui.tabStorage.getItem(redirectKey),null,action+' clears pending redirect');
     assert.equal(reloadBoard(ui.tabStorage).app.state.feedbackOpen,false,action+' stays closed after reload');

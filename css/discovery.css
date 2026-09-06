@@ -1,0 +1,22 @@
+.su-discovery { margin: 16px 0 0; color: var(--su-ink); font: 16px/1.5 var(--su-body); }
+.su-discovery-tools { display:flex; gap:8px 16px; flex-wrap:wrap; align-items:center; }
+.su-discovery button { min-height:44px; background:var(--su-paper); color:var(--su-ink); border:1px solid var(--su-muted); border-radius:3px; padding:8px 14px; font:20px/1.25 var(--su-hand); cursor:pointer; }
+.su-discovery-tools > button { background:var(--su-yellow-paper); }
+.su-discovery-note { position:relative; margin:16px 0 24px; padding:24px; max-width:650px; box-sizing:border-box; background:var(--su-paper); background-image:repeating-linear-gradient(180deg,transparent 0 27px,var(--su-rule) 27px 28px); box-shadow:var(--su-note-shadow); border-left:2px solid var(--su-tape); }
+.su-discovery h2 { margin:0 36px 16px 0; font:30px/1.15 var(--su-hand); }
+.su-discovery p { margin:12px 0; }
+.su-discovery .su-discovery-close { position:absolute; right:4px; top:4px; width:44px; padding:4px; background:transparent; border:0; font:30px var(--su-hand); }
+.su-discovery label { display:block; margin:16px 0 6px; font:22px/1.2 var(--su-hand); }
+.su-discovery label span,.su-discovery-small { font:14px/1.5 var(--su-body); }
+.su-discovery input,.su-discovery textarea { display:block; width:100%; min-height:44px; box-sizing:border-box; padding:10px; background:var(--su-paper); color:var(--su-ink); border:1px solid var(--su-muted); border-radius:2px; font:16px/1.5 var(--su-body); }
+.su-discovery textarea { min-height:90px; resize:vertical; }
+.su-discovery :focus-visible,.su-restore:focus-visible { outline:3px solid var(--su-orange-text); outline-offset:3px; }
+.su-discovery-picks { list-style:none; padding:0; display:grid; gap:12px; }
+.su-discovery-picks button { width:100%; text-align:left; padding:16px; }
+.su-discovery-picks span { display:block; margin-top:6px; font:16px/1.5 var(--su-body); }
+.su-restore { position:relative; z-index:3; display:block; margin-top:10px; min-height:44px; border:1px solid currentColor; padding:8px; background:var(--su-paper); color:var(--su-ink); font:18px var(--su-hand); cursor:pointer; }
+.su-internship-badge { display:inline-block; margin:8px 0 0; padding:4px 8px; border:1px solid currentColor; font:14px/1.4 var(--su-body); }
+@media(max-width:700px){.su-discovery-note{padding:20px 16px}.su-main-nav{gap:8px!important}.su-main-nav > a.postit{padding-left:10px!important;padding-right:10px!important;font-size:17px!important}.su-discovery h2{font-size:28px}}
+@media(max-width:350px){.su-main-nav{gap:5px!important}.su-main-nav > a.postit{font-size:16px!important;padding-left:8px!important;padding-right:8px!important}}
+.su-internship-details { font:16px/1.5 var(--su-body); padding:16px; background:var(--su-paper); color:var(--su-ink); }
+.su-internship-details dt { font-weight:700; margin-top:8px; }.su-internship-details dd { margin:0; }

@@ -261,9 +261,9 @@
           '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex: none; margin-left: 2px;"><path d="M9 6l6 6-6 6" stroke="#6F5E45" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
         '</button>' +
         '<div class="su-main-nav" style="position: absolute; top: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px;">' +
-          '<a href="./index.html" class="postit trk-nav-a r1">Home</a>' +
           '<a href="./jobs.html" class="postit trk-nav-a r2">Jobs</a>' +
           '<a href="./tracker.html" class="postit trk-nav-a r3">Tracker' + (this.rows.length ? ' (<span style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 16px;">' + (this.rows.length > 99 ? '99+' : this.rows.length) + '</span>)' : '') + '</a>' +
+          '<a href="./internships.html" class="postit trk-nav-a r1">Internships</a>' +
           '<span class="su-account-slot"></span>' +
                   '</div>' +
       '</div>';
