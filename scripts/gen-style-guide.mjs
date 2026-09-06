@@ -8,10 +8,10 @@ import vm from 'node:vm';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OUTPUT = 'js/style-guide-themes.js';
 
-function block(source, marker) {
+function block(source, marker, opening = '{', closing = '}') {
   const markerAt = source.indexOf(marker);
   if (markerAt < 0) throw new Error('Theme source marker missing: ' + marker);
-  const start = source.indexOf('{', markerAt + marker.length);
+  const start = source.indexOf(opening, markerAt + marker.length);
   if (start < 0) throw new Error('Theme source block missing: ' + marker);
   let depth = 0, quote = '', comment = '';
   for (let i = start; i < source.length; i++) {
@@ -22,8 +22,8 @@ function block(source, marker) {
     if (c === '/' && next === '/') { comment = 'line';i++;continue; }
     if (c === '/' && next === '*') { comment = 'block';i++;continue; }
     if (c === '"' || c === "'" || c === '`') { quote = c;continue; }
-    if (c === '{') depth++;
-    if (c === '}') { depth--;if (depth === 0) return source.slice(start, i + 1); }
+    if (c === opening) depth++;
+    if (c === closing) { depth--;if (depth === 0) return source.slice(start, i + 1); }
   }
   throw new Error('Unterminated theme source block: ' + marker);
 }
@@ -32,6 +32,40 @@ function evaluate(code, context = {}) {
   return vm.runInNewContext(code, context, { timeout:200, contextCodeGeneration:{ strings:false, wasm:false } });
 }
 function object(source, marker) { return JSON.parse(JSON.stringify(evaluate('(' + block(source, marker) + ')'))); }
+function attributes(source) {
+  const values = Object.create(null);
+  const remaining = source.replace(/([\w:-]+)\s*=\s*(["'])(.*?)\2/g, (_all, key, _quote, value) => {
+    if (Object.hasOwn(values, key)) throw new Error('Duplicate Original SVG attribute');
+    values[key] = value;return '';
+  });
+  if (remaining.trim()) throw new Error('Unrecognized Original SVG attribute');
+  return Object.fromEntries(Object.entries(values).sort(([a],[b]) => a.localeCompare(b)));
+}
+function validateOriginalArt(app, icons) {
+  const poses = evaluate('(' + block(app, 'POSES:', '[', ']') + ')');
+  const indices = [0,10,13];
+  if (icons.length !== indices.length) throw new Error('Original needs legacy pose specimens 0, 10 and 13');
+  icons.forEach((icon, index) => {
+    const poseIndex = indices[index], pose = poses[poseIndex];
+    const fail = () => { throw new Error('Original artwork differs from legacy POSES[' + poseIndex + ']'); };
+    if (!pose || icon.id !== 'original-legacy-' + poseIndex) fail();
+    const svg = icon.svg.match(/^<svg\s+([^>]+)>\s*<g\s+([^>]+)>([\s\S]*)<\/g>\s*<\/svg>$/);
+    if (!svg) fail();
+    const outer = attributes(svg[1]), paint = attributes(svg[2]);
+    if (outer.viewBox !== '0 0 64 90' || outer.width !== '64' || outer.height !== '90' || outer['aria-hidden'] !== 'true' || outer.focusable !== 'false' || Object.keys(outer).some(key => !['xmlns','viewBox','width','height','aria-hidden','focusable'].includes(key)) || (outer.xmlns && outer.xmlns !== 'http://www.w3.org/2000/svg')) fail();
+    const expectedPaint = {fill:'none',stroke:'#2A2118','stroke-width':'3','stroke-linecap':'round','stroke-linejoin':'round'};
+    if (Number(paint.opacity) !== 0.78 || Object.keys(paint).length !== 6 || Object.entries(expectedPaint).some(([key,value]) => paint[key] !== value)) fail();
+    const parts = [];
+    const remaining = svg[3].replace(/<(circle|path)\b([^>]*?)(?:\/>|>\s*<\/\1>)/g, (_all, tag, raw) => {
+      parts.push({tag,attrs:attributes(raw)});return '';
+    });
+    const expected = pose.parts.map(part => {
+      const attrs = part[0] === 'c' ? {cx:String(part[1]),cy:String(part[2]),r:String(part[3])} : {d:part[1],...(part[2] ? {stroke:'#C2552F'} : {})};
+      return {tag:part[0] === 'c' ? 'circle' : 'path',attrs:Object.fromEntries(Object.entries(attrs).sort(([a],[b]) => a.localeCompare(b)))};
+    });
+    if (remaining.trim() || JSON.stringify(parts) !== JSON.stringify(expected)) fail();
+  });
+}
 function declarations(source) {
   return Object.fromEntries(source.replace(/\/\*[\s\S]*?\*\//g, '').split(';').map(part => {
     const colon = part.indexOf(':');return colon < 0 ? [] : [part.slice(0, colon).trim(), part.slice(colon + 1).trim()];
@@ -55,10 +89,14 @@ export function buildCatalog(root = ROOT) {
     if (!art.texture || ['name','description','usage'].some(key => typeof art.texture[key] !== 'string' || !art.texture[key].trim())) throw new Error('Theme texture description is incomplete: ' + look);
     if (!Array.isArray(art.icons) || art.icons.length < 2 || art.icons.length > 3 || new Set(art.icons.map(icon => icon.id)).size !== art.icons.length) throw new Error('Theme needs two or three distinct drawn icons: ' + look);
     for (const icon of art.icons) {
-      if (!/^[a-z][a-z0-9-]+$/.test(icon.id) || typeof icon.label !== 'string' || !icon.label.trim() || typeof icon.svg !== 'string' || !icon.svg.startsWith('<svg ') || !icon.svg.endsWith('</svg>') || !icon.svg.includes('viewBox="0 0 64 64"') || !icon.svg.includes('aria-hidden="true"') || !icon.svg.includes('focusable="false"') || /<(?:script|foreignObject|image|use|style|text)\b|\bon\w+\s*=|\bhref\s*=|url\s*\(/i.test(icon.svg)) throw new Error('Theme icon must be a static decorative drawing: ' + look);
+      const viewBox = look === 'original' ? '0 0 64 90' : '0 0 64 64';
+      if (!/^[a-z][a-z0-9-]+$/.test(icon.id) || typeof icon.label !== 'string' || !icon.label.trim() || typeof icon.svg !== 'string' || !icon.svg.startsWith('<svg ') || !icon.svg.endsWith('</svg>') || !icon.svg.includes('viewBox="' + viewBox + '"') || !icon.svg.includes('aria-hidden="true"') || !icon.svg.includes('focusable="false"') || /<(?:script|foreignObject|image|use|style|text)\b|\bon\w+\s*=|\bhref\s*=|url\s*\(/i.test(icon.svg)) throw new Error('Theme icon must be a static decorative drawing: ' + look);
       for (const tag of icon.svg.matchAll(/<\/?([\w:-]+)/g)) if (!['svg','g','path','circle','ellipse','line','polyline','polygon','rect'].includes(tag[1])) throw new Error('Theme icon contains a non-static shape: ' + look);
     }
   }
+  // Original's guide shows three specimens of the existing 16-pose vocabulary.
+  // Rebuilding the catalog must never bless a redraw that drifted from the board.
+  validateOriginalArt(app, artwork.original.icons);
   if (new Set(publicLooks).size !== publicLooks.length || publicLooks.some(look => !palettes[look])) throw new Error('Public theme routes and palettes disagree');
   for (const look of Object.keys(enabled)) if (!publicLooks.includes(look)) throw new Error('Public theme lacks guide/share coverage: ' + look);
   for (const look of Object.keys(palettes)) if (look !== 'cod' && !publicLooks.includes(look)) throw new Error('Unclassified theme needs public guide coverage: ' + look);

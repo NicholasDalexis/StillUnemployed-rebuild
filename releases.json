@@ -1,7 +1,16 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.1.7",
+  "currentVersion": "2.1.8",
   "releases": [
+    {
+      "version": "2.1.8",
+      "date": "2026-09-06",
+      "title": "The Original stick figures are back",
+      "changes": [
+        "Restored the earlier Original stick figures and matching examples in the style guide.",
+        "Kept the other seven themes and gave the first figure room below the board links."
+      ]
+    },
     {
       "version": "2.1.7",
       "date": "2026-09-06",
@@ -97,7 +106,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "3b481b903aa15d255b6e6468b891aefb6292818d40df4828d3ac9686f3e24ac4",
+    "digest": "e96cc26c2144857b7c982693010e2429af9ea7d3e32fcbd681e64f594f61f90f",
     "fileCount": 123
   }
 }

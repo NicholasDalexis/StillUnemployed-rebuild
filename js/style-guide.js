@@ -68,7 +68,7 @@
       var animation=theme.canvas.animation, duration=animation && animation.match(/(?:^|\s)([\d.]+m?s)(?=\s|$)/);
       setText('theme-texture-motion',animation?'Slow, alternating movement'+(duration?' ('+duration[1]+')':'')+'. Reduced-motion preferences keep this texture still.':'This texture stays still. No movement is needed to give it character.');
       setText('theme-texture-usage',texture.usage);
-      setText('theme-icons-intro',theme.label+' uses these drawn accents around the board’s notes. They add character while the company, role and next step stay in charge.');
+      setText('theme-icons-intro',theme.look==='original' ? 'The Original look keeps its earlier stick figures. These are three examples from the full set around the board’s notes.' : theme.label+' uses these drawn accents around the board’s notes. They add character while the company, role and next step stay in charge.');
       var icons=doc.getElementById('theme-icon-specimens');icons.textContent='';
       theme.art.icons.forEach(function(icon){
         var figure=element('figure','sheet icon-specimen'), stage=element('div','icon-stage'), drawing=element('div','icon-drawing');

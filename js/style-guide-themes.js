@@ -64,19 +64,19 @@
         },
         "icons": [
           {
-            "id": "original-wave",
-            "label": "Stick figure waving",
-            "svg": "\u003csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\" width=\"64\" height=\"64\" aria-hidden=\"true\" focusable=\"false\">\u003cg fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\u003cpath d=\"M25 14c-.5-8 12-9 13-.5s-12 9-13 .5Z\"/>\u003cpath d=\"M31 22l-1 17M30 28l-11 3-6-8M31 28l11-7 3-9M30 39l-9 16M30 39l12 14\"/>\u003cpath d=\"m44 5 1-2m5 10 4-1m-4-5 3-3\" stroke=\"#C2552F\"/>\u003c/g>\u003c/svg>"
+            "id": "original-legacy-0",
+            "label": "Figure with a flag",
+            "svg": "\u003csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 90\" width=\"64\" height=\"90\" aria-hidden=\"true\" focusable=\"false\">\u003cg fill=\"none\" stroke=\"#2A2118\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\" opacity=\"0.78\">\u003ccircle cx=\"24\" cy=\"16\" r=\"7\">\u003c/circle>\u003cpath d=\"M24 23 L24 52\">\u003c/path>\u003cpath d=\"M24 28 L40 18\">\u003c/path>\u003cpath d=\"M40 6 L40 40\" stroke=\"#C2552F\">\u003c/path>\u003cpath d=\"M40 6 L55 11 L40 16 Z\" stroke=\"#C2552F\">\u003c/path>\u003cpath d=\"M24 52 L16 72\">\u003c/path>\u003cpath d=\"M24 52 L33 68\">\u003c/path>\u003c/g>\u003c/svg>"
           },
           {
-            "id": "original-step",
-            "label": "Stick figure taking a step",
-            "svg": "\u003csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\" width=\"64\" height=\"64\" aria-hidden=\"true\" focusable=\"false\">\u003cg fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\u003cpath d=\"M23 15c-1-8 11-10 13-2s-10 11-13 2Z\"/>\u003cpath d=\"m30 23-2 16 14 10 10-1M28 39l-6 14-8 3M29 28l-10 10M29 28l12 4 6-5\"/>\u003cpath d=\"m43 36 12 1-1 12-12-1 1-12Zm4 0 .5-4 5 .4-.2 4\" stroke=\"#C2552F\"/>\u003c/g>\u003c/svg>"
+            "id": "original-legacy-10",
+            "label": "Figure doing a push-up",
+            "svg": "\u003csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 90\" width=\"64\" height=\"90\" aria-hidden=\"true\" focusable=\"false\">\u003cg fill=\"none\" stroke=\"#2A2118\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\" opacity=\"0.78\">\u003ccircle cx=\"14\" cy=\"30\" r=\"6\">\u003c/circle>\u003cpath d=\"M19 32 L48 40\">\u003c/path>\u003cpath d=\"M24 36 L21 50\">\u003c/path>\u003cpath d=\"M40 38 L42 52\">\u003c/path>\u003cpath d=\"M48 40 L60 35\">\u003c/path>\u003c/g>\u003c/svg>"
           },
           {
-            "id": "original-pause",
-            "label": "Stick figure taking a breather",
-            "svg": "\u003csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\" width=\"64\" height=\"64\" aria-hidden=\"true\" focusable=\"false\">\u003cg fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\u003cpath d=\"M28 16c-1-8 11-10 13-2s-11 10-13 2Z\"/>\u003cpath d=\"m33 24-5 15 15 1 3 13M31 28l12 3 6-7M28 39l-5 13M19 35l-1 8h21M20 44l-2 11m18-11 2 11\"/>\u003cpath d=\"M9 20h8m-9 5h6M49 16l4-3\" stroke=\"#C2552F\"/>\u003c/g>\u003c/svg>"
+            "id": "original-legacy-13",
+            "label": "Figure with a curved arrow",
+            "svg": "\u003csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 90\" width=\"64\" height=\"90\" aria-hidden=\"true\" focusable=\"false\">\u003cg fill=\"none\" stroke=\"#2A2118\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\" opacity=\"0.78\">\u003ccircle cx=\"16\" cy=\"12\" r=\"6\">\u003c/circle>\u003cpath d=\"M16 18 L18 38\">\u003c/path>\u003cpath d=\"M18 38 L12 56\">\u003c/path>\u003cpath d=\"M18 38 L24 56\">\u003c/path>\u003cpath d=\"M17 24 L40 20\">\u003c/path>\u003cpath d=\"M40 20 L60 10\">\u003c/path>\u003cpath d=\"M60 10 Q61 34 57 50\" stroke=\"#C2552F\">\u003c/path>\u003cpath d=\"M54 50 l3 5 l3 -5\" stroke=\"#C2552F\">\u003c/path>\u003c/g>\u003c/svg>"
           }
         ]
       }

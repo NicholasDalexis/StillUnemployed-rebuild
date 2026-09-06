@@ -144,6 +144,60 @@ test('every public theme has a dedicated texture explanation and two or three fi
  }
 });
 
+test('Original guide specimens preserve the board pose geometry, paint and tall viewBox; other looks stay square',async()=>{
+ const {buildCatalog}=await import('../gen-style-guide.mjs'), current=buildCatalog(root), b=board();
+ const original=current.themes.find(theme=>theme.look==='original');
+ assert.deepEqual(original.art.icons.map(icon=>icon.id),['original-legacy-0','original-legacy-10','original-legacy-13']);
+ for(const [index,poseIndex]of [0,10,13].entries()){
+  const holder=b.document.createElement('div');holder.innerHTML=original.art.icons[index].svg;
+  const svg=holder.children[0],group=svg.children[0];
+  for(const [name,value]of Object.entries({viewBox:'0 0 64 90',width:'64',height:'90','aria-hidden':'true',focusable:'false'}))assert.equal(svg.getAttribute(name),value,'Original pose '+poseIndex+' '+name);
+  for(const [name,value]of Object.entries({fill:'none',stroke:'#2A2118','stroke-width':'3','stroke-linecap':'round','stroke-linejoin':'round',opacity:'0.78'}))assert.equal(group.getAttribute(name),value,'Original pose '+poseIndex+' '+name);
+  const actual=Array.from(group.children,el=>el.tagName==='CIRCLE'?['c',Number(el.getAttribute('cx')),Number(el.getAttribute('cy')),Number(el.getAttribute('r'))]:['p',el.getAttribute('d'),...(el.getAttribute('stroke')==='#C2552F'?[1]:[])]);
+  assert.deepEqual(actual,JSON.parse(JSON.stringify(b.app.POSES[poseIndex].parts)),'Original pose '+poseIndex+' uses the real board paths in order');
+ }
+ for(const theme of current.themes.filter(theme=>theme.look!=='original'))for(const icon of theme.art.icons)assert.match(icon.svg,/viewBox="0 0 64 64"/,theme.label+' keeps its square drawing');
+});
+
+test('regeneration cannot bless altered Original shapes, paint, order, dimensions or decorative attributes',async()=>{
+ const {generate}=await import('../gen-style-guide.mjs');
+ const changeSVG=(from,to)=>'module.exports.themes.original.icons[0].svg=module.exports.themes.original.icons[0].svg.replace('+JSON.stringify(from)+','+JSON.stringify(to)+');';
+ for(const [name,mutation]of [
+  ['body path',changeSVG('M24 23 L24 52','M24 23 L25 52')],
+  ['head position',changeSVG('cx="24"','cx="25"')],
+  ['missing accent',changeSVG(' stroke="#C2552F"','')],
+  ['ink color',changeSVG('stroke="#2A2118"','stroke="#000000"')],
+  ['opacity',changeSVG('opacity="0.78"','opacity="1"')],
+  ['extra transform',changeSVG('<g ','<g transform="translate(1 0)" ')],
+  ['extra shape',changeSVG('</g>','<circle cx="1" cy="1" r="1"/></g>')],
+  ['missing path',changeSVG('<path d="M24 23 L24 52"></path>','')],
+  ['pose order','module.exports.themes.original.icons.reverse();'],
+  ['pose label ID','module.exports.themes.original.icons[0].id="original-redrawn-0";'],
+  ['missing specimen','module.exports.themes.original.icons.pop();'],
+  ['width',changeSVG('width="64"','width="65"')],
+  ['square Original viewBox',changeSVG('viewBox="0 0 64 90"','viewBox="0 0 64 64"')],
+  ['nondecorative Original',changeSVG('aria-hidden="true"','aria-hidden="false"')],
+  ['unexpected outer attribute',changeSVG('<svg ','<svg __proto__="ignored" ')],
+  ['tall non-Original viewBox','module.exports.themes.poker.icons[0].svg=module.exports.themes.poker.icons[0].svg.replace("0 0 64 64","0 0 64 90");']
+ ]){
+  const dir=sourceFixture();try{
+   const output=path.join(dir,'js/style-guide-themes.js'),before=fs.readFileSync(output,'utf8');
+   fs.appendFileSync(path.join(dir,'js/theme-art.js'),'\nmodule.exports=JSON.parse(JSON.stringify(module.exports));\n'+mutation);
+   assert.throws(()=>generate(dir,true),/legacy POSES|legacy pose specimens|static decorative drawing/i,name+' must fail even when explicitly regenerating');
+   assert.equal(fs.readFileSync(output,'utf8'),before,name+' cannot overwrite the catalog');
+  }finally{fs.rmSync(dir,{recursive:true,force:true});}
+ }
+});
+
+test('changing a selected board pose requires the guide specimen to agree before generation',async()=>{
+ const {generate}=await import('../gen-style-guide.mjs'),dir=sourceFixture();
+ try{
+  const target=path.join(dir,'js/app.js'),before=fs.readFileSync(target,'utf8'),from='M24 23 L24 52';
+  assert(before.includes(from),'legacy pose fixture is present');fs.writeFileSync(target,before.replace(from,'M24 23 L25 52'));
+  assert.throws(()=>generate(dir,true),/Original artwork differs from legacy POSES\[0\]/,'fresh generation checks the current board pose rather than accepting a stale illustration');
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});
+
 test('catalog generation rejects animated drawings, incomplete textures, duplicate icons and artwork outside public coverage',async()=>{
  const {buildCatalog,generate}=await import('../gen-style-guide.mjs');
  for(const [mutation,reason]of [

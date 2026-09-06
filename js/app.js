@@ -1445,7 +1445,8 @@
       return '<div class="doodle" aria-hidden="true" style="position:absolute;top:-32px;right:7%;pointer-events:none;z-index:4;transform:rotate(5deg);font:400 20px Arial,Helvetica,sans-serif;color:#141414;opacity:.9;white-space:nowrap;letter-spacing:-.5px;filter:blur(.4px)">' + phrases[idx] + '</div>';
     },
 
-    // Legacy decorations remain as a fallback if the shared asset cannot load.
+    // Original keeps its established pose table, proportions and placement.
+    // Other themes retain their legacy fallback if the shared artwork cannot load.
     doodleEl: function (idx) {
       var P = this.POSES[((idx % this.POSES.length) + this.POSES.length) % this.POSES.length];
       var h = Math.round(P.w * 90 / 64);
@@ -1458,13 +1459,13 @@
       }).join('');
       var svg = '<svg width="' + P.w + '" height="' + h + '" viewBox="0 0 64 90" fill="none" stroke="#2A2118" ' +
         'stroke-width="3" stroke-linecap="round" stroke-linejoin="round" ' +
-        'style="opacity:0.78; overflow:visible;">' + kids + '</svg>';
+        'aria-hidden="true" focusable="false" style="opacity:0.78; overflow:visible;">' + kids + '</svg>';
       var styl = 'position:absolute; pointer-events:none; z-index:4;';
       ['top', 'left', 'right', 'bottom'].forEach(function (k) {
         if (P.pos[k] != null) styl += ' ' + k + ':' + P.pos[k] + ';';
       });
       if (P.rot) styl += ' transform:rotate(' + P.rot + 'deg);';
-      return '<div class="doodle" style="' + styl + '">' + svg + '</div>';
+      return '<div class="doodle original-doodle" aria-hidden="true" style="' + styl + '">' + svg + '</div>';
     },
 
     // WW2 doodle (string port of codDoodleEl): olive ink, supports rect ('r') parts.
@@ -1803,6 +1804,8 @@
         // Prevents décor from repeating (Nic: brat scribbles must never say the same thing twice).
         var dIdx = (k === 0) ? 0 : (Math.floor(k / 6) + 1);
         if (k === 0 || doodleOn) {
+          // Original retains the full earlier set, including its first-card arrow pose.
+          if (self.state.look === 'original') doodleHtml = self.doodleEl(k === 0 ? 13 : k);
           // Bratt keeps its short phrases between drawings without repeating copy.
           if (bratt && dIdx % 2 === 1) doodleHtml = self.brattPhraseEl(Math.floor(dIdx / 2));
           if (!doodleHtml) doodleHtml = self.themeDoodleEl(self.state.look, bratt ? Math.floor(dIdx / 2) : dIdx);

@@ -252,6 +252,8 @@ body { margin: 0; background: #EFE6D4; }
 
 /* First-card DECOR always anchored far-left so it never overlaps the "Showing X of X" label */
 .note-first .doodle { left: 4px !important; right: auto !important; }
+/* The original arrow pose clears the newer links above the first card. */
+.note-first .original-doodle { top: -32px !important; }
 
 /* ---- Advice notes + newsletter signup cards in the feed (2026-07-18) ----
    Two cadences live in the same DOM: .su-ins-d = desktop schedule (advice note in every

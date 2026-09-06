@@ -255,8 +255,10 @@ const voteBox=b=>b.document.querySelector('[role="dialog"][aria-label="Theme fee
 const voteOps=b=>b.storageOps.filter(op=>op.key.startsWith('su_tv_'));
 const votes=b=>b.tracking.filter(args=>args[0]==='themevote');
 
-test('all eight themes render their three shared drawings as noninteractive decoration on real job cards',()=>{
- for(const [look,art] of Object.entries(themeArt.themes)){
+test('the seven alternate themes render their shared drawings as noninteractive decoration on real job cards',()=>{
+ const alternateThemes=Object.entries(themeArt.themes).filter(([look])=>look!=='original');
+ assert.equal(alternateThemes.length,7);
+ for(const [look,art] of alternateThemes){
   const b=board({look});b.init(themeJobs());
   const motifs=b.grid.querySelectorAll('[data-theme-motif]');
   assert.deepEqual([...new Set(motifs.map(el=>el.getAttribute('data-theme-motif')))].sort(),art.icons.map(icon=>icon.id).sort(),look+' uses every shared icon');
@@ -282,6 +284,41 @@ test('all eight themes render their three shared drawings as noninteractive deco
   }
   assert.equal(b.grid.querySelectorAll('.note[data-act="openJob"]').length,72,look+' preserves the feed');
   assert.equal(b.grid.querySelectorAll('[data-act="apply"]').length,72,look+' preserves Apply controls');
+ }
+});
+
+test('Original preserves its historical pose table, full-feed cadence, artwork and placement with shared art loaded',()=>{
+ const b=board({look:'original'});
+ assert.equal(b.app.POSES.length,16,'all sixteen historical poses remain available');
+ const knownPoses={
+  0:{w:40,pos:{top:'-46px',left:'34%'},parts:[['c',24,16,7],['p','M24 23 L24 52'],['p','M24 28 L40 18'],['p','M40 6 L40 40',1],['p','M40 6 L55 11 L40 16 Z',1],['p','M24 52 L16 72'],['p','M24 52 L33 68']]},
+  10:{w:50,pos:{top:'-24px',left:'36%'},parts:[['c',14,30,6],['p','M19 32 L48 40'],['p','M24 36 L21 50'],['p','M40 38 L42 52'],['p','M48 40 L60 35']]},
+  13:{w:50,pos:{top:'-44px',right:'40px'},parts:[['c',16,12,6],['p','M16 18 L18 38'],['p','M18 38 L12 56'],['p','M18 38 L24 56'],['p','M17 24 L40 20'],['p','M40 20 L60 10'],['p','M60 10 Q61 34 57 50',1],['p','M54 50 l3 5 l3 -5',1]]}
+ };
+ for(const [index,pose]of Object.entries(knownPoses))assert.deepEqual(JSON.parse(JSON.stringify(b.app.POSES[index])),pose,'historical pose '+index+' is unchanged');
+ b.init(themeJobs());
+ const cards=b.grid.querySelectorAll('.note[data-act="openJob"]');
+ assert.equal(cards.length,72);assert.equal(b.grid.querySelectorAll('[data-act="apply"]').length,72);
+ assert.equal(b.grid.querySelector('[data-theme-motif]'),null,'Original never substitutes the three shared motifs');
+ const positions=cards.flatMap((card,index)=>card.querySelector('.doodle')?[index]:[]);
+ assert.deepEqual(positions,[0,4,10,16,22,28,34,40,46,52,58,64,70],'decorations follow displayed job positions despite interleaved advice cards');
+ assert.equal(b.grid.querySelectorAll('.doodle').length,positions.length);
+ for(const index of positions){
+  const doodles=cards[index].querySelectorAll('.doodle');assert.equal(doodles.length,1);
+  const doodle=doodles[0],pose=b.app.POSES[(index===0?13:index)%16],svg=doodle.querySelector('svg');
+  assert.equal(doodle.getAttribute('class'),'doodle original-doodle');assert.equal(doodle.getAttribute('aria-hidden'),'true');
+  assert.equal(doodle.style.position,'absolute');assert.equal(doodle.style.pointerEvents,'none');assert.equal(doodle.style.zIndex,'4');
+  for(const edge of ['top','left','right','bottom'])assert.equal(doodle.style[edge],pose.pos[edge],'job '+index+' keeps its '+edge+' placement');
+  assert.equal(doodle.style.transform,pose.rot?'rotate('+pose.rot+'deg)':undefined);
+  assert(svg);assert.equal(svg.getAttribute('viewBox'),'0 0 64 90');
+  assert.equal(svg.getAttribute('width'),String(pose.w));assert.equal(svg.getAttribute('height'),String(Math.round(pose.w*90/64)));
+  assert.equal(svg.getAttribute('fill'),'none');assert.equal(svg.getAttribute('stroke'),'#2A2118');assert.equal(svg.getAttribute('stroke-width'),'3');
+  assert.equal(svg.getAttribute('stroke-linecap'),'round');assert.equal(svg.getAttribute('stroke-linejoin'),'round');
+  assert.equal(svg.style.opacity,'0.78');assert.equal(svg.style.overflow,'visible');
+  assert.equal(svg.getAttribute('aria-hidden'),'true');assert.equal(svg.getAttribute('focusable'),'false');
+  const parts=Array.from(pose.parts,part=>part[0]==='c'?{tag:'CIRCLE',attrs:{cx:String(part[1]),cy:String(part[2]),r:String(part[3])}}:{tag:'PATH',attrs:{d:part[1],...(part[2]?{stroke:'#C2552F'}:{})}});
+  assert.deepEqual(svg.children.map(node=>({tag:node.tagName,attrs:node.attrs})),parts,'job '+index+' preserves every original shape and accent');
+  assert.equal(doodle.querySelector('button,a,input,[tabindex],[data-act],script,image,foreignObject'),null);
  }
 });
 
