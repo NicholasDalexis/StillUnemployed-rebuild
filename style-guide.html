@@ -4,11 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <meta name="description" content="The colors, typography, textures, drawn details and layout conventions of StillUnemployed.com.">
+  <meta name="description" content="The colors, type, textures, advice cards, voice and layout of StillUnemployed.com.">
   <title>Style guide | StillUnemployed.com</title>
   <link rel="stylesheet" href="css/brand.css?v=1">
-  <script src="js/release.js?v=2.1.6" defer></script>
-  <link rel="stylesheet" href="css/style-guide.css?v=2">
+  <link rel="stylesheet" href="css/advice-cards.css?v=1">
+  <script src="js/release.js?v=2.1.7" defer></script>
+  <link rel="stylesheet" href="css/style-guide.css?v=3">
   <script src="js/style-guide-themes.js?v=2" defer></script>
   <script src="js/style-guide.js?v=2" defer></script>
 </head>
@@ -17,7 +18,7 @@
   <div class="guide-canvas" id="guide-canvas"><div class="guide">
     <header class="masthead">
       <a class="wordmark" href="/index.html">StillUnemployed.com</a>
-      <nav aria-label="Site navigation"><a href="/index.html">Home</a><a href="/jobs.html">Jobs</a><a data-su-version href="/versions.html#version-2-1-6" aria-label="Version 2.1.6. View version history">Version 2.1.6</a></nav>
+      <nav aria-label="Site navigation"><a href="/index.html">Home</a><a href="/jobs.html">Jobs</a><a data-su-version href="/versions.html#version-2-1-7" aria-label="Version 2.1.7. View version history">Version 2.1.7</a></nav>
     </header>
     <main id="guide-content">
       <div class="intro-row"><div class="guide-intro">
@@ -26,6 +27,10 @@
         <p id="theme-intro">Warm paper, useful notes and a little handwriting. A reference for keeping the board readable and recognizably ours, from a phone to a wide screen.</p>
       </div><button class="theme-trigger" id="theme-trigger" type="button" aria-haspopup="dialog" aria-controls="guide-theme-dialog" hidden>Change theme <span aria-hidden="true">↓</span></button></div>
       <p class="sr-only" role="status" id="theme-status" aria-live="polite"></p>
+      <nav class="guide-contents" id="guide-contents" aria-labelledby="contents-title">
+        <h2 id="contents-title">In this guide</h2>
+        <ul><li><a href="#colors-title">Colors</a></li><li><a href="#type-title">Type</a></li><li><a href="#textures-title">Textures</a></li><li><a href="#paper-title">Paper &amp; actions</a></li><li><a href="#advice-title">Advice cards</a></li><li><a href="#icons-title">Drawn details</a></li><li><a href="#salary-title">Salary cards</a></li><li><a href="#layout-title">Layout</a></li><li><a href="#states-title">States</a></li><li><a href="#voice-title">Voice</a></li><li><a href="#imagery-title">Photos &amp; name</a></li></ul>
+      </nav>
 
       <section class="section" aria-labelledby="colors-title">
         <h2 class="section-title" id="colors-title"><span>01</span> Colors with a job to do</h2>
@@ -68,15 +73,36 @@
         </div>
       </section>
 
+      <section class="section" aria-labelledby="advice-title">
+        <h2 class="section-title" id="advice-title"><span>05</span> A note worth opening</h2>
+        <p class="section-intro">Advice cards interrupt the job hunt with one useful idea. They keep cream paper in every theme, so a note never borrows a salary band. These are generic, interactive examples. Open a note, then tap its heading again to close it.</p>
+        <div class="two-up advice-examples">
+          <details class="su-advice-card">
+            <summary class="su-advice-front"><span class="su-advice-eyebrow">note to self · example</span><span class="su-advice-hook">save the role, then make a plan</span><span class="su-advice-sub">give the next step a place to live</span><span class="su-advice-mark" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none" focusable="false"><path d="M12 5 32 6 31 38 21 31 11 37Z M17 16l4 4 7-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="su-advice-cta"><span class="su-advice-open">what goes in the note? →</span><span class="su-advice-close">close this note ↑</span></span></summary>
+            <div class="su-advice-back"><p>Keep the job link with a short note about what you want to do next. Write down the question you need answered or the piece of work you want to include.</p><p>Check the employer’s posting before you apply.</p></div>
+          </details>
+          <details class="su-advice-card">
+            <summary class="su-advice-front"><span class="su-advice-eyebrow">note to self · example</span><span class="su-advice-hook">give your follow-up a next step</span><span class="su-advice-sub">one clear question is enough</span><span class="su-advice-mark" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none" focusable="false"><path d="M6 12 38 10 37 33 7 35Z M7 13l16 12 14-14 M7 34l11-13 M37 32l-9-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="su-advice-cta"><span class="su-advice-open">build the message →</span><span class="su-advice-close">close this note ↑</span></span></summary>
+            <div class="su-advice-back"><p>Keep the message tied to the conversation:</p><ul><li>Thank the person for their time.</li><li>Mention one specific thing you discussed.</li><li>Ask what happens next.</li></ul><p>Use your own words. A template should help you start.</p></div>
+          </details>
+          <details class="su-advice-card">
+            <summary class="su-advice-front"><span class="su-advice-label">Sponsored · example</span><span class="su-advice-hook">one useful tool, one clear reason</span><span class="su-advice-sub">say who it is for before the pitch</span><span class="su-advice-cta"><span class="su-advice-open">see the example structure →</span><span class="su-advice-close">close this note ↑</span></span></summary>
+            <div class="su-advice-back"><p>This is a layout example, not a live offer. A promotional note should identify the sponsor, explain the specific use and label its destination.</p><p>Keep “Sponsored” visible before anyone opens the note. Repeat the disclosure beside the offer and include any price or conditions needed to understand it.</p></div>
+          </details>
+          <article class="sheet advice-anatomy"><h3>The anatomy stays simple.</h3><ol class="rules"><li><strong>Context:</strong> a short “note to self” label, or a clear sponsorship disclosure.</li><li><strong>Hook:</strong> one thought that makes sense by itself. Aim for roughly 5 to 10 words, then let it wrap.</li><li><strong>Support:</strong> one short line or a small related drawing. Keep the margin, tape and ruling behind the words.</li><li><strong>Open prompt:</strong> continue the thought with a useful phrase. Give the whole summary a clear keyboard focus.</li><li><strong>Payoff:</strong> answer the hook in plain words, using a short list when it helps. Keep any next action below the answer.</li></ol><p class="annotation">These specimens use the loaded Indie Flower 400 face, 24px hooks, 20px prompts and the shared paper, ink, tape and rule tokens. The board’s existing advice notes open a dialog; these inline examples demonstrate the same content order without collecting an email.</p></article>
+        </div>
+        <p class="margin-note">Keep the relationship visible: name the sponsor, or say when a product is ours. A promotional note keeps the notebook style and a clear destination. It never uses a salary band or a human-verification stamp.</p>
+      </section>
+
       <section class="section" aria-labelledby="icons-title">
-        <h2 class="section-title" id="icons-title"><span>05</span> A few drawn details</h2>
+        <h2 class="section-title" id="icons-title"><span>06</span> A few drawn details</h2>
         <p class="section-intro" id="theme-icons-intro">Small drawings give the notes personality. Keep them separate from the information someone needs to act on.</p>
         <div class="icon-specimens" id="theme-icon-specimens"></div>
         <p class="margin-note">Use a small accent at a card edge. Keep names, salaries and actions clear. Drawings never stand in for a button label, salary band or verification stamp.</p>
       </section>
 
       <section class="section" aria-labelledby="salary-title">
-        <h2 class="section-title" id="salary-title"><span>06</span> Job-card color means salary</h2>
+        <h2 class="section-title" id="salary-title"><span>07</span> Job-card color means salary</h2>
         <p class="section-intro">These are illustrative cards, not live listings. Every theme assigns an annual salary band using the top of the stated range. Keep the actual salary visible; color is a second cue.</p>
         <div class="two-up">
           <article class="sample-card salary-low" data-salary-band="low"><span class="spec-label">Example · under $80K</span><h3>Studio North</h3><p class="role">Junior designer</p><p>Remote · Full time</p><p class="salary">$65–75K</p><div class="card-bottom"><div data-theme-stamp></div><span class="sample-apply" data-theme-apply>Apply Now <span aria-hidden="true">→</span></span></div><p class="card-palette" data-theme-band-value>Light paper · #ECDEC6 → #E0D0B2</p></article>
@@ -87,7 +113,7 @@
       </section>
 
       <section class="section" aria-labelledby="layout-title">
-        <h2 class="section-title" id="layout-title"><span>07</span> Give the page some room</h2>
+        <h2 class="section-title" id="layout-title"><span>08</span> Give the page some room</h2>
         <p class="section-intro"><span id="theme-layout-intro">Original</span> keeps the shared layout. Use a small spacing scale, aligned edges and natural document flow. Let copy wrap and sections grow instead of shrinking an entire desktop composition.</p>
         <div class="two-up">
           <article class="sheet"><h3>Desktop</h3><div class="layout-example" aria-label="Desktop illustration: main content beside supporting content"><span>Main content</span><span>Supporting note</span></div><ul class="rules"><li>Center the homepage hero within a 1,500px maximum width.</li><li>Use two columns where the content benefits from sitting together.</li><li>Keep paragraph width comfortable, around 60–70 characters.</li><li>Use 24–48px between sections and 16–24px inside reading surfaces.</li></ul></article>
@@ -98,15 +124,29 @@
       </section>
 
       <section class="section" aria-labelledby="states-title">
-        <h2 class="section-title" id="states-title"><span>08</span> Make every state feel considered</h2>
+        <h2 class="section-title" id="states-title"><span>09</span> Make every state feel considered</h2>
         <div class="two-up">
           <article class="sheet"><h3>When someone interacts</h3><dl class="state-list"><dt>Hover</dt><dd>Change the shadow or underline. Keep the hit area stable and the label readable.</dd><dt>Focus</dt><dd>Use a clear, offset outline with a light separation ring so it survives both dark and light paper. Keep it visible above paper edges and outside clipped artwork.</dd><dt>Pressed</dt><dd>Reduce the shadow to suggest contact. Keep the action and its outcome clear.</dd><dt>Disabled</dt><dd>Use a native disabled control with legible text and a nearby reason. No hover invitation.</dd></dl></article>
           <article class="sheet"><h3>When something takes time</h3><dl class="state-list"><dt>Loading</dt><dd>Say what is loading. Keep already available information useful.</dd><dt>Empty</dt><dd>Explain the empty result and provide a next step, such as clearing filters.</dd><dt>Error</dt><dd>Keep the person’s input. Explain what failed and provide a retry path.</dd><dt>Motion</dt><dd>Keep transitions brief and optional. Honor reduced-motion preferences.</dd></dl></article>
         </div>
         <aside class="sheet contrast-note"><h3>Read the ink with its paper</h3><p id="theme-contrast-note">Ink colors belong to their surfaces. Check text contrast before reusing a color pair.</p></aside>
       </section>
+      <section class="section" aria-labelledby="voice-title">
+        <h2 class="section-title" id="voice-title"><span>10</span> Sound like a person. Name the action.</h2>
+        <div class="two-up">
+          <article class="sheet"><h3>Short, direct and useful.</h3><p>Give someone one idea and a next step. Advice can be curious or playful; errors and account messages should be calm and specific.</p><p>Keep deliberate lowercase in short handwritten notes. Preserve company names, Google and product labels. Do not force every sentence into lowercase or add emphasis to every word.</p><p class="annotation">Use real examples and supported claims. Do not invent a success story, a statistic or a promise of getting hired.</p></article>
+          <article class="sheet"><h3>Let the label do the work.</h3><dl class="state-list"><dt>Action</dt><dd>“Save job” names the result. “Saved” confirms it happened.</dd><dt>Recovery</dt><dd>Say what failed and what remains safe, then offer “Try again.”</dd><dt>Availability</dt><dd>Use “job no longer available.” Keep the next useful action close.</dd><dt>Opening</dt><dd>Continue the advice hook with a specific prompt. A control that leaves the page should name its destination.</dd></dl></article>
+        </div>
+      </section>
+      <section class="section" aria-labelledby="imagery-title">
+        <h2 class="section-title" id="imagery-title"><span>11</span> Keep the name and the people recognizable</h2>
+        <div class="two-up">
+          <article class="sheet"><h3>Photography has a reason.</h3><figure class="guide-photo"><img src="assets/home-founder-nic.jpg" alt="Nic wearing headphones at a SiriusXM microphone" width="1200" height="684" loading="lazy"><figcaption class="annotation">Existing founder photo. Keep the person and the context in the crop.</figcaption></figure><p>Use the site’s approved photos and illustrations where they explain a person, role or story. Keep natural proportions, place captions outside the image and check the crop on a phone.</p><p class="annotation">Do not bake essential words into a picture. Give informative images meaningful alternative text; purely decorative images get empty alternative text.</p></article>
+          <article class="sheet"><h3>The name needs breathing room.</h3><div class="guide-name-example"><span class="wordmark">StillUnemployed.com</span></div><p>Keep the full spelling and the established lettering for its location. This guide uses handwriting; the homepage keeps its serif title and the board keeps its heavy display heading.</p><p>Leave clear space around the name. Do not stretch it, tuck tape across the letters or turn it into a different logo for each theme.</p><p class="annotation">Use the full name in accessible link text. Employer logos and third-party marks identify their owners; they are not decorative theme assets or an endorsement.</p></article>
+        </div>
+      </section>
     </main>
-    <footer class="guide-footer"><span id="theme-footer">StillUnemployed.com · Original look</span><a href="/index.html">Home</a><a href="/jobs.html">Jobs</a><a href="/versions.html">Version history</a></footer>
+    <footer class="guide-footer"><span id="theme-footer">StillUnemployed.com · Original look</span><a href="#guide-contents">Back to contents</a><a href="/index.html">Home</a><a href="/jobs.html">Jobs</a><a href="/versions.html">Version history</a></footer>
   </div></div>
   <dialog class="theme-dialog" id="guide-theme-dialog" aria-labelledby="theme-dialog-title" aria-describedby="theme-dialog-note">
     <div class="theme-dialog-head"><div><h2 id="theme-dialog-title">Choose a look</h2><p id="theme-dialog-note">Same board DNA, a different mood. This changes only the style guide.</p></div><button class="theme-close" id="theme-close" type="button" aria-label="Close theme choices">×</button></div>

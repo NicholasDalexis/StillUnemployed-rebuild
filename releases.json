@@ -1,7 +1,16 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.1.6",
+  "currentVersion": "2.1.7",
   "releases": [
+    {
+      "version": "2.1.7",
+      "date": "2026-09-06",
+      "title": "Advice notes in the style guide",
+      "changes": [
+        "Open sample advice notes and see how the paper, handwriting and calls to action fit together.",
+        "Find guidance for clear promotional labels, everyday wording, photos and the site name, with contents links for quicker browsing."
+      ]
+    },
     {
       "version": "2.1.6",
       "date": "2026-09-06",
@@ -88,7 +97,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "8b73d1e9f03053587f0b2f780be21133c6192979528306baa1c8c53000befa16",
-    "fileCount": 122
+    "digest": "3b481b903aa15d255b6e6468b891aefb6292818d40df4828d3ac9686f3e24ac4",
+    "fileCount": 123
   }
 }

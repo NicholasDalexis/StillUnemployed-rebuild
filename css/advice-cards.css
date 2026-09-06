@@ -1,0 +1,75 @@
+/* Reusable notebook specimens. Load brand.css first. */
+.su-advice-card {
+  position:relative;
+  min-width:0;
+  margin:12px 0 0;
+  background-color:var(--su-paper);
+  background-image:repeating-linear-gradient(180deg,transparent 0 24px,var(--su-rule) 24px 25px);
+  background-position:0 60px;
+  color:var(--su-ink);
+  border:0;
+  border-radius:3px;
+  box-shadow:var(--su-note-shadow);
+  font:400 1rem/1.6 var(--su-body);
+}
+.su-advice-card::before {
+  content:'';
+  position:absolute;
+  inset:0 auto 0 18px;
+  width:1.5px;
+  background:var(--su-orange);
+  opacity:.38;
+  pointer-events:none;
+}
+.su-advice-card::after {
+  content:'';
+  position:absolute;
+  top:-11px;
+  left:50%;
+  width:92px;
+  height:24px;
+  transform:translateX(-50%) rotate(-2.5deg);
+  background:var(--su-tape);
+  pointer-events:none;
+}
+.su-advice-front {
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  min-height:238px;
+  padding:32px 22px 18px 30px;
+  color:var(--su-ink);
+  list-style:none;
+}
+summary.su-advice-front { cursor:pointer; }
+summary.su-advice-front::-webkit-details-marker { display:none; }
+summary.su-advice-front:hover .su-advice-cta { text-decoration-thickness:2px; }
+summary.su-advice-front:active { background-color:var(--su-rule); }
+summary.su-advice-front:focus-visible,
+.su-advice-card a:focus-visible {
+  outline:3px solid var(--su-ink);
+  outline-offset:4px;
+  box-shadow:0 0 0 4px var(--su-paper);
+}
+.su-advice-eyebrow { display:block; margin:0 0 6px; color:var(--su-muted); font:400 1rem/1.3 var(--su-hand); transform:rotate(-1deg); }
+.su-advice-hook { display:block; margin:0; font:400 1.5rem/1.25 var(--su-hand); overflow-wrap:anywhere; }
+.su-advice-hook::after { content:''; display:block; width:112px; max-width:75%; height:3px; margin-top:4px; background:var(--su-orange); border-radius:50%; transform:rotate(-1.5deg); }
+.su-advice-sub { display:block; margin:12px 0 0; color:var(--su-muted); font:400 1.125rem/1.4 var(--su-hand); }
+.su-advice-mark { display:block; width:44px; height:44px; margin:12px 0 0 auto; color:var(--su-orange); transform:rotate(5deg); pointer-events:none; }
+.su-advice-mark svg { display:block; width:100%; height:100%; }
+.su-advice-cta { display:flex; align-self:flex-end; align-items:center; min-height:var(--su-touch); margin-top:auto; padding-top:12px; color:var(--su-orange-text); font:400 1.25rem/1.3 var(--su-hand); text-align:right; text-decoration:underline; text-underline-offset:4px; }
+.su-advice-close { display:none; }
+.su-advice-card[open] > .su-advice-front .su-advice-open { display:none; }
+.su-advice-card[open] > .su-advice-front .su-advice-close { display:inline; }
+.su-advice-back { margin:0 22px 0 30px; padding:20px 0 24px; border-top:1px dashed var(--su-muted); color:var(--su-ink); overflow-wrap:anywhere; }
+.su-advice-back p { margin:0 0 12px; }
+.su-advice-back p:last-child { margin-bottom:0; }
+.su-advice-back ul, .su-advice-back ol { margin:0 0 12px; padding-left:20px; }
+.su-advice-back li { margin:8px 0; }
+.su-advice-back a { color:var(--su-orange-text); text-underline-offset:4px; }
+.su-advice-label { display:block; margin:0 0 12px; color:var(--su-ink); font:600 .875rem/1.5 var(--su-body); }
+@media(max-width:360px) {
+  .su-advice-front { padding-right:18px; }
+  .su-advice-back { margin-right:18px; }
+}
