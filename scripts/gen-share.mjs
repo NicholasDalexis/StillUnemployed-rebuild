@@ -201,7 +201,7 @@ export function rowsToJobs(rows) {
       const rates = (pay.replace(/,/g, '').match(/\d+(?:\.\d+)?/g) || []).map(Number);
       if (!rates.length || Math.max(...rates) < 25) continue;
     }
-    jobs.push({ co, role, link, pay, loc: get('location'), style: get('type'), exp: get('years of experience') });
+    jobs.push({ co, role, link, pay, ind: get('category'), loc: get('location'), style: get('type'), exp: get('years of experience') });
   }
   return SUJobIdentity.groupJobs(jobs).map(group => ({ ...group.job, _aliases: group.aliases }));
 }

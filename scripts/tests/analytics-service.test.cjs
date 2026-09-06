@@ -26,3 +26,11 @@ test('signal expiry survives unrelatedday89activity and keepsnewersignals during
  time=now+91*86400000;const result=await S.cleanup(d);assert.equal(result.pruned,1);
  const retained=d.db.data.get(ref);assert.equal(retained.jobs[jobId],undefined);assert.equal(retained.jobs[newId].at,now+50*86400000);assert.equal(+retained.nextSignalExpiryAt,now+140*86400000);
 });
+
+test('realshareCSVloader preserves careerCategory for the servercatalog',async()=>{
+ const {loadJobs}=await import('../gen-share.mjs');
+ const text='Company,Job Title,Link,Salary,Active/Dead,Category\nExample,Social Media Coordinator,https://example.com/jobs/1,$70K-85K,Active,Social';
+ const jobs=await loadJobs(null,async()=>({ok:true,text:async()=>text}));
+ assert.equal(jobs[0].ind,'Social');const catalog=C.catalog(jobs),meta=Object.values(catalog)[0];
+ assert.equal(meta.field,'Marketing');assert.equal(meta.role,'Social Media');
+});

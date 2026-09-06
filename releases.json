@@ -1,7 +1,17 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.1.2",
+  "currentVersion": "2.1.3",
   "releases": [
+    {
+      "version": "2.1.3",
+      "date": "2026-09-06",
+      "title": "Your interests, your choices",
+      "changes": [
+        "Optional personalized ordering follows the career fields and roles you explore, with higher disclosed pay among comparable jobs.",
+        "Separate analytics and recommendation controls, a history reset, and clearer privacy explanations.",
+        "A private owner dashboard summarizes measured activity and answers supported questions."
+      ]
+    },
     {
       "version": "2.1.2",
       "date": "2026-09-05",
@@ -50,7 +60,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "77a74897eadcff30faa04ad428e12b52b50cc320b5e9d2e1fc38a8f8206f7773",
-    "fileCount": 109
+    "digest": "5380495a1d3a13f22bfd3dabde81d7419ce836028c53fb15efacb107c8fb709b",
+    "fileCount": 121
   }
 }
