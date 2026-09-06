@@ -21,6 +21,10 @@
     "@fontsource/archivo": "^5.2.8",
     "@fontsource/archivo-black": "^5.2.8",
     "@fontsource/indie-flower": "^5.2.7",
-    "@napi-rs/canvas": "^1.0.2"
+    "@napi-rs/canvas": "^1.0.2",
+    "firebase-admin": "^14.3.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

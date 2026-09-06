@@ -1,0 +1,56 @@
+# Personalized jobs and analytics candidate
+
+Prepared September 5, 2026 by Codex/Astra, in an isolated worktree based on 04c3a90. Local candidate only. No Git push, deployed function, credential change, live user write or account migration occurred.
+
+## What runs
+
+`js/personalization.js` is shared browser/server logic. Each canonical job contributes its strongest action: detail open1, save3, outbound Apply4, self-reported application5. Thirty-day half-life,90-day signal window, maximum500 distinct jobs per account. Repeated weaker actions do not refresh an old stronger action; this prevents repeated opens from preserving an old save indefinitely. Review this tradeoff after opt-in usage exists. No Apply is required to learn an interest. Profile signals are account-isolated and authenticated by Firebase ID tokens verified server-side with revocation checks.
+
+Broad career field comes first, role specialty next, salary minimum within comparable role/pay-basis groups next. Marketing is a career field; it does not mean the employer's industry. Equal interests interleave proportionally;8marketing and1fashion yields8/9 marketing among a sufficiently stocked first9. Field/specialty exposure floors keep other available jobs reachable. Annual amounts never compare against hourly or total-compensation slots. Explicit filters restrict the candidate pool and Recently added remains chronological. The forced100Kfirst rule is removed. Order freezes after browsing starts; new learning takes effect next visit. Explicit reset and account/consent changes clear the order.
+
+`js/analytics.js` records semantic events after the selected consent choice and posts to a first-party Netlify function. HomepagefixedCTAs and confirmed suggestion receipts have explicit events. Generic GA click labels and the old optional Apps Script interaction logger are retired in this candidate. Existing historical logs and GA are not modified. Operational job-unavailable reports remain separate; full page URL and anonymous browserID were removed from that request. No arbitrary search text, tracker content, email, name, URLquery or DOMlabel is sent to the analytics stream.
+
+Server functions store idempotent event receipts, private profiles and short-lived rate limits in separate Firestorecollections. Analytics-only guests use random browser/session IDs; the server converts actors to keyed identifiers. Personalization-only users produce profile/receipt data, excluded from analytics. Public job metadata is resolved from the known live Sheetcatalog on the server, cached5min with a1hour maximum stale fallback. No arbitrary metadata supplied by the client becomes a trusted category/title/company. The owner API verifies Firebase IDtoken and server UIDallowlist; it never returns visitor identities. Missing credentials/configuration yields503, never invented zero data.
+
+## Instrumentation matrix
+
+| Event | Trigger and meaning |
+| --- | --- |
+| page_view | Page load or resolved account context after analytics acceptance. Session persists in same-tab sessionStorage for30minutes of inactivity. Actual account transitions rotate it; same-account reload does not. |
+| job_impression | At least50percent of a rendered card visible, once per distinct canonical job per page. Exposure denominators are recorded. |
+| job_open | Card/details opened, including the face's ApplyNow that opens details. Once per distinct canonical job per page. |
+| job_save/job_unsave | Save toggle; captures intended local state. Cloud sync status remains operational, not an application completion. |
+| apply_click | DetailApply opens the employer destination. It does not prove the new page loaded. |
+| application_reported | User selects I applied. It is self-reported, distinct from Applyclick and employer-confirmed submission. |
+| outbound_started/return/unknown | Visible-to-hidden transition shortly after outbound click, paired with opaque outboundID. Returned observed intervals cap at900seconds and setcapped. No return remainsunknown. Visible popup time is not application time. |
+| tracker_open/add/delete/status/export/note_edit | Tracker page and structured operations. Note edit is counted once per page, with no note text. Status is an allowlisted value. |
+| theme_change/theme_vote | Theme selection and positive/negative vote separately. Theme leaderboard counts selections only. |
+| filter_change/search_used | Filter type or occurrence of a search. No search text, dynamic labels or arbitrary filter values. |
+| auth_login/auth_logout/auth_signup | Verified successful sign-in/out interactions. Signup is derived from Firebase account creation metadata on a measured sign-in, not a browser declaration. |
+| privacy_open/page_engagement | Legal-page visits and active visible time, pausing after60seconds without activity. No pre-consent time is carried into a later opt-in. |
+| newsletter_open/click and advice_open/impression | Existing semantic call sites; cross-origin newsletter form completion cannot be observed. |
+
+## Owner reporting
+
+Dashboard shows measured totals, daily trends, fields, specialties, specific jobs, companies, themes, event counts, legal/page engagement and observed outbound timing. Field/role/job/company/theme/page timing breakdowns require at least5 distinct measured actors. Aggregate questions are deterministic bounded intents over the returned dataset, with no paid model API and no demographic inference. No automatic cross-user ranking-weight learning has been enabled. These measurements are the foundation for later experimentation and adjustments.
+
+All numbers cover analytics opt-ins and events received. Signup counts are measured new accounts at opt-in sign-in, not the total Firebase user population. Account-linked tracking supports across-device actors; anonymous visitors can fragment across devices and browser clears. Session counting is per browsing tab/context, not a claim of unique human visits. There is no proven daily retention cohort, multi-touch attribution, employer-confirmed application, demographic cohort or causal recommendation lift. A30-day owner query caps at20,000raw records and fails clearly if exceeded; aggregation infrastructure should replace that read before scale. Ad blockers, network loss, background termination and declined consent mean incomplete coverage. No conversion rate is invented from mismatched denominators. Mobile/desktop cohort, safe campaign taxonomy, tracker server-write success, consent delivery coverage and aggregate recommendation experiment reporting are next useful gaps.
+
+## Privacy and deletion
+
+Choice controls exist on Home, Jobs, Tracker, Suggest Jobs and policy pages. Choices are browser-local; another device can retain its own setting. Analytics and signed-in personalization have separate switches, with GlobalPrivacyControl suppressing optional analytics. Reset deletes the current account and known browser's optional analytics plus interest records, keeps saved jobs/tracker untouched, reports failures and rejects queued pre-reset events. Deleting unrelated account/browser histories requires their identity or verified support request.
+
+Read/rank windows exclude signals/events older90days. Storage expiry fields plus a daily Netlify cleanup function implement physical removal; cleanup fails on a detected backlog instead of claiming success. Tests exercise deletion and preservation of unrelated users. The schedule is not deployed or observed, and historical Sheets logs/provider backups have not been migrated or audited.90days is the new collection's target until hosted retention verification. Do not claim old logs are anonymous or erased. Privacy/terms candidate text is updated to this behavior; this is a product disclosure review, not legal clearance.
+
+## Deployment prerequisites and checks
+
+1. Merge only after the board owner reviews this isolated candidate; current production sign-in gate remains untouched. No push/deploy is authorized by the implementation handoff.
+2. Configure function-scoped `SU_ANALYTICS_ENABLED=true`, `SU_FIREBASE_SERVICE_ACCOUNT` (JSON for stillunemployed-17de9), `SU_ANALYTICS_SECRET` (strong serversecret), `SU_ALLOWED_ORIGINS` (exact approved origins), and `SU_ANALYTICS_ADMIN_UIDS` (actual ownerUID). Never embed any in public files. SDK/node dependencies do not create credentials.
+3. No local ADC file, FirebaseCLI login state or canonical Netlify link state was found. Account ownership and authenticated Firestore rule enforcement must be verified at rollout. Today's saved rules snapshot allows only users/{ownuid}, denyall elsewhere. Root performed live unauthenticated nonexistent-document probes on all3newcollections and got403. This does not prove signed-in denial; verify with emulator/rulesread and authenticated negative tests before enabling.
+4. Netlify now publishes an explicit `dist` allowlist, excluding docs, server source, scripts, fixtures, private files and dependencies. Functions are packaged separately. Run public-output checks, actual Firebase token/cross-account tests, staging collectorreadback and ownerdashboard using real nonproduction test accounts, then verify optout/reset and scheduledcleanup. No live user records were touched here.
+5. The release build requires a current `docs/privacy-review.json` source receipt through `scripts/privacy-review.mjs`, plus the existing versionseal. Record that review after sourcefreeze; do not stamp a review receipt without reading current policies. Release numbering is left for the root/board owner to finalize after review.
+6. Dependencies include FirebaseAdmin; npm audit after updating FirebaseAdmin to14.3.0 reports6moderate transitive findings (unused GoogleStorage SDK/uuid family and gaxios); Node22.12+ is now required, nohighfindings introduced after removing the unnecessary NetlifySDK. Review the dependency update path before hosted rollout. The new FirebaseAdmin dependency was deliberately updated to14.3.0 and checked with bundledNode24; no automatic audit-force downgrade was made.
+
+## Verification
+
+Existing232 tests remained passing after initial integration; the expanded run is recorded by the final root receipt. New unit/integration tests cover weighting/interleave, salarybasis, recency, aliases, consent/noPII, sessionreload/accounttransition, timingcap, tokenverification, tenant isolation, idempotency, reset/retention, ownerauthorization and browser-shapedGET. An actual loopbackHTTP receipt test posts through the service, durably writes private0600file storage, restarts that store, reads the resulting owneraggregate and same-account profile, and applies the profile to rankjobs. That test injects synthetic identity and storage adapters only in the test harness; production functions have no development auth fallback. A real Firebase/Netlify end-to-end connection remains unverified. Dashboard agent owns separate browser QA and visualreceipt.

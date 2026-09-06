@@ -1,7 +1,7 @@
 # StillUnemployed.com: static site with generated share and theme pages.
 # Netlify serves the repo root after the build succeeds.
 [build]
-  publish = "."
+  publish = "dist"
   # Generate the static per-job share pages + Post-it OG images from the live sheet.
   # gen-share.mjs      = per-JOB share pages + Post-it OG images (/j/**)
   # gen-theme-pages.mjs = per-THEME board pages (/jobs/<theme>/index.html), each with its own
@@ -11,7 +11,7 @@
   # FIX 2026-08-16: this `command` line sat under [build.environment] (a Jul-13 merge mistake),
   # where Netlify reads it as an env var, NOT a build command — so branch builds silently
   # skipped page generation. It belongs HERE, in [build]. [[2026-07-14-Netlify-Build-Command-Nested-In-Wrong-Table]]
-  command = "node scripts/version.mjs --check && node scripts/gen-share.mjs && node scripts/gen-theme-pages.mjs"
+  command = "node scripts/version.mjs --check && node scripts/privacy-review.mjs && node scripts/gen-share.mjs && node scripts/gen-theme-pages.mjs && node scripts/prepare-publish.mjs"
 
 # ── Netlify secrets scanning (2026-07-12) ──────────────────────────────────────────────────────
 # Netlify scans the build output for anything that looks like a credential and FAILS THE DEPLOY if
@@ -30,6 +30,7 @@
 # Scoped to these two paths, so a REAL secret leaking anywhere else in the repo still fails the build.
 # init.json also supplies the same-origin Firebase redirect helper with that public configuration.
 [build.environment]
+  NODE_VERSION = "22"
   SECRETS_SCAN_OMIT_PATHS = "js/auth.js,__/firebase/init.json"
 
 # Shipped Jun 28 2026: fully disable Netlify post-processing (belt + suspenders
@@ -134,3 +135,9 @@
   for = "/js/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# Optional analytics runtime. Credentials are function-scoped environment values.
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  included_files = ["jobs-data.json", "js/job-identity.js", "js/personalization.js", "scripts/gen-share.mjs"]

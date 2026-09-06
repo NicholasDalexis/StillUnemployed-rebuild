@@ -387,7 +387,7 @@
       });
       saveRows(this.rows);
       // analytics (js/analytics.js): manual add — additive no-op without it
-      if (typeof window.suTrack === 'function') window.suTrack('tracker-add', co, role, '');
+      if (typeof window.suTrack === 'function') window.suTrack('tracker-add', '', '', '');
       this.formMessage = '';
       this.render({ clearDraft: true });
       var again = document.getElementById('trk-co');
@@ -404,6 +404,7 @@
         self.rows = self.rows.filter(function (r) { return r && r.id !== id; });
         delete self.deleting[id];
         saveRows(self.rows);
+        if(window.SUAnalytics)window.SUAnalytics.emit('tracker_delete',{});
         self.render();
       }, 650);
     },
@@ -413,7 +414,7 @@
       this.rows.forEach(function (r) {
         if (r && r.id === id && r[field] !== value) { r[field] = value; r.updated = new Date().toISOString(); changed = true; }
       });
-      if (changed) saveRows(this.rows);
+      if (changed) {saveRows(this.rows);if(field==='notes'&&window.SUAnalytics&&!this._noteMeasured){this._noteMeasured=true;window.SUAnalytics.emit('tracker_note_edit',{});}}
       return changed;
     },
 
@@ -466,7 +467,7 @@
           if (typeof window.suTrack === 'function') {
             var aid = t.getAttribute('data-id'), arow = null;
             self.rows.forEach(function (r) { if (r && r.id === aid) arow = r; });
-            window.suTrack('tracker-status', arow ? arow.company : '', t.value, '');
+            window.suTrack('tracker-status', '', t.value, '');
           }
           self.setField(t.getAttribute('data-id'), 'status', t.value);
           self.render(); // recolor the select + refresh the summary pills

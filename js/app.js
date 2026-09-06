@@ -526,6 +526,10 @@
   }
 
   function postReport(action, co, link) {
+    if(action !== 'gone_report') {
+      if(window.SUAnalytics){if(action==='click')window.SUAnalytics.job('apply_click',link);else if(action==='applied')window.SUAnalytics.job('application_reported',link);}
+      return;
+    }
     if (!REPORT_URL) return;
     if (reportExcluded()) {                    // admin / localhost: log, don't POST (no sheet row, no email)
       try { console.debug('[su] report suppressed (admin/non-prod):', action, co, link); } catch (e) {}
@@ -536,7 +540,7 @@
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: action, company: co || '', link: link || '', page: location.href, cid: suCid() })
+        body: JSON.stringify({ action: action, company: co || '', link: link || '', page: location.pathname })
       });
     } catch (e) { /* fire-and-forget; never block the UI */ }
   }
@@ -1381,14 +1385,7 @@
       if (alreadySaved) Object.keys(saved).forEach(function (link) { if (sameJobLink(link, key)) delete saved[link]; });
       else saved[key] = true;
       try { if (window.SUStore) window.SUStore.saveSaved(saved); else localStorage.setItem('su_saved_jobs', JSON.stringify(saved)); } catch (e) {}
-      // analytics (js/analytics.js): log SAVES only, not unsaves — additive no-op without it
-      if (saved[key] && typeof window.suTrack === 'function') {
-        var sj = null;
-        for (var si = 0; si < this.jobs.length; si++) {
-          if (jobHasLink(this.jobs[si], key)) { sj = this.jobs[si]; break; }
-        }
-        window.suTrack('save', sj ? sj.co : '', sj ? sj.role : '', key);
-      }
+      if(window.SUAnalytics) window.SUAnalytics.job(alreadySaved?'job_unsave':'job_save',key);
       this.setState({ saved: saved });
     },
 
@@ -1561,9 +1558,15 @@
         // "Recently added" is a SORT, not a filter: show ALL roles, newest (highest sheet row) first
         shown = shown.slice().sort(function (a, b) { return (b._idx || 0) - (a._idx || 0); });
       }
-      // ALWAYS lead with a 100K+ role so the first card carries the signature décor (all sort modes)
-      var hiIdx = shown.findIndex(function (j) { return self.payTier(j.pay) === 'high'; });
-      if (hiIdx > 0) { var moved = shown.splice(hiIdx, 1)[0]; shown.unshift(moved); }
+      else if(window.SUPersonalization && window.SUAnalytics) {
+        var profileGeneration=window.SUAnalytics.generation();
+        if(this._profileGeneration!==profileGeneration && (!this._feedInteracted || this._profileGeneration===undefined || this._profileGeneration===-1)){
+          this._personalOrder=window.SUPersonalization.rank(this.jobs,window.SUAnalytics.profile());
+          this._profileGeneration=profileGeneration;
+        }
+        var order=this._personalOrder||this.jobs;
+        shown.sort(function(a,b){return order.indexOf(a)-order.indexOf(b);});
+      }
 
       return { base: base, shown: shown };
     },
@@ -1591,6 +1594,12 @@
       var board = document.getElementById('board');
       var sc = this.computeShown();
       var base = sc.base, shown = sc.shown;
+      setTimeout(function(){
+        if(!window.IntersectionObserver||!window.SUAnalytics)return;
+        if(self._jobImpressions)self._jobImpressions.disconnect();
+        self._jobImpressions=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting&&entry.intersectionRatio>=0.5)window.SUAnalytics.job('job_impression',entry.target.getAttribute('data-link'));});},{threshold:0.5});
+        document.querySelectorAll('[data-act="openJob"][data-link]').forEach(function(card){self._jobImpressions.observe(card);});
+      },0);
 
       // ---- active "Change Look?" theme (ported from renderVals THEMES) ----
       var look = this.state.look;
@@ -2621,6 +2630,7 @@
             // now opens the TL;DR detail popup; real navigation happens from detailApply
             e.preventDefault(); e.stopPropagation();
             var _al = el.getAttribute('data-link') || el.getAttribute('href') || '';
+            if(window.SUAnalytics)window.SUAnalytics.job('job_open',_al);
             suRecipeView(_al, self);   // impression log for the capture block (1-in-3 jobs)
             self.setState({ detailOpen: true, detailLink: _al });
             break;
@@ -2633,6 +2643,7 @@
             if (ns === 'open' || ns === 'closing') return;
             e.stopPropagation();
             var _dl3 = el.getAttribute('data-link');
+            if(window.SUAnalytics)window.SUAnalytics.job('job_open',_dl3);
             suRecipeView(_dl3, self);
             self.setState({ detailOpen: true, detailLink: _dl3 });
             break;
@@ -2656,7 +2667,7 @@
             var q = String(self.state.q || '').trim();
             if (!q || q === self._qLast) return;
             self._qLast = q;
-            if (typeof window.suTrack === 'function') window.suTrack('search', 'search', q.slice(0, 60), '');
+            if (typeof window.suTrack === 'function') window.suTrack('search', 'search', '', '');
           }, 1500);
         }
       });
@@ -2767,6 +2778,11 @@
       window.addEventListener('storage', function (e) { if (e.key === 'su_saved_jobs' || e.key === 'su_tracker') { self.state.saved = loadSaved(); self.render(); } });
       this.state.saved = loadSaved();
       this.jobs = this.shuffleFresh(uniqueJobs(jobs));
+      if(window.SUAnalytics)window.SUAnalytics.registerJobs(this.jobs);
+      window.addEventListener('su:profile-ready',function(event){if(event.detail&&event.detail.reset){self._personalOrder=null;self._profileGeneration=-1;self._feedInteracted=false;}if(!self._feedInteracted)self.render();});
+      document.addEventListener('pointerdown',function(){self._feedInteracted=true;},{once:true});
+      window.addEventListener('su:auth-changed',function(){self._profileGeneration=-1;self._feedInteracted=false;self.render();});
+      window.addEventListener('su:consent-changed',function(){self._profileGeneration=-1;self._feedInteracted=false;self.render();});
       this.bindEvents();
       // analytics: a ?theme= content preset (theme-chip) counts as an applied filter — additive
       if (this.state.theme && Object.prototype.hasOwnProperty.call(this.themeDefs, this.state.theme) && typeof window.suTrack === 'function') {

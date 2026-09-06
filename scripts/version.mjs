@@ -15,7 +15,7 @@ const esc = value => String(value).replace(/[&<>"']/g, ch => ({ '&':'&amp;', '<'
 const label = version => 'Version ' + version;
 const anchor = version => 'version-' + version.replace(/\./g, '-');
 const FINGERPRINT_ALGORITHM = 'sha256-public-source-v1';
-const SOURCE_ROOTS = ['js', 'css', 'assets', '__', 'scripts', '.github'];
+const SOURCE_ROOTS = ['js', 'css', 'assets', '__', 'scripts', '.github', 'netlify'];
 const SOURCE_EXTENSIONS = new Set(['.html', '.htm', '.css', '.scss', '.sass', '.less', '.js', '.mjs', '.cjs', '.jsx', '.ts', '.tsx', '.json', '.toml', '.yaml', '.yml', '.xml', '.webmanifest', '.sh', '.py', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.avif', '.svg', '.ico', '.woff', '.woff2', '.ttf', '.otf', '.eot', '.mp3', '.mp4', '.webm', '.wav', '.pdf']);
 const OMIT_PARTS = new Set(['node_modules', '_to_delete', 'tests', 'test', '__tests__', 'fixtures', 'docs', 'coverage', 'test-results', 'playwright-report']);
 

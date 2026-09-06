@@ -20,3 +20,6 @@ assets/og-src/
 
 # Per-theme board share pages: generated at build by scripts/gen-theme-pages.mjs
 /jobs/
+
+# Generated allowlisted deploy surface
+/dist/

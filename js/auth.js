@@ -18,6 +18,9 @@
 
   var user = null, session = null, auth, sdk, store = window.SUStore;
   var syncState = 'loading', errorCode = '', signingIn = false;
+  window.SUAuth = { signedIn:function(){return !!user;}, getToken:function(){return user ? user.getIdToken() : Promise.reject(new Error('Sign in required'));} };
+  function notifyAuth(){var changed=false;try{var owner=user?user.uid:'guest',prior=sessionStorage.getItem('su_analytics_auth_owner');changed=prior!==null&&prior!==owner;sessionStorage.setItem('su_analytics_auth_owner',owner);}catch(e){}if(window.dispatchEvent && typeof CustomEvent !== 'undefined')window.dispatchEvent(new CustomEvent('su:auth-changed',{detail:{signedIn:!!user,accountChanged:changed}}));}
+  function loginResult(result){if(result && window.SUAnalytics)window.SUAnalytics.emit('auth_login',{});return result;}
   function status(next, error) {
     syncState = next; errorCode = error ? String(error.code || error.message || 'unavailable') : '';
     if (error) console.warn('[su-auth]', errorCode);
@@ -26,6 +29,7 @@
   function render() {
     document.querySelectorAll('.su-auth-button').forEach(function (button) {
       var text = user ? (syncState === 'synced' ? 'Saved jobs and tracker synced' : syncState === 'error' ? 'Sync failed. Tap to retry' : 'Syncing saved jobs and tracker') : signingIn ? 'Signing in with Google' : 'Sign in with Google';
+      if(user&&!store)text='Signed in';
       if (user) text += '. ' + (user.email || user.displayName || 'Signed in');
       if (errorCode) text += '. ' + errorCode;
       button.title = text; button.setAttribute('aria-label', text);
@@ -40,13 +44,13 @@
   function onClick() {
     if (user) {
       if (syncState === 'error') { startSync(); return; }
-      if (confirm('Signed in as ' + (user.email || user.displayName) + '. Sign out? Your jobs stay saved in this account.')) sdk.signOut(auth);
+      if (confirm('Signed in as ' + (user.email || user.displayName) + '. Sign out? Your jobs stay saved in this account.')) {if(window.SUAnalytics){window.SUAnalytics.emit('auth_logout',{});window.SUAnalytics.flush();}sdk.signOut(auth);}
       return;
     }
     if (!auth || signingIn) return;
     signingIn = true; errorCode = ''; render();
     var provider = new sdk.GoogleAuthProvider();
-    sdk.signInWithPopup(auth, provider).catch(function (e) {
+    sdk.signInWithPopup(auth, provider).then(loginResult).catch(function (e) {
       if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') return sdk.signInWithRedirect(auth, provider);
       if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
         status('error', e);
@@ -112,10 +116,11 @@
     sdk = mods[1]; F = mods[2]; store = window.SUStore;
     var app = mods[0].initializeApp(FIREBASE_CONFIG);
     auth = sdk.getAuth(app); firestore = F.getFirestore(app);
-    sdk.getRedirectResult(auth).catch(function (e) { status('error', e); });
+    sdk.getRedirectResult(auth).then(loginResult).catch(function (e) { status('error', e); });
     sdk.onAuthStateChanged(auth, function (next) {
       if (session) session.stop(); session = null;
       user = next || null;
+      notifyAuth();
       if (store && store.owner() !== (user ? user.uid : null)) store.activate(user ? user.uid : null);
       if (user) startSync(); else status('signed-out');
       render();

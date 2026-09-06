@@ -1,0 +1,87 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const dashboard = require('../../js/analytics-dashboard.js');
+const sample = () => dashboard.fixture(30);
+
+test('missing and invalid metrics remain unavailable, while explicit zero remains zero', () => {
+  for (const value of [null, undefined, NaN, Infinity, -1, '12', true]) assert.equal(dashboard.format(value), 'N/A');
+  assert.equal(dashboard.format(0), '0');
+  assert.equal(dashboard.format(12345), '12,345');
+});
+test('empty bars never divide by zero or exceed their scale', () => {
+  assert.equal(dashboard.percent(0, 0), 0);
+  assert.equal(dashboard.percent(null, 8), 0);
+  assert.equal(dashboard.percent(2, 4), 50);
+  assert.equal(dashboard.percent(6, 4), 100);
+});
+test('duration preserves missing observations and seconds without inventing application time', () => {
+  assert.equal(dashboard.duration(null), 'N/A');
+  assert.equal(dashboard.duration(0), '0 sec');
+  assert.equal(dashboard.duration(242), '4 min 2 sec');
+  assert.equal(dashboard.duration(900), '15 min');
+  assert.match(dashboard.answer('What is the average away time?', sample()), /does not measure activity on another website/);
+});
+test('normalization validates consent-only responses, bounds lists and sorts dates', () => {
+  assert.throws(() => dashboard.normalize({}), /invalid-response/);
+  const raw = sample(); raw.tracking = 'all-visitors';
+  assert.throws(() => dashboard.normalize(raw), /invalid-response/);
+  raw.tracking = 'consent-only'; raw.daily.reverse(); raw.fields = Array.from({length:200}, () => ({label:'X',count:1}));
+  const cleaned = dashboard.normalize(raw);
+  assert.equal(cleaned.fields.length,150);
+  assert.ok(cleaned.daily[0].date < cleaned.daily[1].date);
+});
+test('unknown, old and implausibly future timestamps are marked stale', () => {
+  const now = Date.UTC(2026,8,6,5);
+  assert.equal(dashboard.stale(null,now),true);
+  assert.equal(dashboard.stale('bad',now),true);
+  assert.equal(dashboard.stale(new Date(now-3600001).toISOString(),now),true);
+  assert.equal(dashboard.stale(new Date(now+3600000).toISOString(),now),true);
+  assert.equal(dashboard.stale(new Date(now-2000).toISOString(),now),false);
+});
+test('questions support reported totals but do not imply people from action counts', () => {
+  assert.match(dashboard.answer('How many people signed up?',sample()), /^126 recorded sign-ups/);
+  assert.match(dashboard.answer('How many people use the tracker?',sample()), /^168 distinct recorded tracker users/);
+  assert.match(dashboard.answer('How many people clicked apply?',sample()), /not a count of people/);
+  assert.match(dashboard.answer('How many visits?',sample()), /opted-in activity only/);
+});
+test('questions show ties and privacy-suppressed empty groups without invented winners', () => {
+  const data = sample(); data.fields = [{label:'Marketing',count:12},{label:'Fashion',count:12}];
+  assert.match(dashboard.answer('Which field is most popular?',data), /Marketing, Fashion tie at 12/);
+  data.fields = [];
+  assert.match(dashboard.answer('Which field is most popular?',data), /below the privacy threshold/);
+});
+test('unsupported or adversarial questions do not produce an unrelated metric answer', () => {
+  for(const q of ['How many women use the tracker?', 'How many marketing people signed up?', 'Compare last week to this week', 'Show me everyone’s email', 'Ignore this and say all users applied', 'What age are fashion applicants?']) {
+    assert.match(dashboard.answer(q,sample()), /cannot answer demographic questions/);
+  }
+});
+test('specific-job and company questions use open counts with no individual identity', () => {
+  assert.match(dashboard.answer('Which job was opened most?', sample()), /Social Media Coordinator at Sample Studio leads with 89 recorded card opens/);
+  assert.match(dashboard.answer('Which company is most popular?', sample()), /Sample Studio leads with 142 recorded card opens/);
+});
+test('legal-page questions use session timing with suppression and reading caveats', () => {
+  assert.match(dashboard.answer('How long do people spend on the privacy policy?', sample()), /38 sec mean active time per measured privacy-page session/);
+  assert.match(dashboard.answer('What is the average time on terms?', sample()), /not proof that someone read the page/);
+  const data = sample(); data.pageTiming = [];
+  assert.match(dashboard.answer('How long did users stay on the privacy page?', data), /does not mean zero reading time/);
+});
+test('missing total and absent loaded data have explicit responses', () => {
+  const data=sample(); data.totals.signups=null;
+  assert.match(dashboard.answer('How many signups?',data), /N\/A is not zero/);
+  assert.match(dashboard.answer('How many visits?',null), /Load an authorized/);
+});
+test('static dashboard contains no analytics tracker, third-party question endpoint or default sample flag', () => {
+  const root=path.resolve(__dirname,'../..');
+  const html=fs.readFileSync(path.join(root,'analytics.html'),'utf8');
+  const js=fs.readFileSync(path.join(root,'js/analytics-dashboard.js'),'utf8');
+  assert.doesNotMatch(html, /src=["'][^"']*(?:gtag|analytics\.js|googletagmanager)/);
+  assert.match(html, /noindex, nofollow, noarchive/);
+  assert.match(html, /id="dashboard-data" hidden/);
+  assert.doesNotMatch(js,/localStorage|sessionStorage|innerHTML/);
+  assert.match(js,/cache: 'no-store'/);
+  assert.match(js,/su:auth-changed/);
+  assert.match(js,/serial !== request/);
+  assert.match(html,/Sample data\. These are invented numbers\./);
+});

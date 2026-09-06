@@ -165,7 +165,9 @@ test('static form registration and privacy contract match actual outgoing fields
   for (const name of ['form-name', 'job-url', 'context', 'request-id', 'bot-field']) assert(html.includes('name="' + name + '"'));
   assert.match(html, /maxlength="2048"/); assert.match(html, /maxlength="500"/);
   assert.match(html, /pending review/); assert.match(html, /A person makes the publishing decision/);
-  assert(!/type="(?:file|email|password)"|js\/(?:auth|analytics|ga)\.js/.test(html));
+  assert(!/type="(?:file|email|password)"|js\/auth\.js/.test(html));
+  assert.match(html, /js\/analytics\.js/);
+  assert.match(html, /js\/ga\.js/);
   assert(!/innerHTML|insertAdjacentHTML|no-cors|script\.google\.com|addJob/.test(js));
   assert.match(html, /id="suggest-receipt"[^>]+hidden/);
 });

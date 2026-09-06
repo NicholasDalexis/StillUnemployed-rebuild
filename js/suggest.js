@@ -88,6 +88,7 @@ var SUSuggest = (function () {
         if (controller) options.signal = controller.signal;
         var response = await win.fetch('/suggest', options);
         if (!response || !response.ok) throw new Error('Unconfirmed receipt');
+        if(win.SUAnalytics)win.SUAnalytics.emit('suggest_received',{});
         form.hidden = true; receipt.hidden = false; receiptTitle.focus();
         message('');
       } catch (e) {
