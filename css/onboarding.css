@@ -13,7 +13,7 @@
 .su-launch-intro { margin:8px 0 24px; font:400 19px/1.3 var(--su-hand); color:var(--su-muted); }
 .su-launch-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:28px 28px; padding:6px; }
 .su-launch-card { position:relative; min-width:0; padding:18px 18px 16px; border:0; border-radius:2px; color:var(--su-ink); background:var(--su-paper); text-align:left; text-decoration:none; font-family:var(--su-hand); box-shadow:var(--su-note-shadow); transform:rotate(-.4deg); transition:transform .16s,box-shadow .16s; }
-.su-launch-card:nth-child(2) { background:var(--su-yellow-paper); transform:rotate(.4deg); }
+.su-launch-card:nth-child(2) { transform:rotate(.4deg); }
 .su-launch-card:nth-child(3) { transform:rotate(.2deg); }
 .su-launch-card:nth-child(4) { transform:rotate(-.3deg); }
 .su-launch-card::before { content:''; position:absolute; width:62px; height:18px; top:-9px; left:calc(50% - 31px); background:var(--su-tape); transform:rotate(-4deg); z-index:1; }
@@ -60,6 +60,7 @@
 .su-launch-detail-art { margin:12px auto 28px; max-width:360px; text-align:center; }
 .su-launch-detail-art .su-launch-preview { height:210px; padding:16px; background:var(--su-paper); box-shadow:var(--su-note-shadow); transform:rotate(-1deg); }.su-launch-detail-art .su-launch-paper { padding:10px 10px 10px 16px; }.su-launch-detail-art .su-launch-paper strong { font-size:24px; }.su-launch-detail-art .su-launch-swatches span { min-height:60px; font-size:15px; }.su-launch-detail-art .su-launch-tracker > div:not(:first-child) { padding:8px 0; font-size:13px; }.su-launch-detail-art > small { display:block; margin-top:8px; font:400 14px var(--su-hand); color:var(--su-muted); }
 .su-launch-detail h3 { font:400 30px/1.2 var(--su-hand); margin:0 0 8px; }.su-launch-detail > p:not(.su-launch-eyebrow) { font:400 16px/1.6 var(--su-body); margin:0 0 8px; }
+.su-launch-detail-link { display:inline-flex; align-items:center; min-height:44px; margin-top:8px; color:var(--su-orange-text); font:400 20px/1.3 var(--su-hand); text-underline-offset:4px; }
 .su-launch :focus-visible { outline:3px solid var(--su-orange-text); outline-offset:3px; }
 .su-launch button:active { filter:brightness(.96); }
 .su-founder-release { display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; margin-top:18px; font:14px 'Archivo',sans-serif; color:#6f5e45; }

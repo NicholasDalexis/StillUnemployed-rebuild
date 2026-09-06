@@ -3,6 +3,7 @@
 // Refresh generated files without a bump: node scripts/version.mjs --refresh
 // Seal the first finished Version 2 once: node scripts/version.mjs --seal
 // Record one completed release: node scripts/version.mjs --bump --note "What changed"
+// Patches carry after 9 without changing the major. A bump to 2.5.0 needs Nic's format decision.
 import { readFileSync, writeFileSync, existsSync, renameSync, readdirSync, lstatSync } from 'node:fs';
 import { dirname, join, resolve, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -117,6 +118,9 @@ export function bumpRelease(data, { notes, title = 'Small improvements', date = 
   validateRelease(data);
   if (!Array.isArray(notes) || !notes.length || notes.some(note => typeof note !== 'string' || !note.trim())) throw new Error('--bump needs at least one --note');
   const version = nextVersion(data.currentVersion);
+  // Keep this gate out of nextVersion: existing 2.4.9 history must still validate,
+  // render and pass --check while the next release waits for the owner's decision.
+  if (version === '2.5.0') throw new Error('Automatic bump stopped before Version 2.5.0. Ask Nic whether to keep the three-part format (2.5.0) or switch to four parts (2.5.0.0). Record his decision and update the version rule before continuing.');
   return validateRelease({ ...data, currentVersion:version, releases:[{ version, date, title, changes:notes.map(note => note.trim()) }, ...data.releases] });
 }
 

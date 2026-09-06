@@ -2,13 +2,37 @@
 (function (global) {
   'use strict';
   var KEY = 'su_welcome_v2_seen';
+  var STATE_KEY = 'su_welcome_v2_state', AUTO_LIMIT = 2;
   function storage(name) { try { return global[name]; } catch (_) { return null; } }
-  function hasSeen(stores) {
-    return stores.some(function (store) { try { return store && store.getItem(KEY) === '1'; } catch (_) { return false; } });
+  function mergeState(left, right) {
+    return { shown:Math.max(left.shown, right.shown), dismissed:left.dismissed || right.dismissed };
   }
-  function remember(stores) {
+  function readState(stores) {
+    var state = { shown:0, dismissed:false };
+    stores.forEach(function (store) {
+      try {
+        if (!store) return;
+        // Earlier releases wrote this on first display. Keep those visitors quiet.
+        if (store.getItem(KEY) === '1') state.dismissed = true;
+        var saved = JSON.parse(store.getItem(STATE_KEY) || 'null');
+        if (saved && Number.isInteger(saved.shown) && saved.shown >= 0 && typeof saved.dismissed === 'boolean') {
+          state = mergeState(state, { shown:Math.min(saved.shown, AUTO_LIMIT), dismissed:saved.dismissed });
+        }
+      } catch (_) { /* Unavailable or malformed storage cannot block manual access. */ }
+    });
+    return state;
+  }
+  function writeState(stores, state) {
+    var value = JSON.stringify(state);
     return stores.some(function (store) {
-      try { if (!store) return false; store.setItem(KEY, '1'); return store.getItem(KEY) === '1'; } catch (_) { return false; }
+      try {
+        if (!store) return false;
+        store.setItem(STATE_KEY, value);
+        if (store.getItem(STATE_KEY) !== value) return false;
+        // Older cached releases also honor an explicit dismissal when possible.
+        if (state.dismissed) { try { store.setItem(KEY, '1'); } catch (_) {} }
+        return true;
+      } catch (_) { return false; }
     });
   }
   function incomingTask(search, hash) {
@@ -17,12 +41,15 @@
   }
   // The pure persistence policy is also exercised by the regression suite.
   if (typeof module === 'object' && module.exports) {
-    module.exports = { key: KEY, hasSeen: hasSeen, remember: remember, incomingTask: incomingTask };
+    module.exports = { key:KEY, stateKey:STATE_KEY, limit:AUTO_LIMIT, readState:readState, writeState:writeState, incomingTask:incomingTask };
     return;
   }
 
-  var doc = global.document, dialog, returnFocus, lastCard, bodyOverflow;
+  var doc = global.document, dialog, returnFocus, lastCard, bodyOverflow, pending;
   var stores = [storage('localStorage'), storage('sessionStorage')];
+  var memory = { shown:0, dismissed:false };
+  function currentState() { return mergeState(memory, readState(stores)); }
+  function remember(state) { memory = mergeState(memory, state);return writeState(stores, memory); }
   // Shared links and auth return URLs keep their requested task for this visit.
   // A normal Jobs visit can introduce the release later; manual reopening always works.
   var considered = incomingTask(location.search, location.hash);
@@ -35,13 +62,14 @@
   var features = {
     advice: { label: 'Advice along the way', short: 'Advice notes', tag: 'A little perspective', text: 'A useful pause between applications. Open a note for a job-hunt tip while you browse. Want more? Each note connects to The Job Hunt Recipe, our optional newsletter.' },
     themes: { label: 'Make it feel like you', short: 'More themes', tag: 'More ways to make it yours', text: 'Different looks. The same jobs. From Casino to Mermaid to Chess, find a board that feels like you. Use “change theme” on the board whenever you want a new look.' },
-    sync: { label: 'Your job hunt, in one place', short: 'Your job tracker', tag: 'Less spreadsheet. More progress.', text: 'Keep applications, interview stages, notes and next steps together. See where each job stands without building a spreadsheet. Sign in with the same Google account to bring your tracker between your phone and computer.' }
+    sync: { label: 'Your job hunt, in one place', short: 'Your job tracker', tag: 'Less spreadsheet. More progress.', text: 'Keep applications, interview stages, notes and next steps together. See where each job stands without building a spreadsheet. Sign in with the same Google account to bring your tracker between your phone and computer.' },
+    portfolio: { label: 'A second opinion on your homepage', short: 'Portfolio Graded', tag: 'Coming soon', text: 'Get feedback on your portfolio homepage: what comes across clearly, what is hard to read and what you could improve next. The tier list above is an example, not a review of your site.' }
   };
   function preview(key) { return '<div class="su-launch-preview" aria-hidden="true">' + previews[key] + '</div>'; }
   function overview() {
-    return '<div class="su-launch-grid">' + ['advice','themes','sync'].map(function (key) {
-      return '<button type="button" class="su-launch-card" data-launch-feature="'+key+'" aria-label="'+features[key].label+'. Learn more">'+preview(key)+'<span class="su-launch-card-label">'+features[key].short+'<span aria-hidden="true">↗</span></span></button>';
-    }).join('') + '<a class="su-launch-card su-launch-pg" href="https://portfoliograded.com/" target="_blank" rel="noopener noreferrer" aria-label="Portfolio Graded, coming soon. Open private preview, password required, in a new tab">'+preview('portfolio')+'<span class="su-launch-card-label">Portfolio Graded<span aria-hidden="true">↗</span></span><span class="su-launch-card-hint">Coming soon · private preview</span></a></div>';
+    return '<div class="su-launch-grid">' + ['advice','themes','sync','portfolio'].map(function (key) {
+      return '<button type="button" class="su-launch-card'+(key === 'portfolio' ? ' su-launch-pg' : '')+'" data-launch-feature="'+key+'" aria-label="'+features[key].short+'. Learn more">'+preview(key)+'<span class="su-launch-card-label">'+features[key].short+'<span aria-hidden="true">↗</span></span>'+(key === 'portfolio' ? '<span class="su-launch-card-hint">Coming soon</span>' : '')+'</button>';
+    }).join('') + '</div>';
   }
   function setDetail(detail) {
     dialog.querySelector('.su-launch-overview-title').hidden = detail;
@@ -73,11 +101,15 @@
     if (!feature) return;
     lastCard = key;
     setDetail(true);
-    dialog.querySelector('.su-launch-stage').innerHTML = '<section class="su-launch-detail"><div class="su-launch-detail-art">'+preview(key)+'<small>'+ (key === 'themes' ? 'Theme previews only' : 'Illustrative preview') +'</small></div><p class="su-launch-eyebrow">'+feature.tag+'</p><h3 id="su-launch-detail-title">'+feature.label+'</h3><p>'+feature.text+'</p>'+'</section>';
+    dialog.querySelector('.su-launch-stage').innerHTML = '<section class="su-launch-detail"><div class="su-launch-detail-art">'+preview(key)+'<small>'+ (key === 'themes' ? 'Theme previews only' : 'Illustrative preview') +'</small></div><p class="su-launch-eyebrow">'+feature.tag+'</p><h3 id="su-launch-detail-title">'+feature.label+'</h3><p>'+feature.text+'</p>'+(key === 'portfolio' ? '<a class="su-launch-detail-link" href="https://portfoliograded.com/" target="_blank" rel="noopener noreferrer" aria-label="Portfolio Graded, coming soon. Opens in a new tab">Portfolio Graded · coming soon ↗</a>' : '')+'</section>';
     dialog.querySelector('.su-launch-scroll').scrollTop = 0;
     dialog.querySelector('[data-launch-back]').focus({ preventScroll:true });
   }
-  function close() { if (dialog && dialog.open) dialog.close(); }
+  function close() {
+    if (!dialog || !dialog.open) return;
+    var state = currentState();state.dismissed = true;remember(state);
+    dialog.close();
+  }
   function build() {
     if (dialog) return;
     dialog = doc.createElement('dialog');
@@ -110,7 +142,7 @@
       if (target) target.focus({ preventScroll:true });
     });
   }
-  function open(manual) {
+  function open() {
     if (doc.querySelector('#overlay-root [role="dialog"]') || (dialog && dialog.open)) return false;
     build();
     if (typeof dialog.showModal !== 'function') return false;
@@ -120,17 +152,33 @@
     try { dialog.showModal(); } catch (_) { return false; }
     doc.body.style.overflow = 'hidden';
     considered = true;
-    if (manual) remember(stores);
     return true;
   }
   function maybeShow() {
-    if (considered || doc.querySelector('#overlay-root [role="dialog"]')) return;
-    if (global.SUApp && (global.SUApp._loadError || global.SUApp.state.openPanel)) return;
-    if (hasSeen(stores)) { considered = true; return; }
-    // No automatic popup unless we can retain its receipt. Session fallback covers
-    // browsers that block localStorage; both blocked means manual discovery only.
-    if (!remember(stores)) { considered = true; return; }
-    open(false);
+    function deferred() { return doc.querySelector('#overlay-root [role="dialog"]') || (global.SUApp && (global.SUApp._loadError || global.SUApp.state.openPanel)); }
+    if (considered || pending || deferred()) return pending;
+    var locks;
+    try { locks = global.navigator && global.navigator.locks; } catch (_) {}
+    // A browser-wide cap needs both cross-tab serialization and shared durable
+    // storage. Session storage and memory still support manual use and dismissal.
+    if (!locks || typeof locks.request !== 'function') { considered = true;return; }
+    try {
+      pending = locks.request('su-welcome-v2-auto', { mode:'exclusive' }, function (lock) {
+        // Another tab, a manual opening or another dialog may have won while queued.
+        if (!lock || considered || deferred()) return;
+        var state = currentState();
+        considered = true;
+        if (state.dismissed || state.shown >= AUTO_LIMIT) return;
+        build();
+        if (typeof dialog.showModal !== 'function') return;
+        var reserved = { shown:state.shown + 1, dismissed:false };
+        if (!writeState([stores[0]], reserved)) return;
+        if (open()) memory = mergeState(memory, reserved);
+        else writeState([stores[0]], state); // A failed native opening spends no appearance.
+      });
+      pending = Promise.resolve(pending).then(function () { pending = null; }, function () { considered = true;pending = null; });
+      return pending;
+    } catch (_) { considered = true;pending = null; }
   }
-  global.SUWelcome = Object.freeze({ open: function () { return open(true); }, maybeShow: maybeShow });
+  global.SUWelcome = Object.freeze({ open:open, maybeShow:maybeShow });
 })(typeof window === 'undefined' ? globalThis : window);

@@ -22,7 +22,23 @@ test('public releases start at 2 then 2.1.0 and carry each patch digit after 9',
 
 test('invalid or ambiguous release numbers are rejected', async () => {
   const { nextVersion } = await versionTool;
-  for (const version of ['', '2.1', '2.1.10', '2.01.1', '-2.1.1', 'Version 2', '2.1.1-beta', null, 2]) assert.throws(() => nextVersion(version));
+  for (const version of ['', '2.1', '2.1.10', '2.01.1', '-2.1.1', 'Version 2', '2.1.1-beta', '2.5.0.0', null, 2]) assert.throws(() => nextVersion(version));
+});
+
+test('the automatic 2.5.0 release waits for Nic while 2.4.9 remains valid and renderable', async () => {
+  const { nextVersion, bumpRelease, validateRelease, renderHistory, renderReleaseScript } = await versionTool;
+  const atVersion = version => ({ ...initial(), currentVersion:version, releases:[{ ...initial().releases[0], version }] });
+  assert.equal(bumpRelease(atVersion('2.3.9'), { notes:['A completed change.'] }).currentVersion, '2.4.0');
+  const boundary = bumpRelease(atVersion('2.4.8'), { notes:['The last change before the decision.'] });
+  assert.equal(boundary.currentVersion, '2.4.9');
+  assert.doesNotThrow(() => validateRelease(boundary));
+  assert.match(renderHistory(boundary), /id="version-2-4-9"/);
+  assert.match(renderReleaseScript(boundary), /var version = "2\.4\.9"/);
+  assert.equal(nextVersion('2.4.9'), '2.5.0', 'calculating a candidate does not authorize its release');
+  const before = JSON.stringify(boundary);
+  assert.throws(() => bumpRelease(boundary, { notes:['This release needs a decision.'] }), /stopped before Version 2\.5\.0\. Ask Nic.*three-part.*2\.5\.0.*four parts.*2\.5\.0\.0/);
+  assert.equal(JSON.stringify(boundary), before, 'a rejected bump leaves history unchanged');
+  assert.equal(bumpRelease(atVersion('3.4.9'), { notes:['A change in an explicitly chosen major.'] }).currentVersion, '3.5.0', 'the decision gate is specific to 2.5.0');
 });
 
 test('one deliberate bump prepends notes and preserves every earlier history entry', async () => {
@@ -136,6 +152,34 @@ function releaseFixture() {
   put('netlify.toml', '[build]\npublish="."\n');
   return { dir, put, clean:() => fs.rmSync(dir, { recursive:true, force:true }) };
 }
+
+test('the CLI stops at 2.5.0 before writing any files and leaves 2.4.9 check and refresh usable', async () => {
+  const { applyRelease } = await versionTool, fixture = releaseFixture(), { dir, put } = fixture;
+  try {
+    put('scripts/version.mjs', fs.readFileSync(path.join(root, 'scripts/version.mjs')));
+    applyRelease(dir, { seal:true });
+    const metadata = JSON.parse(fs.readFileSync(path.join(dir, 'releases.json'), 'utf8'));
+    metadata.currentVersion = '2.4.8';
+    metadata.releases.unshift({ version:'2.4.8', date:'2026-09-06', title:'Boundary fixture', changes:['Ready for the last ordinary bump.'] });
+    put('releases.json', JSON.stringify(metadata, null, 2) + '\n');
+    applyRelease(dir);
+    const run = args => spawnSync(process.execPath, [fs.realpathSync(path.join(dir, 'scripts/version.mjs')), ...args], { encoding:'utf8' });
+    const permitted = run(['--bump', '--note', 'The last ordinary release.']);
+    assert.equal(permitted.status, 0, permitted.stderr);
+    assert.equal(JSON.parse(fs.readFileSync(path.join(dir, 'releases.json'), 'utf8')).currentVersion, '2.4.9');
+    const snapshot = () => Object.fromEntries(fs.readdirSync(dir, { recursive:true }).sort().filter(name => fs.statSync(path.join(dir, name)).isFile()).map(name => [name, fs.readFileSync(path.join(dir, name)).toString('base64')]));
+    const before = snapshot(), stopped = run(['--bump', '--note', 'Waiting for the format decision.']);
+    assert.equal(stopped.status, 1);
+    assert.equal(stopped.stdout, '', 'the CLI must not report a completed release');
+    assert.match(stopped.stderr, /Automatic bump stopped before Version 2\.5\.0/);
+    assert.match(stopped.stderr, /Ask Nic.*three-part format \(2\.5\.0\).*four parts \(2\.5\.0\.0\)/);
+    assert.deepEqual(snapshot(), before, 'metadata, source links, generated output and temporary files stay untouched');
+    for (const mode of ['--check', '--refresh']) {
+      const result = run([mode]);assert.equal(result.status, 0, result.stderr);assert.match(result.stdout, /Version 2\.4\.9/);
+    }
+    assert.deepEqual(snapshot(), before, 'checking and refreshing the released boundary do not consume the decision');
+  } finally { fixture.clean(); }
+});
 
 test('a bump refreshes every marked static page without creating a fingerprint self-reference', async () => {
   const { applyRelease } = await versionTool, fixture = releaseFixture(), { dir, put } = fixture;

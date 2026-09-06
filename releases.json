@@ -1,7 +1,18 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.2.0",
+  "currentVersion": "2.2.1",
   "releases": [
+    {
+      "version": "2.2.1",
+      "date": "2026-09-06",
+      "title": "A welcome that remembers this browser",
+      "changes": [
+        "Dismiss the Version 2 welcome once without signing in; automatic appearances are capped at two, and What’s new remains available.",
+        "Open Portfolio Graded inside the welcome for a tier-list example and a coming-soon link.",
+        "More Themes uses the same white note paper as the other updates.",
+        "Release numbering now pauses before 2.5.0 for a decision on the version format."
+      ]
+    },
     {
       "version": "2.2.0",
       "date": "2026-09-06",
@@ -125,7 +136,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "2d57ba6cc581a9e3f8ef69b0e93b0f0dec96ea8abdba32b54c4872d7cb85458f",
+    "digest": "2b71ea41d5c52080fa664e891c41b742315a7412b0a7cff4123733af965c160b",
     "fileCount": 131
   }
 }
