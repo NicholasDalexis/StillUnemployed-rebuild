@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.1.3",
+  "currentVersion": "2.1.4",
   "releases": [
+    {
+      "version": "2.1.4",
+      "date": "2026-09-06",
+      "title": "A clearer way back",
+      "changes": [
+        "Shortened the welcome detail action to go back."
+      ]
+    },
     {
       "version": "2.1.3",
       "date": "2026-09-06",
@@ -60,7 +68,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "5380495a1d3a13f22bfd3dabde81d7419ce836028c53fb15efacb107c8fb709b",
+    "digest": "6a7770b545053c747ca04784952770420e6de6d8b57afed4bd34bab603e7500a",
     "fileCount": 121
   }
 }
