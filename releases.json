@@ -1,7 +1,17 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.2.3",
+  "currentVersion": "2.2.4",
   "releases": [
+    {
+      "version": "2.2.4",
+      "date": "2026-09-06",
+      "title": "Internship pay and eligibility up front",
+      "changes": [
+        "Internship cards keep exact hourly, monthly and program pay, with the full duties and eligibility in a readable note.",
+        "Accepting applications and upcoming programs have separate counts and actions. Announced dates do not automatically open applications.",
+        "Internship sharing stays on the internship board, and keyboard focus stays visible inside job details."
+      ]
+    },
     {
       "version": "2.2.3",
       "date": "2026-09-06",
@@ -154,7 +164,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "8199deb45edbc1206c46ec64057c9b1cad05743445ebdcf50b911594a6dc9680",
-    "fileCount": 131
+    "digest": "cd149c054803a657410aaaf562c0980a2ebeb7895e0dcc3949756e79a1d12f20",
+    "fileCount": 133
   }
 }

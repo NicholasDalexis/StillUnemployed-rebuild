@@ -29,6 +29,34 @@
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   };
+  function internshipState(job) {
+    return window.SUInternships ? window.SUInternships.applicationState(job) : 'needs_recheck';
+  }
+  function internshipStatus(job) {
+    return {accepting:'Accepting applications',upcoming:'Upcoming',needs_recheck:'Application status unconfirmed'}[internshipState(job)];
+  }
+  function internshipPay(job) {
+    return window.SUInternships ? window.SUInternships.payLabel(job) : 'Pay not disclosed';
+  }
+  function internshipCanApply(job) {
+    return !!(window.SUInternships && window.SUInternships.canApply(job));
+  }
+  function internshipTiming(job, compact) {
+    var state = internshipState(job), facts = [];
+    if (state !== 'accepting') facts.push(['Applications open',job.applicationsOpen || 'Not announced']);
+    if (job.startDate) facts.push(['Start date',job.startDate]);
+    if (!compact && job.deadline) facts.push(['Deadline',job.deadline]);
+    return facts.map(function (pair) { return '<div><strong>' + esc(pair[0]) + ':</strong> ' + esc(pair[1]) + '</div>'; }).join('');
+  }
+  function internshipDetails(job) {
+    var flags = Array.isArray(job.eligibilityFlags) ? job.eligibilityFlags.filter(function (flag) {return flag !== job.eligibility;}) : [];
+    if (flags.join('\n') === String(job.eligibility || '').trim()) flags = [];
+    var credit = {required:'College credit required',available:'College credit available',school_approval_required:'College credit requires school approval',not_offered:'College credit not offered',not_listed:'College credit not listed'}[job.collegeCredit] || 'College credit not listed';
+    var benefits = Array.isArray(job.benefits) ? job.benefits : [];
+    return '<section class="su-internship-details"><h3>Before you apply</h3><p>' + esc(job.eligibility || 'Eligibility not listed') + '</p>' + (flags.length ? '<ul>' + flags.map(function (flag) {return '<li>' + esc(flag) + '</li>';}).join('') + '</ul>' : '') +
+      '<p>' + esc(credit) + '</p>' + (benefits.length ? '<h3>Benefits</h3><ul>' + benefits.map(function (benefit) {return '<li>' + esc(benefit) + '</li>';}).join('') + '</ul>' : '') +
+      (job.cycle ? '<p><strong>Cycle:</strong> ' + esc(job.cycle) + '</p>' : '') + '</section>';
+  }
   // escape for use inside a single-quoted JS string in an inline handler
   var jsAttr = function (s) {
     return String(s == null ? '' : s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
@@ -795,7 +823,8 @@
     if (!job) return;
     // The query also opens the live card when this job arrived after the last build.
     var token = encodeURIComponent(btoa(unescape(encodeURIComponent(job.link || ''))));
-    var deep = location.origin + '/j/' + suShareTheme() + '/' + suSlug(job.link || '') + '.html?job=' + token + '&theme=' + suShareTheme();
+    var route = job.internship ? '/internships.html' : '/j/' + suShareTheme() + '/' + suSlug(job.link || '') + '.html';
+    var deep = location.origin + route + '?job=' + token + '&theme=' + suShareTheme();
     // Casual, no link/brand in the TEXT (iMessage auto-linkifies "StillUnemployed.com"
     // into a tappable link that goes to the homepage, not the job — Nic didn't want that).
     // The shared url param below still generates the Post-it thumbnail.
@@ -1598,7 +1627,7 @@
         // "Recently added" is a SORT, not a filter: show ALL roles, newest (highest sheet row) first
         shown = shown.slice().sort(function (a, b) { return (b._idx || 0) - (a._idx || 0); });
       }
-      else if(window.SUPersonalization && window.SUAnalytics) {
+      else if(!INTERNSHIPS && window.SUPersonalization && window.SUAnalytics) {
         var profileGeneration=window.SUAnalytics.generation();
         if(this._profileGeneration!==profileGeneration && (!this._feedInteracted || this._profileGeneration===undefined || this._profileGeneration===-1)){
           this._personalOrder=window.SUDiscovery ? window.SUDiscovery.order(this.jobs,window.SUPersonalization,window.SUAnalytics.profile()) : window.SUPersonalization.rank(this.jobs,window.SUAnalytics.profile());
@@ -1608,8 +1637,8 @@
         shown.sort(function(a,b){return order.indexOf(a)-order.indexOf(b);});
       }
 
-      if(this.state.fr!=='Recently added' && window.SUDiscovery && window.SUPersonalization && !window.SUAnalytics){var discoveryOrder=window.SUDiscovery.order(this.jobs,window.SUPersonalization,{});shown.sort(function(a,b){return discoveryOrder.indexOf(a)-discoveryOrder.indexOf(b);});}
-      if(INTERNSHIPS && this.state.fr!=='Recently added')shown.sort(function(a,b){return Number(b.payStatus==='paid')-Number(a.payStatus==='paid');});
+      if(!INTERNSHIPS && this.state.fr!=='Recently added' && window.SUDiscovery && window.SUPersonalization && !window.SUAnalytics){var discoveryOrder=window.SUDiscovery.order(this.jobs,window.SUPersonalization,{});shown.sort(function(a,b){return discoveryOrder.indexOf(a)-discoveryOrder.indexOf(b);});}
+      if(INTERNSHIPS && this.state.fr!=='Recently added')shown.sort(function(a,b){return Number(internshipCanApply(b))-Number(internshipCanApply(a)) || Number(b.payStatus==='paid')-Number(a.payStatus==='paid');});
       return { base: base, shown: shown };
     },
 
@@ -1748,7 +1777,7 @@
         for (var r = 0; r * 3 < shown.length; r++) {
           if (r % 2 !== 0) continue;
           var i = r * 3;
-          if (i < shown.length && self.payTier(shown[i].pay) === 'high') { noteFor[i] = self.NOTES[nci % self.NOTES.length]; nci++; }
+          if (i < shown.length && !shown[i].internship && self.payTier(shown[i].pay) === 'high') { noteFor[i] = self.NOTES[nci % self.NOTES.length]; nci++; }
         }
       }
 
@@ -1762,7 +1791,7 @@
         j._pos = k;
         var key = j.link;
         var saved = self.isSaved(key);
-        var tier = self.payTier(j.pay);
+        var tier = j.internship ? 'low' : self.payTier(j.pay);
         var rot = rots[k % rots.length];
         // high-pay cards take their ink/bg/apply/stamp from the active theme palette;
         // poker/mermaid also override the sub-$100K cards (white playing card / pearl)
@@ -1772,6 +1801,7 @@
           : tier === 'mid'
           ? (P.midCard || 'var(--su-salary-mid-paper)')
           : P.hiCard;
+        if (j.internship) bg = P.lowCard || 'var(--su-paper)';
         var applyColor = (tier === 'high') ? P.hiApply : (tier === 'mid' && P.midApply) ? P.midApply : (P.baseApply || 'var(--su-orange-on-card)');
         var stampColor = (tier === 'high') ? P.hiStamp : (tier === 'mid' && P.midStamp) ? P.midStamp : (P.baseStamp || '#3A2A1B');
         var gStamp = (tier === 'high') ? '#FFFFFF' : '#C24A78'; // girly heart-stamp color
@@ -1789,14 +1819,14 @@
         var noteState = self.state.openNotes[id]; // undefined | 'open' | 'closing' | 'done'
         var isOpening = (noteState === 'open' || noteState === 'closing');
 
-        var metaTop = [j.loc, j.style, (j.exp && j.exp !== 'See posting' ? j.exp : null)].filter(Boolean).join('  ·  ');
+        var metaTop = [j.loc, j.style, (!j.internship && j.exp && j.exp !== 'See posting' ? j.exp : null)].filter(Boolean).join('  ·  ');
 
         var noteStyle = '--rot:' + rot + 'deg; cursor:pointer; position:relative; background:' + bg +
           '; color:' + ink + '; border-radius:3px; padding:30px 24px 22px; box-sizing:border-box; display:flex; ' +
           'flex-direction:column; min-height:238px;' + (isOpening ? ' position:relative; z-index:60;' : '');
 
-        var bmColor = girly ? (saved ? '#FFFFFF' : 'none') : (saved ? '#D8502E' : 'none');
-        var bmStroke = girly ? '#FFFFFF' : (saved ? '#D8502E' : ink);
+        var bmColor = girly && !j.internship ? (saved ? '#FFFFFF' : 'none') : (saved ? '#D8502E' : 'none');
+        var bmStroke = girly && !j.internship ? '#FFFFFF' : (saved ? '#D8502E' : ink);
 
         var showEnvelope = hasNote && !noteState;
         var noteOpen = hasNote && (noteState === 'open' || noteState === 'closing');
@@ -1872,8 +1902,9 @@
           '</div>' +
           '<div class="card-role" title="' + esc(j.role) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16.5px; margin-top: 9px; line-height: 1.3;">' + esc(j.role) + '</div>' +
           '<div style="flex: 1; min-height: 18px;"></div>' +
-          '<div style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.4px;">' + (j.internship ? '<span class="su-internship-badge">'+esc(j.payStatus==='paid'?'Paid':j.payStatus==='unpaid'?'Unpaid':'Pay not disclosed')+'</span>' : esc(j.pay)) + '</div>' +
-          '<div style="font-size: 14.5px; opacity: 0.85; line-height: 1.5; font-family: \'Poppins\', sans-serif; margin-top: 5px;">' + esc(metaTop) + '</div>';
+          '<div style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.4px;">' + (j.internship ? '<span class="su-internship-pay">'+esc(internshipPay(j))+'</span>' : esc(j.pay)) + '</div>' +
+          '<div style="font-size: 14.5px; opacity: 0.85; line-height: 1.5; font-family: \'Poppins\', sans-serif; margin-top: 5px;">' + esc(metaTop) + '</div>' +
+          (j.internship ? '<div class="su-internship-status">'+esc(internshipStatus(j))+'</div><div class="su-internship-timing">'+internshipTiming(j,true)+'</div>' : '');
 
         // verified stamp + apply link row (per-theme variant, ported verbatim)
         html += '<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 16px; min-height: 24px;">';
@@ -1895,7 +1926,7 @@
             '</div>';
           }
         }
-        html += '<a class="applylink2" href="' + esc(j.link) + '" target="_blank" rel="noopener" data-act="apply" data-co="' + esc(j.co) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 15.5px; color: ' + applyColor + '; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-left: auto;">Apply Now<svg class="doodle-arrow" width="28" height="14" viewBox="0 0 28 14" fill="none" style="overflow: visible; margin-left: 2px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>';
+        html += '<a class="applylink2" href="' + esc(j.link) + '" target="_blank" rel="noopener" data-act="apply" data-co="' + esc(j.co) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 15.5px; color: ' + applyColor + '; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-left: auto;">' + (j.internship && !internshipCanApply(j) ? 'View program' : 'Apply Now') + '<svg class="doodle-arrow" width="28" height="14" viewBox="0 0 28 14" fill="none" style="overflow: visible; margin-left: 2px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>';
         html += '</div>';
 
         if(window.SUDiscovery && window.SUDiscovery.hidden(j))html += '<button type="button" class="su-restore" data-discovery="restore" data-key="'+esc(window.SUDiscovery.key(j.link))+'">Hidden · restore to board</button>';
@@ -2064,13 +2095,18 @@
       if(window.SUDiscovery) out += window.SUDiscovery.html(esc);
 
       // Annual salary surfaces remain the same; student pay labels preserve units.
-      if(INTERNSHIPS) out += '<p style="color:'+boardInk+';font:16px/1.5 var(--su-body);">Paid opportunities first. Open a card for the exact rate or stipend. Unpaid and undisclosed pay are labeled.</p>';
+      if(INTERNSHIPS) out += '<p style="color:'+boardInk+';font:16px/1.5 var(--su-body);">Pay keeps its original rate and time unit. Upcoming programs are separate from roles accepting applications now.</p>';
       else out += '<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 16px;">' +
         '<span class="pay-key-label" style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + payKeyInk + ';">pay key →</span>' +
         '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.lowCard || 'var(--su-salary-low-paper)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">under $80K</span></div>' +
         '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.midCard || 'var(--su-salary-mid-paper)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$80–99K</span></div>' +
         '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + P.payHi + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$100K+</span></div>' +
       '</div>';
+
+      if (INTERNSHIPS && window.SUInternships) {
+        var internshipCounts = window.SUInternships.counts(shown);
+        out += '<p class="su-internship-counts" style="color:'+boardInk+';">' + internshipCounts.accepting + ' accepting now · ' + internshipCounts.upcoming + ' upcoming' + (internshipCounts.needs_recheck ? ' · ' + internshipCounts.needs_recheck + ' needing a status check' : '') + '</p>';
+      }
 
       // active filter row
       out += '<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 18px; min-height: 30px;">' +
@@ -2270,10 +2306,12 @@
         var dj = null;
         for (var di = 0; di < this.jobs.length; di++) { if (jobHasLink(this.jobs[di], this.state.detailLink)) { dj = this.jobs[di]; break; } }
         if (dj) {
-          var dmeta = [dj.loc, dj.style, dj.exp].filter(Boolean).join(' · ');
+          var dmeta = [dj.loc, dj.style, dj.internship ? '' : dj.exp].filter(Boolean).join(' · ');
           var tld = dj.tldr || dj.desc || '';
           var bl = '';
-          if (tld) {
+          if (dj.internship) {
+            bl = (Array.isArray(dj.duties) ? dj.duties : []).slice(0,3).map(function (duty) {return '<li>' + esc(duty) + '</li>';}).join('');
+          } else if (tld) {
             var raw = String(tld);
             var bp = raw.split(/[\n••]/).map(function (s) { return s.trim().replace(/^[-*]\s*/, ''); }).filter(function (s) { return s.length > 3; });
             if (bp.length < 2) bp = raw.split('. ').map(function (s) { return s.trim(); }).filter(function (s) { return s.length > 3; });
@@ -2316,7 +2354,7 @@
           // + the liveness checker are the real guards. Data (Date Posted) stays in the sheet.
           _ageNote = '';
           out += '<div data-act="closeDetail" style="position: fixed; inset: 0; z-index: 214; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
-            '<div data-act="stop" style="margin: auto;position: relative; width: 410px; max-width: 100%; box-sizing: border-box; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 32px, rgba(96,130,170,0.20) 32px 33px); background-position: 0 92px; border-radius: 4px; box-shadow: 5px 18px 44px rgba(44,33,24,0.34); transform: rotate(-1deg); padding: 30px 30px 26px 48px;">' +
+            '<div data-act="stop" class="' + (dj.internship ? 'su-internship-dialog' : '') + '" style="margin: auto;position: relative; width: ' + (dj.internship ? '560px' : '410px') + '; max-width: 100%; box-sizing: border-box; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 32px, rgba(96,130,170,0.20) 32px 33px); background-position: 0 92px; border-radius: 4px; box-shadow: 5px 18px 44px rgba(44,33,24,0.34); transform: rotate(-1deg); padding: 30px 30px 26px 48px;">' +
               // red left margin line + tape
               '<div style="position: absolute; top: 0; bottom: 0; left: 36px; width: 1.5px; background: rgba(214,80,46,0.4);"></div>' +
               '<div style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(-2.5deg); width: 120px; height: 28px; background: rgba(228,202,128,0.6); border-left: 1px dashed rgba(255,255,255,.5); border-right: 1px dashed rgba(255,255,255,.5); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>' +
@@ -2334,23 +2372,24 @@
               '</div>' +
               // header
               '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 24px; color: #2C2118; line-height: 1.12; padding-right: 82px;">' + esc(dj.co) + '</div>' +
-              '<div style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16px; color: #3A2E20; margin-top: 4px; padding-right: 82px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">' + esc(dj.role) + '</div>' +
-              (dj.internship ? '<dl class="su-internship-details"><dt>Eligibility</dt><dd>'+esc(dj.eligibility)+'</dd><dt>Cycle</dt><dd>'+esc(dj.cycle||'Not listed')+'</dd><dt>Deadline</dt><dd>'+esc(dj.deadline||'Not listed')+'</dd></dl>' : '') +
-              (dj.pay ? '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 20px; color: #2C2118; margin-top: 10px;">' + esc(dj.pay) + '</div>' : '') +
+              '<div class="su-detail-role" style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16px; color: #3A2E20; margin-top: 4px; padding-right: 82px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">' + esc(dj.role) + '</div>' +
+              (dj.pay ? '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 20px; color: #2C2118; margin-top: 10px;">' + esc(dj.internship ? internshipPay(dj) : dj.pay) + '</div>' : '') +
               (dmeta ? '<div style="font-family: \'Archivo\', sans-serif; font-size: 13.5px; color: #6F5E45; margin-top: 5px;">' + esc(dmeta) + '</div>' : '') +
+              (dj.internship ? '<div class="su-internship-status">'+esc(internshipStatus(dj))+'</div>' : '') +
               // TL;DR label (handwritten + swoosh)
               '<div style="position: relative; display: inline-block; margin-top: 20px;">' +
-                '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 23px; color: #2C2118;">TL;DR</div>' +
+                '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 23px; color: #2C2118;">' + (dj.internship ? 'What you’ll do' : 'TL;DR') + '</div>' +
                 '<svg width="74" height="9" viewBox="0 0 74 9" fill="none" style="position: absolute; left: 0; bottom: -5px;"><path d="M2 5 C 22 1, 50 1, 72 4" stroke="#F2C231" stroke-width="3.5" stroke-linecap="round"></path></svg>' +
               '</div>' +
-              (bl ? '<ul style="margin: 12px 0 0; padding-left: 20px; font-size: 14.5px; color: #3a3026; line-height: 1.55;">' + bl + '</ul>'
-                  : '<div style="margin-top: 9px; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #6F5E45; line-height: 1.5;">a quick 3–4 bullet summary is coming to every role. for now, hit apply for the full listing →</div>') +
+              (bl ? '<ul class="' + (dj.internship ? 'su-internship-duties' : '') + '" style="margin: 12px 0 0; padding-left: 20px; font-size: 14.5px; color: #3a3026; line-height: 1.55;">' + bl + '</ul>'
+                  : dj.internship ? '<p class="su-internship-timing">See the employer’s program page for duties.</p>' : '<div style="margin-top: 9px; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #6F5E45; line-height: 1.5;">a quick 3–4 bullet summary is coming to every role. for now, hit apply for the full listing →</div>') +
+              (dj.internship ? '<div class="su-internship-timing">'+internshipTiming(dj,false)+'</div>'+internshipDetails(dj) : '') +
               // apply (card-style text link + hand-drawn arrow)
               '<div style="margin-top: 22px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">' +
                 (_ageNote
                   ? '<span style="font-family: \'Indie Flower\', cursive; font-size: 16.5px; color: #C2552F; line-height: 1.2; text-align: left; max-width: 60%;">' + _ageNote + '</span>'
                   : '<span></span>') +
-                '<button type="button" data-act="detailApply" data-link="' + esc(dj.link) + '" data-co="' + esc(dj.co) + '" style="border:0; background:none; padding:0; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 21px; color: ' + _applyC + '; display: inline-flex; align-items: center; cursor: pointer; flex: none;">Apply Now' + _arrow + '</button>' +
+                '<button type="button" data-act="' + (dj.internship && !internshipCanApply(dj) ? 'detailProgram' : 'detailApply') + '" data-link="' + esc(dj.link) + '" data-co="' + esc(dj.co) + '" style="border:0; background:none; padding:0; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 21px; color: ' + _applyC + '; display: inline-flex; align-items: center; cursor: pointer; flex: none;">' + (dj.internship && !internshipCanApply(dj) ? 'View program' : 'Apply Now') + _arrow + '</button>' +
               '</div>' +
               // recipe capture: rotating one-liner + Beehiiv embed. ✕ hides it until reload.
               (!_rShow ? '' :
@@ -2549,6 +2588,16 @@
     bindEvents: function () {
       var self = this;
 
+      // Tab leaving a cross-origin newsletter frame does not emit a keydown
+      // in this document. Catch the resulting focus move back into the page.
+      document.addEventListener('focusin', function (e) {
+        if (document.querySelector('#su-launch[open]')) return;
+        var dialog = document.querySelector('#overlay-root [role="dialog"]');
+        if (!dialog || dialog.contains(e.target)) return;
+        var first = Array.from(dialog.querySelectorAll('button:not(:disabled),a[href],input,select,textarea,iframe,[tabindex="0"]')).find(function (el) {return el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden';});
+    (first || dialog).focus();
+      });
+
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && _voteClose) { _voteClose(); return; }
         if (document.querySelector('#su-launch[open]')) return;
@@ -2670,9 +2719,17 @@
           }
           case 'detailApply': {
             var dl = el.getAttribute('data-link'), dc = el.getAttribute('data-co');
+            var applyJob = self.jobs.find(function (job) {return jobHasLink(job,dl);});
+            if (!applyJob || (applyJob.internship && !internshipCanApply(applyJob))) {self.renderOverlays();break;}
             if (dl) window.open(dl, '_blank', 'noopener');
             postReport('click', dc, dl);
             self.setState({ detailOpen: false, feedbackOpen: true, feedbackCo: dc, feedbackLink: dl });
+            break;
+          }
+          case 'detailProgram': {
+            var programLink = el.getAttribute('data-link');
+            var program = self.jobs.find(function (job) {return jobHasLink(job,programLink);});
+            if (program && program.internship) window.open(program.link,'_blank','noopener');
             break;
           }
           case 'stop': e.stopPropagation(); break;
@@ -2889,7 +2946,7 @@
       window.addEventListener('storage', function (e) { if (e.key === 'su_saved_jobs' || e.key === 'su_tracker') { self.state.saved = loadSaved(); self.render(); } });
       this.state.saved = loadSaved();
       this.internships = INTERNSHIPS;
-      this.jobs = this.shuffleFresh(uniqueJobs(jobs));
+      this.jobs = INTERNSHIPS ? uniqueJobs(jobs) : this.shuffleFresh(uniqueJobs(jobs));
       if(window.SUDiscovery)window.SUDiscovery.start(this);
       if(window.SUAnalytics)window.SUAnalytics.registerJobs(this.jobs);
       window.addEventListener('su:profile-ready',function(event){if(event.detail&&event.detail.reset){self._personalOrder=null;self._profileGeneration=-1;self._feedInteracted=false;}if(!self._feedInteracted)self.render();});
