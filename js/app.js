@@ -2180,7 +2180,7 @@
       var root = document.getElementById('overlay-root');
       var previousDialog = root.querySelector('[role="dialog"]');
       var previousFocus = focusIntent(document.activeElement);
-      var dialogKey = this.state.detailOpen ? 'detail' : this.state.adviceOpen ? 'advice' : this.state.signupOpen ? 'signup' : this.state.feedbackOpen ? 'feedback' : this.state.lookOpen ? 'look' : this.state.modalOpen ? 'founder' : '';
+      var dialogKey = this.state.detailOpen ? 'detail' : this.state.adviceOpen ? 'advice' : this.state.signupOpen ? 'signup' : this.state.feedbackOpen ? 'feedback' : this.state.lookOpen ? 'look' : this.state.modalOpen ? 'founder' : window.SUDiscovery&&window.SUDiscovery.preferencesOpen() ? 'preferences' : '';
       if (dialogKey && _voteClose) _voteClose();
       if (!previousDialog && dialogKey) this._dialogReturn = previousFocus;
       var previousKey = this._dialogKey;
@@ -2190,7 +2190,12 @@
       var feedbackIdentity = dialogKey === 'feedback' ? JSON.stringify([this.state.feedbackCo, this.state.feedbackLink]) : null;
       if (previousDialog && previousKey === 'feedback' && dialogKey === 'feedback' && this._feedbackIdentity === feedbackIdentity) return;
       this._feedbackIdentity = feedbackIdentity;
+      var preferenceOwner = dialogKey === 'preferences' ? window.SUDiscovery.dialogOwner() : null;
+      if (previousDialog && previousKey === 'preferences' && dialogKey === 'preferences' && this._preferenceOwner === preferenceOwner) { window.SUDiscovery.refreshDialog(); return; }
+      this._preferenceOwner = preferenceOwner;
       var out = '';
+
+      if (dialogKey === 'preferences') out += '<div class="su-preferences-overlay su-discovery" data-act="closePreferences" style="z-index:215">' + window.SUDiscovery.modalHTML(esc) + '</div>';
 
       // About modal
       if (this.state.modalOpen) {
@@ -2530,9 +2535,10 @@
       var dialog = top && top.querySelector('[data-act="stop"]');
       var board = document.getElementById('board');
       if (board) board.inert = !!dialog;
+      document.body.classList[dialog ? 'add' : 'remove']('su-dialog-open');
       if (dialog) {
         dialog.setAttribute('role', 'dialog'); dialog.setAttribute('aria-modal', 'true'); dialog.tabIndex = -1;
-        dialog.setAttribute('aria-label', { detail:'Job details', advice:'Job hunt advice', signup:'Newsletter signup', feedback:'Application feedback', look:'Choose a theme', founder:'About Nic' }[dialogKey] || 'Details');
+        dialog.setAttribute('aria-label', { detail:'Job details', advice:'Job hunt advice', signup:'Newsletter signup', feedback:'Application feedback', look:'Choose a theme', founder:'About Nic', preferences:'Your preferences' }[dialogKey] || 'Details');
         if (previousKey === dialogKey && previousFocus && previousFocus.act && previousFocus.act !== 'stop') restoreIntent(previousFocus);
         if (!dialog.contains(document.activeElement)) dialog.focus({ preventScroll:true });
       } else if (previousDialog) { restoreIntent(this._dialogReturn); this._dialogReturn = null; }
@@ -2550,6 +2556,7 @@
         if (e.key === 'Escape') {
           if (dialog) {
             e.preventDefault();
+            if (self._dialogKey === 'preferences' && window.SUDiscovery) { window.SUDiscovery.closePreferences(); return; }
             self.setState({ detailOpen:false, feedbackOpen:false, adviceOpen:null, signupOpen:null, lookOpen:false, modalOpen:false });
           } else if (self.state.openPanel) self.setState({ openPanel:null });
           return;
@@ -2588,6 +2595,7 @@
             break;
           case 'openModal': self.setState({ modalOpen: true }); break;
           case 'closeModal': self.setState({ modalOpen: false }); break;
+          case 'closePreferences': if(window.SUDiscovery)window.SUDiscovery.closePreferences();break;
           case 'closeFeedback': self.setState({ feedbackOpen: false }); break;
           case 'markApplied': {
             postReport('applied', self.state.feedbackCo, self.state.feedbackLink);
@@ -2605,7 +2613,7 @@
             break;
           }
           case 'notFit': {
-            if(window.SUDiscovery)window.SUDiscovery.dismiss(self.state.feedbackLink,'not_fit');
+            if(window.SUDiscovery&&window.SUDiscovery.dismiss(self.state.feedbackLink,'not_fit')&&window.SUAnalytics)window.SUAnalytics.emit('feedback_not_fit',{});
             self.setState({feedbackOpen:false});self.render();break;
           }
           case 'reportBroken': {

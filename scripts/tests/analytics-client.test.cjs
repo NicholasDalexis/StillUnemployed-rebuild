@@ -58,3 +58,40 @@ test('failed theme vote retries retain event identity and withdrawal clears the 
  await denied.window.suTrack('themevote','beauty','up','');denied.local.setItem('su_consent_v3','denied');denied.consent();await denied.api.flush();
  assert.equal(denied.requests.length,1);
 });
+
+const responseActions=['preference_save','preference_clear','preference_skip','feedback_not_fit'];
+test('response counts have no optional payload, even if callers pass typed or job data',async()=>{
+ const h=harness(storage({su_consent_v3:'granted'}));
+ for(const name of responseActions)h.api.emit(name,{major:'private study',location:'private location',info:'private notes',email:'private@example.invalid',jobId:'a'.repeat(64),url:'https://private.invalid',theme:'original',filter:'category',status:'Applied',seconds:15,capped:true,vote:'up',outboundId:'private-outbound'});
+ await h.api.flush();
+ const body=JSON.parse(h.requests[0].options.body);
+ assert.deepEqual(body.events.map(e=>e.name),responseActions);
+ for(const event of body.events)assert.deepEqual(Object.keys(event).sort(),['id','name','occurredAt','page']);
+ assert.deepEqual(body.consent,{analytics:true,personalization:false});
+ assert.doesNotMatch(JSON.stringify(body),/private|jobId|major|location|info|theme|filter|vote|outboundId/);
+});
+test('response actions stay off before consent, after decline, for GPC/admin and personalization-only',async()=>{
+ for(const [values,gpc,signed] of [[{},false,false],[{su_consent_v3:'denied'},false,false],[{su_consent_v3:'granted'},true,false],[{su_consent_v3:'granted',su_admin:'1'},false,false],[{su_personalization_v1:'granted'},false,true]]){
+  const h=harness(storage(values),storage(),[],gpc);if(signed)h.auth(true);await Promise.resolve();
+  for(const name of responseActions)h.api.emit(name,{});
+  await h.api.flush();assert.equal(h.requests.filter(r=>r.options.method==='POST').length,0);
+  assert.equal(h.local.values.su_analytics_visitor,undefined);
+ }
+ const h=harness();for(const name of responseActions)h.api.emit(name,{});
+ h.local.setItem('su_consent_v3','granted');h.consent();await h.api.flush();
+ const events=h.requests.flatMap(r=>JSON.parse(r.options.body||'{"events":[]}').events||[]);
+ assert.equal(events.filter(e=>responseActions.includes(e.name)).length,0,'opt-in never replays earlier actions');
+});
+test('response action retries preserve IDs and withdrawal/account changes discard queued actions',async()=>{
+ const h=harness(storage({su_consent_v3:'granted'}),storage(),[{ok:false,status:503},{ok:true,status:200}]);
+ for(const name of responseActions)h.api.emit(name,{});await h.api.flush();await h.api.flush();
+ assert.deepEqual(JSON.parse(h.requests[0].options.body).events,JSON.parse(h.requests[1].options.body).events);
+ for(const reset of ['withdraw','account']){
+  const h=harness(storage({su_consent_v3:'granted'}),storage(),[{ok:false,status:503},{ok:true,status:200}]);
+  for(const name of responseActions)h.api.emit(name,{});await h.api.flush();
+  if(reset==='withdraw'){h.local.setItem('su_consent_v3','denied');h.consent();}else h.auth(true,true);
+  await h.api.flush();
+  const later=h.requests.slice(1).flatMap(r=>JSON.parse(r.options.body||'{"events":[]}').events||[]);
+  assert.equal(later.filter(e=>responseActions.includes(e.name)).length,0);
+ }
+});

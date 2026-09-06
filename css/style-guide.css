@@ -126,7 +126,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline:3px solid
 .layout-example span { background:var(--su-paper); color:var(--su-ink); }
 .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 .theme-dialog { width:min(640px,calc(100% - 24px)); max-height:calc(100vh - 24px); max-height:calc(100dvh - 24px); padding:0 20px 24px; border:1px solid #cabba5; border-radius:5px; background:var(--su-paper); color:var(--su-ink); box-shadow:0 18px 65px #0006; overflow:auto; overscroll-behavior:contain; }
-.theme-dialog::backdrop { background:rgba(18,14,12,.62); }
+.theme-dialog::backdrop { background:rgba(18,14,12,.62); -webkit-backdrop-filter:blur(2.5px); backdrop-filter:blur(2.5px); }
+@media(prefers-reduced-transparency:reduce) { .theme-dialog::backdrop { -webkit-backdrop-filter:none; backdrop-filter:none; } }
 .theme-dialog-head { position:sticky; top:0; display:flex; gap:12px; justify-content:space-between; align-items:flex-start; padding:20px 0 16px; background:var(--su-paper); z-index:1; }
 .theme-dialog h2 { margin:0; font:400 2rem/1.2 var(--su-hand); }
 .theme-dialog-head p { max-width:42ch; margin:8px 0 0; font-size:.9rem; }

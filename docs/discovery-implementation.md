@@ -4,7 +4,7 @@ Local candidate, September 6, 2026. No production account rollout, deployment, S
 
 ## Person and task
 
-A student or early-career visitor should see a useful range of real creative jobs, then spend less time reopening jobs they have already dealt with. Phone is the first design target. Keep the existing notebook, salary surfaces, themes and advice cadence. Preferences are a small in-page paper note, never another automatic modal.
+A student or early-career visitor should see a useful range of real creative jobs, then spend less time reopening jobs they have already dealt with. Phone is the first design target. Keep the existing notebook, salary surfaces, themes and advice cadence. ~~Preferences are a small in-page paper note, never another automatic modal.~~ Nic's September 6, 2026 follow-up requests a pop-up: use the existing board modal layer, quietly dim and blur the background, and retain the handwritten heading with readable form fields.
 
 ## Implemented behavior
 
@@ -34,3 +34,12 @@ Privacy and Terms describe the optional form, confirmations, separate written hi
 ## Boundaries and follow-up
 
 No internship is currently eligible for this public snapshot merely because it is present in the golden review. Publication needs owner approval and verified official posting evidence. The Sheet-to-reviewed-snapshot publishing adapter, hosted account round trip, production rollout, and deployed account rule check remain separate work. Major matching is deliberately limited keyword matching; missing qualification text is unknown. The newness counter is a service feature rather than an analytics conversion metric, and concurrent devices use last-write-wins preferences rather than a global atomic visit counter. A full cloud analytics funnel, automatic cross-user ranking learning and demographic inference are not claimed.
+
+
+## Preferences dialog and response counts, 2.2.3
+
+Design brief: a signed-in visitor can edit optional job preferences without expanding or leaving the board. Use warm paper, one handwritten heading, clear Archivo fields, 44px controls and a restrained 2.5px background blur. Limit width to580px and height to the visible viewport; a phone scrolls the note rather than cutting off controls. Preserve drafts/caret through account sync. X, Escape and outside tap close without a skip analytics event; explicit Skip for now is separate. Native or product dialogs defer preferences rather than stack. Closing marks the existing optional prompt answered.
+
+Saving first writes requested account records on this device. Status follows the existing sync state: syncing, synced or paused with retry. Do not claim confirmed cloud persistence before a synced signal. Current account changes clear local UI state/drafts. Raw answers remain in the requested account feature, never the analytics dashboard.
+
+Four analytics-only action names, with no additional fields: preference_save, preference_clear, preference_skip and feedback_not_fit. Existing application_reported remains a separate self-report count. Counts are actions, not unique people or completed profiles; all-blank optional saves are valid. Local preview analytics are suppressed; production collector configuration/readback and hosted discovery sync/rules still require their existing release checks. The operational unavailable-report transport is not a confirmed report inbox.

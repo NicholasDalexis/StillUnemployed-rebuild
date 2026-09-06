@@ -1,7 +1,16 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.2.2",
+  "currentVersion": "2.2.3",
   "releases": [
+    {
+      "version": "2.2.3",
+      "date": "2026-09-06",
+      "title": "Preferences without leaving the board",
+      "changes": [
+        "Your preferences now opens as a compact paper pop-up, with a light background blur and clear syncing, saved and retry states.",
+        "Optional analytics count preference save, clear and skip actions and not-a-fit responses without collecting typed answers or job identities for those actions."
+      ]
+    },
     {
       "version": "2.2.2",
       "date": "2026-09-06",
@@ -145,7 +154,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "ff0b92aaf7d16796cfc50ee0f4d0099bb007d828978bf8c07f7994a693ce637f",
+    "digest": "8199deb45edbc1206c46ec64057c9b1cad05743445ebdcf50b911594a6dc9680",
     "fileCount": 131
   }
 }

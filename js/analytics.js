@@ -4,6 +4,7 @@
   var queue=[],pending=[],catalog={},profile={},generation=0,authEpoch=0,flushBusy=false;
   var visitor=null,session=null,sessionAt=0,seen={},outbound=null,lastActivity=Date.now(),activeAt=Date.now(),activeSeconds=0;
   var ENDPOINT='/.netlify/functions/analytics-events',PROFILE='/.netlify/functions/analytics-profile';
+  var COUNT_ONLY_EVENTS=['preference_save','preference_clear','preference_skip','feedback_not_fit'];
   function stored(k){try{return localStorage.getItem(k);}catch(e){return null;}}
   function put(k,v){try{if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){}}
   function choices(){return {analytics:stored('su_consent_v3')==='granted'&&!navigator.globalPrivacyControl,personalization:stored('su_personalization_v1')==='granted'};}
@@ -14,11 +15,13 @@
   function identifiers(){if(!session){try{var prior=JSON.parse(sessionStorage.getItem('su_analytics_session')||'null');if(prior&&Date.now()-prior.at<1800000){session=prior.id;sessionAt=prior.at;}}catch(e){}}if(!visitor){visitor=stored('su_analytics_visitor')||randomId();if(visitor&&choices().analytics)put('su_analytics_visitor',visitor);}if(!session||Date.now()-sessionAt>1800000){session=randomId();}sessionAt=Date.now();try{sessionStorage.setItem('su_analytics_session',JSON.stringify({id:session,at:sessionAt}));}catch(e){}return !!visitor&&!!session;}
   function consentEnabled(){var c=choices();return !excluded()&&(c.analytics||(c.personalization&&signedIn()));}
   function emit(name,params){
+    var countOnly=COUNT_ONLY_EVENTS.indexOf(name)>=0;
+    if(countOnly&&!choices().analytics)return;
     if(!consentEnabled()||!identifiers())return;
     var c=choices();if(!c.analytics && !({job_open:1,job_save:1,apply_click:1,application_reported:1})[name])return;
     var e={id:randomId(),name:name,page:page(),occurredAt:Date.now()};
     // Explicit keys only. Never copy strings from DOM labels, forms or URLs.
-    ['jobId','theme','filter','status','seconds','capped','vote','outboundId'].forEach(function(k){if(params&&params[k]!==undefined)e[k]=params[k];});
+    if(!countOnly)['jobId','theme','filter','status','seconds','capped','vote','outboundId'].forEach(function(k){if(params&&params[k]!==undefined)e[k]=params[k];});
     queue.push(e);if(queue.length>120)queue.shift();
     if(queue.length>=20)flush();
   }

@@ -6,6 +6,36 @@ function request(token='alice',events=[{name:'job_open',jobId}],extra={}){return
 test('collector verifies token, derives account from token and deduplicates retries',async()=>{const d=deps(),r=request();assert.equal((await S.collect(r,d)).accepted,1);assert.equal((await S.collect(r,d)).accepted,0);const profile=await S.profile({...r,httpMethod:'GET'},d);assert.equal(profile.jobs[jobId].weight,1);const other=await S.profile({...request('bob'),httpMethod:'GET'},d);assert.deepEqual(other.jobs,{});});
 test('invalid tokens, cross-origin, missing consent and forged unknown jobs fail closed',async()=>{const d=deps();await assert.rejects(()=>S.collect(request('forged'),d),e=>e.status===401);const r=request();r.headers.origin='https://evil.example';await assert.rejects(()=>S.collect(r,d),e=>e.status===403);await assert.rejects(()=>S.collect(request('alice',undefined,{consent:{}}),d),e=>e.status===403);await assert.rejects(()=>S.collect(request('alice',[{name:'job_open',jobId:'f'.repeat(64)}]),d),e=>e.status===400);assert.equal(d.db.data.size,0);});
 test('PII and client-supplied fields are excluded and employer metadata is trusted',async()=>{const d=deps();await S.collect(request('alice',[{name:'job_open',jobId,email:'secret@example.invalid',notes:'private',url:'https://secret',field:'Fake',uid:'bob'}]),d);const text=JSON.stringify([...d.db.data]);assert.doesNotMatch(text,/secret|private|Fake|"bob"/);assert.match(text,/Marketing/);});
+test('response action events discard every optional payload field at the server',()=>{
+ const names=['preference_save','preference_clear','preference_skip','feedback_not_fit'];
+ for(const name of names){
+  const input={id:'response-event-12345',name,page:'board',jobId,major:'private study',location:'private place',info:'private note',notes:'private note',email:'private@example.invalid',uid:'alice',url:job.link,field:'Private',theme:'original',filter:'category',status:'Applied',seconds:123,capped:true,vote:'up',outboundId:'outbound-event-12345'};
+  assert.deepEqual(C.cleanEvent(input,C.catalog([job])),{id:input.id,name,page:'board'});
+ }
+ assert.throws(()=>C.cleanEvent({id:'response-event-12345',name:'preference_major',page:'board'},{}),e=>e.status===400);
+});
+test('response actions aggregate by type, deduplicate retries, and never update interest profiles',async()=>{
+ const d=deps(),names=['preference_save','preference_clear','preference_skip','feedback_not_fit'];
+ const r=request('alice',names.map(name=>({name,jobId,major:'private typed answer'})));
+ assert.equal((await S.collect(r,d)).accepted,4);assert.equal((await S.collect(r,d)).accepted,0);
+ let out=await S.admin({...request('owner'),httpMethod:'GET'},d);
+ assert.deepEqual(out.events,names.map(label=>({label,count:1})));
+ assert.equal(out.totals.reported_applied,0);assert.deepEqual(out.jobs,[]);
+ assert.deepEqual((await S.profile({...request(),httpMethod:'GET'},d)).jobs,{});
+ assert.doesNotMatch(JSON.stringify([...d.db.data]),/private typed answer|major|jobId|jobLabel/);
+ await S.collect(request('alice',[{name:'preference_save',id:'new-response-123456'}]),d);
+ out=await S.admin({...request('owner'),httpMethod:'GET'},d);
+ assert.equal(out.events.find(row=>row.label==='preference_save').count,2,'a new action is distinct from retrying one event');
+});
+test('personalization-only requests retain no response behavior in storage or owner counts',async()=>{
+ const d=deps();
+ await S.collect(request('alice',['preference_save','preference_clear','preference_skip','feedback_not_fit'].map(name=>({name,jobId,info:'private typed answer'})),{consent:{analytics:false,personalization:true}}),d);
+ const out=await S.admin({...request('owner'),httpMethod:'GET'},d);
+ assert.equal(out.totals.events,0);assert.deepEqual(out.events,[]);
+ assert.deepEqual((await S.profile({...request(),httpMethod:'GET'},d)).jobs,{});
+ for(const [key,value] of d.db.data)if(key.startsWith('suAnalyticsEvents/'))assert.equal(value.name,undefined);
+ assert.doesNotMatch(JSON.stringify([...d.db.data]),/preference_save|preference_clear|preference_skip|feedback_not_fit|private typed answer|jobId/);
+});
 test('personalization-only produces a profile without owner-report behavior',async()=>{const d=deps();await S.collect(request('alice',undefined,{consent:{analytics:false,personalization:true}}),d);const admin=await S.admin({...request('owner'),httpMethod:'GET'},d);assert.equal(admin.totals.events,0);assert.equal((await S.profile({...request(),httpMethod:'GET'},d)).jobs[jobId].weight,1);});
 test('owner allowlist is server-enforced and query excludes other private metadata',async()=>{const d=deps();await S.collect(request(),d);await assert.rejects(()=>S.admin({...request('alice'),httpMethod:'GET'},d),e=>e.status===403);const out=await S.admin({...request('owner'),httpMethod:'GET'},d);assert.equal(out.totals.job_opens,1);assert.deepEqual(out.fields,[]);assert.doesNotMatch(JSON.stringify(out),/alice|visitor123|session123|testevent/);});
 test('signup counts require verified Auth creation and ignores browser-declared signup',async()=>{const d=deps();await S.collect(request('alice',[{name:'auth_signup'},{name:'auth_login'}]),d);const out=await S.admin({...request('owner'),httpMethod:'GET'},d);assert.equal(out.totals.signups,1);assert.equal(out.totals.logins,1);});

@@ -86,6 +86,21 @@ test('static dashboard contains no analytics tracker, third-party question endpo
   assert.match(html,/Sample data\. These are invented numbers\./);
 });
 
+test('response event labels preserve counts without adding absent responses or changing raw keys',()=>{
+ const data=sample();data.events=[{label:'preference_save',count:3},{label:'preference_clear',count:0},{label:'preference_skip',count:2},{label:'feedback_not_fit',count:4},{label:'application_reported',count:5}];
+ const normalized=dashboard.normalize(data),before=JSON.stringify(normalized.events);
+ assert.deepEqual(dashboard.eventRows(normalized.events),[
+  {label:'application_reported',count:5},{label:'Not a fit responses',count:4},{label:'Preference save actions',count:3},{label:'Preference skip actions',count:2},{label:'Preference clear actions',count:0}
+ ]);
+ assert.equal(JSON.stringify(normalized.events),before);
+ assert.deepEqual(dashboard.eventRows([]),[]);
+ assert.deepEqual(dashboard.eventRows([{label:'__proto__',count:null}]),[{label:'__proto__',count:null}]);
+ const html=fs.readFileSync(path.resolve(__dirname,'../../analytics.html'),'utf8');
+ assert.match(html,/Recorded action counts, not unique people/);
+ assert.match(html,/Preference saves can include blank optional answers/);
+ assert.match(html,/contain no typed answers or per-job not-fit details/);
+});
+
 test('vote breakdowns preserve missing versus suppressed, public labels, and action-count meaning',()=>{
  const data=sample();
  assert.match(dashboard.answer('Which theme has the most likes?',data),/Casino leads with 36 recorded like votes/);

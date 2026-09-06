@@ -3,7 +3,8 @@
 .su-launch[open] { display:flex; flex-direction:column; }
 .su-launch [hidden] { display:none !important; }
 .su-launch *, .su-launch *::before, .su-launch *::after { box-sizing:border-box; }
-.su-launch::backdrop { background:rgba(42,33,24,.62); }
+.su-launch::backdrop { background:rgba(42,33,24,.62); -webkit-backdrop-filter:blur(2.5px); backdrop-filter:blur(2.5px); }
+@media(prefers-reduced-transparency:reduce) { .su-launch::backdrop { -webkit-backdrop-filter:none; backdrop-filter:none; } }
 .su-launch-header { display:flex; flex:none; align-items:center; justify-content:space-between; gap:12px; padding:24px 32px 0; }
 .su-launch h2 { display:inline; margin:0; font:400 clamp(28px,5vw,38px)/1.2 var(--su-hand); background:linear-gradient(transparent 77%,var(--su-yellow) 77% 92%,transparent 92%); }
 .su-launch button { cursor:pointer; }

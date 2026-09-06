@@ -18,7 +18,7 @@
 
   var user = null, session = null, auth, sdk, store = window.SUStore;
   var syncState = 'loading', errorCode = '', signingIn = false;
-  window.SUAuth = { signedIn:function(){return !!user;}, syncReady:function(){return !!user&&syncState==='synced';}, getToken:function(){return user ? user.getIdToken() : Promise.reject(new Error('Sign in required'));} };
+  window.SUAuth = { signedIn:function(){return !!user;}, syncReady:function(){return !!user&&syncState==='synced';}, syncState:function(){return syncState;}, retrySync:function(){if(user&&syncState==='error')startSync();}, getToken:function(){return user ? user.getIdToken() : Promise.reject(new Error('Sign in required'));} };
   function notifyAuth(){var changed=false;try{var owner=user?user.uid:'guest',prior=sessionStorage.getItem('su_analytics_auth_owner');changed=prior!==null&&prior!==owner;sessionStorage.setItem('su_analytics_auth_owner',owner);}catch(e){}if(window.dispatchEvent && typeof CustomEvent !== 'undefined')window.dispatchEvent(new CustomEvent('su:auth-changed',{detail:{signedIn:!!user,accountChanged:changed}}));}
   function loginResult(result){if(result && window.SUAnalytics)window.SUAnalytics.emit('auth_login',{});return result;}
   var feedbackFocus = null;
@@ -27,6 +27,7 @@
     syncState = next; errorCode = error ? String(error.code || error.message || 'unavailable') : '';
     if (error) console.warn('[su-auth]', errorCode);
     render();
+    if(window.dispatchEvent && typeof CustomEvent!=='undefined')window.dispatchEvent(new CustomEvent('su:sync-status',{detail:{state:syncState}}));
     if(becameReady && window.dispatchEvent && typeof CustomEvent!=='undefined')window.dispatchEvent(new CustomEvent('su:account-ready'));
   }
   function render() {

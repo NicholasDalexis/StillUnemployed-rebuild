@@ -9,6 +9,8 @@
   var COUNT_KEYS = ['events', 'visits', 'visitors', 'signups', 'logins', 'job_opens', 'saves', 'apply_clicks', 'reported_applied', 'tracker_users'];
   var THEME_NAMES = {original:'Original',girly:'For the girlies',poker:'Casino',mermaid:'Mermaidcore',bratt:'bratt',noir:'Black Cat',beauty:'Beauty',chess:'Chess'};
   function themeRows(rows) { return rows.map(function(row){return {label:THEME_NAMES[row.label] || row.label,count:row.count};}); }
+  var EVENT_NAMES = {preference_save:'Preference save actions',preference_clear:'Preference clear actions',preference_skip:'Preference skip actions',feedback_not_fit:'Not a fit responses'};
+  function eventRows(rows) { return rows.map(function(row){return {label:Object.prototype.hasOwnProperty.call(EVENT_NAMES,row.label)?EVENT_NAMES[row.label]:row.label,count:row.count};}); }
   function count(value) { return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? Math.floor(value) : null; }
   function format(value) { var n = count(value); return n === null ? 'N/A' : n.toLocaleString('en-US'); }
   function percent(value, maximum) { var n = count(value), max = count(maximum); return n === null || !max ? 0 : Math.min(100, 100 * n / max); }
@@ -121,7 +123,8 @@
       text('freshness', demo ? 'SYNTHETIC PREVIEW · All counts are invented. Dates and windows are illustrative.' : (isStale ? 'STALE OR UNKNOWN REFRESH TIME · ' : '') + (data.generatedAt ? 'Generated ' + new Date(data.generatedAt).toLocaleString() + ' · ' : 'Refresh time unavailable · ') + (data.windowDays ? 'Last ' + data.windowDays + ' days · ' : '') + 'UTC daily buckets · Consented activity only');
       el('metrics').replaceChildren();
       [['visits','Visits','Recorded browsing sessions'], ['visitors','Visitors','Distinct analytics visitors'], ['job_opens','Job opens','Cards explored'], ['signups','Sign-ups','New accounts with analytics consent'], ['tracker_users','Tracker users','Distinct analytics visitors']].forEach(function (m) { var card = node('div', undefined, 'metric'); card.append(node('p', m[1], 'metric-label'), node('strong', format(data.totals[m[0]]), 'metric-value'), node('p', m[2], 'metric-note')); el('metrics').appendChild(card); });
-      ['fields','roles','events'].forEach(function (id) { bars(id, data[id]); });
+      ['fields','roles'].forEach(function (id) { bars(id, data[id]); });
+      bars('events',eventRows(data.events));
       bars('themes',themeRows(data.themes));
       ['up','down'].forEach(function(direction){bars(direction==='up'?'theme-likes':'theme-dislikes',data.themeVotes?themeRows(data.themeVotes[direction]):[],data.themeVotes?'No reportable votes in this direction. Activity may be absent or below the privacy threshold.':'Theme vote breakdowns are unavailable in this response. Missing votes are not zero.');});
       bars('popular-jobs', data.jobs.slice(0, 10)); bars('companies', data.companies.slice(0, 10));
@@ -178,5 +181,5 @@
     win.addEventListener('pageshow', function (event) { if (event.persisted) load(); });
     load();
   }
-  return { count: count, format: format, percent: percent, duration: duration, normalize: normalize, stale: stale, answer: answer, fixture: fixture, mount: mount };
+  return { count: count, format: format, percent: percent, duration: duration, normalize: normalize, stale: stale, answer: answer, fixture: fixture, eventRows: eventRows, mount: mount };
 });

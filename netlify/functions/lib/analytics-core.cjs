@@ -2,7 +2,8 @@
 const crypto = require('node:crypto');
 const P = require('../../../js/personalization.js');
 const Identity = require('../../../js/job-identity.js');
-const EVENTS = new Set(['page_view','job_impression','job_open','job_save','job_unsave','apply_click','application_reported','tracker_open','tracker_add','tracker_delete','tracker_status','tracker_export','tracker_note_edit','theme_change','theme_vote','filter_change','search_used','privacy_open','page_engagement','outbound_started','outbound_return','outbound_unknown','auth_login','auth_logout','auth_signup','consent_change','preferences_reset','newsletter_open','newsletter_click','advice_open','advice_impression','suggest_open','suggest_received','founder_open','board_open']);
+const COUNT_ONLY_EVENTS = new Set(['preference_save','preference_clear','preference_skip','feedback_not_fit']);
+const EVENTS = new Set(['page_view','job_impression','job_open','job_save','job_unsave','apply_click','application_reported','tracker_open','tracker_add','tracker_delete','tracker_status','tracker_export','tracker_note_edit','theme_change','theme_vote','filter_change','search_used','privacy_open','page_engagement','outbound_started','outbound_return','outbound_unknown','auth_login','auth_logout','auth_signup','consent_change','preferences_reset','newsletter_open','newsletter_click','advice_open','advice_impression','suggest_open','suggest_received','founder_open','board_open',...COUNT_ONLY_EVENTS]);
 const PAGES = new Set(['home','board','internships','tracker','privacy','terms','suggest','other']);
 const THEMES = new Set(['original','girly','poker','mermaid','bratt','noir','beauty','chess']);
 const ID = /^[a-f0-9]{64}$/;
@@ -12,6 +13,8 @@ function catalog(jobs) { const out={}; for (const job of jobs) out[jobId(job)]={
 function cleanEvent(input, jobs) {
   if (!input || !EVENTS.has(input.name) || !/^[a-zA-Z0-9_-]{16,64}$/.test(input.id||'') || !PAGES.has(input.page)) throw Object.assign(new Error('Invalid event'), {status:400});
   const out={id:input.id,name:input.name,page:input.page};
+  // These counts never retain written answers, job attribution or optional metadata.
+  if(COUNT_ONLY_EVENTS.has(out.name))return out;
   if(/^[a-zA-Z0-9_-]{16,64}$/.test(input.outboundId||''))out.outboundId=input.outboundId;
   if(input.jobId) { if(!ID.test(input.jobId)||!jobs[input.jobId])throw Object.assign(new Error('Unknown job'),{status:400});out.jobId=input.jobId;out.field=jobs[input.jobId].field;out.role=jobs[input.jobId].role;out.company=jobs[input.jobId].company;out.jobLabel=jobs[input.jobId].jobLabel; }
   if(/^(job_|apply_click|application_reported|outbound_)/.test(out.name) && !out.jobId)throw Object.assign(new Error('Job required'),{status:400});

@@ -1,4 +1,5 @@
 .su-discovery { margin: 16px 0 0; color: var(--su-ink); font: 16px/1.5 var(--su-body); }
+.su-discovery [hidden] { display:none !important; }
 .su-discovery-tools { display:flex; gap:8px 16px; flex-wrap:wrap; align-items:center; }
 .su-discovery button { min-height:44px; background:var(--su-paper); color:var(--su-ink); border:1px solid var(--su-muted); border-radius:3px; padding:8px 14px; font:20px/1.25 var(--su-hand); cursor:pointer; }
 .su-discovery-tools > button { background:var(--su-yellow-paper); }
@@ -20,3 +21,18 @@
 @media(max-width:350px){.su-main-nav{gap:5px!important}.su-main-nav > a.postit{font-size:16px!important;padding-left:8px!important;padding-right:8px!important}}
 .su-internship-details { font:16px/1.5 var(--su-body); padding:16px; background:var(--su-paper); color:var(--su-ink); }
 .su-internship-details dt { font-weight:700; margin-top:8px; }.su-internship-details dd { margin:0; }
+
+/* Preferences share the board's modal layer instead of expanding the job feed. */
+.su-preferences-overlay { position:fixed; inset:0; margin:0; padding:24px; display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; overscroll-behavior:contain; background:rgba(44,33,24,.58); box-sizing:border-box; }
+.su-preferences { width:580px; max-width:100%; max-height:calc(100dvh - 48px); margin:auto; padding:28px; overflow-y:auto; overscroll-behavior:contain; border:0; border-radius:3px; background-image:none; }
+.su-preferences h2 { font-size:32px; margin-right:28px; }
+.su-preferences p { margin:10px 0 16px; }
+.su-preferences .su-preferences-error:empty { display:none; }
+.su-preferences .su-preferences-error { color:var(--su-orange-text); }
+.su-preferences .su-preferences-actions { gap:8px 16px; margin-top:20px; }
+.su-preferences-actions > button:not([type="submit"]) { background:transparent; border-color:transparent; padding:8px 0; color:var(--su-orange-text); text-decoration:underline; text-underline-offset:4px; font-size:18px; }
+@media(max-width:700px) {
+  .su-preferences-overlay { padding:16px; }
+  .su-preferences { max-height:calc(100dvh - 32px); padding:24px 20px; }
+  .su-preferences h2 { font-size:28px; }
+}

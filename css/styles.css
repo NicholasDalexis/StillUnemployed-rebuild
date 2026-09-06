@@ -196,6 +196,11 @@ body { margin: 0; background: #EFE6D4; }
 .su-unlisted-saved a { color:#914322; overflow-wrap:anywhere; flex:1; min-width:180px; }
 .su-unlisted-saved button { min-height:44px; background:var(--su-yellow-paper); color:#2C2118; border:1px solid #CDB88C; border-radius:4px; padding:8px 12px; cursor:pointer; }
 #overlay-root [role="dialog"]:focus { outline:none; }
+body.su-dialog-open { overflow:hidden; }
+#overlay-root > [data-act] { -webkit-backdrop-filter:blur(2.5px); backdrop-filter:blur(2.5px); }
+@media(prefers-reduced-transparency:reduce) {
+  #overlay-root > [data-act] { -webkit-backdrop-filter:none; backdrop-filter:none; }
+}
 #overlay-root [data-act="closeDetail"], #overlay-root [data-act="closeAdvice"], #overlay-root [data-act="closeSignup"], #overlay-root [data-act="detailShare"] { min-width:32px; min-height:32px; }
 @media (max-width: 1024px) {
     .board > div[style*="max-width: 1240px"] { padding-left: 24px !important; padding-right: 24px !important; }
