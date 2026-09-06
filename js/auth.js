@@ -31,7 +31,7 @@
       button.title = text; button.setAttribute('aria-label', text);
       button.dataset.state = user ? syncState : (errorCode ? 'error' : 'signed-out');
       var label = button.querySelector('.su-auth-label');
-      if (label) label.textContent = user ? 'Account' : 'Sign In';
+      if (label) label.textContent = user ? 'Signed In' : 'Sign In';
       button.disabled = !auth || signingIn;
     });
     var feedback = document.getElementById('su-auth-feedback');

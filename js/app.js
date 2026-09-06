@@ -1891,9 +1891,10 @@
       // =====================================================================
       var out = '';
 
-      // top nav
+      // The desktop nav spans this header to align Google above Saved. Keep the
+      // founder card above its transparent area so pointer clicks reach the card.
       out += '<div style="max-width: 1240px; margin: 0 auto; padding: 26px 40px 0; position: relative; height: 100px; box-sizing: border-box;">' +
-        '<div data-act="openModal" class="aboutcard" style="position: absolute; top: 22px; left: 40px; display: flex; align-items: center; gap: 12px; background: #E7D2A8; border-radius: 16px; padding: 9px 16px 9px 9px; cursor: pointer; box-shadow: 0 6px 18px rgba(44,33,24,0.16);">' +
+        '<div data-act="openModal" class="aboutcard" style="position: absolute; z-index: 1; top: 22px; left: 40px; display: flex; align-items: center; gap: 12px; background: #E7D2A8; border-radius: 16px; padding: 9px 16px 9px 9px; cursor: pointer; box-shadow: 0 6px 18px rgba(44,33,24,0.16);">' +
           '<div style="width: 66px; height: 42px; border-radius: 11px; overflow: hidden; flex: none;">' +
             '<img src="assets/5037150f-ce24-477c-bae7-ef884fbc5849.jpg" alt="Nic" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 16%; transform: scale(1.55); transform-origin: 50% 26%;">' +
           '</div>' +
@@ -1975,6 +1976,7 @@
       // active filter row
       out += '<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 18px; min-height: 30px;">' +
         chipsHtml +
+        '<a href="./suggest.html" style="display:inline-flex; align-items:center; min-height:44px; font-family: \'Indie Flower\', cursive; font-size:18px; text-underline-offset:4px; color:' + showInk + ';">Suggest Jobs</a>' +
         '<div style="margin-left: auto; font-family: \'Indie Flower\', cursive; font-size: 18px; color: ' + showInk + ';">' + esc(showingLabel) + '</div>' +
       '</div>';
 

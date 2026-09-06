@@ -104,7 +104,7 @@
     // Homepage intentionally ignores the "Change Look?" choice and always
     // renders the original look. (Nic, Jun 23 2026: the homescreen should not
     // change when you switch the board's look.) Board theming lives in app.js.
-    document.body.className = '';
+    document.body.className = 'su-home';
   }
 
   /* ======================= component logic ======================= */
@@ -280,6 +280,22 @@
       x.addEventListener('click', function (e) { e.stopPropagation(); nhSetModal(false); });
     });
 
+    // The exposed graduation photo keeps a stable hit area; only its shadow changes on hover.
+    var gradOverlay = $('#nh-grad-modal'), gradDialog = $('#nh-grad-dialog'), gradClose = $('#nh-grad-close');
+    function closeGrad() { if (gradOverlay) gradOverlay.hidden = true; closeDialog(gradDialog); }
+    ['#nh-grad-open', '#nh-grad-cue'].forEach(function (selector) {
+      var opener = $(selector);
+      if (opener) opener.addEventListener('click', function () {
+        var full = $('#nh-grad-full'), preview = $('#nh-grad');
+        if (!gradOverlay || !gradDialog || !full || !preview) return;
+        full.src = preview.src;
+        gradOverlay.hidden = false;
+        openDialog(gradDialog, opener, "Nic on graduation day", closeGrad);
+      });
+    });
+    if (gradClose) gradClose.addEventListener('click', closeGrad);
+    if (gradOverlay) gradOverlay.addEventListener('click', function (e) { if (e.target === gradOverlay) closeGrad(); });
+
     // newsletter fold inside the modal
     var tab = $('#nh-nl-tab'), note = $('#nh-nl-note'), close = $('#nh-nl-close');
     accessibleButton(tab, 'Open newsletter note');
@@ -397,10 +413,7 @@
         '<div style="font-family:\'Archivo\', sans-serif; font-weight:600; font-size:15.5px; margin-top:8px; line-height:1.3;"></div>' +
         '<div style="font-family:\'Archivo\', sans-serif; font-weight:800; font-size:22px; letter-spacing:-0.4px; margin-top:14px;"></div>' +
         '<div style="font-size:13.5px; opacity:0.8; font-family:\'Poppins\', sans-serif; margin-top:5px;"></div>' +
-        '<div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px;">' +
-          '<div style="display:inline-flex; align-items:center; gap:5px; border:1.6px solid #3A2A1B; color:#3A2A1B; border-radius:4px; padding:3px 8px; transform:rotate(-4deg); font-family:\'Archivo\', sans-serif; font-weight:800; font-size:9px; text-transform:uppercase; letter-spacing:.1em; opacity:0.7;">' +
-            '<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.4"></circle><path d="M8.3 12.2l2.4 2.4 4.9-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
-            'Human-verified</div>' +
+        '<div style="display:flex; justify-content:flex-end; align-items:center; margin-top:16px;">' +
           '<div style="font-family:\'Archivo\', sans-serif; font-weight:800; font-size:15px; color:#D8502E; display:inline-flex; align-items:center; gap:4px;">open ' +
             '<svg width="26" height="13" viewBox="0 0 28 14" fill="none" style="overflow:visible;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>' +
         '</div>';
@@ -464,9 +477,8 @@
     var nh = document.getElementById('hero-desktop');
     var nhStage = document.getElementById('nh-stage');
     if (nh && nhStage) {
-      var scaleN = Math.min(1, vw / NH_BASE_W);
-      nh.style.transform = 'scale(' + scaleN + ')';
-      nhStage.style.height = (NH_BASE_H * scaleN) + 'px';
+      nh.style.transform = 'none';
+      nhStage.style.height = 'auto';
     }
   }
 

@@ -27,7 +27,7 @@
   <meta name="twitter:title" content="Still Unemployed?">
   <meta name="twitter:description" content="A real human (me) opens and checks the jobs before we add them. No AI slop. Just roles I would apply to myself.">
   <meta name="twitter:image" content="https://stillunemployed.com/assets/og/home.png?v=3">
-  <link rel="stylesheet" href="css/home.css?v=nh4">
+  <link rel="stylesheet" href="css/home.css?v=nh5">
   <!-- First-party analytics: defer keeps document order, so this runs BEFORE js/home.js -->
   <script src="js/analytics.js?v=an4" defer></script>
   <!-- Google Analytics 4: analytics storage remains denied until Accept. -->
@@ -36,7 +36,7 @@
   <script src="js/ga.js?v=5" defer></script>
   <link rel="stylesheet" href="css/account.css?v=2">
 </head>
-<body>
+<body class="su-home">
 
 <!-- =========================================================================
      NEW DESKTOP/TABLET HOMEPAGE (Jul 2026) — ported verbatim from the Claude
@@ -48,23 +48,19 @@
      quoted inline styles.
      ========================================================================= -->
 <div id="nh-stage">
-<div id="hero-desktop" style="position: relative; width: 1440px; height: 1392px; margin: 0 auto; overflow: hidden; background-color: #EFE6D4; background-image: radial-gradient(rgba(120,92,54,0.07) 1px, transparent 1.7px), radial-gradient(rgba(120,92,54,0.05) 1px, transparent 1.7px), radial-gradient(150% 90% at 50% 0%, rgba(255,247,232,0.75), transparent 55%); background-size: 9px 9px, 9px 9px, 100% 100%; background-position: 0 0, 4.5px 4.5px, 0 0; font-family: 'Archivo', system-ui, sans-serif; color: #2C2118;">
-
-  <!-- top bar -->
-  <div style="position: absolute; top: 0; left: 0; right: 0; height: 110px; z-index: 30;">
-    <div style="position: absolute; top: 24px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px;">
-      <a href="./index.html" class="postit nav-postit" style="--r: -3deg;">Home</a>
-      <a href="./jobs.html" class="postit nav-postit" style="--r: 2.5deg;">Jobs</a>
-      <a href="./tracker.html" class="postit nav-postit" style="--r: -2deg;">Tracker</a>
-      <span class="su-account-slot"></span>
-    </div>
-  </div>
-
+<main id="hero-desktop" class="nh-page">
+  <nav class="nh-nav" aria-label="Main navigation">
+    <a href="./index.html" class="postit nav-postit" style="--r: -3deg;" aria-current="page">Home</a>
+    <a href="./jobs.html" class="postit nav-postit" style="--r: 2.5deg;">Jobs</a>
+    <a href="./tracker.html" class="postit nav-postit" style="--r: -2deg;">Tracker</a>
+    <span class="su-account-slot"></span>
+  </nav>
+  <section class="nh-intro" aria-label="Welcome">
   <!-- eyebrow -->
-  <div style="position: absolute; left: 60px; top: 150px; z-index: 22; font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 23px; color: #C2552F; transform: rotate(-2deg);">★ StillUnemployed.com</div>
+  <div class="nh-eyebrow" style="position: absolute; left: 60px; top: 150px; z-index: 22; font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 23px; color: #C2552F; transform: rotate(-2deg);"><span aria-hidden="true">★</span> Human Verified</div>
 
   <!-- headline -->
-  <div style="position: absolute; left: 56px; top: 176px; z-index: 20;">
+  <div class="nh-headline" role="heading" aria-level="1" aria-label="Still Unemployed?" style="position: absolute; left: 56px; top: 176px; z-index: 20;">
     <div style="font-family: 'Playfair Display', serif; font-weight: 900; font-size: 142px; line-height: 0.84; letter-spacing: -0.02em; color: #2C2118;">Still</div>
     <div style="position: relative; display: inline-block; margin-top: 4px;">
       <div style="font-family: 'Playfair Display', serif; font-style: italic; font-weight: 800; font-size: 70px; letter-spacing: 0; color: #7A4A2C;">Unemployed?</div>
@@ -72,40 +68,34 @@
     </div>
   </div>
 
-  <!-- rubber stamp overlapping headline -->
-  <div style="position: absolute; left: 452px; top: 196px; z-index: 24; transform: rotate(-11deg);">
-    <div style="display: inline-flex; align-items: center; gap: 7px; border: 3px solid #C0402A; color: #C0402A; border-radius: 6px; padding: 7px 12px; font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: .12em; opacity: 0.82; box-shadow: 0 0 0 2px rgba(192,64,42,0.16);">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.4"></circle><path d="M8.3 12.2l2.4 2.4 4.9-5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-      Human Verified
-    </div>
-  </div>
-
   <!-- torn subhead strip -->
-  <div style="position: absolute; left: 60px; top: 452px; width: 520px; z-index: 21; background: #FCFAF3; padding: 20px 26px 24px; box-shadow: 3px 7px 16px rgba(44,33,24,0.16); transform: rotate(-0.7deg); clip-path: polygon(0 6%, 4% 0, 30% 5%, 52% 0, 74% 6%, 100% 2%, 99% 96%, 72% 100%, 46% 95%, 22% 100%, 2% 96%);">
+  <div class="nh-summary" style="position: absolute; left: 60px; top: 452px; width: 520px; z-index: 21; background: #FCFAF3; padding: 20px 26px 24px; box-shadow: 3px 7px 16px rgba(44,33,24,0.16); transform: rotate(-0.7deg); clip-path: polygon(0 6%, 4% 0, 30% 5%, 52% 0, 74% 6%, 100% 2%, 99% 96%, 72% 100%, 46% 95%, 22% 100%, 2% 96%);">
     <div style="font-family: 'Poppins', sans-serif; font-size: 20px; line-height: 1.5; color: #3A3026; font-weight: 500;">A real human <strong style="font-weight: 700; color: #2C2118;">(me)</strong> opens and checks the jobs before we add them. Active links, roles still open. No AI slop. Just roles I would apply to myself.</div>
   </div>
 
   <!-- CTA row -->
-  <div style="position: absolute; left: 60px; top: 606px; z-index: 23; display: flex; align-items: center; gap: 26px;">
+  <div class="nh-actions" style="position: absolute; left: 60px; top: 606px; z-index: 23; display: flex; align-items: center; gap: 26px;">
     <a href="./jobs.html" class="postit nh-browse" style="--r: -2.5deg;">Browse the board
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#1f1c14" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </a>
     <div id="nh-open-story" class="brklink" style="font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 22px; color: #6F5E45; cursor: pointer; transition: color .15s;">read Nic's story →</div>
   </div>
 
-  <!-- back polaroid (peeking) -->
-  <div class="hoverlift" style="position: absolute; right: 74px; top: 128px; width: 250px; z-index: 14; background: #FBF7EE; padding: 12px 12px 40px; box-shadow: 0 16px 30px rgba(44,33,24,0.24); transform: rotate(7deg);">
-    <div style="width: 100%; height: 300px; overflow: hidden; background: #E8D9C5;"><img id="nh-grad" src="assets/grad-1.jpg" alt="Nic on grad day" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 24%; filter: saturate(1.02) sepia(0.08);"></div>
-    <div style="font-family: 'Indie Flower', cursive; font-size: 14px; color: #6F5E45; text-align: center; margin-top: 8px; line-height: 1.3;">Me on grad day before knowing how HARD the job market would be</div>
-  </div>
+    <div id="nh-bookmark-slot"></div>
+  </section>
+  <section class="nh-photos" aria-label="Explore the board">
+  <button id="nh-grad-open" class="nh-grad-photo" type="button" aria-label="Open Nic's graduation photo">
+    <span class="nh-grad-print"><img id="nh-grad" src="assets/grad-1.jpg" alt="Nic on graduation day"><span>before I knew how hard the job market would be</span></span>
+  </button>
+  <button id="nh-grad-cue" class="nh-grad-cue" type="button" aria-label="Open Nic's graduation photo">me on grad day <span aria-hidden="true">↘</span></button>
 
   <!-- washi tape corners -->
   <div style="position: absolute; right: 452px; top: 150px; width: 108px; height: 30px; background: rgba(232,203,140,0.62); transform: rotate(-24deg); z-index: 19; box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>
   <div style="position: absolute; right: 96px; top: 158px; width: 108px; height: 30px; background: rgba(232,203,140,0.62); transform: rotate(20deg); z-index: 19; box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>
 
   <!-- main polaroid: rotating images -->
-  <div class="hoverlift" style="position: absolute; right: 118px; top: 168px; width: 470px; z-index: 16; background: #FCFAF3; padding: 16px 16px 60px; box-shadow: 0 22px 44px rgba(44,33,24,0.30); transform: rotate(-2.4deg);">
-    <div style="position: relative; width: 100%; height: 468px; overflow: hidden; background: #E8D9C5;">
+  <div class="nh-main-photo" style="position: absolute; right: 118px; top: 168px; width: 470px; z-index: 16; background: #FCFAF3; padding: 16px 16px 60px; box-shadow: 0 22px 44px rgba(44,33,24,0.30); transform: rotate(-2.4deg);">
+    <div class="nh-image-window" style="position: relative; width: 100%; height: 468px; overflow: hidden; background: #E8D9C5;">
       <img src="assets/social-media.png" alt="Social Media roles" class="nh-img" data-idx="0" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 46%; opacity: 1; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.14) contrast(1.02);">
       <img src="assets/cat-copy.png" alt="Copywriting roles" class="nh-img" data-idx="1" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 80%; opacity: 0; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.14) contrast(1.02);">
       <img src="assets/cat-brand.png" alt="Branding roles" class="nh-img" data-idx="2" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 52% 31%; opacity: 0; transition: opacity 0.6s ease; filter: saturate(1.08) sepia(0.14) contrast(1.02);">
@@ -134,6 +124,8 @@
     <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#1f1c14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
   </a>
 
+  </section>
+  <section class="nh-proof" aria-label="From Nic">
   <!-- ============ PROOF BAND ============ -->
   <!-- founder mini card -->
   <div id="nh-founder" class="hoverlift" style="position: absolute; left: 56px; top: 800px; width: 468px; z-index: 20; background: #5C4033; border-radius: 4px; padding: 24px 28px 26px; cursor: pointer; transform: rotate(1.2deg); box-shadow: 3px 8px 20px rgba(44,33,24,0.26);">
@@ -146,7 +138,7 @@
   </div>
 
   <!-- newsletter note -->
-  <div style="position: absolute; left: 916px; top: 800px; width: 468px; z-index: 20;">
+  <div class="nh-newsletter" style="position: absolute; left: 916px; top: 800px; width: 468px; z-index: 20;">
     <div style="position: relative; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 27px, rgba(96,130,170,0.30) 27px 28.5px); background-position: 0 22px; border-radius: 3px; padding: 22px 22px 20px; box-shadow: 3px 8px 20px rgba(44,33,24,0.2); transform: rotate(-1.4deg);">
       <div style="position: absolute; top: 0; left: 22px; bottom: 0; width: 1px; background: rgba(214,80,46,0.4);"></div>
       <div style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(-2.5deg); width: 120px; height: 26px; background: rgba(228,202,128,0.55); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>
@@ -158,8 +150,10 @@
     </div>
   </div>
 
+  </section>
+  <section class="nh-featured-section" aria-label="Featured jobs">
   <!-- ============ FEATURED ROLES ============ -->
-  <div style="position: absolute; left: 60px; top: 1096px; z-index: 20; display: flex; align-items: center; gap: 16px;">
+  <div class="nh-featured-title" style="position: absolute; left: 60px; top: 1096px; z-index: 20; display: flex; align-items: center; gap: 16px;">
     <div style="font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 30px; color: #2C2118;">fresh on the board this week</div>
     <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M3 11 C 20 5, 40 5, 54 10" stroke="#C2552F" stroke-width="3" stroke-linecap="round"></path><path d="M47 5 L56 10 L48 16" stroke="#C2552F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
   </div>
@@ -167,6 +161,8 @@
 
   <div id="nh-featured" style="position: absolute; left: 56px; right: 56px; top: 1148px; z-index: 20; display: flex; gap: 34px;"></div>
 
+  </section>
+</main>
   <!-- About modal -->
   <div id="nh-modal" hidden style="position: absolute; inset: 0; z-index: 100; background: rgba(44,33,24,0.58); display: flex; align-items: center; justify-content: center;">
     <div id="nh-modal-card" style="width: 588px; background: #FCFAF3; border-radius: 5px; overflow: visible; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.8deg); font-family: 'Archivo', sans-serif;">
@@ -220,6 +216,13 @@
     </div>
   </div>
 
+
+<div id="nh-grad-modal" hidden>
+  <div id="nh-grad-dialog" class="nh-grad-dialog">
+    <button id="nh-grad-close" type="button" aria-label="Close graduation photo">✕</button>
+    <img id="nh-grad-full" src="assets/grad-1.jpg" alt="Nic on graduation day">
+    <p>Me on grad day, before I knew how hard the job market would be.</p>
+  </div>
 </div>
 </div>
 
@@ -402,9 +405,12 @@
   <span>&copy; 2026 Elevate Media Technologies LLC</span>
   <a href="./privacy.html">Privacy</a>
   <a href="./terms.html">Terms</a>
+  <a href="./versions.html" data-su-version>Version 2</a>
+  <a href="./suggest.html">Suggest Jobs</a>
 </footer>
 
-<script src="js/home.js?v=nh8" defer></script>
+<script src="js/release.js?v=2" defer></script>
+<script src="js/home.js?v=nh9" defer></script>
   <script>
     /* "Tracker (N)" badge on the static nav post-its — digits in Archivo, 99+ cap */
     (function () {
@@ -424,7 +430,7 @@
     })();
   </script>
   <!-- Google sign-in. Desktop-only on the homepage; hard-gated OFF on stillunemployed.com. -->
-  <script src="js/bookmark.js?v=bm3" defer></script>
-  <script type="module" src="js/auth.js?v=auth7"></script>
+  <script src="js/bookmark.js?v=bm4" defer></script>
+  <script type="module" src="js/auth.js?v=auth8"></script>
 </body>
 </html>

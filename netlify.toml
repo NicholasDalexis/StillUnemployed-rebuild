@@ -11,7 +11,7 @@
   # FIX 2026-08-16: this `command` line sat under [build.environment] (a Jul-13 merge mistake),
   # where Netlify reads it as an env var, NOT a build command — so branch builds silently
   # skipped page generation. It belongs HERE, in [build]. [[2026-07-14-Netlify-Build-Command-Nested-In-Wrong-Table]]
-  command = "node scripts/gen-share.mjs && node scripts/gen-theme-pages.mjs"
+  command = "node scripts/version.mjs --check && node scripts/gen-share.mjs && node scripts/gen-theme-pages.mjs"
 
 # ── Netlify secrets scanning (2026-07-12) ──────────────────────────────────────────────────────
 # Netlify scans the build output for anything that looks like a credential and FAILS THE DEPLOY if

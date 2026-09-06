@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "currentVersion": "2",
+  "releases": [
+    {
+      "version": "2",
+      "date": "2026-09-05",
+      "title": "The new board",
+      "changes": [
+        "Saved jobs and applications sync across devices with Google sign-in.",
+        "Clearer navigation and mobile controls.",
+        "One card per recognized job posting, with existing saved links preserved.",
+        "Search and filter across all 14 job categories.",
+        "A roomier desktop homepage, clearer bookmark shortcut and clickable graduation photo.",
+        "Restored founder notes and clearer Sign In and Signed In labels.",
+        "Suggest Jobs sends links to a private review inbox before any publishing decision.",
+        "Version history now lives beside the homepage footer links."
+      ]
+    }
+  ],
+  "sourceFingerprint": {
+    "algorithm": "sha256-public-source-v1",
+    "digest": "63aea54ce6188643733105b08715210da57a1b2d815549605928e461a1697b84",
+    "fileCount": 100
+  }
+}
