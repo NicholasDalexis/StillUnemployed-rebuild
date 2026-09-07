@@ -89,14 +89,16 @@ function board({search='',saved={},tracker=[],look='original',response,fetchErro
  const window={SUJobIdentity:identityAvailable?identity:undefined,SUThemeArt:artAvailable?themeArt:undefined,innerWidth:390,innerHeight:844,addEventListener(k,f){(windowEvents[k]??=[]).push(f);},matchMedia(){return{matches:true};},open(...args){opened.push(args);},suTrack(...args){tracking.push(args);}};
  if(analyticsAvailable)window.SUAnalytics={choices:()=>({analytics:data.get('su_consent_v3')==='granted',personalization:data.get('su_personalization_v1')==='granted'}),registerJobs(){},job(){},generation:()=>0,profile:()=>({})};
  const location={origin:'https://preview--stillunemployed.netlify.app',hostname:'preview--stillunemployed.netlify.app',pathname:'/jobs.html',search,hash:''};
+ const history={replaceState(_state,_title,value){const url=new URL(value,location.origin);location.pathname=url.pathname;location.search=url.search;location.hash=url.hash;}};
+ window.history=history;
  const fetch=async(url,options)=>{requests.push({url,options});if(fetchError)throw fetchError;return response||{ok:true,status:200,text:async()=>csv([row()])};};
  const quiet={warn(){},debug(){},error(){},log(){}};
- const context={window,document,localStorage,location,fetch,URL,URLSearchParams,Date:Clock,Math,Set,Map,console:quiet,
+ const context={window,document,localStorage,location,history,fetch,URL,URLSearchParams,Date:Clock,Math,Set,Map,console:quiet,
   navigator:{share:async value=>{shared.push(value);}},btoa:s=>Buffer.from(s,'binary').toString('base64'),atob:s=>Buffer.from(s,'base64').toString('binary'),
   setTimeout:(fn,delay)=>{timers.push({fn,delay});return timers.length;},clearTimeout(){},setInterval:()=>0,clearInterval(){},requestAnimationFrame:()=>0,performance:{now:()=>0},getComputedStyle:el=>({visibility:el.style.visibility||'visible'})};
  const instrumented=source.replace('window.SUApp = App;','window.SUApp = App; window.boardHelpers = {parseCSV, rowsToJobs, deriveState, suShareJob};');
  assert.notEqual(instrumented,source,'debug export hook is present');vm.runInNewContext(instrumented,context,{filename:'js/app.js'});
- return{app:window.SUApp,helpers:window.boardHelpers,grid,overlay,document,window,localStorage,storageOps,tracking,requests,opened,shared,fire,fireWindow,runTimers(delay){for(const timer of timers.filter(t=>t.delay===delay))timer.fn();},
+ return{app:window.SUApp,helpers:window.boardHelpers,grid,overlay,document,window,location,history,localStorage,storageOps,tracking,requests,opened,shared,fire,fireWindow,runTimers(delay){for(const timer of timers.filter(t=>t.delay===delay))timer.fn();},
   scrollPastCards(count){grid.querySelectorAll('.note[data-act="openJob"]').forEach((card,i)=>{card.rect={bottom:i<count?-1:240};});now+=300;fireWindow('scroll');},
   consent(analytics,personalization=false){localStorage.setItem('su_consent_v3',analytics?'granted':'denied');localStorage.setItem('su_personalization_v1',personalization?'granted':'denied');fireWindow('su:consent-changed');},
   init(jobs=[job()]){window.SUApp.init(jobs);},async boot(){for(const f of events.DOMContentLoaded||[])f();await tick();await tick();}};
@@ -433,4 +435,10 @@ test('named 44px native vote buttons send each theme and direction exactly once,
   assert.deepEqual(votes(b),[['themevote',look,direction,'']],'duplicate or queued clicks do not send another vote');
   b.fireWindow('su:consent-changed');b.scrollPastCards(12);assert.equal(voteBox(b),null,'a shown theme stays suppressed after rerendering');
  }
+});
+
+test('ordinary job theme changes retain the established shareable routes',()=>{
+ const b=board();b.init();b.location.hash='#saved';
+ b.app.setLook('poker');assert.equal(b.location.pathname,'/jobs/casino');assert.equal(b.location.hash,'#saved');
+ b.app.setLook('original');assert.equal(b.location.pathname,'/jobs');assert.equal(b.location.hash,'#saved');
 });

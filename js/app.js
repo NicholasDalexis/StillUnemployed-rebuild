@@ -1455,6 +1455,13 @@
       try {
         var slug = { poker:'casino', girly:'girlies', mermaid:'mermaid', bratt:'bratt', noir:'blackcat', beauty:'beauty', chess:'chess' }[look];
         var newPath = slug ? ('/jobs/' + slug) : '/jobs';
+        if (INTERNSHIPS) {
+          // Internship links use the existing query-theme bootstrap. Keep the
+          // section, shared listing and other query values intact on refresh.
+          var params = new URLSearchParams(location.search);
+          params.set('theme', look);
+          newPath = location.pathname + '?' + params.toString();
+        }
         if (window.history && history.replaceState) history.replaceState(null, '', newPath + (location.hash || ''));
       } catch (e) {}
       this.setState({ look: look, lookOpen: false });

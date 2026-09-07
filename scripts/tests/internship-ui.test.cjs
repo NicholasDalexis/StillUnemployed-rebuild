@@ -329,3 +329,31 @@ test('compact internship dialogs retain keyboard containment and outside-click d
   backdrop.click();assert.equal(b.overlay.querySelector('[role="dialog"]'),null);
   assert.equal(b.app.state.detailOpen,false);
 });
+
+test('changing any internship theme preserves the section and shared listing through reload', () => {
+  for (const pathname of ['/internships', '/internships.html']) {
+    for (const look of ['original','poker','beauty','girly','mermaid','bratt','noir','chess']) {
+      const jobToken = 'abc+/==';
+      const b = ui([listing()], { search:'?job='+encodeURIComponent(jobToken)+'&theme=beauty&theme=chess&ref=board' });
+      b.location.pathname = pathname;b.location.hash = '#saved';
+      b.app.setLook(look);
+      const query = new URLSearchParams(b.location.search);
+      assert.equal(b.location.pathname,pathname);
+      assert.equal(b.location.hash,'#saved');
+      assert.equal(query.get('job'),jobToken);
+      assert.equal(query.get('ref'),'board');
+      assert.deepEqual(query.getAll('theme'),[look]);
+      const reloaded = ui([listing()], { search:b.location.search, look:look==='beauty'?'poker':'beauty' });
+      assert.equal(reloaded.app.state.look,look);
+      assert.equal(reloaded.app.internships,true);
+    }
+  }
+});
+
+test('an unavailable history API does not prevent internship theme changes', () => {
+  const b=ui([listing()]);
+  b.history.replaceState=()=>{throw new Error('history unavailable');};
+  assert.doesNotThrow(()=>b.app.setLook('poker'));
+  assert.equal(b.app.state.look,'poker');
+  assert.equal(b.localStorage.getItem('su_look'),'poker');
+});

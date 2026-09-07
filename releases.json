@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.2.7",
+  "currentVersion": "2.2.8",
   "releases": [
+    {
+      "version": "2.2.8",
+      "date": "2026-09-06",
+      "title": "Keep your place when changing themes",
+      "changes": [
+        "Changing an internship theme keeps you on Internships when you refresh or share the address."
+      ]
+    },
     {
       "version": "2.2.7",
       "date": "2026-09-06",
@@ -193,7 +201,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "71a179a72d4aeb371986e87279f2daf37645771f67cbe84481cf20830a9ea503",
+    "digest": "5764dc37f4dbf59d4dbfe6fb127ddeb110d2590f2776d595e85985dda4e04b1f",
     "fileCount": 137
   }
 }
