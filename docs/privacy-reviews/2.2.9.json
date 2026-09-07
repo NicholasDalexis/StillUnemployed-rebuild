@@ -1,23 +1,22 @@
 {
-  "version": "2.3.0",
+  "version": "2.2.9",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-07T02:38:51.978Z",
+  "reviewedAt": "2026-09-07T02:13:55.980Z",
   "reviewer": "Codex/Astra with independent analytics, SEO and account-isolation reviewers",
-  "sourceDigest": "d366d565e2002f8a8f24740a5624e6c910c7e0b9b7e5879ff8a3d8ca9122e54d",
+  "sourceDigest": "3ec3d06541c8a1da2168f8fe0e35b1424997283d28e5ed9600892d88da9baca3",
   "sourceFileCount": 143,
-  "privacyChanged": false,
-  "termsChanged": false,
-  "scope": "Follow-through on the already disclosed 30-minute account-scoped tab view: clear filters only on a real owner change, prevent stale-owner pagehide writes, preserve same-owner auth and failed-feed retry. Background refresh preserves navigation and inputs until authoritative data resolves. No new collection, destination, permission or retention change.",
+  "privacyChanged": true,
+  "termsChanged": true,
+  "scope": "Count-only optional action/failure events; separate Google Preferred Sources link; 30-minute owner-scoped tab view memory; stronger local-write/account recovery; public methodology and crawl metadata. No catalog cache, account scopes, sourcing changes or deployed job-detail route.",
   "checks": {
-    "integratedTests": 541,
+    "integratedTests": 534,
     "analytics": "48 client/service/HTTP/dashboard checks: count-only payload stripping, consent/GPC/withdrawal/owner isolation, synthetic aggregate readback; no live writes.",
     "recovery": "10 app/runtime tests: write-failure visibility, intended-save retry races, refreshed availability, timeout/dedup and view TTL/ownership.",
     "sync": "132 independent integrated checks; stale callbacks and token isolation, storage rollback, retained drafts and honest auth results.",
     "seo": "16 checks,4138 isolated HTML finalizations,7-page sitemap, raw/private paths excluded. Future renderer has no hosted route and was tested with synthetic availability authority only.",
-    "browser": "Native local Jobs to Tracker and back navigates and restores the design search (98 of 486); no Retry save displayed on a healthy empty Tracker. Previous 320px and 1440px layout evidence retained. No authenticated account switch or live collector write.",
-    "viewOwnership": "77 focused account/runtime checks and 6 recovery checks, including refresh-start DOM identity until response settles."
+    "browser": "Native local feedback and methodology at actual320px and1440px widths without horizontal overflow. Preferred Sources remains separate from Sign In; no Google preference selected."
   },
-  "baselineReview": "docs/privacy-reviews/2.2.9.json",
+  "baselineReview": "docs/privacy-reviews/2.2.8.json",
   "openItems": [
     "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
     "Function-scoped Firebase and Netlify configuration and actual owner UID",
@@ -33,5 +32,5 @@
     "Search Console domain property Not verified; Bing has no existing IAB session",
     "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive"
   ],
-  "policySummary": "Re-read the relevant account, tab storage, analytics and external-link disclosures. The fix enforces the existing owner-clearing description; no policy text or data flow expansion. Engineering review, not legal certification."
+  "policySummary": "Privacy and Terms describe the separate optional Google destination and count-only failure/action collection. Privacy describes necessary30-minute tab view storage, owner clearing and no query text in analytics. Selected-state and employer completion are never inferred. This review is engineering evidence, not legal certification."
 }

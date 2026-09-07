@@ -65,3 +65,21 @@ test('refresh failure clears unverified catalog, retains filters, and a retry re
  const retry=b.grid.querySelector('[data-act="retryJobs"]');assert(retry);fail=false;retry.click();await tick();await tick();
  assert.equal(b.requests.length,3);assert.equal(b.app.jobs.length,1);assert.equal(b.app._loadError,false);assert.equal(b.app.state.cat,'Social');
 });
+
+test('starting a background refresh preserves the live navigation and focused search until the response settles',async()=>{
+ let hold=false,finish;
+ const b=board({response:{ok:true,text:()=>hold?new Promise(resolve=>{finish=resolve;}):Promise.resolve(csv([row()]))}});
+ await b.boot();
+ const nav=b.grid.querySelector('.su-main-nav'),tracker=nav.querySelector('a[href="./tracker.html"]'),search=b.document.getElementById('su-search');
+ assert(tracker);search.focus();const writes=b.grid.writes;
+ hold=true;b.advance(61000);b.fireWindow('focus');
+ assert.equal(b.grid.writes,writes,'refresh start cannot replace a pointer or keyboard navigation target');
+ assert.equal(b.grid.querySelector('.su-main-nav'),nav);assert.equal(nav.querySelector('a[href="./tracker.html"]'),tracker);assert.equal(tracker.isConnected,true);
+ assert.equal(b.document.activeElement,search);
+ const progress=b.document.getElementById('su-feed-progress');assert(progress);assert.equal(progress.hidden,false);assert.equal(progress.getAttribute('role'),'status');
+ await tick();assert.equal(typeof finish,'function');assert.equal(b.grid.writes,writes,'navigation remains stable throughout the pending request');
+ finish(csv([row({Company:'Fresh employer'})]));await tick();await tick();
+ assert.equal(b.app.jobs[0].co,'Fresh employer');assert.equal(b.app._refreshing,false);
+ assert.notEqual(b.grid.querySelector('.su-main-nav'),nav,'the authoritative response may update the board');
+ assert.notEqual(b.document.getElementById('su-feed-progress').getAttribute('hidden'),null);
+});

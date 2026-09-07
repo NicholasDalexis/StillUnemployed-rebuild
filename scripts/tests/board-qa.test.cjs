@@ -95,10 +95,10 @@ function board({search='',saved={},tracker=[],look='original',response,fetchErro
  const quiet={warn(){},debug(){},error(){},log(){}};
  const context={window,document,localStorage,location,history,fetch,URL,URLSearchParams,Date:Clock,Math,Set,Map,console:quiet,
   navigator:{share:async value=>{shared.push(value);}},btoa:s=>Buffer.from(s,'binary').toString('base64'),atob:s=>Buffer.from(s,'base64').toString('binary'),
-  setTimeout:(fn,delay)=>{timers.push({fn,delay});return timers.length;},clearTimeout(){},setInterval:()=>0,clearInterval(){},requestAnimationFrame:()=>0,performance:{now:()=>0},getComputedStyle:el=>({visibility:el.style.visibility||'visible'})};
+  setTimeout:(fn,delay)=>{timers.push({fn,delay});return timers.length;},clearTimeout(id){if(timers[id-1])timers[id-1].cancelled=true;},setInterval:()=>0,clearInterval(){},requestAnimationFrame:()=>0,performance:{now:()=>0},getComputedStyle:el=>({visibility:el.style.visibility||'visible'})};
  const instrumented=source.replace('window.SUApp = App;','window.SUApp = App; window.boardHelpers = {parseCSV, rowsToJobs, deriveState, suShareJob};');
  assert.notEqual(instrumented,source,'debug export hook is present');vm.runInNewContext(instrumented,context,{filename:'js/app.js'});
- return{app:window.SUApp,helpers:window.boardHelpers,grid,overlay,document,window,location,history,localStorage,storageOps,tracking,requests,opened,shared,fire,fireWindow,runTimers(delay){for(const timer of timers.filter(t=>t.delay===delay))timer.fn();},
+ return{app:window.SUApp,helpers:window.boardHelpers,grid,overlay,document,window,location,history,localStorage,storageOps,tracking,requests,opened,shared,fire,fireWindow,runTimers(delay){for(const timer of timers.filter(t=>t.delay===delay&&!t.cancelled))timer.fn();},
   scrollPastCards(count){grid.querySelectorAll('.note[data-act="openJob"]').forEach((card,i)=>{card.rect={bottom:i<count?-1:240};});now+=300;fireWindow('scroll');},
   consent(analytics,personalization=false){localStorage.setItem('su_consent_v3',analytics?'granted':'denied');localStorage.setItem('su_personalization_v1',personalization?'granted':'denied');fireWindow('su:consent-changed');},
   init(jobs=[job()]){window.SUApp.init(jobs);},async boot(){for(const f of events.DOMContentLoaded||[])f();await tick();await tick();}};
@@ -441,4 +441,50 @@ test('ordinary job theme changes retain the established shareable routes',()=>{
  const b=board();b.init();b.location.hash='#saved';
  b.app.setLook('poker');assert.equal(b.location.pathname,'/jobs/casino');assert.equal(b.location.hash,'#saved');
  b.app.setLook('original');assert.equal(b.location.pathname,'/jobs');assert.equal(b.location.hash,'#saved');
+});
+
+function viewBoard(options={}) {
+ const b=board(options),session=options.session||new Map();b.localStorage.setItem('su_sync_owner',JSON.stringify(options.owner||'alice'));
+ b.window.localStorage=b.localStorage;b.window.sessionStorage={getItem:key=>session.get(key)??null,setItem:(key,value)=>session.set(key,String(value)),removeItem:key=>session.delete(key)};
+ b.window.setTimeout=setTimeout;b.window.clearTimeout=clearTimeout;b.window.scrollY=456;
+ const scrolls=[];b.window.scrollTo=(_x,y)=>scrolls.push(y);
+ b.window.SUBoardRuntime=require('../../js/board-runtime.js')(b.window);
+ return{...b,session,runtime:b.window.SUBoardRuntime,scrolls};
+}
+const restoredView={q:'design',cat:'Social',ws:'Remote',pr:'$100K+',st:'ny',fr:'Full-time',savedOnly:true};
+const defaultView={q:'',cat:'all',ws:'Any',pr:'Any',st:'all',fr:'Any',savedOnly:false};
+function viewFields(state){return Object.fromEntries(Object.keys(defaultView).map(key=>[key,state[key]]));}
+
+test('same-owner auth before or after the feed preserves filters for a Tracker round trip',async()=>{
+ const b=viewBoard();b.runtime.save('jobs',restoredView);const pending=b.boot();b.fireWindow('su:auth-changed',{detail:{accountChanged:false}});await pending;
+ assert.deepEqual(viewFields(b.app.state),restoredView);b.fireWindow('su:auth-changed',{detail:{accountChanged:false}});
+ assert.deepEqual(viewFields(b.app.state),restoredView);assert.equal(b.runtime.read('jobs').state.q,'design');b.fireWindow('pagehide');
+ const returned=viewBoard({session:b.session});await returned.boot();returned.fireWindow('su:auth-changed',{detail:{accountChanged:false}});
+ assert.deepEqual(viewFields(returned.app.state),restoredView);returned.runTimers(0);assert.deepEqual(returned.scrolls,[456]);
+});
+
+test('a real owner change resets only view fields and cannot save the prior query into the new account',async()=>{
+ const b=viewBoard();b.runtime.save('jobs',restoredView);await b.boot();b.app.state.look='poker';b.app.state.theme='marketing';
+ const old=b.session.get('su_view_jobs');b.localStorage.setItem('su_sync_owner','"bob"');b.fireWindow('pagehide');
+ assert.equal(b.session.get('su_view_jobs'),old,'pending callback does not relabel the old receipt');
+ b.fireWindow('su:auth-changed',{detail:{accountChanged:false}});
+ assert.deepEqual(viewFields(b.app.state),defaultView);assert.equal(b.app.state.look,'poker');assert.equal(b.app.state.theme,'marketing');assert.equal(b.runtime.read('jobs'),null);
+ b.runTimers(0);assert.deepEqual(b.scrolls,[],'an old queued scroll cannot run after an owner change');
+ b.fireWindow('pagehide');assert.equal(JSON.parse(b.session.get('su_view_jobs')).owner,'"bob"');assert.equal(b.runtime.read('jobs').state.q,'');
+});
+
+test('cross-tab logout cancels the prior account search debounce and resets filters',async()=>{
+ const b=viewBoard();await b.boot();const input=b.document.getElementById('su-search');input.value='Alice unfinished search';b.fire('input',input);
+ b.app.state.savedOnly=true;b.localStorage.setItem('su_sync_owner','null');b.fireWindow('storage',{key:'su_sync_owner'});b.runTimers(140);
+ assert.deepEqual(viewFields(b.app.state),defaultView);b.fireWindow('pagehide');assert.equal(b.runtime.read('jobs').state.q,'');
+});
+
+test('same-owner view survives an initial feed failure and explicit URL state still takes precedence',async()=>{
+ const failed=viewBoard({fetchError:Error('offline')});failed.runtime.save('jobs',restoredView);await failed.boot();failed.fireWindow('su:auth-changed');
+ assert.equal(failed.app._loadError,true);assert.deepEqual(viewFields(failed.app.state),restoredView);assert.equal(failed.runtime.read('jobs').state.q,'design');
+ for(const address of [{search:'?theme=poker'},{hash:'#shared-role'}]){
+  const b=viewBoard({search:address.search||''});b.location.hash=address.hash||'';b.runtime.save('jobs',restoredView);await b.boot();b.fireWindow('su:auth-changed');
+  assert.deepEqual(viewFields(b.app.state),defaultView);assert.equal(b.location.search,address.search||'');assert.equal(b.location.hash,address.hash||'');
+  if(address.search)assert.equal(b.app.state.theme,'poker');
+ }
 });

@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.2.9",
+  "currentVersion": "2.3.0",
   "releases": [
+    {
+      "version": "2.3.0",
+      "date": "2026-09-06",
+      "title": "Keep each account’s place its own",
+      "changes": [
+        "Remember your filters during a short visit and clear them when accounts change. A background refresh keeps navigation in place while current roles are checked."
+      ]
+    },
     {
       "version": "2.2.9",
       "date": "2026-09-06",
@@ -209,7 +217,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "3ec3d06541c8a1da2168f8fe0e35b1424997283d28e5ed9600892d88da9baca3",
+    "digest": "d366d565e2002f8a8f24740a5624e6c910c7e0b9b7e5879ff8a3d8ca9122e54d",
     "fileCount": 143
   }
 }

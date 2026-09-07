@@ -37,7 +37,7 @@ test('failed reads release their key for recovery and storage failure never bloc
  assert.equal(h.api.read('jobs'),null);assert.doesNotThrow(()=>h.api.save('jobs',{q:'designer'}));assert.doesNotThrow(()=>h.api.clear());
 });
 test('tab view restoration is bounded, owner-specific, expires and never contains a job catalog',()=>{
- const h=harness();h.local.set('su_sync_owner','"alice"');
+ const h=harness();h.local.set('su_sync_owner','"alice"');h.api.checkOwner();
  h.api.save('jobs',{q:'designer',cat:'Social',ws:'Remote',pr:'Any',st:'all',fr:'Any',savedOnly:true,jobs:[{private:'snapshot'}],notes:'private notes'});
  let restored=h.api.read('jobs');assert.equal(restored.state.q,'designer');assert.equal(restored.state.savedOnly,true);assert.equal(restored.y,456);
  assert.doesNotMatch(h.session.get('su_view_jobs'),/snapshot|private|notes/);
@@ -53,4 +53,22 @@ test('malformed timestamps, future receipts and invalid view fields cannot evade
  }
  h.session.set('su_view_jobs',JSON.stringify({...base,state:{q:'x'.repeat(201),savedOnly:'true',cat:12},y:1e9}));
  const out=h.api.read('jobs');assert.deepEqual(Object.keys(out.state),[]);assert.equal(out.y,100000);
+});
+
+test('same-owner bootstrap preserves view receipts while actual identity changes invalidate only board views',()=>{
+ const h=harness();h.api.save('jobs',{q:'design'});h.api.save('internships',{q:'summer'});h.session.set('unrelated','kept');
+ const before=h.session.get('su_view_jobs');assert.equal(h.api.checkOwner(),false);assert.equal(h.session.get('su_view_jobs'),before);
+ for(const owner of ['"alice"','"bob"','null']){
+  h.local.set('su_sync_owner',owner);assert.equal(h.api.checkOwner(),true);assert.equal(h.api.read('jobs'),null);assert.equal(h.api.read('internships'),null);
+  assert.equal(h.session.get('unrelated'),'kept');assert.equal(h.api.checkOwner(),false);
+  h.api.save('jobs',{q:'current owner'});h.api.save('internships',{q:'current owner'});assert.equal(h.api.read('jobs').state.q,'current owner');
+ }
+});
+
+test('pagehide cannot relabel old filters to a new owner before its auth or storage callback',()=>{
+ const h=harness();h.api.save('jobs',{q:'guest private query'});const before=h.session.get('su_view_jobs');
+ h.local.set('su_sync_owner','"alice"');h.api.save('jobs',{q:'guest private query'});
+ assert.equal(h.session.get('su_view_jobs'),before);assert.equal(h.api.read('jobs'),null);
+ assert.equal(h.api.checkOwner(),true);assert.equal(h.session.has('su_view_jobs'),false);
+ h.api.save('jobs',{q:''});assert.equal(JSON.parse(h.session.get('su_view_jobs')).owner,'"alice"');assert.equal(h.api.read('jobs').state.q,'');
 });

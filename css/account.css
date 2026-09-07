@@ -49,3 +49,4 @@
 #trk-sync-feedback{font:14px/1.5 var(--su-body,Archivo,sans-serif);margin:10px 0}
 #trk-sync-feedback:empty{display:none}.trk-unsaved-note{padding:18px;background:var(--su-paper,#FCFAF3);color:var(--su-ink,#2A2118);border-left:3px solid var(--su-orange-text,#A63D20);margin:16px 0;font:16px/1.5 var(--su-body,Archivo,sans-serif)}
 .trk-unsaved-note textarea{display:block;box-sizing:border-box;width:100%;min-height:90px;font:inherit;padding:10px;background:transparent;color:inherit;border:1px solid #bcae98}.trk-unsaved-note button{min-height:44px;font:inherit;color:inherit;background:transparent;border:0;text-decoration:underline;cursor:pointer}
+#trk-sync-retry[hidden],#su-preference-retry[hidden]{display:none}

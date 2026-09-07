@@ -2139,7 +2139,7 @@
         '<div style="margin-left: auto; font-family: \'Indie Flower\', cursive; font-size: 18px; color: ' + showInk + ';">' + esc(showingLabel) + '</div>' +
       '</div>';
 
-      if(this._refreshing) out += '<p class="su-feed-status" role="status">Checking the latest roles…</p>';
+      out += '<p id="su-feed-progress" class="su-feed-status" role="status"'+(this._refreshing?'':' hidden')+'>Checking the latest roles…</p>';
       if(this._actionError) out += '<div class="su-action-error" role="status">'+esc(this._actionError)+' <button type="button" data-act="retrySave">Try again</button></div>';
 
       // saved section title
@@ -2994,7 +2994,7 @@
         if (trackerTab) trackerTab.innerHTML = 'Tracker' + suTrkBadge();
       });
       window.addEventListener('su:data-sync', function () { self.state.saved = loadSaved(); self.render(); });
-      window.addEventListener('storage', function (e) { if (e.key === 'su_saved_jobs' || e.key === 'su_tracker' || e.key === 'su_sync_owner') { self.state.saved = loadSaved(); self.render(); } });
+      window.addEventListener('storage', function (e) { if (e.key === 'su_saved_jobs' || e.key === 'su_tracker' || e.key === 'su_sync_owner') { if(e.key==='su_sync_owner')checkViewOwner();self.state.saved = loadSaved(); self.render(); } });
       this.state.saved = loadSaved();
       this.internships = INTERNSHIPS;
       this.jobs = INTERNSHIPS ? uniqueJobs(jobs) : this.shuffleFresh(uniqueJobs(jobs));
@@ -3002,7 +3002,7 @@
       if(window.SUAnalytics)window.SUAnalytics.registerJobs(this.jobs);
       window.addEventListener('su:profile-ready',function(event){if(event.detail&&event.detail.reset){self._personalOrder=null;self._profileGeneration=-1;self._feedInteracted=false;}if(!self._feedInteracted)self.render();});
       document.addEventListener('pointerdown',function(){self._feedInteracted=true;},{once:true});
-      window.addEventListener('su:auth-changed',function(){if(window.SUBoardRuntime)window.SUBoardRuntime.clear();self.state.saved=loadSaved();self._actionError='';self._retrySaveLink=null;self._profileGeneration=-1;self._feedInteracted=false;self.render();});
+      window.addEventListener('su:auth-changed',function(){checkViewOwner();self.state.saved=loadSaved();self._actionError='';self._retrySaveLink=null;self._profileGeneration=-1;self._feedInteracted=false;self.render();});
       window.addEventListener('su:consent-changed',function(){armThemeVote(self.state.look);self._profileGeneration=-1;self._feedInteracted=false;self.render();});
       this.bindEvents();
       this.restoreFeedbackRedirect();
@@ -3164,6 +3164,21 @@
   }
 
   var feedRequest=null, lastFeedCheck=0, firstFeed=true;
+  function checkViewOwner(){
+    var runtime=window.SUBoardRuntime;
+    if(!runtime||!runtime.checkOwner||!runtime.checkOwner())return false;
+    clearTimeout(App._renderTimer);App._renderTimer=null;
+    Object.assign(App.state,{q:'',cat:'all',ws:'Any',pr:'Any',st:'all',fr:'Any',savedOnly:false});
+    App._personalOrder=null;App._profileGeneration=-1;App._feedInteracted=false;
+    return true;
+  }
+  function restoreView(runtime,initial){
+    checkViewOwner();
+    if(!initial||!runtime||location.search||location.hash)return null;
+    var restored=runtime.read(INTERNSHIPS?'internships':'jobs');
+    if(restored)Object.assign(App.state,restored.state);
+    return restored;
+  }
   function loadFeed(signal) {
     if(INTERNSHIPS){
       var localPreview=['localhost','127.0.0.1','[::1]'].includes(location.hostname)||location.protocol==='file:';
@@ -3194,16 +3209,16 @@
   function refreshFeed(){
     if(feedRequest)return feedRequest;
     var initial=firstFeed, loadingTimer=initial?setTimeout(loadingNote,150):null;
-    if(!initial){App._refreshing=true;App.render();uxEvent('feed_refresh');}
+    if(!initial){App._refreshing=true;var progress=document.getElementById('su-feed-progress');if(progress)progress.hidden=false;uxEvent('feed_refresh');}
     var runtime=window.SUBoardRuntime;
     feedRequest=(runtime?runtime.request(INTERNSHIPS?'internships':'jobs',loadFeed):loadFeed()).then(function(jobs){
       App._loadError=false;App._refreshing=false;lastFeedCheck=Date.now();
-      var restored=null;
-      if(initial && runtime && !location.search && !location.hash){restored=runtime.read(INTERNSHIPS?'internships':'jobs');if(restored)Object.assign(App.state,restored.state);}
+      var restored=restoreView(runtime,initial);
       App.init(jobs);uxEvent('feed_ready');
-      if(restored){uxEvent('view_restored');setTimeout(function(){if(window.scrollTo)window.scrollTo(0,restored.y);},0);}
+      if(restored){uxEvent('view_restored');setTimeout(function(){if(runtime.read(INTERNSHIPS?'internships':'jobs')&&window.scrollTo)window.scrollTo(0,restored.y);},0);}
     }).catch(function(){
       App._loadError=true;App._refreshing=false;lastFeedCheck=Date.now();
+      restoreView(runtime,initial);
       // Unknown availability never revives a static catalog. Filters and account state remain.
       App.init([]);uxEvent('feed_load_error');
     }).finally(function(){if(loadingTimer)clearTimeout(loadingTimer);firstFeed=false;feedRequest=null;});
@@ -3211,7 +3226,8 @@
   }
   function boot(){
     refreshFeed();
-    window.addEventListener('storage',function(e){if(e.key==='su_sync_owner' && window.SUBoardRuntime)window.SUBoardRuntime.clear();});
+    window.addEventListener('su:auth-changed',checkViewOwner);
+    window.addEventListener('storage',function(e){if(e.key==='su_sync_owner')checkViewOwner();});
     window.addEventListener('pagehide',function(){if(window.SUBoardRuntime)window.SUBoardRuntime.save(INTERNSHIPS?'internships':'jobs',App.state);});
     function recheck(){if(!firstFeed && !document.hidden && Date.now()-lastFeedCheck>=60000)refreshFeed();}
     window.addEventListener('focus',recheck);
