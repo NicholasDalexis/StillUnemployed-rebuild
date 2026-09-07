@@ -32,30 +32,28 @@
   function internshipState(job) {
     return window.SUInternships ? window.SUInternships.applicationState(job) : 'needs_recheck';
   }
-  function internshipStatus(job) {
-    return {accepting:'Accepting applications',upcoming:'Upcoming',needs_recheck:'Application status unconfirmed'}[internshipState(job)];
-  }
   function internshipPay(job) {
     return window.SUInternships ? window.SUInternships.payLabel(job) : 'Pay not disclosed';
   }
   function internshipCanApply(job) {
     return !!(window.SUInternships && window.SUInternships.canApply(job));
   }
-  function internshipTiming(job, compact) {
-    var state = internshipState(job), facts = [];
-    if (state !== 'accepting') facts.push(['Applications open',job.applicationsOpen || 'Not announced']);
-    if (job.startDate) facts.push(['Start date',job.startDate]);
-    if (!compact && job.deadline) facts.push(['Deadline',job.deadline]);
-    return facts.map(function (pair) { return '<div><strong>' + esc(pair[0]) + ':</strong> ' + esc(pair[1]) + '</div>'; }).join('');
+  function internshipLocation(job) {
+    return window.SUInternships && window.SUInternships.locationLabel ? window.SUInternships.locationLabel(job) : String(job.loc || '');
   }
-  function internshipDetails(job) {
-    var flags = Array.isArray(job.eligibilityFlags) ? job.eligibilityFlags.filter(function (flag) {return flag !== job.eligibility;}) : [];
-    if (flags.join('\n') === String(job.eligibility || '').trim()) flags = [];
-    var credit = {required:'College credit required',available:'College credit available',school_approval_required:'College credit requires school approval',not_offered:'College credit not offered',not_listed:'College credit not listed'}[job.collegeCredit] || 'College credit not listed';
-    var benefits = Array.isArray(job.benefits) ? job.benefits : [];
-    return '<section class="su-internship-details"><h3>Before you apply</h3><p>' + esc(job.eligibility || 'Eligibility not listed') + '</p>' + (flags.length ? '<ul>' + flags.map(function (flag) {return '<li>' + esc(flag) + '</li>';}).join('') + '</ul>' : '') +
-      '<p>' + esc(credit) + '</p>' + (benefits.length ? '<h3>Benefits</h3><ul>' + benefits.map(function (benefit) {return '<li>' + esc(benefit) + '</li>';}).join('') + '</ul>' : '') +
-      (job.cycle ? '<p><strong>Cycle:</strong> ' + esc(job.cycle) + '</p>' : '') + '</section>';
+  function internshipBullets(job) {
+    return window.SUInternships && window.SUInternships.detailBullets ? window.SUInternships.detailBullets(job) : (Array.isArray(job.duties) ? job.duties.slice(0,3) : []);
+  }
+  // Internship paper is decorative: keep a stable 60/25/15 mix for the same
+  // canonical posting, independent of pay, sorting, filtering or active theme.
+  // Full-time job cards continue to use their salary tier below.
+  function internshipSurface(job) {
+    var keys = window.SUJobIdentity ? window.SUJobIdentity.keys(job.link) : [];
+    var key = keys[0] || String(job.link || ''), hash = 2166136261;
+    for (var index = 0; index < key.length; index++) hash = Math.imul(hash ^ key.charCodeAt(index), 16777619);
+    hash ^= hash >>> 16; hash = Math.imul(hash, 0x85ebca6b); hash ^= hash >>> 13;
+    var bucket = (hash >>> 0) % 100;
+    return bucket < 60 ? 'high' : bucket < 85 ? 'mid' : 'low';
   }
   // escape for use inside a single-quoted JS string in an inline handler
   var jsAttr = function (s) {
@@ -1791,7 +1789,7 @@
         j._pos = k;
         var key = j.link;
         var saved = self.isSaved(key);
-        var tier = j.internship ? 'low' : self.payTier(j.pay);
+        var tier = j.internship ? internshipSurface(j) : self.payTier(j.pay);
         var rot = rots[k % rots.length];
         // high-pay cards take their ink/bg/apply/stamp from the active theme palette;
         // poker/mermaid also override the sub-$100K cards (white playing card / pearl)
@@ -1801,10 +1799,12 @@
           : tier === 'mid'
           ? (P.midCard || 'var(--su-salary-mid-paper)')
           : P.hiCard;
-        if (j.internship) bg = P.lowCard || 'var(--su-paper)';
         var applyColor = (tier === 'high') ? P.hiApply : (tier === 'mid' && P.midApply) ? P.midApply : (P.baseApply || 'var(--su-orange-on-card)');
+        // These small action labels need the stronger matching ink on paper
+        // variants where the theme's decorative accent has low contrast.
+        if(j.internship && (mermaid || (bratt && tier === 'mid') || (beauty && tier !== 'high')))applyColor=ink;
         var stampColor = (tier === 'high') ? P.hiStamp : (tier === 'mid' && P.midStamp) ? P.midStamp : (P.baseStamp || '#3A2A1B');
-        var gStamp = (tier === 'high') ? '#FFFFFF' : '#C24A78'; // girly heart-stamp color
+        var gStamp = j.internship ? ink : (tier === 'high') ? '#FFFFFF' : '#C24A78'; // girly heart-stamp color
         var hasNote = !!noteFor[k];
         var slot = k % 6;
         var pin = !hasNote && slot === 0;
@@ -1819,14 +1819,14 @@
         var noteState = self.state.openNotes[id]; // undefined | 'open' | 'closing' | 'done'
         var isOpening = (noteState === 'open' || noteState === 'closing');
 
-        var metaTop = [j.loc, j.style, (!j.internship && j.exp && j.exp !== 'See posting' ? j.exp : null)].filter(Boolean).join('  ·  ');
+        var metaTop = j.internship ? internshipLocation(j) : [j.loc, j.style, (j.exp && j.exp !== 'See posting' ? j.exp : null)].filter(Boolean).join('  ·  ');
 
         var noteStyle = '--rot:' + rot + 'deg; cursor:pointer; position:relative; background:' + bg +
           '; color:' + ink + '; border-radius:3px; padding:30px 24px 22px; box-sizing:border-box; display:flex; ' +
           'flex-direction:column; min-height:238px;' + (isOpening ? ' position:relative; z-index:60;' : '');
 
-        var bmColor = girly && !j.internship ? (saved ? '#FFFFFF' : 'none') : (saved ? '#D8502E' : 'none');
-        var bmStroke = girly && !j.internship ? '#FFFFFF' : (saved ? '#D8502E' : ink);
+        var bmColor = j.internship ? (saved ? ink : 'none') : girly ? (saved ? '#FFFFFF' : 'none') : (saved ? '#D8502E' : 'none');
+        var bmStroke = j.internship ? ink : girly ? '#FFFFFF' : (saved ? '#D8502E' : ink);
 
         var showEnvelope = hasNote && !noteState;
         var noteOpen = hasNote && (noteState === 'open' || noteState === 'closing');
@@ -1854,7 +1854,7 @@
           ' 58%); box-shadow:0 3px 5px rgba(0,0,0,.32); z-index:3;';
 
         // -- build the card HTML (mirrors the template's sc-if branches) --
-        var html = '<div class="note' + (k === 0 ? ' note-first' : '') + '" data-act="openJob" data-id="' + id + '" data-link="' + esc(j.link) + '" data-co="' + esc(j.co) + '" style="' + noteStyle + '">';
+        var html = '<div class="note' + (j.internship ? ' su-internship-card' : '') + (k === 0 ? ' note-first' : '') + '" data-act="openJob" data-id="' + id + '" data-link="' + esc(j.link) + '" data-co="' + esc(j.co) + '" style="' + noteStyle + '">';
 
         // envelope ("open" tab)
         if (showEnvelope) {
@@ -1903,8 +1903,7 @@
           '<div class="card-role" title="' + esc(j.role) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16.5px; margin-top: 9px; line-height: 1.3;">' + esc(j.role) + '</div>' +
           '<div style="flex: 1; min-height: 18px;"></div>' +
           '<div style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.4px;">' + (j.internship ? '<span class="su-internship-pay">'+esc(internshipPay(j))+'</span>' : esc(j.pay)) + '</div>' +
-          '<div style="font-size: 14.5px; opacity: 0.85; line-height: 1.5; font-family: \'Poppins\', sans-serif; margin-top: 5px;">' + esc(metaTop) + '</div>' +
-          (j.internship ? '<div class="su-internship-status">'+esc(internshipStatus(j))+'</div><div class="su-internship-timing">'+internshipTiming(j,true)+'</div>' : '');
+          '<div class="card-location" style="font-size: 14.5px; opacity: 0.85; line-height: 1.5; font-family: \'Poppins\', sans-serif; margin-top: 5px;">' + esc(metaTop) + '</div>';
 
         // verified stamp + apply link row (per-theme variant, ported verbatim)
         html += '<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 16px; min-height: 24px;">';
@@ -2094,8 +2093,8 @@
 
       if(window.SUDiscovery) out += window.SUDiscovery.html(esc);
 
-      // Annual salary surfaces remain the same; student pay labels preserve units.
-      if(INTERNSHIPS) out += '<p style="color:'+boardInk+';font:16px/1.5 var(--su-body);">Pay keeps its original rate and time unit. Upcoming programs are separate from roles accepting applications now.</p>';
+      // Only internship paper is decorative; Jobs keeps the salary key below.
+      if(INTERNSHIPS) out += '<p style="color:'+boardInk+';font:16px/1.5 var(--su-body);">Exact pay, with the employer’s time unit.</p>';
       else out += '<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 16px;">' +
         '<span class="pay-key-label" style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + payKeyInk + ';">pay key →</span>' +
         '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.lowCard || 'var(--su-salary-low-paper)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">under $80K</span></div>' +
@@ -2309,11 +2308,11 @@
         var dj = null;
         for (var di = 0; di < this.jobs.length; di++) { if (jobHasLink(this.jobs[di], this.state.detailLink)) { dj = this.jobs[di]; break; } }
         if (dj) {
-          var dmeta = [dj.loc, dj.style, dj.internship ? '' : dj.exp].filter(Boolean).join(' · ');
+          var dmeta = dj.internship ? internshipLocation(dj) : [dj.loc, dj.style, dj.exp].filter(Boolean).join(' · ');
           var tld = dj.tldr || dj.desc || '';
           var bl = '';
           if (dj.internship) {
-            bl = (Array.isArray(dj.duties) ? dj.duties : []).slice(0,3).map(function (duty) {return '<li>' + esc(duty) + '</li>';}).join('');
+            bl = internshipBullets(dj).map(function (bullet) {return '<li style="margin: 7px 0;">' + esc(bullet) + '</li>';}).join('');
           } else if (tld) {
             var raw = String(tld);
             var bp = raw.split(/[\n••]/).map(function (s) { return s.trim().replace(/^[-*]\s*/, ''); }).filter(function (s) { return s.length > 3; });
@@ -2357,7 +2356,7 @@
           // + the liveness checker are the real guards. Data (Date Posted) stays in the sheet.
           _ageNote = '';
           out += '<div data-act="closeDetail" style="position: fixed; inset: 0; z-index: 214; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
-            '<div data-act="stop" class="' + (dj.internship ? 'su-internship-dialog' : '') + '" style="margin: auto;position: relative; width: ' + (dj.internship ? '560px' : '410px') + '; max-width: 100%; box-sizing: border-box; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 32px, rgba(96,130,170,0.20) 32px 33px); background-position: 0 92px; border-radius: 4px; box-shadow: 5px 18px 44px rgba(44,33,24,0.34); transform: rotate(-1deg); padding: 30px 30px 26px 48px;">' +
+            '<div data-act="stop" class="' + (dj.internship ? 'su-internship-dialog' : '') + '" style="margin: auto;position: relative; width: 410px; max-width: 100%; box-sizing: border-box; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 32px, rgba(96,130,170,0.20) 32px 33px); background-position: 0 92px; border-radius: 4px; box-shadow: 5px 18px 44px rgba(44,33,24,0.34); transform: rotate(-1deg); padding: 30px 30px 26px 48px;">' +
               // red left margin line + tape
               '<div style="position: absolute; top: 0; bottom: 0; left: 36px; width: 1.5px; background: rgba(214,80,46,0.4);"></div>' +
               '<div style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(-2.5deg); width: 120px; height: 28px; background: rgba(228,202,128,0.6); border-left: 1px dashed rgba(255,255,255,.5); border-right: 1px dashed rgba(255,255,255,.5); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>' +
@@ -2378,15 +2377,13 @@
               '<div class="su-detail-role" style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16px; color: #3A2E20; margin-top: 4px; padding-right: 82px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">' + esc(dj.role) + '</div>' +
               (dj.pay ? '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 20px; color: #2C2118; margin-top: 10px;">' + esc(dj.internship ? internshipPay(dj) : dj.pay) + '</div>' : '') +
               (dmeta ? '<div style="font-family: \'Archivo\', sans-serif; font-size: 13.5px; color: #6F5E45; margin-top: 5px;">' + esc(dmeta) + '</div>' : '') +
-              (dj.internship ? '<div class="su-internship-status">'+esc(internshipStatus(dj))+'</div>' : '') +
               // TL;DR label (handwritten + swoosh)
               '<div style="position: relative; display: inline-block; margin-top: 20px;">' +
-                '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 23px; color: #2C2118;">' + (dj.internship ? 'What you’ll do' : 'TL;DR') + '</div>' +
+                '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 23px; color: #2C2118;">TL;DR</div>' +
                 '<svg width="74" height="9" viewBox="0 0 74 9" fill="none" style="position: absolute; left: 0; bottom: -5px;"><path d="M2 5 C 22 1, 50 1, 72 4" stroke="#F2C231" stroke-width="3.5" stroke-linecap="round"></path></svg>' +
               '</div>' +
               (bl ? '<ul class="' + (dj.internship ? 'su-internship-duties' : '') + '" style="margin: 12px 0 0; padding-left: 20px; font-size: 14.5px; color: #3a3026; line-height: 1.55;">' + bl + '</ul>'
                   : dj.internship ? '<p class="su-internship-timing">See the employer’s program page for duties.</p>' : '<div style="margin-top: 9px; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #6F5E45; line-height: 1.5;">a quick 3–4 bullet summary is coming to every role. for now, hit apply for the full listing →</div>') +
-              (dj.internship ? '<div class="su-internship-timing">'+internshipTiming(dj,false)+'</div>'+internshipDetails(dj) : '') +
               // apply (card-style text link + hand-drawn arrow)
               '<div style="margin-top: 22px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">' +
                 (_ageNote
@@ -3127,7 +3124,16 @@
       // respect current Sheet removals; a failed status check has no fallback.
       var localPreview=['localhost','127.0.0.1','[::1]'].includes(location.hostname)||location.protocol==='file:';
       var internshipFeed=localPreview?'./internships-data.json':'/.netlify/functions/internships-catalog';
-      fetch(internshipFeed,{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('Internship feed unavailable');return r.json();}).then(function(data){if(!window.SUInternships)throw Error('Internship validator unavailable');App._internshipStatus=data.status;App.init(window.SUInternships.jobs(data));}).catch(function(){App._loadError=true;App.init([]);});return;
+      fetch(internshipFeed,{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('Internship feed unavailable');return r.json();}).then(function(data){
+        if(!window.SUInternships)throw Error('Internship validator unavailable');
+        if(!localPreview)return data;
+        // The private local source tree can show reviewed copy. Hosted visitors
+        // receive only surviving rows and their copy from the catalog endpoint.
+        return fetch('./netlify/functions/lib/internship-display.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('Local presentation unavailable');return r.json();}).then(function(copy){
+          if(!copy||typeof copy!=='object'||!Array.isArray(data.jobs))return data;
+          return Object.assign({},data,{jobs:data.jobs.map(function(job){return window.SUInternships.withPresentation(job,copy[job.link]);})});
+        }).catch(function(){return data;});
+      }).then(function(data){App._internshipStatus=data.status;App.init(window.SUInternships.jobs(data));}).catch(function(){App._loadError=true;App.init([]);});return;
     }
     fetch(SHEET_CSV_URL + '&_=' + Date.now(), { cache: 'no-cache' })  // &_=ts busts Google's server-side gviz cache so the board always sees the live sheet
       .then(function (r) { if (!r.ok) throw new Error('sheet ' + r.status); return r.text(); })

@@ -37,6 +37,19 @@ test('manual dead, cleared link, deleted row, inactive and unknown statuses supp
   assert.equal(JSON.stringify(data), original, 'the approved snapshot is never mutated');
 });
 
+test('server-only display copy is attached only after its source row survives live suppression',async()=>{
+  const source=require('../../internships-data.json'),displayCopy=require('../../netlify/functions/lib/internship-display.json');
+  const [first,retired]=source.jobs;assert(first&&retired);
+  const data=snapshot([first,retired]);
+  const result=await handler(data,async()=>response(csv([[first.link,'Active','Open'],[retired.link,'Dead','Closed']])),{displayCopy})(request);
+  assert.equal(result.statusCode,200);
+  const body=payload(result);assert.equal(body.jobs.length,1);assert.equal(body.jobs[0].link,first.link);
+  assert.deepEqual(body.jobs[0].presentation,displayCopy[first.link]);
+  assert(!result.body.includes(retired.link));assert(!result.body.includes(displayCopy[retired.link].detailBullets[0]));
+  const failed=await handler(data,async()=>response('<html>Sign in</html>',{headers:{'Content-Type':'text/html'}}),{displayCopy})(request);
+  assert.equal(failed.statusCode,503);assert(!failed.body.includes(first.link));assert(!failed.body.includes(displayCopy[first.link].detailBullets[0]));
+});
+
 test('a valid empty status readback suppresses every snapshot job without becoming a service error', async () => {
   const result = await handler(snapshot(), async () => response(csv([])))(request);
   assert.equal(result.statusCode, 200);assert.deepEqual(payload(result).jobs, []);

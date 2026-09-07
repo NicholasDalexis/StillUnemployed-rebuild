@@ -138,12 +138,15 @@ async function fetchStatuses(fetchImpl, now, overrides = {}) {
   finally { clearTimeout(timer);controller.abort(); }
 }
 
-function createHandler({ snapshot, fetchImpl = globalThis.fetch, now = Date.now, limits } = {}) {
+function createHandler({ snapshot, displayCopy = {}, fetchImpl = globalThis.fetch, now = Date.now, limits } = {}) {
   return async function handler(event) {
     if (!event || event.httpMethod !== 'GET') return { statusCode:405, headers:{ ...HEADERS, Allow:'GET' }, body:JSON.stringify({ error:'Method not allowed' }) };
     try {
       const approved = approvedSnapshot(snapshot, now());
       const body = approved.jobs.length ? suppress(approved, await fetchStatuses(fetchImpl, now(), limits), now()) : approved;
+      // Presentation stays server-side until this approved row survives the live
+      // Sheet check. A retired posting never leaves behind a public copy entry.
+      body.jobs=body.jobs.map(job=>Internships.withPresentation(job,displayCopy[job.link]));
       return { statusCode:200, headers:{ ...HEADERS }, body:JSON.stringify(body) };
     } catch (_) {
       // Never return cached jobs, source rows, upstream bodies, URLs or stack traces.

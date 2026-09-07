@@ -74,6 +74,57 @@
     }
     return value;
   }
+  // Compact copy is presentation only. Its content checksum prevents accidental
+  // reuse after source facts change; official admission remains a separate gate.
+  function displayKey(job){
+    var source = JSON.stringify([job.co||'',job.role||'',job.loc||'',job.eligibility||'',job.duties||[],job.benefits||[],job.cycle||'',job.startDate||'',job.deadline||'',job.applicationsOpen||'',job.applicationStatus||'',job.collegeCredit||'']);
+    var first=2166136261,second=0x9e3779b9;
+    for(var index=0;index<source.length;index++){
+      first=Math.imul(first^source.charCodeAt(index),16777619);
+      second=Math.imul(second^source.charCodeAt(index),0x85ebca6b);
+    }
+    return (first>>>0).toString(16)+':'+(second>>>0).toString(16);
+  }
+  function validatedPresentation(job,copy){
+    if(!object(copy)||copy.sourceKey!==displayKey(job)||!text(copy.locationLabel,120,true)||!list(copy.detailBullets,4,240)||copy.detailBullets.length!==4)return null;
+    return {sourceKey:copy.sourceKey,locationLabel:copy.locationLabel,detailBullets:copy.detailBullets.slice()};
+  }
+  function withPresentation(job,copy){
+    var out=publicJob(job),presentation=validatedPresentation(job,copy);
+    if(presentation)out.presentation=presentation;
+    return out;
+  }
+  function displayCopy(job){return validatedPresentation(job,job.presentation);}
+  function locationLabel(job){
+    var copy = displayCopy(job);
+    if(copy)return copy.locationLabel;
+    var place = String(job.loc || '').trim();
+    var locations=place.split(';').map(function(part){return part.trim();});
+    if(locations.slice(1).some(function(part){return /^(?:[A-Za-z .’\'-]+,\s*[A-Z]{2}|Remote)(?:\s*,\s*(?:US|USA|United States))?$/i.test(part);}))return 'Multiple locations';
+    place=locations[0].replace(/\b(?:United States(?: of America)?|USA|US)\b/ig,'').replace(/\s*,\s*$/,'').trim();
+    if(!place)return 'Location not listed';
+    if((place.match(/,\s*[A-Z]{2}(?=\s*(?:,|$|\bor\b))/g)||[]).length>1)return 'Multiple locations';
+    if(/^\(?remote\)?$/i.test(place))return 'Remote';
+    return place.replace(/\s*\([^)]*(?:review|confirm|schedule|expectation)[^)]*\)\s*/ig,'').trim();
+  }
+  function detailBullets(job){
+    var copy = displayCopy(job);
+    if(copy)return copy.detailBullets.slice();
+    var bullets = (Array.isArray(job.duties) ? job.duties : []).filter(function(duty){return typeof duty === 'string' && duty.trim();}).slice(0,3).map(function(duty){
+      duty = duty.trim();
+      if(duty.length <= 180)return duty;
+      var sentence = duty.match(/^.+?[.!?](?:\s|$)/);
+      return sentence && sentence[0].trim().length <= 180 ? sentence[0].trim() : 'See the employer’s full role description.';
+    }).filter(function(duty,index,all){return all.indexOf(duty)===index;});
+    function fact(value){return typeof value==='string'&&value.trim().length<=80&&!/^(?:not (?:listed|announced)|unknown)$/i.test(value.trim())?value.trim():'';}
+    var opening = job.applicationStatus==='upcoming' ? fact(job.applicationsOpen) : '';
+    var timing = [opening && (/^applications?/i.test(opening) ? opening : 'Applications open ' + opening),fact(job.cycle),fact(job.startDate) && 'Starts ' + fact(job.startDate)].filter(Boolean);
+    var final = timing.filter(function(fact,index,all){return all.indexOf(fact)===index;}).join(' · ');
+    if(job.collegeCredit === 'required')final += (final ? '; ' : '') + 'college credit required';
+    if(!final)final = 'See the employer for program dates and eligibility.';
+    bullets.push(final);
+    return bullets;
+  }
   function publicJob(job){
     var out={};Object.keys(TEXT).forEach(function(k){if(typeof job[k]==='string')out[k]=job[k];});
     DATES.concat(['payStatus','payBasis','collegeCredit','applicationStatus']).forEach(function(k){if(typeof job[k]==='string')out[k]=job[k];});
@@ -82,6 +133,8 @@
       out.verification={};['status','checkedAt','sourceUrl','reviewerType','humanVerifiedAt'].forEach(function(k){if(typeof job.verification[k]==='string')out.verification[k]=job.verification[k];});
       ['sourceAnnounced','upcomingApproved'].forEach(function(k){if(typeof job.verification[k]==='boolean')out.verification[k]=job.verification[k];});
     }
+    var presentation=validatedPresentation(job,job.presentation);
+    if(presentation)out.presentation=presentation;
     return out;
   }
   function validate(job,version,now){
@@ -130,5 +183,5 @@
     });return out;
   }
   function counts(rows,now){var out={accepting:0,upcoming:0,needs_recheck:0,total:rows.length};rows.forEach(function(job){out[applicationState(job,now)]++;});return out;}
-  return {jobs:jobs,payLabel:payLabel,applicationState:applicationState,canApply:canApply,counts:counts,publicJob:publicJob,safeUrl:safeUrl,dateValue:dateValue};
+  return {jobs:jobs,payLabel:payLabel,locationLabel:locationLabel,detailBullets:detailBullets,withPresentation:withPresentation,applicationState:applicationState,canApply:canApply,counts:counts,publicJob:publicJob,safeUrl:safeUrl,dateValue:dateValue};
 });

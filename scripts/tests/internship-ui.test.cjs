@@ -17,7 +17,7 @@ const inlineScripts = [...fs.readFileSync(path.join(__dirname, '../../internship
 const themeScripts = inlineScripts.map(match => match[1]).filter(script => script.includes('SLUG2LOOK'));
 assert.equal(themeScripts.length, 1, 'the actual page owns one theme bootstrap');
 const themeBootstrap = themeScripts[0];
-const internshipFixture = fixture.replace("pathname:'/jobs.html'", "pathname:'/internships.html'")
+const internshipFixture = fixture.replace('deriveState, suShareJob};', 'deriveState, suShareJob, internshipSurface};').replace("pathname:'/jobs.html'", "pathname:'/internships.html'")
   .replace("response,fetchError,", "response,fetchError,hostname='preview--stillunemployed.netlify.app',")
   .replace("hostname:'preview--stillunemployed.netlify.app'", "hostname")
   .replace('vm.runInNewContext(instrumented,context', "document.documentElement=document.createElement('html');vm.runInNewContext(themeBootstrap,context,{filename:'internships.html'});vm.runInNewContext(instrumented,context");
@@ -46,10 +46,11 @@ test('an explicitly empty reviewed feed has a current empty state, distinct from
   }
 });
 
-test('localhost previews load only the reviewed local snapshot', async () => {
+test('localhost previews load the reviewed snapshot and local-only display copy', async () => {
   const b=board({hostname:'localhost',response:{ok:true,json:async()=>({schemaVersion:2,status:'verified',jobs:[]})}});
   b.window.SUInternships=I;await b.boot();
-  assert.equal(b.requests.length,1);assert.equal(b.requests[0].url,'./internships-data.json');
+  assert.equal(b.requests.length,2);assert.equal(b.requests[0].url,'./internships-data.json');
+  assert.equal(b.requests[1].url,'./netlify/functions/lib/internship-display.json');
   assert.equal(b.app.jobs.length,0);
 });
 const day = offset => new Date(Date.now() + offset * 86400000).toISOString().slice(0, 10);
@@ -98,7 +99,9 @@ test('internship cards and details retain exact employer pay without annualizing
       const detail = b.detail(row.link);assert(detail.textContent.includes(row.pay));
       b.app.setState({ detailOpen:false });
     }
-    assert.equal(new Set(surfaces).size, 1, look + ' does not turn internship rates into full-time salary tiers');
+    const before = new Map(rows.map((row,index)=>[row.link,surfaces[index]]));
+    b.app.jobs.forEach(row=>{row.pay='$200,000/year (annualized)';row.payBasis='annualized_year';});b.app.render();
+    for(const row of rows)assert.equal(b.card(row.link).style.background,before.get(row.link),look+' paper does not change with pay');
     assert(!b.grid.textContent.includes('$46,800'), 'no computed annual equivalent for hourly pay');
   }
 });
@@ -117,37 +120,45 @@ test('a full internship grid does not add the full-time high-salary endorsement 
   for (const card of b.cards()) assert.equal(card.querySelector('[data-act="openNote"]'), null);
 });
 
-test('full eligibility and employer facts remain distinct from the maximum three optional duties', () => {
-  const row = listing(), b = ui([row]), detail = b.detail(row.link);
-  assert(detail.querySelector('.su-internship-details').textContent.includes(row.eligibility));
-  assert(detail.textContent.includes(row.benefits[0]));
-  const duties = detail.querySelector('.su-internship-duties');assert(duties);
-  assert.deepEqual(Array.from(duties.querySelectorAll('li'), node => node.textContent), row.duties);
-  assert(!duties.textContent.includes(row.eligibility), 'eligibility is not truncated into duties');
+test('compact fronts contain city and state but no attendance, timing or source-review commentary', () => {
+  const row = listing({loc:'Chicago, IL, United States',style:'Hybrid; confirm attendance with employer',startDate:'January 2031',deadline:'September 2030'});
+  const b=ui([row]),card=b.card(row.link);
+  assert.equal(card.querySelector('.card-location').textContent,'Chicago, IL');
+  assert.equal(card.querySelector('.su-internship-status'),null);assert.equal(card.querySelector('.su-internship-timing'),null);
+  assert.doesNotMatch(card.textContent,/United States|confirm attendance|Hybrid|January|September|Accepting applications/);
+  assert(card.textContent.includes(row.co));assert(card.textContent.includes(row.role));
 });
 
-test('missing duties stay honest and an unexpected fourth duty never crowds out full eligibility', () => {
-  const row = upcoming({ duties:[] }), b = ui([row]);
-  const detail = b.detail(row.link);
-  assert.equal(detail.querySelector('.su-internship-duties'), null);
-  assert.match(detail.textContent, /employer’s program page for duties/);
-  assert(detail.textContent.includes(row.eligibility));
-  b.app.jobs[0].duties = ['One task.', 'Two tasks.', 'Three tasks.', 'Unexpected fourth task.'];
-  b.app.renderOverlays();const updated = b.overlay.querySelector('[role="dialog"]');
-  assert.equal(updated.querySelector('.su-internship-duties').querySelectorAll('li').length, 3);
-  assert(!updated.textContent.includes('Unexpected fourth task.'));assert(updated.textContent.includes(row.eligibility));
+test('normal-size internship TL;DR keeps duties and a final program bullet without source-record dumps', () => {
+  const row = listing(), original=JSON.stringify(row),b = ui([row]), detail = b.detail(row.link);
+  assert.equal(detail.style.width,'410px');assert(detail.textContent.includes('TL;DR'));
+  assert.equal(detail.querySelector('.su-internship-details'),null);
+  assert(!detail.textContent.includes(row.eligibility));assert(!detail.textContent.includes(row.benefits[0]));
+  const bullets=Array.from(detail.querySelector('.su-internship-duties').querySelectorAll('li'),node=>node.textContent);
+  assert.equal(bullets.length,4);assert.deepEqual(bullets.slice(0,3),row.duties);assert.match(bullets[3],/Summer program/);
+  assert.equal(JSON.stringify(row),original,'rendering does not rewrite the source record');
+  assert.equal(b.app.jobs[0].eligibility,row.eligibility);assert.deepEqual(Array.from(b.app.jobs[0].benefits),row.benefits);
 });
 
-test('accepting, upcoming and unconfirmed cards have exclusive factual labels and counts', () => {
-  const rows = [listing(), upcoming(), upcoming({ link:'https://example.com/program/stale', applicationsOpenISO:day(-1) })];
-  const b = ui(rows);
-  const expected = ['accepting', 'upcoming', 'needs_recheck'];
-  assert.deepEqual(rows.map(row => I.applicationState(row)), expected);
-  const labels = rows.map(row => b.card(row.link).querySelector('.su-internship-status').textContent);
-  assert.match(labels[0], /accepting/i);assert.match(labels[1], /upcoming/i);assert.equal(labels[2], 'Application status unconfirmed');
-  const count = b.grid.querySelector('.su-internship-counts');assert(count);
-  assert.match(count.textContent, /1 accepting now/i);assert.match(count.textContent, /1 upcoming/i);assert.match(count.textContent, /1 needing a status check/i);
-  assert.doesNotMatch(count.textContent, /status being checked/i, 'the count does not imply an active automated check');
+test('missing duties do not invent work, and a fourth source duty never displaces the program bullet', () => {
+  const row = upcoming({duties:[]}), b=ui([row]),detail=b.detail(row.link);
+  const bullets=detail.querySelector('.su-internship-duties').querySelectorAll('li');
+  assert.equal(bullets.length,1);assert.match(bullets[0].textContent,/Summer program/);
+  b.app.jobs[0].duties=['One task.','Two tasks.','Three tasks.','Unexpected fourth task.'];b.app.renderOverlays();
+  const updated=b.overlay.querySelector('[role="dialog"]');
+  assert.equal(updated.querySelector('.su-internship-duties').querySelectorAll('li').length,4);
+  assert(!updated.textContent.includes('Unexpected fourth task.'));assert(!updated.textContent.includes(row.eligibility));
+});
+
+test('compact cards preserve accepting versus program actions and honest aggregate status counts', () => {
+  const rows=[listing(),upcoming(),upcoming({link:'https://example.com/program/stale',applicationsOpenISO:day(-1)})],b=ui(rows);
+  assert.deepEqual(rows.map(row=>I.applicationState(row)),['accepting','upcoming','needs_recheck']);
+  const labels=rows.map(row=>b.card(row.link).querySelector('.applylink2').textContent);
+  assert.match(labels[0],/Apply Now/);assert.match(labels[1],/View program/);assert.match(labels[2],/View program/);
+  for(const row of rows)assert.equal(b.card(row.link).querySelector('.su-internship-status'),null);
+  const count=b.grid.querySelector('.su-internship-counts');assert(count);
+  assert.match(count.textContent,/1 accepting now/i);assert.match(count.textContent,/1 upcoming/i);
+  assert.doesNotMatch(count.textContent,/status being checked/i);
 });
 
 test('focus returning from outside the document stays within the active detail and releases after close', () => {
@@ -251,7 +262,70 @@ test('employer text renders as text, without introducing executable markup or ac
     eligibilityFlags:['Students <img src=x onerror=alert(1)>'], duties:['Discuss <svg onload=alert(1)> examples.'],
     benefits:['Meals & transit'], privateReviewNote:sentinel });
   const b = ui([row]), detail = b.detail(row.link);
-  assert(detail.textContent.includes(row.eligibility));assert(detail.textContent.includes(row.duties[0]));
+  assert(!detail.textContent.includes(row.eligibility));assert(detail.textContent.includes(row.duties[0]));
   assert.equal(detail.querySelector('script,img,svg[onload],[onerror]'), null);
   assert(!b.grid.textContent.includes(sentinel));assert(!detail.textContent.includes(sentinel));
+});
+
+
+test('internship papers are stable across aliases, filtering, ordering and pay, with a weighted decorative mix', () => {
+  const b=ui([listing()]),surface=b.helpers.internshipSurface,counts={high:0,mid:0,low:0};
+  for(let index=0;index<2000;index++)counts[surface({link:'https://job-boards.greenhouse.io/example/jobs/'+(10000+index)})]++;
+  assert(counts.high>1100&&counts.high<1300,JSON.stringify(counts));
+  assert(counts.mid>420&&counts.mid<580,JSON.stringify(counts));
+  assert(counts.low>230&&counts.low<370,JSON.stringify(counts));
+  assert.equal(surface({link:'https://boards.greenhouse.io/example/jobs/12345?utm_source=friend'}),surface({link:'https://job-boards.greenhouse.io/example/jobs/12345',pay:'Unpaid'}));
+  const rows=Array.from({length:24},(_,index)=>listing({link:'https://example.com/program/decorative/'+index})),view=ui(rows);
+  const before=new Map(rows.map(row=>[row.link,view.card(row.link).style.background]));
+  view.app.jobs.reverse();view.app.render();
+  for(const row of rows)assert.equal(view.card(row.link).style.background,before.get(row.link));
+  view.app.setState({q:'Design Intern'});
+  for(const row of rows)assert.equal(view.card(row.link).style.background,before.get(row.link));
+  assert(!view.grid.textContent.includes('pay key'));
+  assert(view.grid.textContent.includes('Exact pay, with the employer’s time unit.'));
+});
+
+test('every internship paper variant uses matching theme ink and visible saved controls across all eight looks', () => {
+  const brand=fs.readFileSync(path.join(__dirname,'../../css/brand.css'),'utf8');
+  const resolve=value=>value.replace(/var\((--[\w-]+)\)/g,(_,key)=>brand.match(new RegExp(key+': ([^;]+)'))[1]);
+  const luminance=color=>{const rgb=color.match(/[0-9a-f]{2}/ig).map(value=>parseInt(value,16)/255).map(value=>value<=.04045?value/12.92:((value+.055)/1.055)**2.4);return rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722;};
+  const contrast=(first,second)=>{const pair=[luminance(first),luminance(second)].sort((a,b)=>a-b);return (pair[1]+.05)/(pair[0]+.05);};
+  const probe=ui([listing()]),surface=probe.helpers.internshipSurface,examples={};
+  for(let index=0;Object.keys(examples).length<3;index++){
+    const row=listing({link:'https://example.com/program/color/'+index});examples[surface(row)] ||= row;
+  }
+  for(const look of ['original','poker','beauty','girly','mermaid','bratt','noir','chess']){
+    const b=ui(Object.values(examples),{look}),P=b.app.THEMES[look];
+    const surfaces=[];
+    for(const [variant,row] of Object.entries(examples)){
+      const card=b.card(row.link);surfaces.push(card.style.background);
+      const ink=variant==='high'?P.hiInk:variant==='mid'&&P.midInk?P.midInk:(P.baseInk||'#3A2A1B');
+      assert.equal(card.style.color,ink,look+'/'+variant+' matches the paper ink');
+      const action=(look==='mermaid'||(look==='bratt'&&variant==='mid')||(look==='beauty'&&variant!=='high'))?ink:variant==='high'?P.hiApply:variant==='mid'&&P.midApply?P.midApply:(P.baseApply||'var(--su-orange-on-card)');
+      assert.equal(card.querySelector('.applylink2').style.color,action,look+'/'+variant+' matches the action ink');
+      for(const stop of resolve(card.style.background).match(/#[0-9a-f]{6}/ig)){
+        assert(contrast(resolve(ink),stop)>=4.5,look+'/'+variant+' body text contrast');
+        assert(contrast(resolve(action),stop)>=4.5,look+'/'+variant+' small action label contrast');
+      }
+      card.querySelector('[data-act="toggleSave"]').click();
+      const bookmark=b.card(row.link).querySelector('.bmbtn').querySelector('svg');
+      assert.equal(bookmark.getAttribute('stroke'),b.card(row.link).style.color);
+      assert.equal(bookmark.getAttribute('fill'),b.card(row.link).style.color);
+    }
+    assert.equal(new Set(surfaces).size,3,look+' has three actual theme papers');
+  }
+});
+
+test('compact internship dialogs retain keyboard containment and outside-click dismissal',()=>{
+  const row=listing(),b=ui([row]),detail=b.detail(row.link);
+  const focusable=detail.querySelectorAll('button,[role="button"],a,iframe').filter(node=>node.getAttribute('tabindex')!=='-1');
+  assert(focusable.length>2);
+  const first=focusable[0],last=focusable.at(-1);
+  last.focus();b.fire('keydown',last,{key:'Tab'});
+  assert.equal(b.document.activeElement,first,'Tab wraps to the start of the compact note');
+  first.focus();b.fire('keydown',first,{key:'Tab',shiftKey:true});
+  assert.equal(b.document.activeElement,last,'Shift+Tab wraps to the end of the compact note');
+  const backdrop=detail.parentElement;assert.equal(backdrop.getAttribute('data-act'),'closeDetail');
+  backdrop.click();assert.equal(b.overlay.querySelector('[role="dialog"]'),null);
+  assert.equal(b.app.state.detailOpen,false);
 });

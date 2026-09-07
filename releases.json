@@ -1,7 +1,17 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.2.5",
+  "currentVersion": "2.2.6",
   "releases": [
+    {
+      "version": "2.2.6",
+      "date": "2026-09-06",
+      "title": "Compact internship cards and clearer summaries",
+      "changes": [
+        "Internship cards show the company, role, exact pay, city and state.",
+        "Short TLDR notes put known program dates and key eligibility in the final bullet.",
+        "Internships use varied theme paper colors, with more of the strongest accent. Job salary bands stay unchanged."
+      ]
+    },
     {
       "version": "2.2.5",
       "date": "2026-09-06",
@@ -174,7 +184,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "26040b16d6862c92b82711e26ffb375b1bd6e295c1b857abb194d1cff4829105",
-    "fileCount": 136
+    "digest": "551a313036b6566b6d63bae3327bf16912ff883b2bd56ade76755e7e5df31a3c",
+    "fileCount": 137
   }
 }
