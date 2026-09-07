@@ -1,4 +1,4 @@
-/* Version 2 welcome. Browser-local receipt, deliberately independent of account sync. */
+/* Latest Update. Browser-local receipt, deliberately independent of account sync. */
 (function (global) {
   'use strict';
   var KEY = 'su_welcome_v2_seen';
@@ -46,6 +46,7 @@
   }
 
   var doc = global.document, dialog, returnFocus, lastCard, bodyOverflow, pending;
+  var autoTimer = null, delayElapsed = false;
   var stores = [storage('localStorage'), storage('sessionStorage')];
   var memory = { shown:0, dismissed:false };
   function currentState() { return mergeState(memory, readState(stores)); }
@@ -57,18 +58,18 @@
     advice: '<div class="su-launch-paper"><small>note to self ↓</small><strong>your job hunt needs<br>days off, too</strong><span class="su-launch-days"><i>S</i><i>M</i><i>T</i><i>W</i><i>T</i><i>F</i><i>S</i></span><em>wait, why friday? →</em></div>',
     themes: '<div class="su-launch-swatches"><span class="su-launch-original">Original</span><span class="su-launch-casino">Casino</span><span class="su-launch-beauty">Beauty</span><span class="su-launch-mermaid">Mermaid</span><span class="su-launch-bratt">bratt</span><span class="su-launch-chess">Chess</span></div>',
     sync: '<div class="su-launch-tracker"><div class="su-launch-tracker-head"><strong>My job tracker</strong><span>↗</span></div><div><span>Designer</span><b>Applied</b></div><div><span>Content lead</span><b>Interview</b></div><div><span>Next move</span><b>Saved</b></div><small>one less spreadsheet</small></div>',
-    portfolio: '<div class="su-launch-tier"><small>EXAMPLE FEEDBACK</small><div><b>A</b><span><i>First impression</i><i>Mobile</i><i>Performance</i></span></div><div><b>B</b><span><i>Positioning</i></span></div><div><b>C</b><span><i>Text hard to read</i></span></div></div>'
+    internships: '<div class="su-launch-internships"><small>a place to start ↓</small><div class="su-launch-intern-note"><strong>Your next chapter</strong><span>Design Intern</span><b>$25/hour</b><span>New York, NY</span></div><em>internships have a board, too →</em></div>'
   };
   var features = {
     advice: { label: 'Advice along the way', short: 'Advice notes', tag: 'A little perspective', text: 'A useful pause between applications. Open a note for a job-hunt tip while you browse. Want more? Each note connects to The Job Hunt Recipe, our optional newsletter.' },
     themes: { label: 'Make it feel like you', short: 'More themes', tag: 'More ways to make it yours', text: 'Different looks. The same jobs. From Casino to Mermaid to Chess, find a board that feels like you. Use “change theme” on the board whenever you want a new look.' },
     sync: { label: 'Your job hunt, in one place', short: 'Your job tracker', tag: 'Less spreadsheet. More progress.', text: 'Keep applications, interview stages, notes and next steps together. See where each job stands without building a spreadsheet. Sign in with the same Google account to bring your tracker between your phone and computer.' },
-    portfolio: { label: 'A second opinion on your homepage', short: 'Portfolio Graded', tag: 'Coming soon', text: 'Get feedback on your portfolio homepage: what comes across clearly, what is hard to read and what you could improve next. The tier list above is an example, not a review of your site.' }
+    internships: { label: 'Your first step starts here', short: 'Internships are here', tag: 'A board for your next chapter', text: 'Explore internships in one place. See the pay and location at a glance, then open a card for a quick summary and details like timing or student requirements. Save the ones you like and keep applications in your tracker.' }
   };
   function preview(key) { return '<div class="su-launch-preview" aria-hidden="true">' + previews[key] + '</div>'; }
   function overview() {
-    return '<div class="su-launch-grid">' + ['advice','themes','sync','portfolio'].map(function (key) {
-      return '<button type="button" class="su-launch-card'+(key === 'portfolio' ? ' su-launch-pg' : '')+'" data-launch-feature="'+key+'" aria-label="'+features[key].short+'. Learn more">'+preview(key)+'<span class="su-launch-card-label">'+features[key].short+'<span aria-hidden="true">↗</span></span>'+(key === 'portfolio' ? '<span class="su-launch-card-hint">Coming soon</span>' : '')+'</button>';
+    return '<div class="su-launch-grid">' + ['advice','themes','sync','internships'].map(function (key) {
+      return '<button type="button" class="su-launch-card" data-launch-feature="'+key+'" aria-label="'+features[key].short+'. Learn more">'+preview(key)+'<span class="su-launch-card-label">'+features[key].short+'<span aria-hidden="true">↗</span></span></button>';
     }).join('') + '</div>';
   }
   function setDetail(detail) {
@@ -101,7 +102,7 @@
     if (!feature) return;
     lastCard = key;
     setDetail(true);
-    dialog.querySelector('.su-launch-stage').innerHTML = '<section class="su-launch-detail"><div class="su-launch-detail-art">'+preview(key)+'<small>'+ (key === 'themes' ? 'Theme previews only' : 'Illustrative preview') +'</small></div><p class="su-launch-eyebrow">'+feature.tag+'</p><h3 id="su-launch-detail-title">'+feature.label+'</h3><p>'+feature.text+'</p>'+(key === 'portfolio' ? '<a class="su-launch-detail-link" href="https://portfoliograded.com/" target="_blank" rel="noopener noreferrer" aria-label="Portfolio Graded, coming soon. Opens in a new tab">Portfolio Graded · coming soon ↗</a>' : '')+'</section>';
+    dialog.querySelector('.su-launch-stage').innerHTML = '<section class="su-launch-detail"><div class="su-launch-detail-art">'+preview(key)+'<small>'+ (key === 'themes' ? 'Theme previews only' : 'Illustrative preview') +'</small></div><p class="su-launch-eyebrow">'+feature.tag+'</p><h3 id="su-launch-detail-title">'+feature.label+'</h3><p>'+feature.text+'</p>'+(key === 'internships' ? '<a class="su-launch-detail-link" href="/internships.html" data-launch-close>Browse internships →</a>' : '')+'</section>';
     dialog.querySelector('.su-launch-scroll').scrollTop = 0;
     dialog.querySelector('[data-launch-back]').focus({ preventScroll:true });
   }
@@ -115,7 +116,7 @@
     dialog = doc.createElement('dialog');
     dialog.id = 'su-launch'; dialog.className = 'su-launch';
     dialog.setAttribute('aria-labelledby','su-launch-title');
-    dialog.innerHTML = '<header class="su-launch-header"><div class="su-launch-overview-title"><h2 id="su-launch-title">Version 2 is here!</h2></div><button type="button" class="su-launch-back" data-launch-back hidden>← go back</button><button type="button" class="su-launch-close" data-launch-close aria-label="Close Version 2 welcome" autofocus>×</button></header><div class="su-launch-scroll"><p class="su-launch-intro">pick a note to see what’s new ↓</p><div class="su-launch-stage"></div><footer class="su-launch-footer"><a href="/suggest.html">Suggest Jobs →</a><button type="button" class="su-launch-primary" data-launch-close>Let’s find a role →</button></footer><p class="su-launch-reopen"><a href="/versions.html" data-su-version>Version history</a></p></div>';
+    dialog.innerHTML = '<header class="su-launch-header"><div class="su-launch-overview-title"><h2 id="su-launch-title">Latest Update</h2></div><button type="button" class="su-launch-back" data-launch-back hidden>← go back</button><button type="button" class="su-launch-close" data-launch-close aria-label="Close Latest Update" autofocus>×</button></header><div class="su-launch-scroll"><p class="su-launch-intro">pick a note to see what’s new ↓</p><div class="su-launch-stage"></div><footer class="su-launch-footer"><a href="/suggest.html">Suggest Jobs →</a><button type="button" class="su-launch-primary" data-launch-close>Let’s find a role →</button></footer><p class="su-launch-reopen"><a href="/versions.html" data-su-version>Version history</a></p></div>';
     doc.body.appendChild(dialog);
     if (global.SURelease) global.SURelease.render();
     dialog.addEventListener('click', function (event) {
@@ -152,11 +153,20 @@
     try { dialog.showModal(); } catch (_) { return false; }
     doc.body.style.overflow = 'hidden';
     considered = true;
+    if (autoTimer !== null) { global.clearTimeout(autoTimer);autoTimer = null; }
     return true;
   }
   function maybeShow() {
     function deferred() { return doc.querySelector('#overlay-root [role="dialog"]') || (global.SUApp && (global.SUApp._loadError || global.SUApp.state.openPanel)); }
     if (considered || pending || deferred()) return pending;
+    // Start once the board is usable. Re-renders keep the original deadline;
+    // expiry still respects whatever task the visitor opened in the meantime.
+    if (!delayElapsed) {
+      if (autoTimer === null) autoTimer = global.setTimeout(function () {
+        autoTimer = null;delayElapsed = true;maybeShow();
+      }, 30000);
+      return;
+    }
     var locks;
     try { locks = global.navigator && global.navigator.locks; } catch (_) {}
     // A browser-wide cap needs both cross-tab serialization and shared durable

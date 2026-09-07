@@ -1,7 +1,16 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.3.0",
+  "currentVersion": "2.3.1",
   "releases": [
+    {
+      "version": "2.3.1",
+      "date": "2026-09-06",
+      "title": "Latest Update, with room to settle in",
+      "changes": [
+        "The Latest Update popup waits 30 seconds before opening automatically. Existing dismissals are remembered, and What’s new still opens it immediately.",
+        "An Internships card replaces the Portfolio Graded teaser, with a short overview and a direct link to browse internships."
+      ]
+    },
     {
       "version": "2.3.0",
       "date": "2026-09-06",
@@ -217,7 +226,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "d366d565e2002f8a8f24740a5624e6c910c7e0b9b7e5879ff8a3d8ca9122e54d",
+    "digest": "bed87045992b8623eddc7b65c7c174631e2d1b1cb679764657f6cfa166c51f67",
     "fileCount": 143
   }
 }

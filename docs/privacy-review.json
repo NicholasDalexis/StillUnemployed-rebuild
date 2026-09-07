@@ -1,23 +1,19 @@
 {
-  "version": "2.3.0",
+  "version": "2.3.1",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-07T02:38:51.978Z",
-  "reviewer": "Codex/Astra with independent analytics, SEO and account-isolation reviewers",
-  "sourceDigest": "d366d565e2002f8a8f24740a5624e6c910c7e0b9b7e5879ff8a3d8ca9122e54d",
+  "reviewedAt": "2026-09-07T03:50:42.269982+00:00",
+  "reviewer": "Codex/Astra with independent onboarding, policy and release reviewers",
+  "sourceDigest": "bed87045992b8623eddc7b65c7c174631e2d1b1cb679764657f6cfa166c51f67",
   "sourceFileCount": 143,
-  "privacyChanged": false,
+  "privacyChanged": true,
   "termsChanged": false,
-  "scope": "Follow-through on the already disclosed 30-minute account-scoped tab view: clear filters only on a real owner change, prevent stale-owner pagehide writes, preserve same-owner auth and failed-feed retry. Background refresh preserves navigation and inputs until authoritative data resolves. No new collection, destination, permission or retention change.",
+  "scope": "Rename the release popup to Latest Update, delay automatic entry by 30 seconds from the first eligible board render, and replace its Portfolio Graded teaser with an internal internships overview. Preserve existing browser-local keys, two-appearance cap, dismissal history and manual discovery. The internship CTA acknowledges the popup before native same-tab navigation. No new collection, destination, permission or retention change.",
   "checks": {
-    "integratedTests": 541,
-    "analytics": "48 client/service/HTTP/dashboard checks: count-only payload stripping, consent/GPC/withdrawal/owner isolation, synthetic aggregate readback; no live writes.",
-    "recovery": "10 app/runtime tests: write-failure visibility, intended-save retry races, refreshed availability, timeout/dedup and view TTL/ownership.",
-    "sync": "132 independent integrated checks; stale callbacks and token isolation, storage rollback, retained drafts and honest auth results.",
-    "seo": "16 checks,4138 isolated HTML finalizations,7-page sitemap, raw/private paths excluded. Future renderer has no hosted route and was tested with synthetic availability authority only.",
-    "browser": "Native local Jobs to Tracker and back navigates and restores the design search (98 of 486); no Retry save displayed on a healthy empty Tracker. Previous 320px and 1440px layout evidence retained. No authenticated account switch or live collector write.",
-    "viewOwnership": "77 focused account/runtime checks and 6 recovery checks, including refresh-start DOM identity until response settles."
+    "integratedTests": 546,
+    "onboarding": "29 checks: deterministic 30-second deadline, no duplicate timer, manual immediate entry/cancellation, competing overlay/filter/feed deferral, retained legacy receipts, cap and cross-tab locks, focus/Escape/backdrop/close paths, and internal navigation dismissal without preventDefault.",
+    "browser": "Native local manual overview and internship detail inspected. At measured 390px and 320px CSS viewport widths the scroll area has no horizontal overflow; 320px dialog bounds fit the viewport. Back receives focus and Browse internships navigates to the internal section with the dialog closed. Existing IAB 0.8 zoom clips screenshots; geometry was checked directly. No physical-phone or real authenticated round-trip claim."
   },
-  "baselineReview": "docs/privacy-reviews/2.2.9.json",
+  "baselineReview": "docs/privacy-reviews/2.3.0.json",
   "openItems": [
     "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
     "Function-scoped Firebase and Netlify configuration and actual owner UID",
@@ -28,10 +24,10 @@
     "Main-board inherited Human verified badges lack audited per-row historical provenance in this change",
     "Live report-triage delivery and concurrent-device visit-counter limitations",
     "Real authenticated Saved/Tracker round trip for admitted internships",
-    "First scheduled internship-maintenance firing; installed and manual production-mode execution verified",
+    "Separate maintenance-owner scope: five internship checks remain unresolved and cursor rotation incomplete; main Jobs evening check timed out. First internship evening scheduled firing is verified in the 2026-09-06 sourcing setup receipt.",
     "Preview analytics profile/admin503 not configured; actual collector/retention/hosted account evidence unavailable",
     "Search Console domain property Not verified; Bing has no existing IAB session",
     "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive"
   ],
-  "policySummary": "Re-read the relevant account, tab storage, analytics and external-link disclosures. The fix enforces the existing owner-clearing description; no policy text or data flow expansion. Engineering review, not legal certification."
+  "policySummary": "Privacy wording now names Latest Update and preserves the existing local appearance/dismissal disclosure. Terms and public style-guide popup guidance reviewed; no change required. No new data flow or external link. Engineering review, not legal certification."
 }
