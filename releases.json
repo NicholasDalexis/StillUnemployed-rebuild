@@ -1,7 +1,16 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.2.6",
+  "currentVersion": "2.2.7",
   "releases": [
+    {
+      "version": "2.2.7",
+      "date": "2026-09-06",
+      "title": "A lighter build for the same board",
+      "changes": [
+        "Share-image generation now reuses its drawing canvas so large boards can deploy reliably.",
+        "Includes the compact internship cards, short summaries and varied theme paper from 2.2.6."
+      ]
+    },
     {
       "version": "2.2.6",
       "date": "2026-09-06",
@@ -184,7 +193,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "551a313036b6566b6d63bae3327bf16912ff883b2bd56ade76755e7e5df31a3c",
+    "digest": "71a179a72d4aeb371986e87279f2daf37645771f67cbe84481cf20830a9ea503",
     "fileCount": 137
   }
 }

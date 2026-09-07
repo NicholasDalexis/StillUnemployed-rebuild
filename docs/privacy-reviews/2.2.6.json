@@ -1,24 +1,22 @@
 {
-  "version": "2.2.7",
+  "version": "2.2.6",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-07T00:55:36.675Z",
+  "reviewedAt": "2026-09-07T00:40:34.676Z",
   "reviewer": "Codex/Astra with independent internship content and blue-team reviews",
-  "sourceDigest": "71a179a72d4aeb371986e87279f2daf37645771f67cbe84481cf20830a9ea503",
+  "sourceDigest": "551a313036b6566b6d63bae3327bf16912ff883b2bd56ade76755e7e5df31a3c",
   "sourceFileCount": 137,
   "privacyChanged": false,
   "termsChanged": false,
   "checks": {
-    "integratedTests": 482,
+    "integratedTests": 480,
     "browser": "Native local 46-card board; all 8 themes at actual390px width, 238px first-card height and no horizontal overflow. 342px-wide four-bullet detail at390px; at320x480 the surrounding overlay scrolls. Existing IAB80% zoom limits screenshot capture; this is not physical phone testing.",
     "packaging": "Final Netlify esbuild bundle GET200,46 entries and46 validated presentations,724ms,POST405,no-store; fixed live Sheet status lookup. Runtime receipt /tmp/su226-catalog-package-du7YZo/check-receipt.json.",
     "publicationBoundary": "Independent actual prepare-publish:8367 files; raw snapshot, server display map and private advice excluded; zero display source keys in static output.",
     "adviceCanvas": "Native Claude Design Advice Card Review:40 cards,80 initially checked lane controls; root toggled one choice and reloaded to verify persistence, then restored. Six Portfolio Graded and10 internship drafts stay private and held.",
-    "fullBuild": "Final source style/version/privacy checks, actual share generator, theme routes and explicit static publish allowlist all passed.",
-    "shareImageEquivalence": "Independent32 byte-for-byte matches across8 themes; reset after all themes, retained PNG bytes, fallback and separate renderer instances verified.",
-    "shareBuildMemory": "Full actual generator:486jobs x8 themes,3888renders,4120share/alias pages and images; exit0,85.56seconds,224.9MiB peakRSS,zero swaps on macOSNode20.15.1. Full482-test suite including native-memory regression passed on bundledNode22+; hostedNode22 readback pending."
+    "fullBuild": "Passed complete Netlify build command:486 main jobs x8 themes,4120 share and alias pages with images,7 theme routes; allowlisted static output prepared."
   },
-  "scope": "Build-only repair after Netlify killed2.2.6 share-image generation with exit137. Reusable native canvas and sequential event-loop yielding; includes reviewed2.2.6 internship presentation.",
-  "baselineReview": "docs/privacy-reviews/2.2.6.json",
+  "scope": "Compact internship cards and four-bullet summaries; server-only reviewed display projection after status suppression; weighted internship theme paper; private advice review canvas.",
+  "baselineReview": "docs/privacy-reviews/2.2.5.json",
   "openItems": [
     "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
     "Function-scoped Firebase and Netlify configuration and actual owner UID",
@@ -32,5 +30,5 @@
     "Hosted internship endpoint rollout and real Saved/Tracker round trip for admitted listings",
     "First scheduled internship-maintenance firing; installed and manual production-mode execution verified"
   ],
-  "policySummary": "Reviewed Privacy Policy and Terms, no wording change needed. No new account, consent, analytics or retention flow. Public employer summaries attach only to surviving approved feed records; source-fact checks invalidate stale summaries. Main Jobs salary colors are unchanged. Private review choices do not publish website content. Prior hosted account/retention limitations remain. Build-only2.2.7 adds no visitor data handling or new endpoint. No Privacy or Terms wording change needed."
+  "policySummary": "Reviewed Privacy Policy and Terms, no wording change needed. No new account, consent, analytics or retention flow. Public employer summaries attach only to surviving approved feed records; source-fact checks invalidate stale summaries. Main Jobs salary colors are unchanged. Private review choices do not publish website content. Prior hosted account/retention limitations remain."
 }

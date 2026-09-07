@@ -10,6 +10,7 @@ import { mkdirSync, writeFileSync, rmSync, existsSync, readFileSync } from 'node
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import SUJobIdentity from '../js/job-identity.js';
+import { setImmediate as yieldToEventLoop } from 'node:timers/promises';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SHEET = '1DRfkDn_OIVlnx06xFaNpNbusXl49jvM26oJsl-qq2nU';
@@ -21,7 +22,7 @@ export function siteOrigin(env = process.env) {
   return (env.CONTEXT === 'production' ? canonical : (env.DEPLOY_PRIME_URL || canonical)).replace(/\/+$/, '');
 }
 const SITE = siteOrigin();
-let createCanvas, GlobalFonts;
+let createCanvas, GlobalFonts, canvasReady;
 
 // ---- Fonts: use the real board faces so the card reads handmade, not like a plain box.
 // Registered from @fontsource woff2 (bundled in node_modules). Graceful if missing.
@@ -225,13 +226,15 @@ function roundRect(ctx, x, y, w, h, r) {
 // Draw one job to look EXACTLY like the board card (flat, same fonts/colors),
 // just scaled up for the 1200x630 OG frame. No tape / peel / curl / sheen /
 // vignette — the board card doesn't have those, and Nic didn't want them.
-function drawCard(job, themeKey) {
+function drawCard(job, themeKey, cv) {
   const T = THEMES[themeKey] || THEMES.original;
   // Shared cards ALWAYS use the theme's $100K+ card color (the attention-grabber:
   // original = yellow, casino = black, girly = pink), regardless of the job's real
   // pay tier. Per Nic — a shared card should always look premium.
   const P = T.high;
-  const W = 1200, H = 630, cv = createCanvas(W, H), ctx = cv.getContext('2d');
+  const W = 1200, H = 630, ctx = cv.getContext('2d');
+  // Reset pixels and drawing state between images, reusing one native surface.
+  ctx.reset();
 
   // thin surface behind the card (barely shows — the card nearly fills the frame)
   ctx.fillStyle = T.back; ctx.fillRect(0, 0, W, H);
@@ -280,6 +283,19 @@ function drawCard(job, themeKey) {
   return cv.toBuffer('image/png');
 }
 
+// Native canvas memory is larger than its JavaScript wrapper. Allocating a new
+// canvas thousands of times in one synchronous turn can exhaust a build worker
+// before native finalizers run. Keep one surface for this sequential renderer.
+export async function createCardRenderer() {
+  if (!canvasReady) canvasReady = (async () => {
+    ({ createCanvas, GlobalFonts } = await import('@napi-rs/canvas'));
+    registerFonts();
+  })();
+  await canvasReady;
+  const canvas = createCanvas(1200, 630);
+  return (job, themeKey) => drawCard(job, themeKey, canvas);
+}
+
 export function stub(job, slug, themeKey, site = SITE) {
   const url = `/jobs.html?job=${encodeURIComponent(b64(job.link))}&theme=${encodeURIComponent(themeKey)}`;
   const img = `${site}/j/og/${themeKey}/${slug}.png`;
@@ -320,10 +336,7 @@ async function main() {
   // Validate the entire feed before replacing output. A failed deployment leaves
   // the previous successful site intact; it must not silently publish missing shares.
   const jobs = await loadJobs(process.argv[2]);
-  if (jobs.length) {
-    ({ createCanvas, GlobalFonts } = await import('@napi-rs/canvas'));
-    registerFonts();
-  }
+  const renderCard = jobs.length ? await createCardRenderer() : null;
 
   // Output root: defaults to <repo>/j; SHARE_OUT lets a local test render elsewhere.
   const OUT = process.env.SHARE_OUT || join(ROOT, 'j');
@@ -334,13 +347,16 @@ async function main() {
   let n = 0;
   for (const job of jobs) {
     for (const th of THEME_KEYS) {
-      const image = drawCard(job, th);
+      const image = renderCard(job, th);
       for (const { slug } of shareEntries(job)) {
         writeFileSync(join(outImgRoot, th, slug + '.png'), image);
         writeFileSync(join(outHtmlRoot, th, slug + '.html'), stub(job, slug, th));
       }
     }
     n++;
+    // Let completed PNG/native allocations be finalized before the next job.
+    // Rendering remains strictly sequential, with at most one canvas in flight.
+    await yieldToEventLoop();
   }
   const aliases = jobs.reduce((sum, job) => sum + shareEntries(job).length, 0);
   console.log('generated', n, 'jobs x', THEME_KEYS.length, 'themes;', aliases * THEME_KEYS.length, 'share pages + images including URL aliases into /j');
