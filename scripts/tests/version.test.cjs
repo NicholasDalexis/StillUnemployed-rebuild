@@ -9,7 +9,7 @@ const { spawnSync } = require('node:child_process');
 
 const root = path.resolve(__dirname, '../..');
 const versionTool = import(pathToFileURL(path.join(root, 'scripts/version.mjs')).href);
-const initial = () => ({ schemaVersion:1, currentVersion:'2', releases:[{ version:'2', date:'2026-09-05', title:'The new board', changes:['Clearer navigation.'] }] });
+const initial = () => ({ schemaVersion:1, currentVersion:'2', releases:[{ version:'2', date:'2026-09-05', title:'The new board', changes:['Clearer navigation.'], public:{title:'The new board',changes:['Clearer navigation.']} }] });
 
 test('public releases start at 2 then 2.1.0 and carry each patch digit after 9', async () => {
   const { nextVersion } = await versionTool;
@@ -61,7 +61,7 @@ test('release dates follow Eastern time across UTC midnight', async () => {
 
 test('history is readable without JavaScript and release notes cannot inject markup', async () => {
   const { renderHistory } = await versionTool;
-  const data = initial();data.releases[0].title = '<img src=x onerror=alert(1)>';data.releases[0].changes = ['<script>alert("x")</script>'];
+  const data = initial();data.releases[0].public.title = '<img src=x onerror=alert(1)>';data.releases[0].public.changes = ['<script>alert("x")</script>'];
   const html = renderHistory(data);
   assert.match(html, /<h1>Version history<\/h1>/);assert.match(html, /id="version-2"/);assert.match(html, /<time datetime="2026-09-05">September 5, 2026<\/time>/);
   assert(html.includes('&lt;img src=x onerror=alert(1)&gt;'));assert(!html.includes('<script>'));assert(!html.includes('<img src=x'));
@@ -272,4 +272,44 @@ test('source symlinks cannot pull outside files into the public fingerprint', as
     fs.symlinkSync(path.join(dir, 'releases.json'), path.join(dir, 'js/linked.json'));
     assert.throws(() => publicSourceFingerprint(dir), /symlinks are unsupported/);
   } finally { fixture.clean(); }
+});
+
+test('public history is an explicit two-release projection that never falls back to private notes', async () => {
+  const { publicReleaseData, renderHistory, bumpRelease, validateRelease } = await versionTool;
+  const entry = (version, visible) => ({ version, date:'2026-09-07', title:'INTERNAL TITLE '+version, changes:['INTERNAL NOTE '+version], ...(visible ? {public:{title:'Visible '+version,changes:['Noticeable change '+version]}} : {}) });
+  const data = {schemaVersion:1,currentVersion:'2.3.4',releases:[entry('2.3.4',false),entry('2.3.3',true),entry('2.3.2',false),entry('2.3.1',true),entry('2.3.0',true)]};
+  const original=JSON.stringify(data), projected=publicReleaseData(data), history=renderHistory(data);
+  assert.deepEqual(projected.releases.map(r=>r.version),['2.3.3','2.3.1']);
+  assert.equal(projected.currentVersion,'2.3.4');
+  assert.doesNotMatch(JSON.stringify(projected)+history,/INTERNAL|Visible 2\.3\.0|Noticeable change 2\.3\.0/);
+  assert.equal((history.match(/<article /g)||[]).length,2);
+  assert.match(history,/id="version-2-3-4">Current board: Version 2\.3\.4/,'backend-only current release keeps version navigation meaningful');
+  assert.doesNotMatch(history,/<span class="current">/,'older viewer update is not mislabeled Current');
+  assert.equal(JSON.stringify(data),original,'projection never trims the private ledger');
+  projected.releases[0].changes.push('local modification');assert.equal(JSON.stringify(data),original);
+  const empty={schemaVersion:1,currentVersion:'2',releases:[entry('2',false)]};
+  assert.deepEqual(publicReleaseData(empty).releases,[]);
+  assert.doesNotMatch(renderHistory(empty),/INTERNAL/);
+  const upgraded=bumpRelease(data,{notes:['PRIVATE build work'],title:'INTERNAL new',publicTitle:'A clearer board',publicNotes:['Easier to browse.'],date:'2026-09-07'});
+  assert.deepEqual(upgraded.releases[0].changes,['PRIVATE build work']);
+  assert.equal(publicReleaseData(upgraded).releases[0].title,'A clearer board');
+  assert.doesNotMatch(JSON.stringify(publicReleaseData(upgraded)),/PRIVATE|INTERNAL/);
+  assert.throws(()=>bumpRelease(data,{notes:['private'],publicNotes:['visible']}),/public-title/);
+  assert.throws(()=>bumpRelease(data,{notes:['private'],publicTitle:'visible'}),/public-note/);
+  const malformed=JSON.parse(original);malformed.releases[0].public={title:'Missing public notes'};
+  assert.throws(()=>validateRelease(malformed),/explicit title/);
+});
+
+test('the CLI accepts separate private and public copy without exposing full history', async () => {
+  const {applyRelease}=await versionTool, fixture=releaseFixture(),{dir,put}=fixture;
+  try {
+    put('scripts/version.mjs',fs.readFileSync(path.join(root,'scripts/version.mjs')));applyRelease(dir,{seal:true});
+    const run=spawnSync(process.execPath,[fs.realpathSync(path.join(dir,'scripts/version.mjs')),'--bump','--title','Internal operations','--note','PRIVATE_ONLY_FIXTURE','--public-title','Easier to browse','--public-note','Find your next role faster.'],{encoding:'utf8'});
+    assert.equal(run.status,0,run.stderr);
+    const full=JSON.parse(fs.readFileSync(path.join(dir,'releases.json'),'utf8'));
+    assert.equal(full.releases[0].changes[0],'PRIVATE_ONLY_FIXTURE');
+    const html=fs.readFileSync(path.join(dir,'versions.html'),'utf8');
+    assert.match(html,/Easier to browse/);assert.match(html,/Find your next role faster/);assert.doesNotMatch(html,/PRIVATE_ONLY_FIXTURE|Internal operations/);
+    assert.equal(applyRelease(dir,{check:true}).version,'2.1.0');
+  } finally {fixture.clean();}
 });

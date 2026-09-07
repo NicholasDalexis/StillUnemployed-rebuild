@@ -151,10 +151,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline:3px solid
 .texture-figure, .icon-specimen { margin:0; }
 .texture-preview { min-height:220px; border-radius:2px; border:1px solid #2a211825; margin-bottom:20px; }
 .texture-figure figcaption p { margin-bottom:0; }
-.texture-specs { display:grid; gap:4px; margin:0; }
-.texture-specs dt { font-weight:600; }
-.texture-specs dd { margin:0 0 12px; min-width:0; }
-.texture-specs code { display:block; overflow-wrap:anywhere; }
 .icon-specimens { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
 .icon-specimen { padding:16px; }
 .icon-stage { display:flex; align-items:center; justify-content:center; min-height:156px; border-radius:2px; margin-bottom:16px; overflow:hidden; }
@@ -164,9 +160,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline:3px solid
 .icon-specimen h3 { margin:0; font-size:1.375rem; }
 @media(max-width:700px) { .texture-preview { min-height:190px; }.icon-specimens { grid-template-columns:1fr; gap:16px; }.icon-specimen { display:grid; grid-template-columns:112px minmax(0,1fr); gap:16px; align-items:center; }.icon-stage { min-height:108px; margin-bottom:0; }.icon-drawing { width:76px; max-width:76%; } }
 @media(prefers-reduced-motion:reduce) { .texture-preview { animation:none!important; } }
-.texture-source { margin-top:16px; }
-.texture-source summary { display:list-item; min-height:44px; padding:8px 0; cursor:pointer; font:400 1.2rem/1.4 var(--su-hand); }
-.texture-source code { display:block; margin-top:8px; white-space:normal; overflow-wrap:anywhere; }
 
 .guide-contents { margin-top:24px; padding:16px 20px; background:var(--su-paper); color:var(--su-ink); border:1px solid var(--su-rule); border-radius:3px; }
 .guide-contents h2 { margin:0 0 4px; font:400 1.375rem/1.3 var(--su-hand); }
@@ -174,7 +167,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline:3px solid
 .guide-contents a { display:inline-flex; align-items:center; min-height:var(--su-touch); color:var(--su-ink); font:400 1rem/1.3 var(--su-body); }
 .section-title { scroll-margin-top:24px; }
 .advice-examples { align-items:start; padding-top:4px; }
-.advice-anatomy { margin-top:12px; }
 .guide-photo { margin:16px 0; }
 .guide-photo img { display:block; width:100%; height:auto; border-radius:2px; }
 .guide-photo figcaption { margin-top:8px; }
@@ -185,3 +177,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline:3px solid
 /* Preserve the taller Original sketches without clipping their pen strokes. */
 [data-theme-icon^="original-legacy-"] .icon-drawing { width:72px; }
 @media(max-width:700px) { [data-theme-icon^="original-legacy-"] .icon-drawing { width:62px; } }
+
+/* Keep the public visual reference comfortable on narrow phones. */
+@media(max-width:420px) { .guide { padding-inline:16px; }.sheet, .sample-card { padding:20px; }.section-title { font-size:1.75rem; }.masthead nav { gap:8px 16px; } }

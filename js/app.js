@@ -91,82 +91,23 @@
     var h = location.hostname;
     return (h !== 'stillunemployed.com' && h !== 'www.stillunemployed.com');
   }
-  // ═══ NEWSLETTER CAPTURE — ONE SOURCE OF TRUTH (Nic, 2026-07-12) ═══════════════════════════
-  // Everything about the capture block is defined HERE and nowhere else.
-  //
-  // It used to be defined TWICE: the copy list and the frequency rule were copy-pasted into both
-  // the render path and the view-logger, and they had already drifted. Exact same failure class as
-  // the share-card theme bug (two definitions of one concept, kept in sync by memory). One list,
-  // one rule, both consumers read from it.
-  //
-  // FREQUENCY: every Nth card by DISPLAYED POSITION (`j._pos`, stamped at render time).
-  // NOT a hash of the job link. A hash clusters — two adjacent cards could both carry it and then
-  // eight in a row carry none. That's the "two cards in a row have the email popup" Nic reported.
-  // Position is evenly spaced by construction. TUNE THE WHOLE THING WITH THIS ONE NUMBER:
-  var RECIPE_EVERY = 2;                 // 2 = every other card. 3 = every third. etc.
-
-  // COPY: 50 variants. Stable per card (driven by position, so a given card always shows the same
-  // line — it never shuffles under you between renders).
-  // HARD RULE (Nic, 2026-07-12): NEVER name a weekday. The newsletter does not ship on a fixed day.
-  // "every week" only. Never "every Monday".
+  // Newsletter invitations follow actual popup openings, shared across both boards in this tab.
   var RECIPE_COPY = [
-    'want the exact advice that got me a job at Instagram? ↓',
-    'want the recipe I followed to a 6-figure offer? ↓',
-    'the advice that almost got me a job with the Kardashians ↓',
-    '4 hand-picked jobs + 1 raw story, every week. free. ↓',
-    '1,500 applications. 7 months. one yes. here is what worked ↓',
-    'the newsletter i wish someone had sent me at 21 ↓',
-    'the recipe i wish i had the day after graduation ↓',
-    'i got ghosted for 7 months. then Instagram said yes ↓',
-    'just what actually got me hired. nothing else ↓',
-    'everything i would do differently if i started over ↓',
-    'free. weekly. easy unsub. no weird tricks ↓',
-    'the resume line that got me interviews. for free ↓',
-    'what i sent after every interview. it worked ↓',
-    'you are not bad at this. your strategy is ↓',
-    'the cold email that got me a reply from a recruiter ↓',
-    'how i went from 0 interviews to 4 in one month ↓',
-    'the part of the job hunt nobody explains ↓',
-    'i read every rejection so you do not have to ↓',
-    'what actually got me in the door at Meta ↓',
-    'stop applying to 200 jobs. do this instead ↓',
-    'the exact follow-up i sent. steal it ↓',
-    'one raw story + jobs worth your time, weekly ↓',
-    'i was you 8 months ago. here is the recipe ↓',
-    'the portfolio change that got me interviews ↓',
-    'nobody tells you this about entry-level roles ↓',
-    'the recipe. free. no course, no upsell ↓',
-    'how to get a referral from a total stranger ↓',
-    'why your applications are getting auto-rejected ↓',
-    'i tracked all 1,500 applications. here is what worked ↓',
-    'the 3 lines i put at the top of my resume ↓',
-    'what recruiters actually skim for. free breakdown ↓',
-    'ghosted again? read this before you apply again ↓',
-    'the interview answer that changed everything ↓',
-    'jobs worth applying to, sent to you weekly. free ↓',
-    'how i talked about zero experience and still got hired ↓',
-    'you might be one fix away. i will show you it ↓',
-    'the honest version of the job hunt. no LinkedIn voice ↓',
-    'what i wish i knew before application #1 ↓',
-    'the free thing that got me a 6-figure offer ↓',
-    'i built this board because the recipe worked ↓',
-    'real jobs. real story. every week. free ↓',
-    'stop rewriting your resume. read this first ↓',
-    'the follow-up nobody sends. that is the point ↓',
-    'i answer every reply. hit me with your questions ↓',
-    'job hunt advice that respects your time ↓',
-    'what changed between rejection 1,400 and offer 1 ↓',
-    'the story i do not tell on LinkedIn ↓',
-    'how to stand out when everyone looks the same ↓',
-    'no motivational quotes. just what worked ↓',
-    'free weekly recipe from someone who just did this ↓',
-    'the job hunt is broken. here is how i beat it ↓'
+    'more notes from my job hunt ↓',
+    'the advice i wish i had before application #1 ↓',
+    'a little job hunt perspective, every week ↓',
+    'what i would do differently if i started over ↓'
   ];
-  // Which cards carry the block, and which line each one gets.
-  // Copy index divides by RECIPE_EVERY so we cycle through ALL 50 lines. (Indexing on raw position
-  // with RECIPE_EVERY=2 would only ever show the 25 even-numbered lines.)
-  function recipeShows(pos) { return typeof pos === 'number' && pos >= 0 && pos % RECIPE_EVERY === 0; }
-  function recipeCopy(pos) { return RECIPE_COPY[Math.floor(pos / RECIPE_EVERY) % RECIPE_COPY.length]; }
+  var detailOpens = 0;
+  function beginJobDetail(comp, link) {
+    if (!comp.jobs.some(function(job){return jobHasLink(job,link);})) return;
+    try { detailOpens = Number(sessionStorage.getItem('su_detail_opens')) || 0; } catch (_) {}
+    detailOpens = Math.max(0, detailOpens) + 1;
+    try { sessionStorage.setItem('su_detail_opens', String(detailOpens)); } catch (_) {}
+    comp._detailRecipe = detailOpens % 2 === 0;
+    comp._detailRecipeCopy = RECIPE_COPY[Math.floor((detailOpens - 1) / 2) % RECIPE_COPY.length];
+    suRecipeView(link, comp);
+  }
 
   // ═══ ADVICE NOTES — the notebook's margin notes (Nic, 2026-07-18) ═══════════════════════════
   // 15 notes mined from the newsletter issues (the newsletter is the asset factory; the board
@@ -288,38 +229,10 @@
   })();
   function adviceAt(n) { return NOTE_ORDER[n % NOTE_ORDER.length]; }
 
-  // Grid signup cards rotate through the SAME 50 RECIPE_COPY lines (one source of truth).
-  // Random per-load offset so every line gets airtime; stride 7 is coprime with 50, so a
-  // long scroll never repeats a line before all 50 have shown.
-  var SIGNUP_LINE_SEED = Math.floor(Math.random() * RECIPE_COPY.length);
-  function signupLine(n) { return RECIPE_COPY[(SIGNUP_LINE_SEED + n * 7) % RECIPE_COPY.length]; }
-
-  // ── feed schedule: where notes + signup cards sit between job cards ────────────────────────
-  // Desktop (3-col grid): advice note = every 3rd row's MIDDLE slot (visible slots 7, 16, 25 …
-  // ≡ 7 mod 9), signup card = the END slot two rows after each note (slots 14, 23, 32 … ≡ 5
-  // mod 9) — never adjacent to a note, horizontally or vertically.
-  // Mobile (1-col feed): repeating pattern J J S J J N — a signup card roughly every 3rd card
-  // (Nic scrolled 7+ without seeing one), an advice note every 5th job card, and always 2 job
-  // cards between a signup and a note so the feed never reads as ads.
-  // Returns { <jobIndex>: [ {t:'note'|'signup', n:ordinal}, … ] } = items to insert BEFORE
-  // that displayed job.
-  function suFeedSchedule(totalJobs, isMobile, signupsOn) {
-    var map = {}, v = 0, jobs = 0, notes = 0, sign = 0, guard = 0;
-    while (jobs < totalJobs && guard++ < 4000) {
-      var slot = 'job';
-      if (isMobile) {
-        if (v % 6 === 5) slot = 'note';
-        else if (v % 6 === 2) slot = 'signup';
-      } else {
-        if (v >= 7 && v % 9 === 7) slot = 'note';
-        else if (v >= 14 && v % 9 === 5) slot = 'signup';
-      }
-      if (slot === 'job') jobs++;
-      else if (slot === 'note') (map[jobs] = map[jobs] || []).push({ t: 'note', n: notes++ });
-      else if (signupsOn) (map[jobs] = map[jobs] || []).push({ t: 'signup', n: sign++ });
-      else sign++;                      // ✕-hidden: keep the schedule stable, emit nothing
-      v++;
-    }
+  // Useful advice between roles. Newsletter signup stays inside opened notes.
+  function suFeedSchedule(totalJobs, isMobile) {
+    var map = {}, every = isMobile ? 5 : 8, n = 0;
+    for (var i = every; i < totalJobs; i += every) map[i] = [{ t:'note', n:n++ }];
     return map;
   }
 
@@ -500,48 +413,34 @@
     '</div>';
   }
 
-  // ── newsletter signup card (in the grid) — a note in the notebook, not an ad ───────────────
-  // ✕ hides ALL signup cards until reload (same _recipeHidden flag as the popup block, so the
-  // dismissal is consistent everywhere — UX rule #9).
-  // NO EMAIL FIELD IN THE FEED (Nic, 2026-07-18: "that just reads like an ad"). Email fields live
-  // in POPUPS only. The card is now a hook + a "get the recipe" flip, exactly like an advice note —
-  // click it and the popup carries the field.
-  //
-  // This is ALSO the fix for the board feeling slow: every setState rebuilds the grid's HTML, and
-  // each of these cards used to carry a LIVE Beehiiv iframe — so every popup open re-fetched ~a
-  // dozen iframes from the network. That was the ~2s lag AND the "arrow but no email field" bug
-  // (fields still loading mid-rebuild). Cards are now pure HTML; iframes exist only in popups.
-  function signupCardHtml(mode, seq) {
-    // The 50-line bank was written for POPUPS, where a trailing "↓" points at the email field
-    // directly below. On a grid card there IS no field below (Nic: "the arrow points at nothing"),
-    // so strip any trailing arrow before rendering here. Popups keep theirs.
-    var line = signupLine(seq).replace(/\s*[↓→]\s*$/, '');
-    var rot = (seq % 2 === 0) ? 1.4 : -1.4;
-    var cls = mode === 'm' ? 'su-ins-m' : 'su-ins-d';
-    return '<div class="note su-signup ' + cls + '" data-act="openSignup" data-line="' + esc(line) + '" data-imp="signup_view|' + esc(line) + '|card" style="--rot:' + rot + 'deg; cursor:pointer; position:relative; background-color:#FCFAF3; background-image:repeating-linear-gradient(180deg, transparent 0 24px, rgba(96,130,170,0.30) 24px 25px); background-position:0 52px; color:#2A2118; border-radius:3px; padding:30px 22px 16px 30px; box-sizing:border-box; display:flex; flex-direction:column; min-height:210px; box-shadow:3px 6px 13px rgba(44,33,24,0.17);">' +
-      '<div style="position:absolute; top:0; bottom:0; left:18px; width:1.5px; background:rgba(214,80,46,0.38);"></div>' +
-      '<div style="position:absolute; top:-11px; left:50%; transform:translateX(-50%) rotate(2deg); width:92px; height:24px; background:rgba(228,202,128,0.6); border-left:1px dashed rgba(255,255,255,.5); border-right:1px dashed rgba(255,255,255,.5); box-shadow:0 1px 2px rgba(0,0,0,.1); z-index:3;"></div>' +
-      '<div data-act="hideSignupCards" data-co="' + esc(line) + '" title="hide these" style="position:absolute; top:8px; right:8px; width:22px; height:22px; border-radius:50%; background:rgba(44,33,24,0.06); display:flex; align-items:center; justify-content:center; cursor:pointer; font-family:\'Archivo\',sans-serif; font-size:12px; color:#6F5E45; z-index:4;">✕</div>' +
-      '<div style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:21px; line-height:1.3; color:#2A2118; padding-right:22px; margin-top:4px;">' + esc(line) + '</div>' +
-      '<div style="flex:1; min-height:14px;"></div>' +
-      '<div style="display:flex; justify-content:flex-end;"><span data-act="openSignup" data-line="' + esc(line) + '" aria-label="Open newsletter signup" style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:20px; color:#C2552F; display:inline-flex; align-items:center; gap:4px;">get the recipe<svg class="doodle-arrow" width="28" height="14" viewBox="0 0 28 14" fill="none" style="overflow:visible; margin-left:2px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>' +
-      '<div style="font-family:\'Indie Flower\',cursive; font-size:15px; color:#8A7558; margin-top:6px;">free · every week · easy unsub&nbsp;&nbsp;- Nic</div>' +
-    '</div>';
+  function suRecipeView(link, comp) {
+    if (comp && comp._detailRecipe && !comp._recipeHidden)
+      postReport('recipe_view', comp._detailRecipeCopy, link);
   }
 
-  // Log a "recipe_view" when a popup carrying the capture block is opened, so the Reports sheet can
-  // compute views vs hides vs signups PER LINE — that's how we learn which of the 50 actually earns.
-  function suRecipeView(link, comp) {
-    try {
-      if (!link || (comp && comp._recipeHidden) || !comp || !comp.jobs) return;
-      var job = null;
-      for (var j = 0; j < comp.jobs.length; j++) { if (jobHasLink(comp.jobs[j], link)) { job = comp.jobs[j]; break; } }
-      if (!job) return;   // block shows in EVERY popup now (2026-07-18) — log every open
-      // 30+ day cards don't show the block (they carry the age line instead) — don't log a view
-      var src = job.posted || job.added || '';
-      if (src) { var ad = new Date(String(src).trim().slice(0, 10) + 'T00:00:00'); if (!isNaN(ad.getTime()) && Math.floor((Date.now() - ad.getTime()) / 86400000) >= 30) return; }
-      postReport('recipe_view', recipeCopy(job._pos), link);
-    } catch (e) {}
+  function newsletterHtml(cta) {
+    return '<div class="su-newsletter-frame" aria-busy="true">' +
+      '<div class="su-newsletter-loading" role="status"><span>Loading signup…</span><i aria-hidden="true"></i></div>' +
+      '<iframe data-src="https://subscribe-forms.beehiiv.com/af2e314d-125f-431d-a8e0-0020be04d97c" data-test-id="beehiiv-embed" data-cta="' + esc(cta) + '" title="Newsletter signup" height="50" frameborder="0" scrolling="no"></iframe>' +
+      '<a class="su-newsletter-fallback" href="https://subscribe-forms.beehiiv.com/af2e314d-125f-431d-a8e0-0020be04d97c" target="_blank" rel="noopener" hidden>Open newsletter signup</a></div>';
+  }
+  function prepareNewsletters(root) {
+    root.querySelectorAll('.su-newsletter-frame').forEach(function(wrap) {
+      var frame = wrap.querySelector('iframe'), status = wrap.querySelector('[role="status"]');
+      if (!frame || frame.getAttribute('src')) return;
+      var timer;
+      function ready() {
+        clearTimeout(timer); wrap.setAttribute('aria-busy','false');
+        wrap.classList.add('is-loaded'); if (status) status.hidden = true;
+        var fallback=wrap.querySelector('.su-newsletter-fallback');if(fallback)fallback.hidden=false;
+      }
+      frame.addEventListener('load', ready, {once:true});
+      timer = setTimeout(function(){
+        if (!wrap.isConnected) return;
+        ready(); var fallback=wrap.querySelector('.su-newsletter-fallback');if(fallback)fallback.hidden=false;
+      }, 10000);
+      frame.src = frame.getAttribute('data-src');
+    });
   }
 
   // "Tracker (N)" nav badge — digits in Archivo (clearer than Indie Flower), 99+ cap, hidden at 0
@@ -647,74 +546,21 @@
   // every time." A nudge that repeats stops being a nudge and becomes nagging, and this fires at
   // the exact moment someone is feeling good about applying. Burn that moment once, well.
   // The flag lives in localStorage; clearing site data resets it, which is fine.
-  var TRACKER_NUDGE_KEY = 'su_tracker_nudged';
   function suTrackerNudge() {
-    try { if (localStorage.getItem(TRACKER_NUDGE_KEY)) return; } catch (e) { return; }
-    try { localStorage.setItem(TRACKER_NUDGE_KEY, '1'); } catch (e) {}
-
-    // Wait out the confetti so the two don't fight for attention.
+    var runtime=window.SUBoardRuntime;
+    if (!runtime || !runtime.recordApplication()) return;
+    var identity=runtime.owner();
     setTimeout(function () {
-      var wrap = document.createElement('div');
-      wrap.id = 'su-tracker-nudge';
-      // z-index 195: above the board, BELOW the modals (200+). The UX audit flagged the cookie
-      // banner for floating over open modals — not repeating that.
-      wrap.setAttribute('style',
-        'position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) rotate(-1deg); z-index: 195;' +
-        'display: flex; align-items: center; gap: 14px; max-width: 92vw; box-sizing: border-box;' +
-        'background: #FCFAF3; border: 1.5px solid rgba(44,33,24,0.18); border-radius: 10px;' +
-        'padding: 14px 16px 14px 18px; box-shadow: 3px 8px 22px rgba(44,33,24,0.26);' +
-        'opacity: 0; transition: opacity .28s ease, transform .28s ease;');
-
-      var msg = document.createElement('div');
-      msg.setAttribute('style',
-        "font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 19px; line-height: 1.25;" +
-        'color: #2C2118; max-width: 250px;');
-      msg.textContent = 'nice. every job you apply to gets saved here →';
-
-      // hand-drawn arrow, same language as the rest of the board
-      var arrow = document.createElement('span');
-      arrow.setAttribute('style', 'flex: none; color: #C2552F; display: inline-flex;');
-      arrow.innerHTML = '<svg width="34" height="16" viewBox="0 0 34 16" fill="none" style="overflow: visible;">' +
-        '<path d="M1 8 C 10 2.5, 20 2.5, 29 7.6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path>' +
-        '<path d="M23 3.2 L30.5 7.9 L23.5 12.8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
-
-      // the tracker post-it itself — an <a>, NOT a div with a click handler, so it works with
-      // middle-click / cmd-click / keyboard like a real link.
-      var link = document.createElement('a');
-      link.href = 'tracker.html';
-      link.setAttribute('style',
-        'flex: none; background: var(--su-yellow-paper); color: #2A2118; text-decoration: none;' +
-        "font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 20px;" +
-        'padding: 11px 18px; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center;' +
-        'transform: rotate(2deg); box-shadow: 2px 4px 9px rgba(44,33,24,0.22); cursor: pointer;');
-      link.textContent = 'Tracker';
-      link.addEventListener('click', function () { postReport('tracker_nudge_click', '', ''); });
-
-      var close = document.createElement('div');
-      close.setAttribute('style',
-        'flex: none; align-self: flex-start; width: 24px; height: 24px; margin-left: 2px; border-radius: 50%;' +
-        'display: flex; align-items: center; justify-content: center; cursor: pointer;' +
-        "background: rgba(44,33,24,0.06); font-family: 'Archivo', sans-serif; font-size: 12px; color: #6F5E45;");
-      close.textContent = '✕';
-      close.title = 'dismiss';
-      close.addEventListener('click', function () { hide(); });
-
-      wrap.appendChild(msg); wrap.appendChild(arrow); wrap.appendChild(link); wrap.appendChild(close);
-      document.body.appendChild(wrap);
-      requestAnimationFrame(function () {
-        wrap.style.opacity = '1';
-        wrap.style.transform = 'translateX(-50%) rotate(-1deg) translateY(-4px)';
-      });
-
-      var t = setTimeout(hide, 9000);   // don't camp on their screen
-      function hide() {
-        clearTimeout(t);
-        if (!wrap.parentNode) return;
-        wrap.style.opacity = '0';
-        setTimeout(function () { if (wrap.parentNode) wrap.parentNode.removeChild(wrap); }, 300);
-      }
-      try { postReport('tracker_nudge_view', '', ''); } catch (e) {}
-    }, 850);
+      if (identity !== runtime.owner() || document.getElementById('su-tracker-nudge')) return;
+      var wrap=document.createElement('div');wrap.id='su-tracker-nudge';wrap.className='su-tracker-nudge';
+      wrap.innerHTML='<a href="tracker.html">View jobs you applied to <svg width="24" height="14" viewBox="0 0 28 14" fill="none" aria-hidden="true"><path d="M1 7 Q12 1 25 7 M19 2 L26 7 L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a><button type="button" aria-label="Dismiss tracker reminder">×</button>';
+      var timer;
+      function hide(){clearTimeout(timer);if(wrap.parentNode)wrap.parentNode.removeChild(wrap);window.removeEventListener('su:auth-changed',hide);window.removeEventListener('storage',ownerChanged);}
+      function ownerChanged(){if(identity!==runtime.owner())hide();}
+      wrap.querySelector('button').addEventListener('click',hide);
+      window.addEventListener('su:auth-changed',hide);window.addEventListener('storage',ownerChanged);
+      document.body.appendChild(wrap);timer=setTimeout(hide,9000);
+    },850);
   }
 
   function suConfetti() {
@@ -981,6 +827,7 @@
     try {
       var rows = window.SUStore && window.SUStore.view ? window.SUStore.view().tracker : JSON.parse(localStorage.getItem('su_tracker') || '[]');
       if (!Array.isArray(rows)) rows = [];
+      trackerLog.added = false;
       if (link && rows.some(function (r) { return r && sameJobLink(r.link, link); })) return true;
       var d = new Date();
       rows.unshift({
@@ -994,6 +841,7 @@
         notes: ''
       });
       if (window.SUStore) window.SUStore.saveTracker(rows); else localStorage.setItem('su_tracker', JSON.stringify(rows));
+      trackerLog.added = true;
       return true;
     } catch (e) { return false; /* Keep the feedback open until the application is actually stored. */ }
   }
@@ -1028,7 +876,7 @@
       if (act === 'toggleSavedOnly') el.setAttribute('aria-pressed', String(!!App.state.savedOnly));
       if (act === 'toggleCat' || act === 'toggleFilters') el.setAttribute('aria-expanded', String(App.state.openPanel === (act === 'toggleCat' ? 'cat' : 'filters')));
     });
-    root.querySelectorAll('iframe[data-test-id="beehiiv-embed"]').forEach(function (el) { el.title = 'Newsletter signup'; });
+    prepareNewsletters(root);
     if (root.id === 'board' && window.SUBoardControls) window.SUBoardControls.prepare(root);
   }
 
@@ -1980,7 +1828,7 @@
         var insM = suFeedSchedule(shown.length, true, !this._recipeHidden);
         var addIns = function (list, mode) {
           (list || []).forEach(function (it) {
-            feedHtml += (it.t === 'note') ? adviceCardHtml(adviceAt(it.n), mode, it.n, ACC) : signupCardHtml(mode, it.n);
+            feedHtml += adviceCardHtml(adviceAt(it.n), mode, it.n, ACC);
           });
         };
         for (var fi = 0; fi < cardsHtml.length; fi++) {
@@ -2039,7 +1887,7 @@
       var missingSaved = savedJobs.filter(function (saved) { return !self.jobs.some(function (job) { return jobHasLink(job, saved.link); }); }).map(function (job) { return job.link; });
       var emptyTitle = this._loadError ? 'Jobs could not load right now' : this.state.savedOnly ? (missingSaved.length ? 'Your saved links are below' : 'no saved roles yet') : "We're looking for more jobs RN, check back soon!";
       var emptyHint = this._loadError ? 'Your saved jobs and tracker are still here. Try loading the board again.' : this.state.savedOnly ? 'tap the bookmark on any card to pin it here' : 'try clearing a filter, or check back in a few days';
-      var isEmpty = shown.length === 0;
+      var isEmpty = !this._loading && shown.length === 0;
 
       // ---- state <select> options ----
       var stateOpts = '<option value="all" style="background:#FFFDF5; color:#3A2A1B;"' + (this.state.st === 'all' ? ' selected' : '') + '>all states</option>' +
@@ -2139,14 +1987,14 @@
         '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + P.payHi + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$100K+</span></div>' +
       '</div>';
 
-      out += '<div class="su-board-utilities"><span class="su-results-count" aria-live="polite">' + esc(showingLabel) + '</span>' +
+      out += '<div class="su-board-utilities"><span class="su-results-count" aria-live="polite">' + (this._loading ? '' : esc(showingLabel)) + '</span>' +
         '<details id="su-board-menu" class="su-board-menu"><summary id="su-board-menu-trigger">Board menu <svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>' +
           '<div class="su-board-menu-sheet">' + (window.SUDiscovery && window.SUDiscovery.toolsHTML ? window.SUDiscovery.toolsHTML(esc) : '') +
             '<a href="./suggest.html">Suggest jobs</a><button type="button" data-act="openWelcome">What’s new</button>' +
           '</div></details></div></div>';
       if(chipsHtml) out += '<div class="su-active-filters">' + chipsHtml + '</div>';
 
-      out += '<p id="su-feed-progress" class="su-feed-status" role="status"'+(this._refreshing?'':' hidden')+'>Checking the latest roles…</p>';
+      out += '<p id="su-feed-progress" class="su-feed-status" role="status"'+(this._refreshing || this._loadingVisible?'':' hidden')+'>Checking the latest roles…</p>';
       if(this._actionError) out += '<div class="su-action-error" role="status">'+esc(this._actionError)+' <button type="button" data-act="retrySave">Try again</button></div>';
 
       // saved section title
@@ -2188,7 +2036,7 @@
       }
 
       if (this._loadError) out += '<p role="status"><button type="button" data-act="retryJobs" class="tab">Try loading jobs again</button></p>';
-      if (this.state.savedOnly && missingSaved.length) {
+      if (!this._loading && this.state.savedOnly && missingSaved.length) {
         out += '<section class="su-unlisted-saved"><h2>Saved links outside the current board</h2><p>These links stay saved even when their cards are not in the loaded board. Check the employer for availability.</p><ul>';
         missingSaved.forEach(function (link) {
           var url = safeUrl(link);
@@ -2363,16 +2211,9 @@
           }
           // popup note-card is always cream, so apply is ALWAYS bright orange (Nic: it must pop)
           var _applyC = '#E8502E';
-          // ── recipe capture (Nic, 2026-07-12) ─────────────────────────────────────────
-          // Frequency + all 50 copy lines live in RECIPE_EVERY / RECIPE_COPY at the top of this
-          // file. Do NOT redefine them here — that duplication is exactly what drifted before.
-          // Hidden = in-memory only, so an accidental ✕ comes back on reload.
-          // EVERY job popup carries the email block now (Nic, 2026-07-18: fields live in popups,
-          // and popups should be consistent — "sometimes there is, sometimes there isn't" felt
-          // broken). The ✕ still hides it for the session. recipeShows() now only governs which
-          // grid positions get signup CARDS, not popups.
-          var _rShow = !this._recipeHidden;
-          var _rCopy = recipeCopy(dj._pos || 0);   // every popup gets a line now, whatever its position
+          // Keep the same invitation through rerenders of this opening.
+          var _rShow = !!this._detailRecipe && !this._recipeHidden;
+          var _rCopy = this._detailRecipeCopy || RECIPE_COPY[0];
           var _arrow = '<svg width="30" height="15" viewBox="0 0 28 14" fill="none" style="overflow: visible; margin-left: 5px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
           // Age disclaimer (Nic, 2026-07-11). We never retire a role for being old — old roles STAY on the
           // board (a fuller board), and we disclose the age here, in the popup only, never on the card face.
@@ -2439,7 +2280,7 @@
               '<div style="margin-top: 20px; border-top: 1.5px dashed rgba(44,33,24,0.22); padding-top: 12px; position: relative;">' +
                 '<div data-act="hideRecipe" data-co="' + esc(_rCopy) + '" data-link="' + esc(dj.link) + '" title="hide this" style="position: absolute; top: 5px; right: 0; width: 20px; height: 20px; border-radius: 50%; background: rgba(44,33,24,0.06); display: flex; align-items: center; justify-content: center; cursor: pointer; font-family: \'Archivo\', sans-serif; font-size: 11px; color: #6F5E45;">✕</div>' +
                 '<div style="font-family: \'Indie Flower\', cursive; font-size: 16px; color: #2C2118; line-height: 1.3; padding-right: 26px;">' + esc(_rCopy) + '</div>' +
-                '<iframe src="https://subscribe-forms.beehiiv.com/af2e314d-125f-431d-a8e0-0020be04d97c" data-test-id="beehiiv-embed" data-cta="signup:' + esc(_rCopy) + '" height="50" frameborder="0" scrolling="no" style="width: 100%; max-width: 100%; border: 0; border-radius: 4px; background: transparent; margin-top: 9px; display: block; overflow: hidden;"></iframe>' +
+                newsletterHtml('signup:' + _rCopy) +
               '</div>') +
             '</div>' +
           '</div>';
@@ -2472,9 +2313,9 @@
               adviceDoodleHtml(_an) +
               '<div style="margin-top: 20px;">' + adviceWhyHtml(_an.why) + '</div>' +
               '<div style="margin-top: 24px; border-top: 1.5px dashed rgba(44,33,24,0.22); padding-top: 16px;">' +
-                '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 17px; color: #2C2118; line-height: 1.4;">' + esc(_an.sell || 'the exact recipe that got me my job at Instagram ↓') + '</div>' +
-                '<iframe src="https://subscribe-forms.beehiiv.com/af2e314d-125f-431d-a8e0-0020be04d97c" data-test-id="beehiiv-embed" data-cta="note:' + esc(_an.id) + '" height="50" frameborder="0" scrolling="no" style="width: 100%; max-width: 100%; border: 0; border-radius: 4px; background: transparent; margin-top: 12px; display: block; overflow: hidden;"></iframe>' +
-                '<div style="font-family: \'Indie Flower\', cursive; font-size: 14.5px; color: #8A7558; margin-top: 8px;">free · every week · easy unsub&nbsp;&nbsp;- Nic</div>' +
+                '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 17px; color: #2C2118; line-height: 1.4;">' + esc(_an.sell || 'more notes like this in Job Hunt Recipe ↓') + '</div>' +
+                newsletterHtml('note:' + _an.id) +
+                '<div style="font-family: \'Indie Flower\', cursive; font-size: 14.5px; color: #8A7558; margin-top: 8px;">every week · easy unsub&nbsp;&nbsp;- Nic</div>' +
               '</div>' +
             '</div>' +
           '</div>';
@@ -2493,8 +2334,8 @@
             '</div>' +
             '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 24px; line-height: 1.3; color: #2A2118; padding-right: 24px;">' + esc(this.state.signupOpen) + '</div>' +
             '<div style="font-family: \'Poppins\', sans-serif; font-size: 14px; line-height: 1.6; color: #3a3026; margin-top: 14px;">One email a week: the exact steps I used to go from 1,500 applications and silence to a 6-figure offer at Instagram.</div>' +
-            '<iframe src="https://subscribe-forms.beehiiv.com/af2e314d-125f-431d-a8e0-0020be04d97c" data-test-id="beehiiv-embed" data-cta="signup-popup" height="50" frameborder="0" scrolling="no" style="width: 100%; max-width: 100%; border: 0; border-radius: 4px; background: transparent; margin-top: 16px; display: block; overflow: hidden;"></iframe>' +
-            '<div style="font-family: \'Indie Flower\', cursive; font-size: 14.5px; color: #8A7558; margin-top: 8px;">free · every week · easy unsub&nbsp;&nbsp;- Nic</div>' +
+            newsletterHtml('signup-popup') +
+            '<div style="font-family: \'Indie Flower\', cursive; font-size: 14.5px; color: #8A7558; margin-top: 8px;">every week · easy unsub&nbsp;&nbsp;- Nic</div>' +
           '</div>' +
         '</div>';
       }
@@ -2624,11 +2465,13 @@
         if (previousKey === dialogKey && previousFocus && previousFocus.act && previousFocus.act !== 'stop') restoreIntent(previousFocus);
         if (!dialog.contains(document.activeElement)) dialog.focus({ preventScroll:true });
       } else if (previousDialog) { restoreIntent(this._dialogReturn); this._dialogReturn = null; }
-      if (!dialog && window.SUWelcome) window.SUWelcome.maybeShow();
+      if (!this._loading && !dialog && window.SUWelcome) window.SUWelcome.maybeShow();
     },
 
     // ---- event wiring (single delegated listener on document) -------------
     bindEvents: function () {
+      if (this._eventsBound) return;
+      this._eventsBound = true;
       var self = this;
 
       // Tab leaving a cross-origin newsletter frame does not emit a keydown
@@ -2706,7 +2549,7 @@
             self.setState({ feedbackOpen: false });
             self.render();
             suConfetti();       // short celebratory burst; popup closes so they keep browsing
-            if (tracked) suTrackerNudge(); // Only promise a tracker entry when it exists.
+            if (tracked && trackerLog.added) suTrackerNudge(); // Only promise a tracker entry when it exists.
             break;
           }
           case 'notFit': {
@@ -2854,7 +2697,7 @@
             e.preventDefault(); e.stopPropagation();
             var _al = el.getAttribute('data-link') || el.getAttribute('href') || '';
             if(window.SUAnalytics)window.SUAnalytics.job('job_open',_al);
-            suRecipeView(_al, self);   // impression log for the capture block (1-in-3 jobs)
+            beginJobDetail(self, _al);   // impression log for the capture block (1-in-3 jobs)
             self.setState({ detailOpen: true, detailLink: _al });
             break;
           }
@@ -2867,7 +2710,7 @@
             e.stopPropagation();
             var _dl3 = el.getAttribute('data-link');
             if(window.SUAnalytics)window.SUAnalytics.job('job_open',_dl3);
-            suRecipeView(_dl3, self);
+            beginJobDetail(self, _dl3);
             self.setState({ detailOpen: true, detailLink: _dl3 });
             break;
           }
@@ -3172,7 +3015,7 @@
     try { var parsed = new URL(u); return parsed.hostname && !parsed.username && !parsed.password ? u : ''; } catch (e) { return ''; }
   }
 
-  var feedRequest=null, lastFeedCheck=0, firstFeed=true;
+  var feedRequest=null, lastFeedCheck=0, firstFeed=true, initialView=null;
   function checkViewOwner(){
     var runtime=window.SUBoardRuntime;
     if(!runtime||!runtime.checkOwner||!runtime.checkOwner())return false;
@@ -3207,33 +3050,34 @@
       .then(function(text){return rowsToJobs(parseCSV(text));});
   }
   function loadingNote(){
-    if(App._initialized)return;
-    var node=document.getElementById('su-loading-status');
-    if(node)node.textContent='Checking the latest roles…';
-    var shell=document.getElementById('su-loading-art');
-    if(!shell)return;
-    var P=App.THEMES[App.state.look]||App.THEMES.original;
-    shell.innerHTML=[P.hiCard,P.midCard||'var(--su-salary-mid-paper)',P.lowCard||'var(--su-salary-low-paper)'].map(function(paper,i){return '<div class="su-skeleton" style="background:'+paper+';color:'+(i===0?P.hiInk:i===1?P.midInk||P.baseInk||P.ink:P.baseInk||P.ink)+'"><i></i><i></i><i></i></div>';}).join('');
+    if(!App._loading)return;
+    App._loadingVisible=true;
+    var status=document.getElementById('su-feed-progress');if(status)status.hidden=false;
   }
   function refreshFeed(){
     if(feedRequest)return feedRequest;
-    var initial=firstFeed, loadingTimer=initial?setTimeout(loadingNote,150):null;
+    var initial=firstFeed, loadingTimer=initial?setTimeout(loadingNote,600):null;
     if(!initial){App._refreshing=true;var progress=document.getElementById('su-feed-progress');if(progress)progress.hidden=false;uxEvent('feed_refresh');}
     var runtime=window.SUBoardRuntime;
     feedRequest=(runtime?runtime.request(INTERNSHIPS?'internships':'jobs',loadFeed):loadFeed()).then(function(jobs){
-      App._loadError=false;App._refreshing=false;lastFeedCheck=Date.now();
-      var restored=restoreView(runtime,initial);
+      App._loading=false;App._loadingVisible=false;App._loadError=false;App._refreshing=false;lastFeedCheck=Date.now();
+      var restored=initial && !App._feedInteracted ? initialView : null;
+      checkViewOwner();
       App.init(jobs);uxEvent('feed_ready');
       if(restored){uxEvent('view_restored');setTimeout(function(){if(runtime.read(INTERNSHIPS?'internships':'jobs')&&window.scrollTo)window.scrollTo(0,restored.y);},0);}
     }).catch(function(){
-      App._loadError=true;App._refreshing=false;lastFeedCheck=Date.now();
-      restoreView(runtime,initial);
+      App._loading=false;App._loadingVisible=false;App._loadError=true;App._refreshing=false;lastFeedCheck=Date.now();
+      checkViewOwner();
       // Unknown availability never revives a static catalog. Filters and account state remain.
       App.init([]);uxEvent('feed_load_error');
     }).finally(function(){if(loadingTimer)clearTimeout(loadingTimer);firstFeed=false;feedRequest=null;});
     return feedRequest;
   }
   function boot(){
+    initialView=restoreView(window.SUBoardRuntime,true);
+    App._loading=true;App.internships=INTERNSHIPS;App.state.saved=loadSaved();App.bindEvents();App.render();
+    document.addEventListener('pointerdown',function(){App._feedInteracted=true;},{once:true});
+    document.addEventListener('input',function(){App._feedInteracted=true;},{once:true});
     refreshFeed();
     window.addEventListener('su:auth-changed',checkViewOwner);
     window.addEventListener('storage',function(e){if(e.key==='su_sync_owner')checkViewOwner();});

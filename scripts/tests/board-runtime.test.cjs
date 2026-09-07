@@ -72,3 +72,17 @@ test('pagehide cannot relabel old filters to a new owner before its auth or stor
  assert.equal(h.api.checkOwner(),true);assert.equal(h.session.has('su_view_jobs'),false);
  h.api.save('jobs',{q:''});assert.equal(JSON.parse(h.session.get('su_view_jobs')).owner,'"alice"');assert.equal(h.api.read('jobs').state.q,'');
 });
+
+test('tracker reminder appears first and every tenth successful new application across page loads',()=>{
+ const h=harness();const visible=[];
+ for(let i=1;i<=21;i++)if(h.api.recordApplication())visible.push(i);
+ assert.deepEqual(visible,[1,10,20]);
+ const fresh=require('../../js/board-runtime.js')(h.root);
+ assert.equal(fresh.recordApplication(),false);
+ assert.equal(JSON.parse(h.local.get('su_tracker_hint_v1')).count,22);
+});
+test('tracker reminder respects the legacy hint, isolates owners and silently skips storage failures',()=>{
+ const h=harness();h.local.set('su_tracker_nudged','1');assert.equal(h.api.recordApplication(),false);
+ h.local.set('su_sync_owner','another-account');assert.equal(h.api.recordApplication(),true);
+ h.root.localStorage.setItem=()=>{throw Error('blocked')};assert.equal(h.api.recordApplication(),false);
+});

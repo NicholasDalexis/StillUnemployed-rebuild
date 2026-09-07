@@ -131,11 +131,17 @@ test('reset all filters clears search and category as well as detailed filters',
  b.grid.querySelector('[data-act="clearAll"]').click();
  for(const [key,value]of Object.entries({q:'',cat:'all',ws:'Any',st:'all',pr:'Any',fr:'Any',theme:null}))assert.equal(b.app.state[key],value,key);assert.equal(b.app.computeShown().shown.length,1);
 });
-test('dismissing signup cards immediately rebuilds the grid and removes all signup placements',()=>{
+test('feed has advice without promotional signup cards; newsletter follows actual detail openings',()=>{
  const b=board();b.init(Array.from({length:20},(_,i)=>job({link:'https://example.com/'+i})));
- const close=b.grid.querySelector('[data-act="hideSignupCards"]');assert(close,'fixture has signup cards');const before=b.grid.writes;close.click();
- assert.equal(b.grid.writes,before+1);assert.equal(b.grid.querySelectorAll('[data-act="hideSignupCards"]').length,0);assert.equal(b.app.jobs.length,20);
- const after=b.grid.writes;b.app.setState({detailOpen:true,detailLink:b.app.jobs[0].link});assert.equal(b.grid.writes,after,'opening only a dialog avoids rebuilding the grid');
+ assert.equal(b.grid.querySelectorAll('[data-act="hideSignupCards"]').length,0);
+ const card=b.grid.querySelector('[data-act="openJob"]');assert(card);
+ card.click();assert.equal(b.overlay.querySelectorAll('iframe').length,0);
+ b.overlay.querySelector('[data-act="closeDetail"]').click();card.click();
+ assert.equal(b.overlay.querySelectorAll('iframe').length,1);
+ b.app.renderOverlays();assert.equal(b.overlay.querySelectorAll('iframe').length,1,'rerender retains the same cadence');
+ b.overlay.querySelector('[data-act="hideRecipe"]').click();assert.equal(b.overlay.querySelectorAll('iframe').length,0);
+ b.overlay.querySelector('[data-act="closeDetail"]').click();card.click();
+ assert.equal(b.overlay.querySelectorAll('iframe').length,0);
 });
 test('an unavailable-job report removes its card immediately',()=>{
  const b=board();b.init();b.app.setState({feedbackOpen:true,feedbackCo:'Example',feedbackLink:'https://example.com/job'});const before=b.grid.writes;

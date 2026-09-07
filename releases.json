@@ -1,7 +1,26 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.3.2",
+  "currentVersion": "2.3.3",
   "releases": [
+    {
+      "version": "2.3.3",
+      "date": "2026-09-07",
+      "title": "Mobile polish and quieter discovery",
+      "changes": [
+        "Remove feed signup promotions; actual job-detail openings show signup every second time, with a reserved loading state and direct fallback. Every published advice ID has artwork and quieter invitation copy.",
+        "Render the real board before current feed resolves, preload local fonts and remove skeleton placeholders. Preserve typed filters, unavailable-feed recovery and no cached catalog. Remove automatic dialog focus outline and correct inherited body font.",
+        "Use a one-line tracker reminder after the first and every tenth newly stored application. Top-right tracker removal opens a No-default confirmation with keyboard wrapping and account guards; notes grow without an extra toggle and Export is nearly straight.",
+        "Public style guide retains visual brand sections; full prior guide is privately archived. Public HTML and JSON explicitly project two viewer-facing releases while the full ledger remains internal. Privacy describes local cadence counters. Retain Board menu while alternate More placement awaits feedback."
+      ],
+      "public": {
+        "title": "A little less in your way",
+        "changes": [
+          "A smaller tracker reminder, clearer delete confirmation and notes that grow as you type.",
+          "More illustrated advice and fewer newsletter invitations while you browse.",
+          "Smoother page loading, cleaner job popups and a shorter visual style guide."
+        ]
+      }
+    },
     {
       "version": "2.3.2",
       "date": "2026-09-07",
@@ -11,7 +30,15 @@
         "Simplify Latest Update, redraw the tracker preview, use white internship paper and keep every arrow drawn.",
         "Use compact whole-number pay labels with exact employer amounts under Pay details, and one list of 50 state names on both boards.",
         "Show one lined-paper tooltip at a time and keep menu and dialog focus predictable."
-      ]
+      ],
+      "public": {
+        "title": "A quieter board, clearer pay",
+        "changes": [
+          "Find preferences, hidden jobs, suggestions and what’s new in one Board menu.",
+          "Compare shorter pay labels, open Pay details for the original amounts, and filter by one clear list of 50 states.",
+          "A simpler Latest Update note gives you more room to explore."
+        ]
+      }
     },
     {
       "version": "2.3.1",
@@ -20,7 +47,14 @@
       "changes": [
         "The Latest Update popup waits 30 seconds before opening automatically. Existing dismissals are remembered, and What’s new still opens it immediately.",
         "An Internships card replaces the Portfolio Graded teaser, with a short overview and a direct link to browse internships."
-      ]
+      ],
+      "public": {
+        "title": "Internships have a place on the board",
+        "changes": [
+          "Browse internships from the Latest Update note.",
+          "The update waits 30 seconds, remembers dismissal, and is always available through What’s new."
+        ]
+      }
     },
     {
       "version": "2.3.0",
@@ -237,7 +271,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "f168c380267e7bcb15c77e359f2976f9ff8001914e2139b6086d5bfc453aede2",
+    "digest": "53d0a5bf95184fd7dfe7082a2fdf0383af81919897416a0d13a794a2e4aab75d",
     "fileCount": 146
   }
 }

@@ -61,10 +61,6 @@
       var texture=theme.art.texture, preview=doc.getElementById('theme-texture-preview');
       canvasStyle(preview,theme,true);
       setText('theme-texture-name',texture.name);setText('theme-texture-description',texture.description);
-      setText('theme-texture-layers',theme.canvas['background-image']);
-      setText('theme-texture-size',theme.canvas['background-size'] || 'auto');
-      setText('theme-texture-position',theme.canvas['background-position'] || '0% 0%');
-      setText('theme-texture-repeat',theme.canvas['background-repeat'] || 'repeat');
       var animation=theme.canvas.animation, duration=animation && animation.match(/(?:^|\s)([\d.]+m?s)(?=\s|$)/);
       setText('theme-texture-motion',animation?'Slow, alternating movement'+(duration?' ('+duration[1]+')':'')+'. Reduced-motion preferences keep this texture still.':'This texture stays still. No movement is needed to give it character.');
       setText('theme-texture-usage',texture.usage);
@@ -89,12 +85,12 @@
       setText('theme-color-note',info.note);setText('theme-type-intro',theme.label);setText('theme-layout-intro',theme.label);setText('theme-salary-note',info.salary);
       setText('theme-footer','StillUnemployed.com · '+theme.label+' look');
       renderArt(theme);
-      setText('theme-action-note','The '+theme.label+' navigation surface is '+P.navBg+'. '+(navInk!==P.navInk?'The live guide uses '+navInk+' for readable control text; the board’s current nav ink '+P.navInk+' is documented in the palette above. ':'Its matching ink is '+P.navInk+'. ')+'These links open the '+theme.label+' board.');
+      setText('theme-action-note','The '+theme.label+' action paper keeps its matching ink. These links open this look on the board.');
       doc.querySelectorAll('[data-theme-board-link]').forEach(function(link){link.setAttribute('href',boardRoute(theme));});
       var swatches=doc.getElementById('theme-swatches');swatches.textContent='';
       swatches.appendChild(swatch('Board canvas',theme.canvas['background-color'],info.colors+' See the texture section for its background layers.',theme.canvas));
       swatches.appendChild(swatch('Navigation paper',P.navBg,'The source navigation surface for '+theme.label+'.',P.navBg));
-      swatches.appendChild(swatch('Navigation ink',P.navInk,'Read it against navigation paper. Current contrast: '+contrast(P.navInk,P.navBg).toFixed(2)+':1.',P.navInk));
+      swatches.appendChild(swatch('Navigation ink',P.navInk,'Pair this ink with its navigation paper.',P.navInk));
       swatches.appendChild(swatch('Board heading ink',P.ink,'Headings on this theme’s canvas. Supporting ink: '+P.sub+'.',P.ink));
       swatches.appendChild(swatch('Accent',P.acc,'Decorative emphasis. Accent ink: '+P.accInk+'.',P.acc));
       ['low','mid','high'].forEach(function(tier){var band=theme.bands[tier];swatches.appendChild(swatch(({low:'Under $80K',mid:'$80–99K',high:'$100K+'})[tier]+' paper',band.background+' · ink '+band.ink,'Apply: '+band.apply+' · Stamp: '+band.stamp+'.',band.background,band.ink));});
@@ -105,9 +101,6 @@
         var stamp=card.querySelector('[data-theme-stamp]');stamp.innerHTML=band.stampHTML;stamp.setAttribute('aria-hidden','true');
         card.querySelector('[data-theme-band-value]').textContent=band.background+' · ink '+band.ink+' · Apply '+band.apply;
       });
-      var warnings=[];if(contrast(P.navInk,P.navBg)<4.5)warnings.push('navigation ink ('+contrast(P.navInk,P.navBg).toFixed(2)+':1)');
-      ['low','mid','high'].forEach(function(tier){var band=theme.bands[tier],ratio=contrast(band.apply,band.background);if(ratio<4.5)warnings.push(tier+'-band Apply ('+ratio.toFixed(2)+':1)');});
-      setText('theme-contrast-note',warnings.length?'The current '+theme.label+' palette includes pairs below 4.5:1 for normal text: '+warnings.join(', ')+'. These source examples document the existing look. For new controls, use a stronger ink on the same paper; do not copy a weak pair. The guide’s theme controls use readable paper and ink.':'The navigation and Apply ink shown for '+theme.label+' reach at least 4.5:1 against their solid or gradient stops. Keep each ink with its own paper and check other text, sizes and overlays separately.');
       doc.querySelectorAll('[data-guide-choice]').forEach(function(button){button.setAttribute('aria-pressed',String(button.getAttribute('data-guide-choice')===theme.slug));});
       if(announce)setText('theme-status',theme.label+' style guide selected.');
     }

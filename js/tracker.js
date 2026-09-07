@@ -42,6 +42,15 @@
 
   var STATUSES = ['Applied', 'Interview 1', 'Interview 2', 'Interview 3', 'Interview 4', 'Offer', 'Rejected', 'Ghosted'];
 
+  function drawnArrow(direction) {
+    return '<svg class="trk-arrow trk-arrow-' + direction + '" width="24" height="18" viewBox="0 0 28 20" fill="none" aria-hidden="true" focusable="false"><path d="M2 13c7-7 14-7 23-4M18 3l7 6-8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+  }
+  function sizeNote(note) {
+    if (!note || !note.classList || !note.classList.contains('trk-notes')) return;
+    note.style.height = 'auto';
+    note.style.height = Math.max(note.scrollHeight, 34) + 'px';
+  }
+
   // ── THE OFFER PARTY (Nic, 2026-07-11) ────────────────────────────────────────
   // Selecting "Offer" earns balloons rising up the screen + fireworks popping in the
   // background + a confetti drizzle. Celebratory, not overwhelming: ~3.5s, then gone.
@@ -208,7 +217,7 @@
     rows: loadRows(),
     look: loadLook(),
     deleting: {},   // id -> true while the strike-through goodbye plays
-    expanded: {},   // id -> true while the notes field is pinned open (the ▾ arrow)
+    pendingRemoval: null, // explicit Yes/No choice, bound to the current account
     draft: {},
     formMessage: '',
     owner: accountKey(),
@@ -250,7 +259,8 @@
       var self = this;
       var board = document.getElementById('board');
       var focus = captureFocus(board);
-      if(this.owner !== accountKey()) { this.owner=accountKey(); this.accountGeneration++; this.draft={}; this.noteDrafts={}; this.deleting={}; this.expanded={}; this.formMessage=''; this.writeError=''; this.localChanged=false; this.rows=loadRows(); options={clearDraft:true}; focus=null; }
+      if(this.owner !== accountKey()) { this.owner=accountKey(); this.accountGeneration++; this.draft={}; this.noteDrafts={}; this.deleting={}; this.pendingRemoval=null; this.formMessage=''; this.writeError=''; this.localChanged=false; this.rows=loadRows(); options={clearDraft:true}; focus=null; }
+      if(this.pendingRemoval && !this.rows.some(function(r){return r && r.id===self.pendingRemoval.id;})) this.pendingRemoval=null;
       if (options && options.clearDraft) this.draft = {};
       else ['trk-co', 'trk-role', 'trk-link'].forEach(function (id) {
         var input = document.getElementById(id);
@@ -297,7 +307,7 @@
       out += '<div class="trk-wrap">' +
         '<div class="trk-star">★ StillUnemployed.com</div>' +
         '<h1 class="trk-h1">Your <span class="trk-hlspan">Tracker</span>.</h1>' +
-        '<div class="trk-tag">every job you apply to, one place, no spreadsheet →</div>';
+        '<div class="trk-tag">every job you apply to, one place, no spreadsheet ' + drawnArrow('right') + '</div>';
 
       // ---- summary pills + export ----
       out += '<div class="trk-pills">' +
@@ -320,7 +330,7 @@
 
       // ---- add-row form ----
       out += '<div class="trk-form">' +
-        '<div class="trk-form-label" style="color: #1A1A1A;">applied somewhere else? log it ↓</div>' +
+        '<div class="trk-form-label" style="color: #1A1A1A;">applied somewhere else? log it ' + drawnArrow('down') + '</div>' +
         '<div class="trk-form-row">' +
           '<input id="trk-co" class="trk-input" aria-label="Company" placeholder="company" value="' + esc(this.draft['trk-co'] || '') + '">' +
           '<input id="trk-role" class="trk-input" aria-label="Role or job title" placeholder="role / job title" value="' + esc(this.draft['trk-role'] || '') + '">' +
@@ -343,10 +353,11 @@
         this.rows.forEach(function (r) {
           if (!r) return;
           var del = !!self.deleting[r.id];
+          var confirming = self.pendingRemoval && self.pendingRemoval.id === r.id;
           var lhref = String(r.link || '');
           if (lhref && !/^https?:\/\//i.test(lhref)) lhref = 'https://' + lhref;   // heal old scheme-less rows too
           var linkHtml = lhref
-            ? '<a class="trk-linka" href="' + esc(lhref) + '" target="_blank" rel="noopener">posting ↗</a>'
+            ? '<a class="trk-linka" href="' + esc(lhref) + '" target="_blank" rel="noopener noreferrer">posting ' + drawnArrow('up') + '</a>'
             : '';
           var opts = STATUSES.map(function (s) {
             return '<option value="' + esc(s) + '"' + (r.status === s ? ' selected' : '') + '>' + esc(s) + '</option>';
@@ -359,12 +370,9 @@
             '</div>' +
             '<div class="trk-date" title="date applied">' + esc(fmtDate(r.dateApplied)) + '</div>' +
             '<select class="trk-status ' + statusCls(r.status) + '" data-id="' + esc(r.id) + '" aria-label="Application status">' + opts + '</select>' +
-            '<textarea class="trk-notes' + (self.expanded[r.id] ? ' open' : '') + '" data-id="' + esc(r.id) + '" rows="1" aria-label="Application notes" placeholder="notes... (recruiter name, next step)">' + esc(Object.prototype.hasOwnProperty.call(self.noteDrafts,r.id)?self.noteDrafts[r.id]:(r.notes || '')) + '</textarea>' +
-            '<button type="button" class="trk-noteexp' + (self.expanded[r.id] ? ' open' : '') + '" data-act="toggleNote" data-id="' + esc(r.id) + '" aria-expanded="' + !!self.expanded[r.id] + '" aria-label="' + (self.expanded[r.id] ? 'Collapse notes' : 'Expand notes') + '" style="border:0;padding:0;background:transparent;" title="' + (self.expanded[r.id] ? 'collapse notes' : 'expand notes') + '">' +
-              '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="transition: transform .18s;' + (self.expanded[r.id] ? ' transform: rotate(180deg);' : '') + '"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
-            '</button>' +
-            '<button type="button" class="trk-del" data-act="delRow" data-id="' + esc(r.id) + '" aria-label="Remove application" style="border:0;padding:0;" title="remove">' +
-              '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"></path></svg>' +
+            '<textarea class="trk-notes" data-id="' + esc(r.id) + '" rows="1" aria-label="Application notes" placeholder="notes... (recruiter name, next step)">' + esc(Object.prototype.hasOwnProperty.call(self.noteDrafts,r.id)?self.noteDrafts[r.id]:(r.notes || '')) + '</textarea>' +
+            '<button type="button" class="trk-del" data-act="delRow" data-id="' + esc(r.id) + '" aria-label="Remove ' + esc(r.company || r.role || 'application') + ' from tracker" aria-expanded="' + !!confirming + '"' + (confirming ? ' aria-controls="trk-remove-confirm"' : '') + (del ? ' disabled' : '') + '>' +
+              '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"></path></svg>' +
             '</button>' +
           '</div>';
         });
@@ -372,12 +380,17 @@
       }
 
       out += '</div>'; // /.trk-wrap
+      if(this.pendingRemoval) {
+        var removing=this.rows.find(function(r){return r && r.id===self.pendingRemoval.id;});
+        out+='<dialog id="trk-remove-confirm" class="trk-remove-confirm" aria-modal="true" aria-labelledby="trk-remove-question" aria-describedby="trk-remove-context"><div class="trk-remove-paper"><h2 id="trk-remove-question">Are you sure you want to delete?</h2><p id="trk-remove-context">' + esc(removing.company || '') + (removing.company && removing.role ? ' · ' : '') + esc(removing.role || '') + '</p><div class="trk-remove-actions"><button type="button" data-act="cancelRemoval" data-id="' + esc(removing.id) + '" autofocus>No, keep it</button><button type="button" data-act="confirmRemoval" data-id="' + esc(removing.id) + '" class="trk-remove-yes">Yes, delete</button></div></div></dialog>';
+      }
       board.innerHTML = out;
-      // size any pinned-open notes to fit their content
-      var opens = board.querySelectorAll('textarea.trk-notes.open');
+      var confirmation=document.getElementById('trk-remove-confirm');
+      if(confirmation) confirmation.showModal();
+      // Notes fit their content without an unlabeled expand/collapse control.
+      var opens = board.querySelectorAll('textarea.trk-notes');
       for (var oi = 0; oi < opens.length; oi++) {
-        opens[oi].style.height = 'auto';
-        opens[oi].style.height = Math.max(opens[oi].scrollHeight, 34) + 'px';
+        sizeNote(opens[oi]);
       }
       restoreFocus(board, focus);
       this.refreshStatus();
@@ -424,18 +437,46 @@
       if (again) again.focus();
     },
 
-    // strike it through first, then actually remove — no instant vanish
     delRow: function (id) {
+      if(this.owner!==accountKey()) { this.render(); return; }
+      if(this.deleting[id] || !loadRows().some(function(r){return r && r.id===id;})) return;
+      this.pendingRemoval={id:id,owner:this.owner,generation:this.accountGeneration};
+      this.render();
+      this.focusRowAction(id,'cancelRemoval');
+    },
+
+    focusRowAction: function (id, action) {
+      var board=document.getElementById('board');
+      var target=Array.from(board.querySelectorAll('[data-id], [data-act]')).find(function(el){return el.tagName==='BUTTON' && el.getAttribute('data-id')===id && el.getAttribute('data-act')===action;});
+      if(!target) target=document.getElementById('trk-add');
+      if(target) target.focus({preventScroll:true});
+    },
+
+    cancelRemoval: function (id) {
+      if(!this.pendingRemoval || this.pendingRemoval.id!==id) return;
+      this.pendingRemoval=null;
+      this.render();
+      this.focusRowAction(id,'delRow');
+    },
+
+    // Only an explicit Yes starts the existing strike-through removal.
+    confirmRemoval: function (id) {
       var self = this;
-      if (this.deleting[id]) return;
+      var pending=this.pendingRemoval;
+      if(!pending || pending.id!==id || pending.owner!==accountKey() || pending.generation!==this.accountGeneration) { this.pendingRemoval=null; this.render(); return; }
+      this.pendingRemoval=null;
+      if (this.deleting[id] || !loadRows().some(function(r){return r && r.id===id;})) { this.render(); return; }
       var owner=accountKey(), generation=this.accountGeneration;
       this.deleting[id] = true;
       this.render();
+      // Keep keyboard focus on a live control while the old card fades away.
+      var next=this.rows.find(function(r){return r && r.id!==id && !self.deleting[r.id];});
+      this.focusRowAction(next && next.id,'delRow');
       setTimeout(function () {
         if(owner!==accountKey() || generation!==self.accountGeneration)return;
         var remaining=loadRows().filter(function (r) { return r && r.id !== id; });
         delete self.deleting[id];
-        if(!self.persistRows(remaining)) { self.render(); return; }
+        if(!self.persistRows(remaining)) { self.render(); self.focusRowAction(id,'delRow'); return; }
         delete self.noteDrafts[id];
         if(window.SUAnalytics)window.SUAnalytics.emit('tracker_delete',{});
         self.render();
@@ -481,6 +522,7 @@
       var self = this;
 
       document.addEventListener('click', function (e) {
+        if(e.target.id==='trk-remove-confirm' && self.pendingRemoval) { self.cancelRemoval(self.pendingRemoval.id); return; }
         var el = e.target.closest('[data-act]');
         if (!el) return;
         switch (el.getAttribute('data-act')) {
@@ -489,13 +531,9 @@
           case 'retrySync': self.retrySave(); break;
           case 'dismissDraft': delete self.noteDrafts[el.getAttribute('data-id')]; self.render(); break;
           case 'delRow': self.delRow(el.getAttribute('data-id')); break;
+          case 'cancelRemoval': self.cancelRemoval(el.getAttribute('data-id')); break;
+          case 'confirmRemoval': self.confirmRemoval(el.getAttribute('data-id')); break;
           case 'exportCsv': self.exportCsv(); break;
-          case 'toggleNote': {
-            var nid = el.getAttribute('data-id');
-            self.expanded[nid] = !self.expanded[nid];
-            self.render();
-            break;
-          }
         }
       });
 
@@ -513,13 +551,7 @@
         }
       });
 
-      // notes grow VERTICALLY while you type / when focused, collapse to one line on blur
-      // (Nic, 2026-07-11: long notes were bleeding horizontally and unreadable)
-      function noteSize(t, expand) {
-        if (!t || !t.classList || !t.classList.contains('trk-notes')) return;
-        if (expand) { t.style.height = 'auto'; t.style.height = Math.max(t.scrollHeight, 34) + 'px'; }
-        else { t.style.height = ''; }
-      }
+      // Notes stay readable on blur and grow vertically while typing.
       document.addEventListener('input', function (e) {
         var t = e.target;
         if (t && (t.id === 'trk-co' || t.id === 'trk-role' || t.id === 'trk-link')) {
@@ -530,19 +562,29 @@
         }
         if (t && t.classList && t.classList.contains('trk-notes')) {
           self.setField(t.getAttribute('data-id'), 'notes', t.value);   // save as they type
-          noteSize(t, true);
+          sizeNote(t);
         }
       });
-      document.addEventListener('focusin', function (e) { noteSize(e.target, true); });
-      document.addEventListener('focusout', function (e) {
-        var t = e.target;
-        // pinned-open notes (the ▾ arrow) stay expanded on blur
-        if (t && t.classList && t.classList.contains('trk-notes') && self.expanded[t.getAttribute('data-id')]) return;
-        noteSize(t, false);
-      });
+      document.addEventListener('focusin', function (e) { sizeNote(e.target); });
+
+      document.addEventListener('cancel', function(e) {
+        if(e.target.id==='trk-remove-confirm' && self.pendingRemoval) { e.preventDefault(); self.cancelRemoval(self.pendingRemoval.id); }
+      },true);
 
       // Enter in any form input = add the row
       document.addEventListener('keydown', function (e) {
+        if(e.key==='Escape' && self.pendingRemoval) { e.preventDefault(); self.cancelRemoval(self.pendingRemoval.id); return; }
+        if(e.key==='Tab' && self.pendingRemoval) {
+          var confirmation=document.getElementById('trk-remove-confirm');
+          var choices=confirmation ? Array.from(confirmation.querySelectorAll('button:not(:disabled)')) : [];
+          if(choices.length) {
+            e.preventDefault();
+            var current=choices.indexOf(document.activeElement);
+            var next=e.shiftKey ? (current<=0 ? choices.length-1 : current-1) : (current+1)%choices.length;
+            choices[next].focus({preventScroll:true});
+          }
+          return;
+        }
         if (e.key !== 'Enter' || !e.target || !e.target.id) return;
         if (e.target.id === 'trk-co' || e.target.id === 'trk-role' || e.target.id === 'trk-link') {
           e.preventDefault();
@@ -553,6 +595,10 @@
       window.addEventListener('su:sync-status', function () { self.refreshStatus(); });
       window.addEventListener('su:auth-changed', function () { self.rows=loadRows(); self.render(); });
       window.addEventListener('su:data-sync', function () { self.rows = loadRows(); self.render(); });
+      // A narrower viewport wraps notes onto more lines without replacing the field.
+      window.addEventListener('resize', function () {
+        Array.from(document.getElementById('board').querySelectorAll('textarea.trk-notes')).forEach(sizeNote);
+      });
 
       // if the board tab logs an application while this tab is open, pick it up
       window.addEventListener('storage', function (e) {

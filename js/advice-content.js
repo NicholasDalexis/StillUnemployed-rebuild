@@ -20,6 +20,10 @@
       why:{intro:'A general resume can leave off your graduation year when the employer has not requested it. Keep your degree and completion status accurate.', bullets:['If an application requests dates, provide them.','Asked directly? Answer the graduation question, then connect it to your work.'], outro:'For example: “I graduated in 2025. During college, I spent three years as a brand ambassador and worked two campus jobs alongside my classes.” Use your own true details.'} }
   ];
   var overrides = {
+    'board-trap':{ sell:'More notes like this from The Job Hunt Recipe.' },
+    'ghosted':{ sell:'More notes like this from The Job Hunt Recipe.' },
+    'wish-list':{ sell:'More notes like this from The Job Hunt Recipe.' },
+    'resume-layout':{ sell:'More notes like this from The Job Hunt Recipe.' },
     'three-years':{ hook:'your experience started before graduation', cta:'count the relevant work', why:'Internships, campus jobs, brand ambassador roles and freelance work can demonstrate relevant experience. Describe the work and keep the real dates and employment type. Do not treat a 1-3 year requirement as automatically off-limits because you recently graduated; check what the employer specifically asks for.' },
     'major-cage':{ hook:'your major is not a cage', cta:'look at what the role needs', why:'Your major can point you toward a role without defining every job you can do. Compare the actual work with your skills, projects and experience. Read “or a related field” alongside any accepted alternatives. Specific required qualifications still matter.' }
   };

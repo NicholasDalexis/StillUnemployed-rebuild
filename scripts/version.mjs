@@ -2,7 +2,9 @@
 // Check: node scripts/version.mjs --check
 // Refresh generated files without a bump: node scripts/version.mjs --refresh
 // Seal the first finished Version 2 once: node scripts/version.mjs --seal
-// Record one completed release: node scripts/version.mjs --bump --note "What changed"
+// Record one completed release: --bump --note "Full internal change"
+// Add viewer copy explicitly: --public-title "What is new" --public-note "Visible change"
+// With no public copy, a release stays out of the two-entry public history.
 // Patches carry after 9 without changing the major. A bump to 2.5.0 needs Nic's format decision.
 import { readFileSync, writeFileSync, existsSync, renameSync, readdirSync, lstatSync } from 'node:fs';
 import { dirname, join, resolve, extname } from 'node:path';
@@ -102,6 +104,10 @@ export function validateRelease(data) {
     if (!validDate(release.date)) throw new Error('Invalid release date');
     if (typeof release.title !== 'string' || !release.title.trim()) throw new Error('A release title is required');
     if (!Array.isArray(release.changes) || !release.changes.length || release.changes.some(note => typeof note !== 'string' || !note.trim())) throw new Error('At least one release note is required');
+    if (release.public !== undefined && release.public !== false) {
+      const visible = release.public;
+      if (!visible || typeof visible.title !== 'string' || !visible.title.trim() || !Array.isArray(visible.changes) || !visible.changes.length || visible.changes.some(note => typeof note !== 'string' || !note.trim())) throw new Error('Public notes need an explicit title and at least one viewer-facing change');
+    }
   }
   if (data.currentVersion !== data.releases[0].version) throw new Error('Current version must match the newest history entry');
   if (data.sourceFingerprint !== undefined) {
@@ -114,14 +120,37 @@ export function easternDate(now = new Date()) {
   const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone:'America/New_York', year:'numeric', month:'2-digit', day:'2-digit' }).formatToParts(now).map(part => [part.type, part.value]));
   return `${parts.year}-${parts.month}-${parts.day}`;
 }
-export function bumpRelease(data, { notes, title = 'Small improvements', date = easternDate() } = {}) {
+export function bumpRelease(data, { notes, title = 'Small improvements', date = easternDate(), publicNotes = [], publicTitle } = {}) {
   validateRelease(data);
   if (!Array.isArray(notes) || !notes.length || notes.some(note => typeof note !== 'string' || !note.trim())) throw new Error('--bump needs at least one --note');
+  if (!Array.isArray(publicNotes) || publicNotes.some(note => typeof note !== 'string' || !note.trim())) throw new Error('Invalid public notes');
+  if (publicNotes.length && (typeof publicTitle !== 'string' || !publicTitle.trim())) throw new Error('--public-note needs --public-title');
+  if (publicTitle !== undefined && !publicNotes.length) throw new Error('--public-title needs at least one --public-note');
   const version = nextVersion(data.currentVersion);
   // Keep this gate out of nextVersion: existing 2.4.9 history must still validate,
   // render and pass --check while the next release waits for the owner's decision.
   if (version === '2.5.0') throw new Error('Automatic bump stopped before Version 2.5.0. Ask Nic whether to keep the three-part format (2.5.0) or switch to four parts (2.5.0.0). Record his decision and update the version rule before continuing.');
-  return validateRelease({ ...data, currentVersion:version, releases:[{ version, date, title, changes:notes.map(note => note.trim()) }, ...data.releases] });
+  const release = { version, date, title, changes:notes.map(note => note.trim()) };
+  if (publicNotes.length) release.public = { title:publicTitle.trim(), changes:publicNotes.map(note => note.trim()) };
+  return validateRelease({ ...data, currentVersion:version, releases:[release, ...data.releases] });
+}
+
+// Full notes are build-only. A release is public only after a writer explicitly
+// supplies viewer-facing copy; do not guess from technical keywords or dates.
+export function publicReleaseData(data) {
+  validateRelease(data);
+  const result = {
+    schemaVersion:1,
+    currentVersion:data.currentVersion,
+    releases:data.releases.filter(release => release.public).slice(0,2).map(release => ({
+      version:release.version, date:release.date,
+      title:release.public.title, changes:[...release.public.changes]
+    }))
+  };
+  if (data.sourceFingerprint) result.sourceFingerprint = {
+    algorithm:data.sourceFingerprint.algorithm, digest:data.sourceFingerprint.digest, fileCount:data.sourceFingerprint.fileCount
+  };
+  return result;
 }
 
 export function renderReleaseScript(data) {
@@ -146,11 +175,11 @@ export function renderReleaseScript(data) {
 }
 
 export function renderHistory(data) {
-  validateRelease(data);
-  const cards = data.releases.map((release, i) => {
+  const visible = publicReleaseData(data);
+  const cards = visible.releases.map(release => {
     const date = new Intl.DateTimeFormat('en-US', { timeZone:'UTC', month:'long', day:'numeric', year:'numeric' }).format(new Date(release.date + 'T12:00:00Z'));
     return `    <article id="${anchor(release.version)}" aria-labelledby="${anchor(release.version)}-title">
-      <div class="release-meta"><h2 id="${anchor(release.version)}-title">${label(release.version)}</h2>${i === 0 ? '<span class="current">Current</span>' : ''}</div>
+      <div class="release-meta"><h2 id="${anchor(release.version)}-title">${label(release.version)}</h2>${release.version === data.currentVersion ? '<span class="current">Current</span>' : ''}</div>
       <time datetime="${release.date}">${date}</time>
       <h3>${esc(release.title)}</h3>
       <ul>${release.changes.map(note => '<li>' + esc(note) + '</li>').join('')}</ul>
@@ -180,7 +209,8 @@ export function renderHistory(data) {
   <main>
     <nav aria-label="Site navigation"><a href="./index.html">StillUnemployed.com</a><a href="./jobs.html">Just jobs →</a></nav>
     <h1>Version history</h1>
-    <p class="intro">What's changed on the board.</p>
+    <p class="intro">The latest two updates you’ll notice on the board.</p>
+${visible.releases.some(release => release.version === data.currentVersion) ? '' : '    <p id="' + anchor(data.currentVersion) + '">Current board: ' + label(data.currentVersion) + '</p>'}
 ${cards}
     <footer><a href="./style-guide.html">For designers: check out our style guide →</a><a href="./privacy.html">Privacy</a><a href="./terms.html">Terms</a><a href="./index.html">Home</a></footer>
   </main>
@@ -239,20 +269,23 @@ export function applyRelease(root = ROOT, options = {}) {
 }
 
 function main(args) {
-  const options = { notes:[] };
+  const options = { notes:[], publicNotes:[] };
   let mode = '--check';
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     if (arg === '--check' || arg === '--refresh' || arg === '--seal' || arg === '--bump') {
       if (options.mode) throw new Error('Choose one of --check, --refresh, --seal or --bump');
       mode = arg; options.mode = true;
-    } else if (arg === '--note' || arg === '--title' || arg === '--date') {
+    } else if (arg === '--note' || arg === '--title' || arg === '--date' || arg === '--public-note' || arg === '--public-title') {
       const value = args[++i];
       if (!value || value.startsWith('--')) throw new Error(arg + ' needs a value');
-      if (arg === '--note') options.notes.push(value); else options[arg.slice(2)] = value;
+      if (arg === '--note') options.notes.push(value);
+      else if (arg === '--public-note') options.publicNotes.push(value);
+      else if (arg === '--public-title') options.publicTitle = value;
+      else options[arg.slice(2)] = value;
     } else throw new Error('Unknown option: ' + arg);
   }
-  if (mode !== '--bump' && (options.notes.length || options.title || options.date)) throw new Error('Release notes, title and date require --bump');
+  if (mode !== '--bump' && (options.notes.length || options.publicNotes.length || options.publicTitle || options.title || options.date)) throw new Error('Release notes, title and date require --bump');
   const result = applyRelease(ROOT, { ...options, check:mode === '--check', seal:mode === '--seal', bump:mode === '--bump' });
   console.log(label(result.version) + (mode === '--check' ? ' checked.' : result.changed.length ? ' updated: ' + result.changed.join(', ') : ' already current.'));
 }

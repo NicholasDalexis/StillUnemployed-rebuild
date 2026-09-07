@@ -50,8 +50,7 @@
   <link rel="stylesheet" href="css/account.css?v=4">
 </head>
 <body>
-  <!-- The tracker is rendered by js/tracker.js from localStorage (su_tracker).
-       Nothing here ever leaves the browser: no backend, no login. -->
+  <!-- The tracker is rendered by js/tracker.js from local storage, with optional account sync. -->
   <div data-screen-label="Tracker" class="board" id="board" style="min-height: 100vh; font-family: 'Poppins', system-ui, sans-serif; color: #2C2118; padding-bottom: 90px;"></div>
 
   <style>
@@ -115,7 +114,7 @@
       margin-left: auto; align-self: center; display: inline-flex; align-items: center; gap: 8px;
       font-family: 'Indie Flower', cursive; font-weight: 700; font-size: 19px;
       background: #E7D2A8; color: #3A2A1B; border: none; border-radius: 2px;
-      padding: 11px 17px; cursor: pointer; transform: rotate(2deg);
+      padding: 11px 17px; cursor: pointer; transform: rotate(-0.2deg);
       box-shadow: 2px 4px 9px rgba(44,33,24,0.2); white-space: nowrap;
     }
     .trk-export:hover { filter: brightness(1.03); }
@@ -147,12 +146,13 @@
     .trk-list { display: flex; flex-direction: column; gap: 18px; margin-top: 30px; padding: 4px 4px 0; }
     .trk-row {
       background: #FBF6E9; border-radius: 4px; box-shadow: 3px 6px 13px rgba(44,33,24,0.15);
-      padding: 15px 18px; display: grid;
-      grid-template-columns: minmax(180px, 1.2fr) 74px 148px minmax(160px, 1fr) 22px 30px;
+      padding: 20px 64px 20px 18px; display: grid; position: relative;
+      grid-template-columns: minmax(0, 1.2fr) 64px 138px minmax(0, 1fr);
       gap: 14px; align-items: center; transform: rotate(-0.35deg);
       transition: opacity .5s ease, transform .3s ease;
     }
     .trk-row:nth-child(even) { transform: rotate(0.4deg); }
+    .trk-main { min-width: 0; overflow-wrap: anywhere; }
     .trk-row.deleting { opacity: 0.35; }
     .trk-row.deleting .trk-co,
     .trk-row.deleting .trk-role { text-decoration: line-through; }
@@ -184,21 +184,40 @@
     }
     .trk-notes:focus { border-bottom-color: #A8825F; }
     /* textarea version: grows vertically (js/tracker.js sizes it), never horizontally */
-    textarea.trk-notes { resize: none; overflow: hidden; line-height: 1.45; white-space: pre-wrap; overflow-wrap: break-word; font: inherit; display: block; }
-    /* ▾ expand-notes toggle — bare arrow on the row line, left of the ✕ */
-    .trk-noteexp {
-      width: 22px; height: 24px; flex: none; cursor: pointer;
-      display: inline-flex; align-items: center; justify-content: center;
-      color: #4A3A28;
-    }
-    .trk-noteexp:hover { color: #1A1A1A; }
-    .trk-noteexp.open { color: #1A1A1A; }
+    textarea.trk-notes { resize: none; overflow: hidden; line-height: 1.45; white-space: pre-wrap; overflow-wrap: break-word; display: block; }
     .trk-del {
-      width: 28px; height: 28px; border-radius: 50%; background: rgba(44,33,24,0.06);
+      position: absolute; top: 6px; right: 6px; width: 44px; height: 44px;
+      padding: 0; border: 0; border-radius: 50%; background: rgba(44,33,24,0.06);
       color: #B23A1E; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: transform .14s ease;
+      cursor: pointer; transition: background .14s ease;
     }
-    .trk-del:hover { transform: scale(1.18) rotate(-8deg); background: rgba(178,58,30,0.12); }
+    .trk-del:hover { background: rgba(178,58,30,0.12); }
+    .trk-del:focus-visible, .trk-remove-actions button:focus-visible { outline: 3px solid #A63D22; outline-offset: 3px; }
+    .trk-del:disabled { opacity: .5; cursor: default; }
+    .trk-arrow { display: inline-block; vertical-align: middle; flex: none; }
+    .trk-arrow-down { transform: rotate(80deg); }
+    .trk-arrow-up { transform: rotate(-35deg); }
+    .trk-linka .trk-arrow { width: 18px; height: 15px; }
+
+    /* A requested, native confirmation keeps the background inert and traps Tab. */
+    .trk-remove-confirm {
+      box-sizing: border-box; width: min(410px, calc(100% - 32px)); max-width: none;
+      max-height: calc(100svh - 32px); padding: 0; margin: auto; overflow: auto;
+      border: 0; border-radius: 4px; background: var(--su-paper, #FCFAF3); color: var(--su-ink, #2A2118);
+      box-shadow: 4px 12px 30px rgba(44,33,24,.24);
+    }
+    .trk-remove-confirm::backdrop { background: rgba(42,33,24,.62); -webkit-backdrop-filter: blur(2.5px); backdrop-filter: blur(2.5px); }
+    .trk-remove-paper { padding: 28px; }
+    .trk-remove-paper h2 { margin: 0; font-family: 'Indie Flower', cursive; font-size: 28px; font-weight: 400; line-height: 1.2; }
+    .trk-remove-paper p { margin: 12px 0 22px; font: 15px/1.5 'Archivo', sans-serif; overflow-wrap: anywhere; }
+    .trk-remove-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .trk-remove-actions button {
+      min-height: 44px; flex: 1 1 100px; border: 1px solid #A89575; border-radius: 3px; padding: 10px 12px;
+      background: var(--su-paper, #FCFAF3); color: var(--su-ink, #2A2118); cursor: pointer; font: 20px/1.2 'Indie Flower', cursive;
+    }
+    .trk-remove-actions .trk-remove-yes { background: var(--su-yellow-paper); color: var(--su-ink, #2A2118); border-color: transparent; }
+    body:has(#trk-remove-confirm[open]) { overflow: hidden; }
+    @media (prefers-reduced-transparency: reduce) { .trk-remove-confirm::backdrop { -webkit-backdrop-filter: none; backdrop-filter: none; } }
 
     /* empty state — handwritten note */
     .trk-empty {
@@ -228,13 +247,12 @@
       .trk-pills { gap: 10px; }
       .trk-pill { flex: 1 1 40%; min-width: 0; }
       .trk-export { margin-left: 0; flex: 1 1 100%; justify-content: center; }
-      .trk-row { grid-template-columns: 1fr 88px; row-gap: 10px; }
-      .trk-main { grid-column: 1 / 2; }
-      .trk-date { grid-column: 2 / 3; text-align: right; }
+      .trk-row { grid-template-columns: minmax(0, 1fr) 70px; row-gap: 12px; padding: 18px; }
+      .trk-main { grid-column: 1 / -1; padding-right: 38px; min-height: 34px; }
+      .trk-date { grid-column: 2 / 3; grid-row: 2; text-align: right; }
       .trk-status { grid-column: 1 / 2; }
-      .trk-del { grid-column: 2 / 3; justify-self: end; }
-      .trk-noteexp { grid-column: 1 / 2; justify-self: end; }
       .trk-notes { grid-column: 1 / -1; }
+      .trk-remove-paper { padding: 24px; }
     }
   </style>
 
@@ -246,7 +264,7 @@
   </footer>
 
   <script src="js/job-identity.js?v=2" defer></script>
-  <script src="js/tracker.js?v=trk5b" defer></script>
+  <script src="js/tracker.js?v=trk6" defer></script>
   <!-- Google sign-in + cross-device sync. HARD-GATED OFF on stillunemployed.com (see js/auth.js). -->
   <script type="module" src="js/auth.js?v=auth10"></script>
 </body>

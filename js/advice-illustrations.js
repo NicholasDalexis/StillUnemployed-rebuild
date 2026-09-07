@@ -17,6 +17,9 @@
     'cold-referral': paper(15,18,53,63,-5)+label(42,43,'your')+label(42,61,'work')+arrow(75,49)+paper(117,26,65,47,3)+path('M122 32 l28 23 27 -22')+path('M150 11 v8 M179 14 l-5 7',accent),
     'linkedin-dms': paper(14,13,108,55,-3)+label(67,36,'I saw your work…',13)+path('M29 66 l-5 13 22 -10')+paper(106,62,74,30,3)+label(143,82,'tell me more',12)+path('M134 48 h39',accent),
     'resume-layout': paper(50,7,86,85,-3)+path('M63 23 h44 M63 35 h57 M63 47 h52 M63 59 h56 M63 71 h49 M63 83 h35')+path('M25 30 h14 m-6 -6 6 6 -6 6 M147 64 h22 m-6 -6 6 6 -6 6',accent),
+    'wish-list': paper(13,14,79,77,-4)+label(52,36,'required',13)+path('M27 49 h9 v9 h-9 Z M45 53 h32 M27 69 h9 v9 h-9 Z M45 73 h27')+paper(106,16,80,76,3)+label(146,38,'preferred',13)+path('M120 53 h9 v9 h-9 Z M138 57 h32 M120 71 h9 v9 h-9 Z M138 75 h26')+path('M39 99 q54 -7 115 -1',accent),
+    'volume-trap': paper(20,16,54,66,5)+paper(15,12,54,66,1)+paper(10,8,54,66,-4)+label(38,31,'base',13)+path('M22 42 h28 M22 53 h28 M22 64 h20')+arrow(81,44)+paper(123,11,60,70,3)+label(153,33,'tailored',12)+path('M135 44 h33 M135 56 h30')+path('M139 67 q12 -5 28 -1 M168 93 l17 -24 6 5 -18 23 -8 4 Z',accent)+label(58,97,'a little extra care',12),
+    'keyword-stuffing': paper(10,17,76,72,-3)+label(48,38,'skills skills',12)+label(48,54,'skills skills',12)+label(48,70,'skills skills',12)+arrow(91,48)+paper(133,17,56,72,3)+label(161,39,'my work',12)+path('M143 50 h35 M143 63 h31 M143 76 h33')+path('M141 65 q18 -3 38 -1',accent),
     'major-cage': paper(12,33,59,34,-4)+label(41,55,'your major',12)+path('M77 49 Q99 49 112 22 M77 49 h36 M77 49 Q99 49 113 78',accent)+paper(121,8,62,25,3)+paper(121,40,62,25,-2)+paper(121,73,62,25,2)+label(152,26,'social',13)+label(152,58,'brand',13)+label(152,91,'content',13),
     'experience-internship': paper(15,12,62,78,-5)+path('M31 12 v-5 h29 v6')+label(46,47,'INTERN',15)+path('M31 64 h31')+arrow(85,48)+paper(128,18,51,65,3)+path('M138 35 h29 M138 49 h29 M138 65 l8 6 15 -18',accent),
     'experience-campus': path('M11 35 l39 -25 39 25 H11 M23 37 v43 M42 37 v43 M59 37 v43 M78 37 v43 M14 82 h74')+arrow(94,49)+paper(137,17,43,68,3)+label(157,39,'work',13)+path('M146 49 h24 M146 61 h21 M146 73 h25',accent),
@@ -28,7 +31,7 @@
   function has(id){return Object.prototype.hasOwnProperty.call(drawings,id);}
   function html(id,big){
     if(!has(id))return '';
-    return '<div class="su-advice-illustration" data-advice-illustration="'+id+'" style="margin:16px auto 2px;width:100%;max-width:'+(big?'250':'220')+'px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 108" width="200" height="108" aria-hidden="true" focusable="false" style="display:block;width:100%;height:auto;overflow:visible"><g fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+drawings[id]+'</g></svg></div>';
+    return '<div class="su-advice-illustration" data-advice-illustration="'+id+'" style="margin:16px auto 2px;width:100%;max-width:'+(big?'250':'220')+'px;pointer-events:none;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 108" width="200" height="108" aria-hidden="true" focusable="false" style="display:block;width:100%;height:auto;overflow:visible"><g fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+drawings[id]+'</g></svg></div>';
   }
   return {html:html,has:has,ids:Object.keys(drawings)};
 }));

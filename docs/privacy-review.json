@@ -1,20 +1,18 @@
 {
-  "version": "2.3.2",
+  "version": "2.3.3",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-07T20:12:36.865146+00:00",
-  "reviewer": "Codex/Astra with independent controls, state/pay integration and policy reviewers",
-  "sourceDigest": "f168c380267e7bcb15c77e359f2976f9ff8001914e2139b6086d5bfc453aede2",
+  "reviewedAt": "2026-09-07T21:34:21.933444+00:00",
+  "reviewer": "Codex/Astra with independent tracker, loading, advice and release reviewers",
+  "sourceDigest": "53d0a5bf95184fd7dfe7082a2fdf0383af81919897416a0d13a794a2e4aab75d",
   "sourceFileCount": 146,
   "privacyChanged": true,
   "termsChanged": false,
-  "scope": "Quieter board controls; manual-only written preferences; deferred returning-board introduction and no new visit-feature records; simplified Latest Update with shared tracker illustration and drawn arrows; display-only compact pay and canonical 50-state filters. Existing exact employer pay, account records, raw source catalogs, consent gates and source admission remain unchanged.",
+  "scope": "Mobile tracker confirmation and local reminder cadence; quieter newsletter placement with embedded loading and direct fallback; real board chrome while current feeds load; visual-only public guide and explicit two-release projection.",
   "checks": {
-    "integratedTests": 608,
-    "onboarding": "31 focused checks retain the 30-second deadline, browser-local receipts, caps and manual/dismissal behavior.",
-    "controls": "11 focused checks for a single hoverable tooltip, keyboard/touch behavior, viewport clamping, native disclosure close and visible trigger focus. Real preferences integration 9/9.",
-    "browser": "Native localhost desktop and narrow phone layout inspected. Board menu opens, manual Latest Update closes it, returns focus to Board menu, and detail has only go back. Tracker exact three roles/stages and concise Google continuity copy verified. California selection offers 50 states plus All, yields140 of490 current Jobs, no horizontal overflow at308 CSS pixels. Tooltip single layer and Escape verified. IAB screenshot scaling is imperfect; DOM geometry was also checked. No physical-phone or real-account-sync claim."
+    "integratedTests": 642,
+    "browser": "Native WebKit at320 and390 CSS pixels: job modal has no outline; popup body uses Archivo; job signup alternates; actual iframe email input rendered; tracker in-memory fixture No/Escape preserves rows, Yes removes only synthetic row; explicit Tab loop verified; one-line reminder measures46px tall; Mermaid All roles and Saved share coral; visual guide eight-theme chooser works with no horizontal overflow. IAB screenshot scaling imperfect; DOM geometry also checked. Physical iPhone and real account sync not claimed."
   },
-  "baselineReview": "docs/privacy-reviews/2.3.1.json",
+  "baselineReview": "docs/privacy-reviews/2.3.2.json",
   "openItems": [
     "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
     "Function-scoped Firebase and Netlify configuration and actual owner UID",
@@ -30,5 +28,5 @@
     "Search Console domain property Not verified; Bing has no existing IAB session",
     "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive"
   ],
-  "policySummary": "Privacy describes manual preferences, paused returning-board suggestions and retained historical snapshots, separately from optional analytics returning-visit events. Terms reviewed with no needed change. No new data flow, provider or permission. Engineering review, not legal certification."
+  "policySummary": "Privacy adds purpose and retention of tab-local popup-opening count and current-account/guest device reminder count. No job details added to counters and no new analytics event or provider. Terms reviewed unchanged. Engineering review, not legal certification."
 }

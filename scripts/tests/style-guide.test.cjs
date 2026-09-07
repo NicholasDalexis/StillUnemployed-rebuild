@@ -221,7 +221,7 @@ test('theme changes replace texture layers, motion guidance and exact icon speci
   const preview=p.el('theme-texture-preview');
   for(const property of ['background-color','background-image','background-size','background-position','background-repeat','animation'])assert.equal(preview.style[property],theme.canvas[property]||(property==='animation'?'none':''),theme.label+' texture '+property);
   assert.equal(p.el('theme-texture-name').textContent,theme.art.texture.name);assert.equal(p.el('theme-texture-description').textContent,theme.art.texture.description);assert.equal(p.el('theme-texture-usage').textContent,theme.art.texture.usage);
-  assert.equal(p.el('theme-texture-layers').textContent,theme.canvas['background-image']);assert.equal(p.el('theme-texture-size').textContent,theme.canvas['background-size']||'auto');assert.equal(p.el('theme-texture-repeat').textContent,theme.canvas['background-repeat']||'repeat');
+  assert.equal(p.el('theme-texture-layers'),null,'public guide shows texture visually rather than internal layer recipes');
   const motion=p.el('theme-texture-motion').textContent;if(theme.canvas.animation){assert.match(motion,/Reduced-motion/);const duration=theme.canvas.animation.match(/(?:^|\s)([\d.]+m?s)(?=\s|$)/);assert(duration);assert(motion.includes(duration[1]));}else assert.match(motion,/stays still/);
   const figures=p.el('theme-icon-specimens').children;assert.equal(figures.length,theme.art.icons.length);
   theme.art.icons.forEach((icon,index)=>{const figure=figures[index];assert.equal(figure.getAttribute('data-theme-icon'),icon.id);assert.equal(figure.querySelector('h3').textContent,icon.label);assert.equal(figure.querySelector('.icon-drawing').innerHTML,icon.svg);assert.equal(figure.querySelector('.icon-stage').style.color,theme.palette.ink);assert.equal(figure.querySelector('.icon-stage').getAttribute('aria-hidden'),'true');assert.equal(figure.querySelector('.icon-stage').style['animation'],'none');});
@@ -236,4 +236,16 @@ test('texture descriptions and icon labels render as text, while only fixed cata
  theme.art.icons[0].label='<button>unexpected action</button>';p.control.render(theme,false);
  assert.equal(p.el('theme-texture-name').textContent,theme.art.texture.name);assert.equal(p.el('theme-texture-name').children.length,0);assert.equal(p.el('theme-texture-description').children.length,0);assert.equal(p.el('theme-texture-usage').children.length,0);
  const specimen=p.el('theme-icon-specimens').children[0];assert.equal(specimen.querySelector('h3').textContent,theme.art.icons[0].label);assert.equal(specimen.querySelector('button'),null);assert.equal(specimen.querySelector('.icon-drawing').innerHTML,catalog.themes[0].art.icons[0].svg);
+});
+
+test('public guide keeps the visual brand and working contents without operational recipes or the misleading internship specimen',()=>{
+ const p=page();
+ for(const id of ['colors-title','type-title','textures-title','paper-title','advice-title','icons-title','salary-title','layout-title','imagery-title'])assert(p.el(id),id);
+ for(const id of ['internship-title','board-controls-title','states-title','voice-title','pay-format-title','experience-advice-specimens'])assert.equal(p.el(id),null,id);
+ const links=p.el('guide-contents').querySelectorAll('a');
+ assert.equal(links.length,9);for(const link of links)assert(p.el(link.getAttribute('href').slice(1)),'contents has a real destination');
+ assert.equal(p.document.querySelectorAll('.su-advice-card').length,2);
+ assert.doesNotMatch(html,/85%|60%|410px|580px|Loading<|source records|reviewer commentary|new-picks|advice-guide\.js|advice-content\.js|Background layers/i);
+ assert.match(p.el('salary-title').parentElement.textContent,/Internships use the same theme papers decoratively/);
+ assert.equal(p.document.querySelectorAll('[data-guide-choice]').length,8);
 });

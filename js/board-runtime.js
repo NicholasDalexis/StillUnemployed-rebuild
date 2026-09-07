@@ -15,6 +15,20 @@
     return pending[key];
   }
   function owner(){try{return root.localStorage.getItem('su_sync_owner')||'guest';}catch(e){return null;}}
+  // Device-local reminder cadence, isolated to the current account or guest.
+  // Only called after a new tracker record has been successfully saved.
+  function recordApplication(){
+    try {
+      var who=owner();if(who===null)return false;
+      var key='su_tracker_hint_v1', value=JSON.parse(root.localStorage.getItem(key)||'null');
+      var count=value&&value.owner===who&&Number.isSafeInteger(value.count)&&value.count>=0?value.count:0;
+      // Respect the previous one-time reminder when upgrading an existing browser.
+      if(!value&&root.localStorage.getItem('su_tracker_nudged'))count=1;
+      count++;
+      root.localStorage.setItem(key,JSON.stringify({owner:who,count:count}));
+      return count===1 || count%10===0;
+    }catch(e){return false;}
+  }
   var observedOwner=owner();
   function checkOwner(){var next=owner();if(next===observedOwner)return false;observedOwner=next;clear();return true;}
   function read(section){
@@ -28,5 +42,5 @@
     try{var o=owner();if(o===null||o!==observedOwner)return;var out={};keys.forEach(function(k){out[k]=state[k];});root.sessionStorage.setItem('su_view_'+section,JSON.stringify({v:1,owner:o,at:Date.now(),state:out,y:root.scrollY||0}));}catch(e){}
   }
   function clear(){try{root.sessionStorage.removeItem('su_view_jobs');root.sessionStorage.removeItem('su_view_internships');}catch(e){}}
-  return {request:request,read:read,save:save,clear:clear,checkOwner:checkOwner,emit:emit};
+  return {owner:owner,recordApplication:recordApplication,request:request,read:read,save:save,clear:clear,checkOwner:checkOwner,emit:emit};
 });
