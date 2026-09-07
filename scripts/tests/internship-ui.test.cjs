@@ -5,6 +5,8 @@ const path = require('node:path');
 const vm = require('node:vm');
 const { createRequire } = require('node:module');
 const I = require('../../js/internships.js');
+const Pay = require('../../js/pay-display.js');
+const States = require('../../js/us-states.js');
 
 // Reuse the real board renderer/event adapter, changing only its fixture URL.
 // No shared test file or product implementation is rewritten on disk.
@@ -72,6 +74,8 @@ function upcoming(extra = {}) {
 function ui(rows, options = {}) {
   const b = board(options), events = [];
   b.window.SUInternships = I;
+  b.window.SUPayDisplay = Pay;
+  b.window.SUStates = States;
   b.window.SUAnalytics.job = (name, link) => events.push({ name, link });
   const jobs = I.jobs({ schemaVersion:2, status:'verified', jobs:rows });
   assert.equal(jobs.length, rows.length, 'all fixture rows satisfy the public contract');
@@ -83,20 +87,26 @@ function ui(rows, options = {}) {
   };
 }
 
-test('internship cards and details retain exact employer pay without annualizing hourly, weekly or program amounts', () => {
+test('internship cards compact pay while detail disclosures retain exact employer amounts and units across all themes', () => {
   const values = [
-    { pay:'$22.50/hour', payBasis:'hour' }, { pay:'$1,100/week', payBasis:'week' },
-    { pay:'$4,500 program stipend', payBasis:'program' },
-    { pay:'$120,000/year (annualized)', payBasis:'annualized_year' }
+    { pay:'$22.50/hour', payBasis:'hour', display:'$23/hour' }, { pay:'$1,100/week', payBasis:'week', display:'$1,100/week' },
+    { pay:'$4,500 program stipend', payBasis:'program', display:'$4,500/program' },
+    { pay:'$120,000/year (annualized)', payBasis:'annualized_year', display:'$120K/year' }
   ];
   for (const look of ['original','poker','beauty','girly','mermaid','bratt','noir','chess']) {
     const rows = values.map((pay, index) => listing({ ...pay, link:'https://example.com/program/pay/' + index }));
     const b = ui(rows, { look }), surfaces = [];
-    for (const row of rows) {
+    for (const [index, row] of rows.entries()) {
       const card = b.card(row.link), label = card.querySelector('.su-internship-pay');assert(label);
-      assert(label.textContent.includes(row.pay), look + ' preserves ' + row.pay);
+      assert.equal(label.textContent, values[index].display, look + ' compact ' + row.pay);
       surfaces.push(card.style.background);
       const detail = b.detail(row.link);assert(detail.textContent.includes(row.pay));
+      const disclosure = detail.querySelector('.su-pay-source');
+      if (values[index].display !== row.pay) {
+        assert(disclosure); assert.equal(disclosure.querySelector('p').textContent, row.pay);
+        assert.equal(disclosure.getAttribute('open'), null, 'source details are collapsed initially');
+      }
+      assert.equal(b.app.jobs.find(job=>job.link===row.link).pay, row.pay, 'rendering never edits source pay');
       b.app.setState({ detailOpen:false });
     }
     const before = new Map(rows.map((row,index)=>[row.link,surfaces[index]]));
@@ -109,8 +119,9 @@ test('internship cards and details retain exact employer pay without annualizing
 test('USD amounts keep an explicit currency marker in both the card and detail', () => {
   const row = listing({ pay:'USD 23.75/hour' }), b = ui([row]);
   const label = b.card(row.link).querySelector('.su-internship-pay').textContent;
-  assert.match(label, /(?:USD|\$)\s*23\.75\/hour/);
-  assert(b.detail(row.link).textContent.includes(label));
+  assert.equal(label, '$24/hour');
+  const detail=b.detail(row.link);assert(detail.textContent.includes(label));
+  assert.match(detail.querySelector('.su-pay-source').textContent, /(?:USD|\$)\s*23\.75\/hour/);
 });
 
 test('a full internship grid does not add the full-time high-salary endorsement notes', () => {
@@ -150,14 +161,15 @@ test('missing duties do not invent work, and a fourth source duty never displace
   assert(!updated.textContent.includes('Unexpected fourth task.'));assert(!updated.textContent.includes(row.eligibility));
 });
 
-test('compact cards preserve accepting versus program actions and honest aggregate status counts', () => {
+test('compact cards preserve accepting versus program actions with one quiet result count', () => {
   const rows=[listing(),upcoming(),upcoming({link:'https://example.com/program/stale',applicationsOpenISO:day(-1)})],b=ui(rows);
   assert.deepEqual(rows.map(row=>I.applicationState(row)),['accepting','upcoming','needs_recheck']);
   const labels=rows.map(row=>b.card(row.link).querySelector('.applylink2').textContent);
   assert.match(labels[0],/Apply Now/);assert.match(labels[1],/View program/);assert.match(labels[2],/View program/);
   for(const row of rows)assert.equal(b.card(row.link).querySelector('.su-internship-status'),null);
-  const count=b.grid.querySelector('.su-internship-counts');assert(count);
-  assert.match(count.textContent,/1 accepting now/i);assert.match(count.textContent,/1 upcoming/i);
+  const count=b.grid.querySelector('.su-results-count');assert(count);
+  assert.equal(count.textContent,'3 internships');
+  assert.equal(b.grid.querySelector('.su-internship-counts'),null);
   assert.doesNotMatch(count.textContent,/status being checked/i);
 });
 
@@ -184,7 +196,7 @@ test('an open native welcome dialog retains ownership of focus over the board de
   assert.equal(b.document.activeElement, button, 'the board guard does not steal focus from the native dialog');
 });
 
-test('unpaid and undisclosed opportunities stay distinct and status counts follow the filtered cards', () => {
+test('unpaid and undisclosed opportunities stay distinct and the quiet count follows filtered cards', () => {
   const rows = [listing(), listing({ link:'https://example.com/program/unpaid', payStatus:'unpaid', pay:'Unpaid', payBasis:'not_listed', collegeCredit:'not_listed' }),
     listing({ link:'https://example.com/program/unknown-pay', payStatus:'not_disclosed', pay:'Not disclosed', payBasis:'not_listed' })];
   const b = ui(rows);
@@ -192,7 +204,8 @@ test('unpaid and undisclosed opportunities stay distinct and status counts follo
   assert.match(b.card(rows[2].link).querySelector('.su-internship-pay').textContent, /not disclosed/i);
   b.app.setState({ pr:'Paid' });assert.equal(b.cards().length, 1);
   assert.equal(b.cards()[0].getAttribute('data-link'), rows[0].link);
-  assert.match(b.grid.querySelector('.su-internship-counts').textContent, /1 accepting now.*0 upcoming/i);
+  assert.equal(b.grid.querySelector('.su-results-count').textContent, '1 internship');
+  assert.equal(b.grid.querySelector('.su-internship-counts'),null);
 });
 
 test('View program for upcoming or recheck listings never opens application feedback or reports an application action', () => {
@@ -282,7 +295,8 @@ test('internship papers are stable across aliases, filtering, ordering and pay, 
   view.app.setState({q:'Design Intern'});
   for(const row of rows)assert.equal(view.card(row.link).style.background,before.get(row.link));
   assert(!view.grid.textContent.includes('pay key'));
-  assert(view.grid.textContent.includes('Exact pay, with the employer’s time unit.'));
+  assert.equal(view.grid.querySelector('.su-internship-summary').textContent,'Dates and details inside.');
+  assert.equal(view.grid.querySelector('.su-results-count').textContent,'24 internships');
 });
 
 test('every internship paper variant uses matching theme ink and visible saved controls across all eight looks', () => {

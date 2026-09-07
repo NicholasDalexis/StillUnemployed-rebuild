@@ -86,7 +86,7 @@ function board({search='',saved={},tracker=[],look='original',response,fetchErro
  };
  document.body=new Element('body');document.head=new Element('head');document.activeElement=document.body;
  const grid=document.body.appendChild(new Element('div',{id:'board'})),overlay=document.body.appendChild(new Element('div',{id:'overlay-root'}));
- const window={SUJobIdentity:identityAvailable?identity:undefined,SUThemeArt:artAvailable?themeArt:undefined,innerWidth:390,innerHeight:844,addEventListener(k,f){(windowEvents[k]??=[]).push(f);},matchMedia(){return{matches:true};},open(...args){opened.push(args);},suTrack(...args){tracking.push(args);}};
+ const window={SUStates:require('../../js/us-states.js'),SUJobIdentity:identityAvailable?identity:undefined,SUThemeArt:artAvailable?themeArt:undefined,innerWidth:390,innerHeight:844,addEventListener(k,f){(windowEvents[k]??=[]).push(f);},matchMedia(){return{matches:true};},open(...args){opened.push(args);},suTrack(...args){tracking.push(args);}};
  if(analyticsAvailable)window.SUAnalytics={choices:()=>({analytics:data.get('su_consent_v3')==='granted',personalization:data.get('su_personalization_v1')==='granted'}),registerJobs(){},job(){},generation:()=>0,profile:()=>({})};
  const location={origin:'https://preview--stillunemployed.netlify.app',hostname:'preview--stillunemployed.netlify.app',pathname:'/jobs.html',search,hash:''};
  const history={replaceState(_state,_title,value){const url=new URL(value,location.origin);location.pathname=url.pathname;location.search=url.search;location.hash=url.hash;}};
@@ -451,7 +451,7 @@ function viewBoard(options={}) {
  b.window.SUBoardRuntime=require('../../js/board-runtime.js')(b.window);
  return{...b,session,runtime:b.window.SUBoardRuntime,scrolls};
 }
-const restoredView={q:'design',cat:'Social',ws:'Remote',pr:'$100K+',st:'ny',fr:'Full-time',savedOnly:true};
+const restoredView={q:'design',cat:'Social',ws:'Remote',pr:'$100K+',st:'NY',fr:'Full-time',savedOnly:true};
 const defaultView={q:'',cat:'all',ws:'Any',pr:'Any',st:'all',fr:'Any',savedOnly:false};
 function viewFields(state){return Object.fromEntries(Object.keys(defaultView).map(key=>[key,state[key]]));}
 

@@ -11,13 +11,32 @@
 .su-skeleton i{display:block;background:currentColor;opacity:.10;height:18px;width:76%;border-radius:2px;margin-bottom:18px}.su-skeleton i:nth-child(2){width:92%;height:12px}.su-skeleton i:nth-child(3){margin-top:54px;width:45%}
 .su-feed-status{font:14px/1.5 var(--su-body,Archivo,sans-serif);margin:8px 0;color:inherit;display:flex;gap:12px;align-items:center;flex-wrap:wrap}.su-feed-status button{color:inherit;background:transparent;border:0;text-decoration:underline;cursor:pointer;min-height:44px;font:inherit}.su-action-error{color:var(--su-ink,#2a2118);background:var(--su-paper,#FCFAF3);border-left:3px solid #B23A1E;padding:10px 14px;font:16px/1.5 var(--su-body,Archivo,sans-serif)}
 .su-preferred-source{margin-top:24px;padding-top:14px;border-top:1px dashed #bcae98}.su-preferred-source a{font:21px/1.4 var(--su-hand,'Indie Flower',cursive);color:#A63D20;display:inline-flex;align-items:center;min-height:44px;text-underline-offset:4px}.su-preferred-source p{font:14px/1.5 var(--su-body,Archivo,sans-serif);margin:2px 0 0;color:#6F5E45}
-.su-help-anchor{position:relative}.su-help-tip{display:none;position:absolute;z-index:80;top:100%;left:0;width:220px;max-width:calc(100vw - 48px);white-space:normal;background:#FCFAF3;color:#2A2118;border:1px solid #CDBD9E;border-radius:3px;padding:10px 12px;box-shadow:2px 5px 14px #2a211820;font:14px/1.5 var(--su-body,Archivo,sans-serif);text-align:left;transform:none}.su-help-anchor:hover>.su-help-tip,.su-help-anchor:focus-within>.su-help-tip{display:block}.su-help-anchor[data-help-dismissed]>.su-help-tip{display:none}
-@media(max-width:700px){.su-skeletons{grid-template-columns:1fr}.su-skeleton:not(:first-child){display:none}.su-loading-shell nav{margin-bottom:28px}.su-help-tip{display:none!important}}
+.su-help-tip{position:fixed;z-index:120;width:244px;max-width:calc(100vw - 24px);box-sizing:border-box;padding:13px 18px 13px 28px;white-space:normal;background-color:var(--su-paper,#FCFAF3);background-image:linear-gradient(90deg,transparent 17px,rgba(210,82,56,.36) 17px,rgba(210,82,56,.36) 18px,transparent 18px),repeating-linear-gradient(0deg,transparent 0 25px,var(--su-rule,rgba(96,130,170,.24)) 25px 26px);color:var(--su-ink,#2A2118);border:1px solid #d2c5b0;border-radius:2px;box-shadow:var(--su-note-shadow,2px 5px 14px #2a211820);font:15px/26px var(--su-body,Archivo,sans-serif);text-align:left}
+.su-help-tip[hidden]{display:none}
+@media(max-width:700px){.su-skeletons{grid-template-columns:1fr}.su-skeleton:not(:first-child){display:none}.su-loading-shell nav{margin-bottom:28px}}
 
 .su-runtime-error{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:400;width:min(440px,calc(100% - 48px));box-sizing:border-box;background:#FCFAF3;color:#2A2118;padding:20px;box-shadow:3px 8px 28px #2a211840;border:1px solid #CDBD9E;font:16px/1.5 var(--su-body,Archivo,sans-serif)}
 .su-runtime-error[hidden]{display:none}.su-runtime-error h2{font:26px/1.2 var(--su-hand,'Indie Flower',cursive);margin:0}.su-runtime-error a{color:#A63D20;min-height:44px;display:inline-flex;align-items:center}
 .su-action-error button{font:inherit;color:inherit;background:transparent;border:0;text-decoration:underline;min-height:44px;cursor:pointer}
-.su-help-anchor[data-act="toggleSavedOnly"]>.su-help-tip{left:auto;right:0}
 .su-preferences details{margin-top:18px}.su-preferences summary{font:20px/1.5 var(--su-hand,'Indie Flower',cursive);min-height:44px;cursor:pointer}.su-preferences details[open]>label{margin-top:8px}
 
 .su-feed-status[hidden]{display:none}
+
+/* Secondary actions live with the count, leaving the search and theme controls clear. */
+.su-board-meta{display:flex;align-items:center;justify-content:space-between;gap:8px 24px;flex-wrap:wrap;margin-top:16px}
+.su-pay-key{display:flex;align-items:center;flex-wrap:wrap;gap:8px 20px}
+.su-board-utilities{display:flex;align-items:center;justify-content:flex-end;gap:12px 24px;margin-left:auto;font:18px/1.4 var(--su-hand,'Indie Flower',cursive)}
+.su-results-count{white-space:nowrap}.su-internship-summary{font:19px/1.4 var(--su-hand,'Indie Flower',cursive)}
+.su-board-menu{position:relative;z-index:100}
+.su-board-menu summary{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 2px;cursor:pointer;list-style:none;text-decoration:underline;text-underline-offset:4px}
+.su-board-menu summary::-webkit-details-marker{display:none}
+.su-board-menu[open] summary svg{transform:rotate(180deg)}
+.su-board-menu-sheet{position:absolute;top:calc(100% + 3px);right:0;width:250px;max-width:calc(100vw - 32px);padding:10px 14px 10px 26px;box-sizing:border-box;background-color:var(--su-paper,#FCFAF3);background-image:linear-gradient(90deg,transparent 15px,rgba(210,82,56,.36) 15px,rgba(210,82,56,.36) 16px,transparent 16px),repeating-linear-gradient(0deg,transparent 0 26px,var(--su-rule,rgba(96,130,170,.24)) 26px 27px);color:var(--su-ink,#2A2118);border:1px solid #d2c5b0;border-radius:2px;box-shadow:var(--su-note-shadow,2px 5px 14px #2a211820)}
+.su-board-menu-sheet>a,.su-board-menu-sheet>button{box-sizing:border-box;display:flex;align-items:center;text-align:left;width:100%;min-height:44px;padding:8px 2px;font:16px/1.4 var(--su-body,Archivo,sans-serif);color:inherit;border:0;border-radius:0;background:transparent;cursor:pointer;text-decoration:none}
+.su-board-menu-sheet>a:hover,.su-board-menu-sheet>button:not(:disabled):hover{text-decoration:underline;text-underline-offset:4px}
+.su-board-menu-sheet>button:disabled{opacity:.55;cursor:default}
+.su-active-filters{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.su-pay-source{margin-top:8px;font:14px/1.5 var(--su-body,Archivo,sans-serif);color:var(--su-muted,#6F5E45)}
+.su-pay-source summary{display:list-item;width:fit-content;min-height:44px;align-content:center;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.su-pay-source p{margin:0 0 8px;color:var(--su-ink,#2A2118)}
+@media(max-width:700px){.su-board-meta{gap:10px;margin-top:12px}.su-pay-key{gap:8px 12px}.su-board-utilities{width:100%;justify-content:space-between;gap:12px;font-size:17px}.su-board-menu-sheet{width:240px}.su-internship-summary{display:none}}

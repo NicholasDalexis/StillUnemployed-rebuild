@@ -3,7 +3,7 @@ const D=require('../../js/discovery.js'),P=require('../../js/personalization.js'
 function storage(){const m=new Map();return{getItem:k=>m.get(k)||null,setItem:(k,v)=>m.set(k,v),removeItem:k=>m.delete(k)};}
 const job=(ind,n,pay='$80K',role=ind)=>({co:'Fixture',link:'https://example.org/jobs/'+n,role,ind,pay,loc:'Chicago',desc:''});
 function fixture(){const events={},clicks={},ls=storage(),store=S.create(ls);let authenticated=false,ready=false;
- const root={SUStore:store,localStorage:ls,SUJobIdentity:ID,SUPersonalization:P,SUAnalytics:{profile:()=>({})},SUAuth:{signedIn:()=>authenticated,syncReady:()=>ready},addEventListener:(e,f)=>(events[e]||(events[e]=[])).push(f),document:{querySelector:()=>null,addEventListener:(e,f)=>clicks[e]=f}};
+ const root={SUStore:store,localStorage:ls,SUJobIdentity:ID,SUPersonalization:P,SUAnalytics:{profile:()=>({})},SUAuth:{signedIn:()=>authenticated,syncReady:()=>ready},addEventListener:(e,f)=>(events[e]||(events[e]=[])).push(f),document:{querySelector:()=>null,getElementById:()=>null,addEventListener:(e,f)=>clicks[e]=f}};
  const app={jobs:[job('Brand & Marketing',1)],state:{cat:'all'},render(){},matchesBase:()=>true};const d=D.create(root);d.start(app);
  return {d,store,root,app,sign(uid){authenticated=!!uid;ready=false;store.activate(uid);(events['su:auth-changed']||[]).forEach(f=>f());},ready(){ready=true;(events['su:account-ready']||[]).forEach(f=>f());},action(action,extra={}){clicks.click({preventDefault(){},target:{closest:()=>({getAttribute:k=>k==='data-discovery'?action:extra[k]})}});},html:()=>d.html(x=>String(x).replace(/[<>]/g,'')),ls};
 }
@@ -17,11 +17,32 @@ test('a posting explicitly naming an otherwise unmapped major gets a positive ma
 test('written preference text is bounded and control characters stripped',()=>{assert.equal(D.profile({major:'x'.repeat(120)}).major.length,100);assert.equal(D.profile({info:'x'.repeat(500)}).info.length,300);assert.equal(D.profile({location:'New\nYork'}).location,'New York');});
 test('account profile and hidden state never leak to another account or guest',()=>{const f=fixture();f.sign('alice');f.store.setDiscovery('profile',{major:'Photography',info:'Private example'});f.d.dismiss(f.app.jobs[0].link,'applied');assert(f.d.hidden(f.app.jobs[0]));f.sign('bob');assert.equal(f.d.profile().major,'');assert.equal(f.d.hidden(f.app.jobs[0]),false);f.sign(null);assert.equal(f.d.profile().major,'');f.sign('alice');assert.equal(f.d.profile().major,'Photography');assert(f.d.hidden(f.app.jobs[0]));});
 test('guest dismissals do not migrate into a signed-in account',()=>{const f=fixture();f.d.dismiss(f.app.jobs[0].link,'not_fit');assert(f.d.hidden(f.app.jobs[0]));f.sign('alice');assert.equal(f.d.hidden(f.app.jobs[0]),false);});
-test('three unique explicit application confirmations show optional questions; repeats and not-fit do not count',()=>{const f=fixture();f.sign('alice');f.d.dismiss('https://example.org/jobs/1','applied');f.d.dismiss('https://example.org/jobs/1','applied');f.d.dismiss('https://example.org/jobs/2','not_fit');assert.equal(f.d.confirmedCount(),1);assert.equal(f.d.preferencesOpen(),false);f.d.dismiss('https://example.org/jobs/2','applied');f.d.dismiss('https://example.org/jobs/3','applied');assert.equal(f.d.confirmedCount(),3);assert.equal(f.d.preferencesOpen(),true);f.action('skip');assert.equal(f.d.preferencesOpen(),false);});
-test('preferences wait for product dialogs and leave the board layout intact',()=>{const f=fixture();f.sign('alice');for(let i=0;i<3;i++)f.d.dismiss('https://example.org/jobs/'+i,'applied');f.app.state.feedbackOpen=true;assert.equal(f.d.preferencesOpen(),false);f.app.state.feedbackOpen=false;assert.equal(f.d.preferencesOpen(),true);assert.doesNotMatch(f.html(),/su-discovery-form/);assert.match(f.d.modalHTML(String),/su-discovery-form/);});
+test('application confirmations remain unique without automatically opening preferences',()=>{
+ const f=fixture();f.sign('alice');f.d.dismiss('https://example.org/jobs/1','applied');f.d.dismiss('https://example.org/jobs/1','applied');f.d.dismiss('https://example.org/jobs/2','not_fit');assert.equal(f.d.confirmedCount(),1);
+ f.d.dismiss('https://example.org/jobs/2','applied');f.d.dismiss('https://example.org/jobs/3','applied');assert.equal(f.d.confirmedCount(),3);assert.equal(f.d.preferencesOpen(),false);
+ f.action('settings');assert.equal(f.d.preferencesOpen(),true);f.action('skip');assert.equal(f.d.preferencesOpen(),false);f.action('settings');assert.equal(f.d.preferencesOpen(),true,'explicit access remains available after dismissal');
+});
+
+test('only explicitly opened preferences wait for competing product dialogs',()=>{
+ const f=fixture();f.sign('alice');f.app.state.feedbackOpen=true;f.action('settings');assert.equal(f.d.preferencesOpen(),false);
+ f.app.state.feedbackOpen=false;assert.equal(f.d.preferencesOpen(),true);assert.doesNotMatch(f.html(),/su-discovery-form/);assert.match(f.d.modalHTML(String),/su-discovery-form/);
+ f.action('close');assert.equal(f.d.preferencesOpen(),false);f.sign('bob');assert.equal(f.d.preferencesOpen(),false);
+});
+
 test('undo and restore keep application tracker records intact',()=>{const f=fixture();f.sign('alice');f.store.saveTracker([{link:f.app.jobs[0].link,status:'Applied'}]);f.d.dismiss(f.app.jobs[0].link,'applied');f.action('undo');assert.equal(f.d.hidden(f.app.jobs[0]),false);assert.equal(S.view(f.store.snapshot()).tracker.length,1);f.d.dismiss(f.app.jobs[0].link,'applied');f.action('restore',{'data-key':f.d.key(f.app.jobs[0].link)});assert.equal(f.d.hidden(f.app.jobs[0]),false);assert.equal(f.d.confirmedCount(),1);});
-test('new visits wait for account sync, preserve remote visit count, and do not invent jobs',()=>{const f=fixture();f.sign('alice');assert.equal(f.store.discovery().visits,undefined);const now=Date.now();f.store.setDiscovery('visits',{count:2,lastAt:now-3600000,seen:[ID.keys(f.app.jobs[0].link)[0]],snapshotComplete:true});f.ready();assert.equal(f.store.discovery().visits.count,3);assert.doesNotMatch(f.html(),/new pages/);});
-test('new-job note uses real catalog changes, after three visits, at most once per day',()=>{const f=fixture();f.sign('alice');f.store.setDiscovery('visits',{count:2,lastAt:Date.now()-3600000,seen:['https://example.org/older'],snapshotComplete:true});f.ready();assert.match(f.html(),/new pages/);assert.equal(f.store.discovery().visits.remindedDay,Math.floor(Date.now()/86400000));f.action('dismiss-recos');assert.doesNotMatch(f.html(),/new pages/);f.sign('alice');f.store.setDiscovery('visits',{...f.store.discovery().visits,lastAt:Date.now()-3600000});f.ready();assert.doesNotMatch(f.html(),/new pages/);});
+test('paused returning picks never create visit history on account readiness or refresh',()=>{
+ const f=fixture();f.sign('alice');f.ready();f.d.updateCatalog(f.app.jobs);assert.equal(f.store.discovery().visits,undefined);assert.equal(f.html(),'');
+ f.sign(null);f.d.updateCatalog(f.app.jobs);assert.equal(f.html(),'');
+});
+
+test('paused returning picks preserve prior visits and never expose the old note or actions',()=>{
+ const f=fixture();f.sign('alice');const visits={count:3,lastAt:Date.now()-3600000,seen:['https://example.org/older'],snapshotComplete:true,remindedDay:123};f.store.setDiscovery('visits',visits);
+ f.ready();assert.deepEqual(f.store.discovery().visits,visits);assert.equal(f.html(),'');
+ for(const action of ['recommend','dismiss-recos']){f.action(action);assert.deepEqual(f.store.discovery().visits,visits);assert.equal(f.html(),'');}
+ assert.doesNotMatch(f.d.toolsHTML(String),/recommend|new picks|new pages/i);
+ f.sign('alice');f.ready();assert.deepEqual(f.store.discovery().visits,visits);
+});
+
 test('incomplete old snapshots and feed failure cannot produce new-job claims',()=>{for(const reason of ['snapshot','failure']){const f=fixture();f.sign('alice');f.store.setDiscovery('visits',{count:4,lastAt:Date.now()-3600000,seen:[],snapshotComplete:reason!=='snapshot'});f.app._loadError=reason==='failure';f.ready();assert.doesNotMatch(f.html(),/new pages/);}});
 test('same-tab navigation inside 30 minutes does not increment returning visit count',()=>{const f=fixture();f.sign('alice');f.store.setDiscovery('visits',{count:2,lastAt:Date.now()-60000,seen:[]});f.ready();assert.equal(f.store.discovery().visits.count,2);});
 test('preferences merge across devices; a stale remote cannot revive cleared answers',()=>{const a=S.create(storage()),b=S.create(storage());a.activate('alice');b.activate('alice');a.setDiscovery('profile',{major:'Marketing',info:'Private'});const old=a.snapshot();b.receive(old);b.setDiscovery('profile',null);a.receive(b.snapshot());a.receive(old);assert.equal(a.discovery().profile,undefined);});
@@ -35,16 +56,25 @@ test('an empty successful catalog does not erase the previous snapshot or manufa
 test('declined behavioral personalization cannot use a stale activity profile in new-job ordering',()=>{const f=fixture();f.sign('alice');f.root.SUAnalytics.choices=()=>({personalization:false});const jobs=[job('Social',1),job('Fashion Design',2)];const history={old:{field:'Fashion Design',role:'Fashion Design',weight:50,at:Date.now()}};assert.equal(f.d.order(jobs,P,history)[0].ind,'Social');f.root.SUAnalytics.choices=()=>({personalization:true});assert.equal(f.d.order(jobs,P,history)[0].ind,'Fashion Design');});
 test('approved internship metadata has the same canonical ID the collector accepts on the internships page',()=>{const Core=require('../../netlify/functions/lib/analytics-core.cjs');const jobs=I.jobs({schemaVersion:1,status:'verified',jobs:[internship()]});const metadata=Core.catalog(jobs),id=Core.jobId(jobs[0]);assert.equal(Core.cleanEvent({id:'fixture_event_id_123',name:'job_open',page:'internships',jobId:id},metadata).jobId,id);});
 
-test('catalog refresh replaces recommendation records and removes suppressed roles without creating a visit',()=>{
- const f=fixture();f.sign('alice');f.store.setDiscovery('visits',{count:2,lastAt:Date.now()-3600000,seen:['https://example.org/old'],snapshotComplete:true});f.ready();f.action('recommend');
- assert.match(f.html(),/Fixture/);const before=f.store.discovery().visits;
- const updated={...f.app.jobs[0],co:'Current employer',role:'Current role'};f.app.jobs=[updated];f.d.updateCatalog(f.app.jobs);
- assert.match(f.html(),/Current employer/);assert.doesNotMatch(f.html(),/Fixture/);assert.deepEqual(f.store.discovery().visits,before);
- f.app.jobs=[];f.d.updateCatalog([]);assert.doesNotMatch(f.html(),/new pages|Current employer/);assert.deepEqual(f.store.discovery().visits,before);
+test('hidden menu counts only current catalog records, including canonical aliases',()=>{
+ const f=fixture();f.sign('alice');f.d.dismiss(f.app.jobs[0].link+'?utm_source=old','not_fit');f.d.dismiss('https://example.org/retired','applied');
+ assert.equal(f.d.hiddenCount(),1);assert.match(f.d.toolsHTML(String),/Show hidden jobs \(1\)/);
+ f.action('hidden');assert.match(f.d.toolsHTML(String),/aria-pressed="true"[^>]*>Hide dismissed jobs \(1\)/);
+ f.app.jobs=[];f.d.updateCatalog([]);assert.equal(f.d.hiddenCount(),0);assert.match(f.d.toolsHTML(String),/data-discovery="hidden"[^>]* disabled/);
+ assert.equal(f.d.confirmedCount(),1,'catalog removal does not erase account dispositions');
 });
 
-test('an authoritative feed recovery initializes the pending visit once, without counting later refreshes',()=>{
- const f=fixture();f.sign('alice');f.store.setDiscovery('visits',{count:2,lastAt:Date.now()-3600000,seen:['earlier'],snapshotComplete:true});f.app._loadError=true;f.app.jobs=[];f.ready();
- assert.equal(f.store.discovery().visits.count,2);f.app._loadError=false;f.app.jobs=[job('Social',2)];f.d.updateCatalog(f.app.jobs);
- assert.equal(f.store.discovery().visits.count,3);f.d.updateCatalog(f.app.jobs);assert.equal(f.store.discovery().visits.count,3);
+test('feed recovery and later refreshes leave paused visit history unchanged',()=>{
+ const f=fixture();f.sign('alice');const visits={count:2,lastAt:Date.now()-3600000,seen:['earlier'],snapshotComplete:true};f.store.setDiscovery('visits',visits);
+ f.app._loadError=true;f.app.jobs=[];f.ready();f.app._loadError=false;f.app.jobs=[job('Social',2)];f.d.updateCatalog(f.app.jobs);f.d.updateCatalog(f.app.jobs);
+ assert.deepEqual(f.store.discovery().visits,visits);assert.doesNotMatch(f.html(),/new pages|new picks/);
+});
+
+
+test('Board menu tools reflect only the current account and expose disabled empty hidden control to guests',()=>{
+ const f=fixture();assert.equal(f.html(),'');assert.equal(f.d.hiddenCount(),0);assert.doesNotMatch(f.d.toolsHTML(String),/Your preferences/);assert.match(f.d.toolsHTML(String),/disabled>Show hidden jobs \(0\)/);
+ f.d.dismiss(f.app.jobs[0].link,'not_fit');assert.equal(f.d.hiddenCount(),1);assert.doesNotMatch(f.d.toolsHTML(String),/disabled/);assert.match(f.html(),/data-discovery="undo"/);assert.doesNotMatch(f.html(),/Your preferences|data-discovery="hidden"|new picks/);
+ f.sign('alice');assert.equal(f.d.hiddenCount(),0);assert.match(f.d.toolsHTML(String),/id="su-preferences-open"[^>]*data-discovery="settings"/);assert.equal(f.html(),'');
+ f.d.dismiss(f.app.jobs[0].link,'applied');assert.equal(f.d.hiddenCount(),1);f.sign('bob');assert.equal(f.d.hiddenCount(),0);assert.equal(f.html(),'');
+ f.sign('alice');assert.equal(f.d.hiddenCount(),1);f.sign(null);assert.equal(f.d.hiddenCount(),1,'guest history stays separate and returns only for the guest');
 });

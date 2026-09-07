@@ -35,6 +35,24 @@
   function internshipPay(job) {
     return window.SUInternships ? window.SUInternships.payLabel(job) : 'Pay not disclosed';
   }
+  function cardPay(job) {
+    var original = job.internship ? internshipPay(job) : String(job.pay || '');
+    return window.SUPayDisplay ? window.SUPayDisplay.compact(original, { basis:job.internship ? job.payBasis : 'annual', status:job.internship ? job.payStatus : undefined }) : original;
+  }
+  function payDisclosure(job) {
+    var original = job.internship ? internshipPay(job) : String(job.pay || '');
+    if (!original || original === cardPay(job)) return '';
+    return '<details class="su-pay-source"><summary>Pay details</summary><p>' + esc(original) + '</p></details>';
+  }
+  function canonicalState(value) {
+    if (!value || value === 'all' || !window.SUStates) return 'all';
+    var exact = window.SUStates.normalize(value), matches = window.SUStates.extract(value, '');
+    return exact || (matches.length === 1 ? matches[0] : 'all');
+  }
+  function isRemoteAnywhere(job) {
+    var loc = String(job.loc || '').toLowerCase();
+    return /remote/.test(loc) && !loc.replace(/remote/g, '').replace(/[^a-z]+/g, ' ').replace(/\b(us|usa|united states|anywhere|nationwide)\b/g, '').trim();
+  }
   function internshipCanApply(job) {
     return !!(window.SUInternships && window.SUInternships.canApply(job));
   }
@@ -1011,13 +1029,7 @@
       if (act === 'toggleCat' || act === 'toggleFilters') el.setAttribute('aria-expanded', String(App.state.openPanel === (act === 'toggleCat' ? 'cat' : 'filters')));
     });
     root.querySelectorAll('iframe[data-test-id="beehiiv-embed"]').forEach(function (el) { el.title = 'Newsletter signup'; });
-    var help=[['[data-act="toggleSavedOnly"]','saved','Keep roles here to revisit.'],['a[href="./tracker.html"]','tracker','Keep applications and next steps together.'],['[data-act="openLook"]','theme','Pick a different look. Your jobs stay the same.'],['#su-preferences-open','preferences','Optional hints sort roles without hiding them.']];
-    help.forEach(function(item){var el=root.querySelector(item[0]);if(!el||el.querySelector('.su-help-tip'))return;
-      var tip=document.createElement('span');tip.id='su-help-'+item[1];tip.className='su-help-tip';tip.setAttribute('role','tooltip');tip.textContent=item[2];
-      el.classList.add('su-help-anchor');el.setAttribute('aria-describedby',tip.id);el.appendChild(tip);
-      el.addEventListener('mouseleave',function(){el.removeAttribute('data-help-dismissed');});
-      el.addEventListener('focusout',function(){el.removeAttribute('data-help-dismissed');});
-    });
+    if (root.id === 'board' && window.SUBoardControls) window.SUBoardControls.prepare(root);
   }
 
   function focusIntent(el) {
@@ -1417,7 +1429,7 @@
         }
       }
       if (this.state.ws !== 'Any' && j.style !== this.state.ws) return false;
-      if (this.state.st !== 'all' && j.state !== this.state.st && j.state !== 'Remote') return false; // remote roles always show for any selected state
+      if (this.state.st !== 'all' && (!window.SUStates || window.SUStates.extract(j.state, j.loc).indexOf(this.state.st) < 0) && !isRemoteAnywhere(j)) return false;
       if (this.state.pr !== 'Any') {
         if(INTERNSHIPS)return (j.payStatus==='paid'?'Paid':j.payStatus==='unpaid'?'Unpaid':'Not disclosed')===this.state.pr;
         var t = this.payTier(j.pay);
@@ -1926,7 +1938,7 @@
           '</div>' +
           '<div class="card-role" title="' + esc(j.role) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16.5px; margin-top: 9px; line-height: 1.3;">' + esc(j.role) + '</div>' +
           '<div style="flex: 1; min-height: 18px;"></div>' +
-          '<div style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.4px;">' + (j.internship ? '<span class="su-internship-pay">'+esc(internshipPay(j))+'</span>' : esc(j.pay)) + '</div>' +
+          '<div style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.4px;">' + (j.internship ? '<span class="su-internship-pay">'+esc(cardPay(j))+'</span>' : esc(cardPay(j))) + '</div>' +
           '<div class="card-location" style="font-size: 14.5px; opacity: 0.85; line-height: 1.5; font-family: \'Poppins\', sans-serif; margin-top: 5px;">' + esc(metaTop) + '</div>';
 
         // verified stamp + apply link row (per-theme variant, ported verbatim)
@@ -1981,7 +1993,7 @@
       }
 
       // ---- states list for the <select> ----
-      var states = Array.from(new Set(this.jobs.map(function (j) { return j.state; }))).sort();
+      var states = window.SUStates ? window.SUStates.STATES : [];
       var savedJobs = uniqueJobs(Object.keys(this.state.saved).filter(function (k) { return self.state.saved[k]; }).map(function (link) { return { link:link }; }));
       var savedCount = savedJobs.length;
 
@@ -2016,14 +2028,14 @@
       if (this.state.ws !== 'Any') chips.push({ label: this.state.ws, act: 'chipWs' });
       if (this.state.pr !== 'Any') chips.push({ label: this.state.pr, act: 'chipPr' });
       if (this.state.fr !== 'Any') chips.push({ label: this.state.fr, act: 'chipFr' });
-      if (this.state.st !== 'all') chips.push({ label: this.state.st, act: 'chipSt' });
+      if (this.state.st !== 'all') chips.push({ label: window.SUStates ? window.SUStates.label(this.state.st) : this.state.st, act: 'chipSt' });
 
       var chipsHtml = chips.map(function (chip) {
         return '<div data-act="' + chip.act + '" style="display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; cursor: pointer; background: ' + ACC + '; color: ' + ACC_INK + '; font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 16px; transform: rotate(-1.5deg); box-shadow: 1px 2px 5px rgba(44,33,24,0.16);">' + esc(chip.label) +
           '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M6 6l12 12M18 6L6 18" stroke="' + ACC_INK + '" stroke-width="2.6" stroke-linecap="round"></path></svg></div>';
       }).join('');
 
-      var showingLabel = this.state.savedOnly ? ('Showing ' + shown.length + ' saved') : ('Showing ' + shown.length + ' of ' + this.jobs.length);
+      var showingLabel = shown.length + (this.state.savedOnly ? ' saved' : '') + (INTERNSHIPS ? (shown.length === 1 ? ' internship' : ' internships') : (shown.length === 1 ? ' job' : ' jobs'));
       var missingSaved = savedJobs.filter(function (saved) { return !self.jobs.some(function (job) { return jobHasLink(job, saved.link); }); }).map(function (job) { return job.link; });
       var emptyTitle = this._loadError ? 'Jobs could not load right now' : this.state.savedOnly ? (missingSaved.length ? 'Your saved links are below' : 'no saved roles yet') : "We're looking for more jobs RN, check back soon!";
       var emptyHint = this._loadError ? 'Your saved jobs and tracker are still here. Try loading the board again.' : this.state.savedOnly ? 'tap the bookmark on any card to pin it here' : 'try clearing a filter, or check back in a few days';
@@ -2032,7 +2044,7 @@
       // ---- state <select> options ----
       var stateOpts = '<option value="all" style="background:#FFFDF5; color:#3A2A1B;"' + (this.state.st === 'all' ? ' selected' : '') + '>all states</option>' +
         states.map(function (s) {
-          return '<option value="' + esc(s) + '" style="background:#FFFDF5; color:#3A2A1B;"' + (self.state.st === s ? ' selected' : '') + '>' + esc(s) + '</option>';
+          return '<option value="' + esc(s.code) + '" style="background:#FFFDF5; color:#3A2A1B;"' + (self.state.st === s.code ? ' selected' : '') + '>' + esc(s.name) + '</option>';
         }).join('');
 
       // =====================================================================
@@ -2108,7 +2120,7 @@
           '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 18px;">what\'s the pay?</div>' +
           '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px;">' + pricesHtml + '</div>' +
           '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 18px;">which state?</div>' +
-          '<select id="su-state" style="width: 100%; box-sizing: border-box; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #3A2A1B; background: var(--su-yellow-paper); border: 1.5px solid #DAC36A; border-radius: 5px; padding: 9px 12px; cursor: pointer; outline: none; margin-top: 11px;">' + stateOpts + '</select>' +
+          '<select id="su-state" aria-label="State" style="width: 100%; box-sizing: border-box; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #3A2A1B; background: var(--su-yellow-paper); border: 1.5px solid #DAC36A; border-radius: 5px; padding: 9px 12px; cursor: pointer; outline: none; margin-top: 11px;">' + stateOpts + '</select>' +
           '<div data-act="clearAll" style="margin-top: 18px; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #B23A1E; cursor: pointer;">↺ reset all filters</div>' +
         '</div>';
       }
@@ -2117,27 +2129,22 @@
 
       if(window.SUDiscovery) out += window.SUDiscovery.html(esc);
 
-      // Only internship paper is decorative; Jobs keeps the salary key below.
-      if(INTERNSHIPS) out += '<p style="color:'+boardInk+';font:16px/1.5 var(--su-body);">Exact pay, with the employer’s time unit.</p>';
-      else out += '<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 16px;">' +
+      // One quiet row: pay context, result count and secondary board actions.
+      out += '<div class="su-board-meta" style="color:'+boardInk+';">';
+      if(INTERNSHIPS) out += '<span class="su-internship-summary">Dates and details inside.</span>';
+      else out += '<div class="su-pay-key">' +
         '<span class="pay-key-label" style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + payKeyInk + ';">pay key →</span>' +
         '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.lowCard || 'var(--su-salary-low-paper)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">under $80K</span></div>' +
         '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.midCard || 'var(--su-salary-mid-paper)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$80–99K</span></div>' +
         '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + P.payHi + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$100K+</span></div>' +
       '</div>';
 
-      if (INTERNSHIPS && window.SUInternships) {
-        var internshipCounts = window.SUInternships.counts(shown);
-        out += '<p class="su-internship-counts" style="color:'+boardInk+';">' + internshipCounts.accepting + ' accepting now · ' + internshipCounts.upcoming + ' upcoming' + (internshipCounts.needs_recheck ? ' · ' + internshipCounts.needs_recheck + ' needing a status check' : '') + '</p>';
-      }
-
-      // active filter row
-      out += '<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 18px; min-height: 30px;">' +
-        chipsHtml +
-        '<a href="./suggest.html" style="display:inline-flex; align-items:center; min-height:44px; font-family: \'Indie Flower\', cursive; font-size:18px; text-underline-offset:4px; color:' + showInk + ';">Suggest Jobs</a>' +
-        '<button type="button" class="su-whats-new" data-act="openWelcome" style="color:' + showInk + ';">What’s new</button>' +
-        '<div style="margin-left: auto; font-family: \'Indie Flower\', cursive; font-size: 18px; color: ' + showInk + ';">' + esc(showingLabel) + '</div>' +
-      '</div>';
+      out += '<div class="su-board-utilities"><span class="su-results-count" aria-live="polite">' + esc(showingLabel) + '</span>' +
+        '<details id="su-board-menu" class="su-board-menu"><summary id="su-board-menu-trigger">Board menu <svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>' +
+          '<div class="su-board-menu-sheet">' + (window.SUDiscovery && window.SUDiscovery.toolsHTML ? window.SUDiscovery.toolsHTML(esc) : '') +
+            '<a href="./suggest.html">Suggest jobs</a><button type="button" data-act="openWelcome">What’s new</button>' +
+          '</div></details></div></div>';
+      if(chipsHtml) out += '<div class="su-active-filters">' + chipsHtml + '</div>';
 
       out += '<p id="su-feed-progress" class="su-feed-status" role="status"'+(this._refreshing?'':' hidden')+'>Checking the latest roles…</p>';
       if(this._actionError) out += '<div class="su-action-error" role="status">'+esc(this._actionError)+' <button type="button" data-act="retrySave">Try again</button></div>';
@@ -2251,6 +2258,7 @@
       var previousDialog = root.querySelector('[role="dialog"]');
       var previousFocus = focusIntent(document.activeElement);
       var dialogKey = this.state.detailOpen ? 'detail' : this.state.adviceOpen ? 'advice' : this.state.signupOpen ? 'signup' : this.state.feedbackOpen ? 'feedback' : this.state.lookOpen ? 'look' : this.state.modalOpen ? 'founder' : window.SUDiscovery&&window.SUDiscovery.preferencesOpen() ? 'preferences' : '';
+      if (dialogKey && window.SUBoardControls) window.SUBoardControls.dismiss();
       if (dialogKey && _voteClose) _voteClose();
       if (!previousDialog && dialogKey) this._dialogReturn = previousFocus;
       var previousKey = this._dialogKey;
@@ -2409,8 +2417,9 @@
               // header
               '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 24px; color: #2C2118; line-height: 1.12; padding-right: 82px;">' + esc(dj.co) + '</div>' +
               '<div class="su-detail-role" style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16px; color: #3A2E20; margin-top: 4px; padding-right: 82px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">' + esc(dj.role) + '</div>' +
-              (dj.pay ? '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 20px; color: #2C2118; margin-top: 10px;">' + esc(dj.internship ? internshipPay(dj) : dj.pay) + '</div>' : '') +
+              (dj.pay ? '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 20px; color: #2C2118; margin-top: 10px;">' + esc(cardPay(dj)) + '</div>' : '') +
               (dmeta ? '<div style="font-family: \'Archivo\', sans-serif; font-size: 13.5px; color: #6F5E45; margin-top: 5px;">' + esc(dmeta) + '</div>' : '') +
+              payDisclosure(dj) +
               // TL;DR label (handwritten + swoosh)
               '<div style="position: relative; display: inline-block; margin-top: 20px;">' +
                 '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 23px; color: #2C2118;">TL;DR</div>' +
@@ -2637,7 +2646,7 @@
         if (document.querySelector('#su-launch[open]')) return;
         var dialog = document.querySelector('#overlay-root [role="dialog"]');
         if (e.key === 'Escape') {
-          document.querySelectorAll('.su-help-anchor').forEach(function(el){el.setAttribute('data-help-dismissed','true');});
+          if(window.SUBoardControls)window.SUBoardControls.dismiss();
           if (dialog) {
             if(self._dialogKey==='feedback')uxEvent('feedback_dismiss');
             e.preventDefault();
@@ -3176,7 +3185,7 @@
     checkViewOwner();
     if(!initial||!runtime||location.search||location.hash)return null;
     var restored=runtime.read(INTERNSHIPS?'internships':'jobs');
-    if(restored)Object.assign(App.state,restored.state);
+    if(restored)Object.assign(App.state,restored.state,{st:canonicalState(restored.state.st)});
     return restored;
   }
   function loadFeed(signal) {

@@ -339,7 +339,7 @@ test('Tab and Shift+Tab wrap at the current dialog boundaries after every featur
     if (w.dialog.querySelector('.su-launch-detail')) {
       if (actions.length === 2) assert.equal(last.getAttribute('role'), 'region', 'detail ends at its keyboard-scrollable content');
       else assert.equal(last.getAttribute('href'), '/internships.html', 'internships detail ends at its optional internal browse link');
-    } else assert.equal(last.getAttribute('data-su-version'), '', 'overview ends at version history');
+    } else assert.equal(last, w.dialog.querySelector('.su-launch-primary'), 'overview ends at its single closing action');
     last.focus();assert.equal(w.dialog.dispatch('keydown', { key:'Tab' }).defaultPrevented, true);assert.equal(w.document.activeElement, first);
     first.focus();assert.equal(w.dialog.dispatch('keydown', { key:'Tab', shiftKey:true }).defaultPrevented, true);assert.equal(w.document.activeElement, last);
     if (actions.length > 2) { actions[1].focus();assert.notEqual(w.dialog.dispatch('keydown', { key:'Tab' }).defaultPrevented, true, 'ordinary browser tab order remains available'); }
@@ -348,18 +348,23 @@ test('Tab and Shift+Tab wrap at the current dialog boundaries after every featur
   for (const key of ['advice','themes','sync','internships']) { w.click('[data-launch-feature="'+key+'"]');checkBoundaries();w.click('[data-launch-back]');checkBoundaries(); }
 });
 
-test('the real release helper fills exact-version history on dynamic welcome creation and keeps it after reopening', async () => {
-  const w = welcome();w.window.SUWelcome.open();
-  const link = w.dialog.querySelector('[data-su-version]');
-  assert.equal(link.textContent, 'Version 2.1.0');
-  assert.equal(link.getAttribute('href'), '/versions.html#version-2-1-0');
-  assert.equal(link.getAttribute('aria-label'), 'Version 2.1.0. View version history');
-  assert.equal(new URL(link.getAttribute('href'), 'http://localhost:8000/jobs/casino/').href, 'http://localhost:8000/versions.html#version-2-1-0');
-  w.click('[data-launch-feature="sync"]');assert.equal(w.dialog.querySelector('[data-su-version]'), link);
-  w.dialog.dispatch('cancel');w.window.SUWelcome.open();
-  assert.equal(w.dialog.querySelector('[data-su-version]'), link);assert.equal(link.textContent, 'Version 2.1.0');
-  const missing = welcome({ releaseAvailable:false });assert.equal(missing.window.SUWelcome.open(), true);
-  assert.equal(missing.dialog.querySelector('[data-su-version]').getAttribute('href'), '/versions.html', 'history fallback survives an unavailable release script');
+test('the overview has four feature notes and only X plus the primary closing action', async () => {
+  for (const releaseAvailable of [true, false]) {
+    const w = welcome({ releaseAvailable });assert.equal(w.window.SUWelcome.open(), true);
+    assert.equal(w.dialog.querySelectorAll('[data-launch-feature]').length, 4);
+    assert.equal(w.dialog.querySelectorAll('a').length, 0, 'no competing footer navigation');
+    assert.equal(w.dialog.querySelector('[data-su-version]'), null);
+    assert.equal(w.dialog.querySelector('.su-launch-reopen'), null);
+    assert.doesNotMatch(w.dialog.textContent, /Suggest Jobs|Version history|Version 2\./i);
+    const actions = w.dialog.querySelectorAll('button').filter(el => el.getClientRects().length);
+    assert.equal(actions.length, 6, 'four features, X and Let’s find a role');
+    assert.equal(actions[0].getAttribute('aria-label'), 'Close Latest Update');
+    assert.equal(actions.at(-1), w.dialog.querySelector('.su-launch-primary'));
+    w.click('[data-launch-feature="sync"]');w.click('[data-launch-back]');
+    assert.equal(w.dialog.querySelectorAll('a').length, 0, 'returning does not restore removed footer links');
+    w.click('.su-launch-primary');assert.equal(w.dialog.open, false);
+    assert.equal(policy.readState([w.local]).dismissed, true);
+  }
 });
 
 test('unavailable or failed native modal APIs fail without throwing or locking the page', async () => {
@@ -427,7 +432,7 @@ test('feature details have one visible Back action and restore the complete over
     assert.equal(actions.length, feature === 'internships' ? 2 : 1);
     assert.equal(actions[0].getAttribute('data-launch-back'), '');
     assert.equal(w.dialog.getAttribute('aria-labelledby'), 'su-launch-detail-title');
-    for (const selector of ['.su-launch-overview-title','.su-launch-close','.su-launch-intro','.su-launch-footer','.su-launch-reopen']) assert(w.dialog.querySelector(selector).hidden);
+    for (const selector of ['.su-launch-overview-title','.su-launch-close','.su-launch-intro','.su-launch-footer']) assert(w.dialog.querySelector(selector).hidden);
     w.click('[data-launch-back]');
     assert.equal(w.dialog.getAttribute('aria-labelledby'), 'su-launch-title');
     assert.equal(w.document.activeElement.getAttribute('data-launch-feature'), feature);
@@ -500,4 +505,57 @@ test('the delay starts with the first eligible request rather than elapsed time 
   assert.equal(w.showCalls, 0);assert.equal(w.timerCount, 0);assert.equal(w.local.getItem(policy.stateKey), null);
   w.window.SUApp._loadError = false;w.window.SUWelcome.maybeShow();await w.advance(29999);
   assert.equal(w.showCalls, 0);await w.advance(1);assert.equal(w.showCalls, 1);
+});
+
+
+test('drawn arrows remain decorative and clicks on their paths use the surrounding action', async () => {
+  const w = welcome();w.window.SUWelcome.open();
+  assert.doesNotMatch(source, /[\u2190-\u21ff\u27a0-\u27bf\ufe0f]/u, 'popup arrows never depend on character or emoji rendering');
+  assert.equal(w.dialog.querySelector('.su-launch-intro').textContent.trim(), 'pick a note to see what’s new');
+  function checkDecorations() {
+    const drawings = w.dialog.querySelectorAll('svg');assert(drawings.length > 0);
+    for (const drawing of drawings) {
+      assert.equal(drawing.getAttribute('aria-hidden'), 'true');
+      assert.equal(drawing.getAttribute('focusable'), 'false');
+      assert.equal(drawing.getAttribute('tabindex'), null);
+      assert(drawing.querySelector('path'));
+    }
+  }
+  checkDecorations();
+  const card = w.dialog.querySelector('[data-launch-feature="themes"]');
+  w.dialog.dispatch('click', { target:card.querySelector('.su-launch-card-label').querySelector('path') });
+  assert.equal(w.dialog.querySelector('#su-launch-detail-title').textContent, 'Make it feel like you');
+  checkDecorations();
+  const back = w.dialog.querySelector('[data-launch-back]');
+  assert.equal(back.textContent.trim(), 'go back');
+  w.dialog.dispatch('click', { target:back.querySelector('path') });
+  assert.equal(w.document.activeElement.getAttribute('data-launch-feature'), 'themes');
+  const closeAction = w.dialog.querySelector('.su-launch-primary');
+  w.dialog.dispatch('click', { target:closeAction.querySelector('path') });
+  assert.equal(w.dialog.open, false);assert.equal(policy.readState([w.local]).dismissed, true);
+});
+
+test('tracker overview and reverse share three illustrative status cards, with explicit Google sync copy', async () => {
+  const w = welcome();w.window.SUWelcome.open();
+  function rowsIn(root) {
+    return root.querySelectorAll('.su-launch-tracker-row').map(row => {
+      const status = row.querySelector('.su-launch-tracker-status');
+      assert(status.querySelector('.su-launch-chevron'), 'each status has a drawn dropdown cue');
+      return [row.querySelector('.su-launch-tracker-role').textContent, status.textContent];
+    });
+  }
+  const expected = [['Social Media Manager', 'Apply'], ['Graphic Designer', 'Interview'], ['Photographer', 'Offer']];
+  const front = w.dialog.querySelector('[data-launch-feature="sync"]');
+  assert.deepEqual(rowsIn(front), expected);
+  assert.equal(front.querySelector('.su-launch-preview').getAttribute('aria-hidden'), 'true');
+  assert.equal(front.querySelector('select'), null, 'preview statuses do not promise editable controls');
+  assert.equal(front.querySelectorAll('button').length, 0, 'the feature card has no nested interactive controls');
+  assert.match(front.textContent, /one less spreadsheet/);
+  w.click('[data-launch-feature="sync"]');
+  const detail = w.dialog.querySelector('.su-launch-detail');
+  assert.deepEqual(rowsIn(detail), expected);
+  assert.match(detail.textContent, /Illustrative preview/);
+  assert.match(detail.textContent, /Applications, interviews, offers\. Keep it all here\. Sign in with Google to pick up on your phone or computer\./);
+  assert.equal(detail.querySelector('select'), null);
+  assert.equal(detail.querySelector('button'), null);
 });

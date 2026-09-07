@@ -1,19 +1,20 @@
 {
-  "version": "2.3.1",
+  "version": "2.3.2",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-07T03:50:42.269982+00:00",
-  "reviewer": "Codex/Astra with independent onboarding, policy and release reviewers",
-  "sourceDigest": "bed87045992b8623eddc7b65c7c174631e2d1b1cb679764657f6cfa166c51f67",
-  "sourceFileCount": 143,
+  "reviewedAt": "2026-09-07T20:12:36.865146+00:00",
+  "reviewer": "Codex/Astra with independent controls, state/pay integration and policy reviewers",
+  "sourceDigest": "f168c380267e7bcb15c77e359f2976f9ff8001914e2139b6086d5bfc453aede2",
+  "sourceFileCount": 146,
   "privacyChanged": true,
   "termsChanged": false,
-  "scope": "Rename the release popup to Latest Update, delay automatic entry by 30 seconds from the first eligible board render, and replace its Portfolio Graded teaser with an internal internships overview. Preserve existing browser-local keys, two-appearance cap, dismissal history and manual discovery. The internship CTA acknowledges the popup before native same-tab navigation. No new collection, destination, permission or retention change.",
+  "scope": "Quieter board controls; manual-only written preferences; deferred returning-board introduction and no new visit-feature records; simplified Latest Update with shared tracker illustration and drawn arrows; display-only compact pay and canonical 50-state filters. Existing exact employer pay, account records, raw source catalogs, consent gates and source admission remain unchanged.",
   "checks": {
-    "integratedTests": 546,
-    "onboarding": "29 checks: deterministic 30-second deadline, no duplicate timer, manual immediate entry/cancellation, competing overlay/filter/feed deferral, retained legacy receipts, cap and cross-tab locks, focus/Escape/backdrop/close paths, and internal navigation dismissal without preventDefault.",
-    "browser": "Native local manual overview and internship detail inspected. At measured 390px and 320px CSS viewport widths the scroll area has no horizontal overflow; 320px dialog bounds fit the viewport. Back receives focus and Browse internships navigates to the internal section with the dialog closed. Existing IAB 0.8 zoom clips screenshots; geometry was checked directly. No physical-phone or real authenticated round-trip claim."
+    "integratedTests": 608,
+    "onboarding": "31 focused checks retain the 30-second deadline, browser-local receipts, caps and manual/dismissal behavior.",
+    "controls": "11 focused checks for a single hoverable tooltip, keyboard/touch behavior, viewport clamping, native disclosure close and visible trigger focus. Real preferences integration 9/9.",
+    "browser": "Native localhost desktop and narrow phone layout inspected. Board menu opens, manual Latest Update closes it, returns focus to Board menu, and detail has only go back. Tracker exact three roles/stages and concise Google continuity copy verified. California selection offers 50 states plus All, yields140 of490 current Jobs, no horizontal overflow at308 CSS pixels. Tooltip single layer and Escape verified. IAB screenshot scaling is imperfect; DOM geometry was also checked. No physical-phone or real-account-sync claim."
   },
-  "baselineReview": "docs/privacy-reviews/2.3.0.json",
+  "baselineReview": "docs/privacy-reviews/2.3.1.json",
   "openItems": [
     "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
     "Function-scoped Firebase and Netlify configuration and actual owner UID",
@@ -29,5 +30,5 @@
     "Search Console domain property Not verified; Bing has no existing IAB session",
     "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive"
   ],
-  "policySummary": "Privacy wording now names Latest Update and preserves the existing local appearance/dismissal disclosure. Terms and public style-guide popup guidance reviewed; no change required. No new data flow or external link. Engineering review, not legal certification."
+  "policySummary": "Privacy describes manual preferences, paused returning-board suggestions and retained historical snapshots, separately from optional analytics returning-visit events. Terms reviewed with no needed change. No new data flow, provider or permission. Engineering review, not legal certification."
 }

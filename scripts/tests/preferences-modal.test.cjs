@@ -15,7 +15,14 @@ const fixtureSource = fs.readFileSync(fixturePath, 'utf8');
 const firstTest = fixtureSource.indexOf('\ntest(');
 assert(firstTest > 0);
 const fixtureModule = { exports:{} };
-vm.runInNewContext(fixtureSource.slice(0, firstTest) + '\nmodule.exports={board,job};', {
+// All product actions are delegated on document. Run capture handlers before
+// those bubble handlers, matching the Board menu's pre-action focus handoff.
+const fixturePrefix = fixtureSource.slice(0, firstTest).replace(
+  'addEventListener(k,fn){(events[k]??=[]).push(fn);}',
+  'addEventListener(k,fn,options){const list=events[k]??=[];if(options===true||(options&&options.capture))list.unshift(fn);else list.push(fn);}'
+);
+assert.notEqual(fixturePrefix, fixtureSource.slice(0, firstTest));
+vm.runInNewContext(fixturePrefix + '\nmodule.exports={board,job};', {
   require:createRequire(fixturePath), module:fixtureModule, __dirname,
   Buffer, URL, URLSearchParams, setImmediate
 }, { filename:fixturePath });
@@ -28,20 +35,25 @@ function preferencesUI(t) {
   root.SUAnalytics.emit = (name, payload) => emitted.push({ name, payload });
   const proto = Object.getPrototypeOf(b.document.body);
   Object.defineProperties(proto, {
+    open:{ get() { return this.getAttribute('open') !== null; }, set(value) { value ? this.setAttribute('open', '') : this.removeAttribute('open'); } },
     hidden:{ get() { return this.getAttribute('hidden') !== null; }, set(value) { value ? this.setAttribute('hidden', '') : this.removeAttribute('hidden'); } },
     elements:{ get() { return Object.fromEntries(this.querySelectorAll('input,textarea').map(el => [el.getAttribute('name'), el])); } }
   });
-  proto.getClientRects = function () { for (let el = this;el;el = el.parentElement) if (el.hidden || el.style.display === 'none') return [];return [{}]; };
+  proto.getClientRects = function () { for (let el = this;el;el = el.parentElement) { if (el.hidden || el.style.display === 'none') return [];if (el.parentElement && el.parentElement.tagName === 'DETAILS' && !el.parentElement.open && el.tagName !== 'SUMMARY') return []; }return [{}]; };
+  proto.removeEventListener = function (type, handler) { this.listeners[type] = (this.listeners[type] || []).filter(fn => fn !== handler); };
   const body = b.document.body;
   body.classList = { contains:name => body.className.split(/\s+/).includes(name),
     add(name) { body.className = [...new Set(body.className.split(/\s+/).filter(Boolean).concat(name))].join(' '); },
     remove(name) { body.className = body.className.split(/\s+/).filter(value => value !== name).join(' '); } };
   // The base adapter intentionally supports only simple selectors. Model the
   // outside-overlay exclusion for these lifecycle tests without changing sources.
-  const queryAll = b.document.querySelectorAll.bind(b.document);
+  const baseQueryAll = b.document.querySelectorAll.bind(b.document);
+  const queryAll = selector => [...new Set(selector.split(',').flatMap(part => baseQueryAll(part.trim())))];
   b.document.querySelectorAll = selector => selector.includes(':not(#overlay-root *)')
     ? queryAll(selector.replace(':not(#overlay-root *)', '')).filter(node => !b.overlay.contains(node))
     : queryAll(selector);
+  root.setTimeout = setTimeout;root.clearTimeout = clearTimeout;
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../../js/board-controls.js'), 'utf8'), { window:root }, { filename:'js/board-controls.js' });
   const store = root.SUStore = S.create(b.localStorage, changed => b.fireWindow(changed ? 'su:local-change' : 'su:data-sync'));
   let authenticated = false, state = 'saving', connection = null, retries = 0;
   const statuses = [];
@@ -66,7 +78,14 @@ function preferencesUI(t) {
     if (node && !node.defaultsReady) { node.elements.info.value = node.elements.info.textContent;node.defaultsReady = true; }
     return node;
   }
-  function open() { const button = b.document.getElementById('su-preferences-open');assert(button);button.focus();button.click();return form(); }
+  function open() {
+    const menu = b.document.getElementById('su-board-menu'), trigger = b.document.getElementById('su-board-menu-trigger');
+    assert(menu);assert(trigger);trigger.focus();
+    // The adapter does not implement the browser's default summary toggle.
+    menu.open = true;b.fire('toggle', menu);
+    const button = b.document.getElementById('su-preferences-open');assert(button);button.focus();button.click();
+    assert.equal(menu.open, false, 'choosing preferences closes Board first');return form();
+  }
   function input(name, value) { const node = form().elements[name];node.value = value;node.focus();b.fire('input', node);return node; }
   function action(name) { const node = b.document.querySelector('[data-discovery="'+name+'"]');assert(node, name);node.click(); }
   function connect(transaction) { connection = S.connect(store, { listen:() => () => {}, transaction }, status);return connection; }
@@ -87,7 +106,7 @@ test('preferences open in the shared modal layer and all dismissal paths restore
     else u.action(close);
     assert.equal(u.form(), null, close);assert.equal(u.b.grid.inert, false);
     assert.equal(u.b.document.body.classList.contains('su-dialog-open'), false);
-    assert.equal(u.b.document.activeElement, u.b.document.getElementById('su-preferences-open'));
+    assert.equal(u.b.document.activeElement, u.b.document.getElementById('su-board-menu-trigger'));
     assert.equal(u.store.discovery().promptAnswered, true);
   }
 });
@@ -108,11 +127,11 @@ test('keyboard focus wraps, interior clicks stay open and remote rerenders prese
   assert.equal(u.form().elements.major.value, 'Remote update', 'closing discards only the unsubmitted draft');
 });
 
-test('an account change closes the old draft, while an eligible next account receives only its own new form', t => {
+test('an account change closes the old draft and the next account opens only its own form explicitly', t => {
   const u = preferencesUI(t);u.open();u.input('major', 'Alice private draft');
   const old = u.form();u.sign('bob');assert.equal(u.form(), null);assert.equal(old.isConnected, false);
   for (let i = 0;i < 3;i++) u.root.SUDiscovery.dismiss(u.b.app.jobs[i].link, 'applied');
-  u.b.app.render();assert(u.form(), 'the newly eligible account can get its own automatic form');
+  u.b.app.render();assert.equal(u.form(), null, 'confirmation counts cannot trigger a new-account form');u.open();
   assert.equal(u.form().elements.major.value, '');u.input('info', 'Bob draft');
   u.sign(null);assert.equal(u.form(), null);assert.equal(u.b.grid.inert, false);
   assert.equal(u.b.document.getElementById('su-preferences-open'), null);
@@ -120,15 +139,15 @@ test('an account change closes the old draft, while an eligible next account rec
   assert.equal(u.form().elements.info.value, '');
 });
 
-test('automatic preferences wait for both a board dialog and an open native welcome', t => {
+test('application counts and closing other dialogs never open preferences without a request', t => {
   const u = preferencesUI(t);
   u.b.app.setState({ feedbackOpen:true, feedbackCo:'Example', feedbackLink:u.b.app.jobs[0].link });
   for (let i = 0;i < 3;i++) u.root.SUDiscovery.dismiss(u.b.app.jobs[i].link, 'applied');
   u.b.app.render();assert.equal(u.form(), null);assert.equal(u.b.overlay.querySelectorAll('[role="dialog"]').length, 1);
   const welcome = u.b.document.createElement('dialog');welcome.id = 'su-launch';welcome.setAttribute('open', '');u.b.document.body.appendChild(welcome);
-  u.b.app.setState({ feedbackOpen:false });assert.equal(u.form(), null, 'native dialog semantics must also defer preferences');
-  welcome.removeAttribute('open');u.b.app.renderOverlays();assert(u.form());
-  assert.equal(u.b.overlay.querySelectorAll('[role="dialog"]').length, 1);
+  u.b.app.setState({ feedbackOpen:false });assert.equal(u.form(), null);
+  welcome.removeAttribute('open');u.b.app.renderOverlays();assert.equal(u.form(), null);
+  u.open();assert(u.form());assert.equal(u.b.overlay.querySelectorAll('[role="dialog"]').length, 1);
 });
 
 test('failed save and clear display an error inside the preserved modal without losing answers or emitting success', t => {
@@ -148,7 +167,7 @@ test('Skip for now remains a dismissal when the browser cannot persist the promp
   u.store.setDiscovery = () => { throw new Error('Quota exceeded'); };
   u.action('skip');assert.equal(u.form(), null, 'an optional question must stay skippable when storage fails');
   assert.equal(u.b.grid.inert, false);assert.equal(u.b.document.body.classList.contains('su-dialog-open'), false);
-  assert.equal(u.b.document.activeElement, u.b.document.getElementById('su-preferences-open'));
+  assert.equal(u.b.document.activeElement, u.b.document.getElementById('su-board-menu-trigger'));
   assert.deepEqual(u.emitted.map(e=>e.name), ['preference_open'], 'a failed persistent skip is not reported as saved');
   u.b.app.render();assert.equal(u.form(), null, 'this visit does not immediately repeat a dismissed prompt');
 });

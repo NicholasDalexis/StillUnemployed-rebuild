@@ -1,7 +1,18 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.3.1",
+  "currentVersion": "2.3.2",
   "releases": [
+    {
+      "version": "2.3.2",
+      "date": "2026-09-07",
+      "title": "A quieter board, clearer pay",
+      "changes": [
+        "Move preferences, hidden jobs, suggestions and what’s new into one Board menu. Preferences open by request; the returning-job introduction is deferred.",
+        "Simplify Latest Update, redraw the tracker preview, use white internship paper and keep every arrow drawn.",
+        "Use compact whole-number pay labels with exact employer amounts under Pay details, and one list of 50 state names on both boards.",
+        "Show one lined-paper tooltip at a time and keep menu and dialog focus predictable."
+      ]
+    },
     {
       "version": "2.3.1",
       "date": "2026-09-06",
@@ -226,7 +237,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "bed87045992b8623eddc7b65c7c174631e2d1b1cb679764657f6cfa166c51f67",
-    "fileCount": 143
+    "digest": "f168c380267e7bcb15c77e359f2976f9ff8001914e2139b6086d5bfc453aede2",
+    "fileCount": 146
   }
 }

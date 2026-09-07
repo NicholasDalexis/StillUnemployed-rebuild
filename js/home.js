@@ -424,7 +424,7 @@
       var slots = card.querySelectorAll('div');
       slots[1].textContent = j.co;
       slots[2].textContent = j.role;
-      slots[3].textContent = j.pay;
+      slots[3].textContent = window.SUPayDisplay ? window.SUPayDisplay.compact(j.pay, {basis:'annual'}) : j.pay;
       slots[4].textContent = meta;
       wrap.appendChild(card);
     });
