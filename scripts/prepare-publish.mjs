@@ -7,7 +7,7 @@ export function prepare(root){const dest=join(root,'dist');rmSync(dest,{recursiv
   for(const name of readdirSync(root)){
     // The internship snapshot is bundled into its function, never exposed as a
     // static route that could bypass current Sheet removals.
-    const publicFile=['index.html','jobs.html','internships.html','tracker.html','suggest.html','privacy.html','terms.html','versions.html','analytics.html','style-guide.html','404.html'].includes(name)||['jobs-data.json','releases.json','robots.txt','sitemap.xml','favicon.ico','_redirects','_headers','site.webmanifest'].includes(name);
+    const publicFile=['index.html','jobs.html','internships.html','about.html','tracker.html','suggest.html','privacy.html','terms.html','versions.html','analytics.html','style-guide.html','404.html'].includes(name)||['releases.json','robots.txt','sitemap.xml','favicon.ico','_redirects','_headers','site.webmanifest'].includes(name);
     const publicDirectory=['js','css','assets','__','j','jobs'].includes(name);
     if(!publicFile&&!publicDirectory)continue;
     const source=join(root,name);if(lstatSync(source).isSymbolicLink())throw Error('Public symlink rejected');

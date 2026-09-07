@@ -100,3 +100,62 @@ test('receiving reordered maps does not rewrite local views or announce a remote
  writes=0;notifications=[];a.receive(reorderMaps(a.snapshot()));
  assert.equal(writes,0);assert.deepEqual(notifications,[]);
 });
+
+test('stopped listeners and stale account callbacks cannot alter status or start transactions',async()=>{
+ const storage=memory(),a=S.create(storage);a.activate('alice');let receive,failure,writes=0;const statuses=[];
+ const session=S.connect(a,{listen:(ok,bad)=>{receive=ok;failure=bad;return()=>{};},transaction:async r=>{writes++;return r;}},s=>statuses.push(s));
+ await session.flush();session.stop();const before=statuses.slice();
+ failure(Error('late permission failure'));receive({saved:{late:true}});session.queue();await session.flush();
+ assert.deepEqual(statuses,before);assert.equal(writes,1);
+ const live=S.connect(a,{listen:(ok,bad)=>{receive=ok;failure=bad;return()=>{};},transaction:async r=>r},s=>statuses.push(s));
+ const b=S.create(storage);b.activate('bob');const after=statuses.slice();
+ failure(Error('old account listener'));receive({saved:{alice:true}});live.queue();await live.flush();
+ assert.deepEqual(statuses,after);assert.deepEqual(b.view(),{saved:{},tracker:[]});live.stop();
+});
+
+test('a failed snapshot releases the in-flight guard so explicit retry can recover',async()=>{
+ const a=S.create(memory());a.saveSaved({saved:true});const snapshot=a.snapshot;let fail=true,writes=0,status;
+ a.snapshot=()=>{if(fail)throw Error('snapshot unavailable');return snapshot();};
+ const session=S.connect(a,{listen:()=>()=>{},transaction:async r=>{writes++;return r;}},s=>status=s);
+ await session.flush();assert.equal(status,'error');assert.equal(writes,0);
+ fail=false;await session.flush();assert.equal(status,'synced');assert.equal(writes,1);session.stop();
+});
+
+test('canonical quota failures preserve committed state and allow retry without false success',()=>{
+ const storage=memory();const write=storage.setItem;let failedKey='',notifications=[];
+ storage.setItem=(key,value)=>{if(key===failedKey)throw Error('Quota exceeded');write(key,value);};
+ const a=S.create(storage,edit=>notifications.push(edit));a.activate('alice');notifications=[];failedKey='su_sync_v2:alice';
+ assert.throws(()=>a.saveSaved({lost:true}),/Quota/);assert.deepEqual(a.view().saved,{});
+ assert.throws(()=>a.saveTracker([{id:'lost'}]),/Quota/);assert.deepEqual(a.view().tracker,[]);
+ assert.throws(()=>a.setDiscovery('profile',{major:'Draft'}),/Quota/);assert.deepEqual(a.discovery(),{});
+ assert.deepEqual(notifications,[]);failedKey='';a.saveSaved({kept:true});assert.deepEqual(a.view().saved,{kept:true});assert.deepEqual(notifications,[true]);
+});
+
+test('a legacy mirror failure keeps the durable account view authoritative and isolated',()=>{
+ const storage=memory();const write=storage.setItem;const a=S.create(storage);a.activate('alice');
+ storage.setItem=(key,value)=>{if(key==='su_saved_jobs'||key==='su_tracker')throw Error('Mirror full');write(key,value);};
+ a.saveSaved({kept:true});a.saveTracker([{id:'manual',notes:'Saved'}]);
+ assert.deepEqual(a.view(),{saved:{kept:true},tracker:[{id:'manual',notes:'Saved'}]});
+ const exposed=a.view();exposed.saved.unsafe=true;exposed.tracker[0].notes='Not saved';assert.equal(a.view().tracker[0].notes,'Saved');assert.equal(a.view().saved.unsafe,undefined);
+ assert.deepEqual(JSON.parse(storage.getItem('su_saved_jobs')),{});
+});
+
+test('cross-tab ownership blocks stale writes and hides the previous account immediately',()=>{
+ const storage=memory({su_saved_jobs:{guest:true}}),a=S.create(storage),stale=S.create(storage);
+ a.activate('alice');a.saveSaved({guest:true,alice:true});
+ assert.equal(stale.current(),false);assert.deepEqual(stale.view(),{saved:{},tracker:[]});assert.deepEqual(stale.discovery(),{});
+ assert.throws(()=>stale.saveSaved({wrong:true}),{code:'sync/account-changed'});
+ stale.activate('bob');assert.deepEqual(stale.view().saved,{},'stale anonymous tab must not re-import consumed guest jobs');
+ assert.throws(()=>a.saveTracker([{id:'alice'}]),{code:'sync/account-changed'});assert.deepEqual(a.view().tracker,[]);
+ a.activate('alice');assert.deepEqual(a.view().saved,{guest:true,alice:true});
+});
+
+test('failed account activation never consumes guest jobs before the destination is durable',()=>{
+ for(const failingKey of ['su_sync_v2:alice','su_sync_owner']) {
+  const storage=memory({su_saved_jobs:{guest:true}});const write=storage.setItem;const a=S.create(storage);let fail=true;
+  storage.setItem=(key,value)=>{if(fail&&key===failingKey)throw Error('Quota');write(key,value);};
+  assert.throws(()=>a.activate('alice'),/Quota/);a.suspend();assert.deepEqual(a.view().saved,{});
+  fail=false;a.activate('alice');assert.deepEqual(a.view().saved,{guest:true});
+  a.activate(null);a.activate('bob');assert.deepEqual(a.view().saved,{});
+ }
+});

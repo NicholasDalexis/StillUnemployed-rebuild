@@ -18,7 +18,7 @@ async function authUI(hostname = 'preview--stillunemployed.netlify.app') {
   // complete render function run unchanged; no network or Google account is used.
   const instrumented = source.replace(/import\((['"])([^'"]+)\1\)/g, '__loadSdk($1$2$1)');
   vm.runInNewContext(instrumented, {
-    location:{ hostname, host:hostname }, window,
+    location:{ hostname, host:hostname }, window,setTimeout,clearTimeout,
     document:{ readyState:'loading', addEventListener() {}, querySelectorAll:() => [button], getElementById:() => null },
     console:{ warn() {} },
     __loadSdk:async url => { imports++;return url.endsWith('firebase-app.js') ? { initializeApp:() => ({}) } : url.endsWith('firebase-auth.js') ? authSdk : firestoreSdk; }
@@ -29,7 +29,8 @@ async function authUI(hostname = 'preview--stillunemployed.netlify.app') {
 
 test('auth shows Sign In when signed out and Signed In when authenticated', async () => {
   const ui = await authUI();
-  assert.equal(ui.label.textContent, 'Sign In');assert.equal(ui.button.dataset.state, 'signed-out');
+  assert.equal(ui.label.textContent, 'Loading…');assert.equal(ui.button.dataset.state, 'loading');assert.equal(ui.button.disabled,true);
+  ui.signIn(null);assert.equal(ui.label.textContent,'Sign In');assert.equal(ui.button.dataset.state,'signed-out');assert.equal(ui.button.disabled,false);
   ui.signIn({ uid:'test-user', email:'test@example.invalid' });
   assert.equal(ui.label.textContent, 'Signed In');assert.equal(ui.button.dataset.state, 'synced');
   assert.match(ui.attrs['aria-label'], /Saved jobs and tracker synced/);

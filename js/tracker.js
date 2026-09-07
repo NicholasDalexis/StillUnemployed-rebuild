@@ -143,13 +143,15 @@
   }
   function loadRows() {
     try {
+      if (window.SUStore && window.SUStore.view) return window.SUStore.view().tracker;
       var r = JSON.parse(localStorage.getItem('su_tracker') || '[]');
       return Array.isArray(r) ? r : [];
     } catch (e) { return []; }
   }
   function saveRows(rows) {
-    try { if (window.SUStore) window.SUStore.saveTracker(rows); else localStorage.setItem('su_tracker', JSON.stringify(rows)); } catch (e) {}
+    if (window.SUStore) window.SUStore.saveTracker(rows); else localStorage.setItem('su_tracker', JSON.stringify(rows));
   }
+  function accountKey() { try { return localStorage.getItem('su_sync_owner') || 'guest'; } catch(e) { return 'guest'; } }
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
   function todayISO() {
     var d = new Date();
@@ -209,6 +211,28 @@
     expanded: {},   // id -> true while the notes field is pinned open (the ▾ arrow)
     draft: {},
     formMessage: '',
+    owner: accountKey(),
+    accountGeneration: 0,
+    noteDrafts: {},
+    localChanged: false,
+    writeError: '',
+
+    syncStatus: function () {
+      if(this.writeError)return this.writeError;
+      if(!this.localChanged)return '';
+      var auth=window.SUAuth, state=auth&&auth.syncState?auth.syncState():'';
+      if(auth&&auth.signedIn&&auth.signedIn())return state==='synced'?'Tracker synced to your account.':state==='error'?'Tracker saved on this device. Account sync paused.':'Tracker saved on this device. Syncing…';
+      return 'Tracker saved on this device.';
+    },
+    refreshStatus: function () {
+      var text=document.getElementById('trk-sync-feedback'); if(text)text.textContent=this.syncStatus();
+      var self=this,pending=Object.keys(this.noteDrafts).some(function(id){return self.rows.some(function(r){return r.id===id;});});
+      var retry=document.getElementById('trk-sync-retry'); if(retry)retry.hidden=!(pending || window.SUAuth&&window.SUAuth.syncState&&window.SUAuth.syncState()==='error');
+    },
+    persistRows: function (rows) {
+      try { saveRows(rows); this.rows=loadRows(); this.localChanged=true; this.writeError=''; this.refreshStatus(); return true; }
+      catch(e) { this.writeError='Could not save this change on this device. Please try again.'; this.refreshStatus(); return false; }
+    },
 
     counts: function () {
       var c = { total: this.rows.length, ints: 0, offers: 0, rejected: 0, ghosted: 0 };
@@ -226,6 +250,7 @@
       var self = this;
       var board = document.getElementById('board');
       var focus = captureFocus(board);
+      if(this.owner !== accountKey()) { this.owner=accountKey(); this.accountGeneration++; this.draft={}; this.noteDrafts={}; this.deleting={}; this.expanded={}; this.formMessage=''; this.writeError=''; this.localChanged=false; this.rows=loadRows(); options={clearDraft:true}; focus=null; }
       if (options && options.clearDraft) this.draft = {};
       else ['trk-co', 'trk-role', 'trk-link'].forEach(function (id) {
         var input = document.getElementById(id);
@@ -290,6 +315,9 @@
         '</button>' +
       '</div>';
 
+      out += '<p id="trk-sync-feedback" role="status" aria-live="polite">' + esc(this.syncStatus()) + '</p><button type="button" id="trk-sync-retry" data-act="retrySync" class="trk-export" hidden>Retry save</button>';
+      Object.keys(this.noteDrafts).forEach(function(id){if(!self.rows.some(function(r){return r.id===id;}))out+='<aside class="trk-unsaved-note"><p>This application was removed elsewhere. Copy your unsaved note before leaving.</p><textarea readonly aria-label="Unsaved note from a removed application">'+esc(self.noteDrafts[id])+'</textarea><button type="button" data-act="dismissDraft" data-id="'+esc(id)+'">Dismiss note</button></aside>';});
+
       // ---- add-row form ----
       out += '<div class="trk-form">' +
         '<div class="trk-form-label" style="color: #1A1A1A;">applied somewhere else? log it ↓</div>' +
@@ -331,7 +359,7 @@
             '</div>' +
             '<div class="trk-date" title="date applied">' + esc(fmtDate(r.dateApplied)) + '</div>' +
             '<select class="trk-status ' + statusCls(r.status) + '" data-id="' + esc(r.id) + '" aria-label="Application status">' + opts + '</select>' +
-            '<textarea class="trk-notes' + (self.expanded[r.id] ? ' open' : '') + '" data-id="' + esc(r.id) + '" rows="1" aria-label="Application notes" placeholder="notes... (recruiter name, next step)">' + esc(r.notes || '') + '</textarea>' +
+            '<textarea class="trk-notes' + (self.expanded[r.id] ? ' open' : '') + '" data-id="' + esc(r.id) + '" rows="1" aria-label="Application notes" placeholder="notes... (recruiter name, next step)">' + esc(Object.prototype.hasOwnProperty.call(self.noteDrafts,r.id)?self.noteDrafts[r.id]:(r.notes || '')) + '</textarea>' +
             '<button type="button" class="trk-noteexp' + (self.expanded[r.id] ? ' open' : '') + '" data-act="toggleNote" data-id="' + esc(r.id) + '" aria-expanded="' + !!self.expanded[r.id] + '" aria-label="' + (self.expanded[r.id] ? 'Collapse notes' : 'Expand notes') + '" style="border:0;padding:0;background:transparent;" title="' + (self.expanded[r.id] ? 'collapse notes' : 'expand notes') + '">' +
               '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="transition: transform .18s;' + (self.expanded[r.id] ? ' transform: rotate(180deg);' : '') + '"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
             '</button>' +
@@ -352,6 +380,7 @@
         opens[oi].style.height = Math.max(opens[oi].scrollHeight, 34) + 'px';
       }
       restoreFocus(board, focus);
+      this.refreshStatus();
     },
 
     addRow: function () {
@@ -380,12 +409,13 @@
         this.render();
         return;
       }
-      this.rows.unshift({
+      var nextRows=this.rows.slice();
+      nextRows.unshift({
         id: 'su-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
         company: co, role: role, link: link,
         source: 'Me', dateApplied: todayISO(), status: 'Applied', notes: ''
       });
-      saveRows(this.rows);
+      if(!this.persistRows(nextRows)) { this.formMessage=this.writeError; this.render(); return; }
       // analytics (js/analytics.js): manual add — additive no-op without it
       if (typeof window.suTrack === 'function') window.suTrack('tracker-add', '', '', '');
       this.formMessage = '';
@@ -398,24 +428,33 @@
     delRow: function (id) {
       var self = this;
       if (this.deleting[id]) return;
+      var owner=accountKey(), generation=this.accountGeneration;
       this.deleting[id] = true;
       this.render();
       setTimeout(function () {
-        self.rows = self.rows.filter(function (r) { return r && r.id !== id; });
+        if(owner!==accountKey() || generation!==self.accountGeneration)return;
+        var remaining=loadRows().filter(function (r) { return r && r.id !== id; });
         delete self.deleting[id];
-        saveRows(self.rows);
+        if(!self.persistRows(remaining)) { self.render(); return; }
+        delete self.noteDrafts[id];
         if(window.SUAnalytics)window.SUAnalytics.emit('tracker_delete',{});
         self.render();
       }, 650);
     },
 
     setField: function (id, field, value) {
-      var changed = false;
-      this.rows.forEach(function (r) {
-        if (r && r.id === id && r[field] !== value) { r[field] = value; r.updated = new Date().toISOString(); changed = true; }
-      });
-      if (changed) {saveRows(this.rows);if(field==='notes'&&window.SUAnalytics&&!this._noteMeasured){this._noteMeasured=true;window.SUAnalytics.emit('tracker_note_edit',{});}}
-      return changed;
+      var changed=false, next=JSON.parse(JSON.stringify(this.rows));
+      next.forEach(function(r){if(r&&r.id===id&&r[field]!==value){r[field]=value;r.updated=new Date().toISOString();changed=true;}});
+      if(!changed)return false;
+      if(!this.persistRows(next)){if(field==='notes')this.noteDrafts[id]=value;this.refreshStatus();return false;}
+      if(field==='notes'){delete this.noteDrafts[id];if(window.SUAnalytics&&!this._noteMeasured){this._noteMeasured=true;window.SUAnalytics.emit('tracker_note_edit',{});}}
+      this.refreshStatus();return true;
+    },
+
+    retrySave: function () {
+      var self=this;Object.keys(this.noteDrafts).forEach(function(id){self.setField(id,'notes',self.noteDrafts[id]);});
+      if(window.SUAuth&&window.SUAuth.retrySync)window.SUAuth.retrySync();
+      this.refreshStatus();
     },
 
     exportCsv: function () {
@@ -447,6 +486,8 @@
         switch (el.getAttribute('data-act')) {
           case 'goHome': location.href = './index.html'; break;
           case 'addRow': self.addRow(); break;
+          case 'retrySync': self.retrySave(); break;
+          case 'dismissDraft': delete self.noteDrafts[el.getAttribute('data-id')]; self.render(); break;
           case 'delRow': self.delRow(el.getAttribute('data-id')); break;
           case 'exportCsv': self.exportCsv(); break;
           case 'toggleNote': {
@@ -463,15 +504,10 @@
         var t = e.target;
         if (!t) return;
         if (t.classList && t.classList.contains('trk-status')) {
-          // analytics: status change (company + new status) — additive
-          if (typeof window.suTrack === 'function') {
-            var aid = t.getAttribute('data-id'), arow = null;
-            self.rows.forEach(function (r) { if (r && r.id === aid) arow = r; });
-            window.suTrack('tracker-status', '', t.value, '');
-          }
-          self.setField(t.getAttribute('data-id'), 'status', t.value);
+          var saved=self.setField(t.getAttribute('data-id'), 'status', t.value);
+          if (saved && typeof window.suTrack === 'function') window.suTrack('tracker-status', '', t.value, '');
           self.render(); // recolor the select + refresh the summary pills
-          if (t.value === 'Offer') suOfferParty((LOOKS[self.look] || LOOKS.original).acc);   // 🎈🎆
+          if (saved && t.value === 'Offer') suOfferParty((LOOKS[self.look] || LOOKS.original).acc);   // 🎈🎆
         } else if (t.classList && t.classList.contains('trk-notes')) {
           self.setField(t.getAttribute('data-id'), 'notes', t.value); // no re-render; keep typing flow
         }
@@ -514,11 +550,13 @@
         }
       });
 
+      window.addEventListener('su:sync-status', function () { self.refreshStatus(); });
+      window.addEventListener('su:auth-changed', function () { self.rows=loadRows(); self.render(); });
       window.addEventListener('su:data-sync', function () { self.rows = loadRows(); self.render(); });
 
       // if the board tab logs an application while this tab is open, pick it up
       window.addEventListener('storage', function (e) {
-        if (e.key === 'su_tracker') { self.rows = loadRows(); self.render(); }
+        if (e.key === 'su_tracker' || e.key === 'su_sync_owner') { self.rows = loadRows(); self.render(); }
         if (e.key === 'su_look') { self.look = loadLook(); self.render(); }
       });
     },

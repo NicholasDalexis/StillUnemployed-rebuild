@@ -34,3 +34,17 @@ test('valid punctuation in an employer URL can be hidden and restored safely',()
 test('an empty successful catalog does not erase the previous snapshot or manufacture later new jobs',()=>{const f=fixture();f.sign('alice');const old={count:3,lastAt:Date.now()-3600000,seen:['earlier'],snapshotComplete:true};f.store.setDiscovery('visits',old);f.app.jobs=[];f.ready();assert.deepEqual(f.store.discovery().visits,old);assert.doesNotMatch(f.html(),/new pages/);});
 test('declined behavioral personalization cannot use a stale activity profile in new-job ordering',()=>{const f=fixture();f.sign('alice');f.root.SUAnalytics.choices=()=>({personalization:false});const jobs=[job('Social',1),job('Fashion Design',2)];const history={old:{field:'Fashion Design',role:'Fashion Design',weight:50,at:Date.now()}};assert.equal(f.d.order(jobs,P,history)[0].ind,'Social');f.root.SUAnalytics.choices=()=>({personalization:true});assert.equal(f.d.order(jobs,P,history)[0].ind,'Fashion Design');});
 test('approved internship metadata has the same canonical ID the collector accepts on the internships page',()=>{const Core=require('../../netlify/functions/lib/analytics-core.cjs');const jobs=I.jobs({schemaVersion:1,status:'verified',jobs:[internship()]});const metadata=Core.catalog(jobs),id=Core.jobId(jobs[0]);assert.equal(Core.cleanEvent({id:'fixture_event_id_123',name:'job_open',page:'internships',jobId:id},metadata).jobId,id);});
+
+test('catalog refresh replaces recommendation records and removes suppressed roles without creating a visit',()=>{
+ const f=fixture();f.sign('alice');f.store.setDiscovery('visits',{count:2,lastAt:Date.now()-3600000,seen:['https://example.org/old'],snapshotComplete:true});f.ready();f.action('recommend');
+ assert.match(f.html(),/Fixture/);const before=f.store.discovery().visits;
+ const updated={...f.app.jobs[0],co:'Current employer',role:'Current role'};f.app.jobs=[updated];f.d.updateCatalog(f.app.jobs);
+ assert.match(f.html(),/Current employer/);assert.doesNotMatch(f.html(),/Fixture/);assert.deepEqual(f.store.discovery().visits,before);
+ f.app.jobs=[];f.d.updateCatalog([]);assert.doesNotMatch(f.html(),/new pages|Current employer/);assert.deepEqual(f.store.discovery().visits,before);
+});
+
+test('an authoritative feed recovery initializes the pending visit once, without counting later refreshes',()=>{
+ const f=fixture();f.sign('alice');f.store.setDiscovery('visits',{count:2,lastAt:Date.now()-3600000,seen:['earlier'],snapshotComplete:true});f.app._loadError=true;f.app.jobs=[];f.ready();
+ assert.equal(f.store.discovery().visits.count,2);f.app._loadError=false;f.app.jobs=[job('Social',2)];f.d.updateCatalog(f.app.jobs);
+ assert.equal(f.store.discovery().visits.count,3);f.d.updateCatalog(f.app.jobs);assert.equal(f.store.discovery().visits.count,3);
+});

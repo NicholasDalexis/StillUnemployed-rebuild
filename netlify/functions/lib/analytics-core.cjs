@@ -2,7 +2,11 @@
 const crypto = require('node:crypto');
 const P = require('../../../js/personalization.js');
 const Identity = require('../../../js/job-identity.js');
-const COUNT_ONLY_EVENTS = new Set(['preference_save','preference_clear','preference_skip','feedback_not_fit']);
+const COUNT_ONLY_EVENTS = new Set(['preference_save','preference_clear','preference_skip','feedback_not_fit',
+  'preferred_source_click','feedback_open','feedback_dismiss','feedback_unavailable',
+  'feed_ready','feed_load_error','feed_retry','feed_refresh','search_empty',
+  'signin_start','signin_cancel','signin_error','signout_complete','signout_error','sync_error','sync_retry','sync_recovered',
+  'preference_open','preference_error','newsletter_dismiss','bookmark_open','view_restored','render_error']);
 const EVENTS = new Set(['page_view','job_impression','job_open','job_save','job_unsave','apply_click','application_reported','tracker_open','tracker_add','tracker_delete','tracker_status','tracker_export','tracker_note_edit','theme_change','theme_vote','filter_change','search_used','privacy_open','page_engagement','outbound_started','outbound_return','outbound_unknown','auth_login','auth_logout','auth_signup','consent_change','preferences_reset','newsletter_open','newsletter_click','advice_open','advice_impression','suggest_open','suggest_received','founder_open','board_open',...COUNT_ONLY_EVENTS]);
 const PAGES = new Set(['home','board','internships','tracker','privacy','terms','suggest','other']);
 const THEMES = new Set(['original','girly','poker','mermaid','bratt','noir','beauty','chess']);

@@ -60,6 +60,44 @@ test('failed theme vote retries retain event identity and withdrawal clears the 
 });
 
 const responseActions=['preference_save','preference_clear','preference_skip','feedback_not_fit'];
+const uxActions=['preferred_source_click','feedback_open','feedback_dismiss','feedback_unavailable',
+ 'feed_ready','feed_load_error','feed_retry','feed_refresh','search_empty','signin_start','signin_cancel','signin_error','signout_complete','signout_error',
+ 'sync_error','sync_retry','sync_recovered','preference_open','preference_error','newsletter_dismiss','bookmark_open','view_restored','render_error'];
+test('UX decisions and recoveries send count-only payloads, including failed signed-out sign-in',async()=>{
+ const h=harness(storage({su_consent_v3:'granted'}));
+ for(const name of uxActions){
+  h.api.emit(name,{message:'private failure',error:'private/token',url:'https://private.invalid/?token=secret',email:'private@example.invalid',jobId:'a'.repeat(64),theme:'poker',status:'Applied',seconds:400,outboundId:'private-outbound'});
+  await h.api.flush();
+ }
+ const events=h.requests.flatMap(r=>JSON.parse(r.options.body).events);
+ assert.deepEqual(events.map(e=>e.name),uxActions);
+ for(const event of events)assert.deepEqual(Object.keys(event).sort(),['id','name','occurredAt','page']);
+ assert.doesNotMatch(JSON.stringify(events),/private|secret|jobId|theme|seconds|outboundId/);
+ assert.ok(h.requests.every(r=>!r.options.headers.Authorization),'failed sign-in does not require board authentication');
+ assert.ok(!events.some(e=>/preferred_source_(added|complete|success)/.test(e.name)));
+});
+test('UX counts honor all analytics choices and never replay pre-consent actions',async()=>{
+ for(const [values,gpc,signed] of [[{},false,false],[{su_consent_v3:'denied'},false,false],[{su_consent_v3:'granted'},true,false],[{su_consent_v3:'granted',su_admin:'1'},false,false],[{su_personalization_v1:'granted'},false,true]]){
+  const h=harness(storage(values),storage(),[],gpc);if(signed)h.auth(true);await Promise.resolve();
+  for(const name of uxActions)h.api.emit(name,{});
+  await h.api.flush();assert.equal(h.requests.filter(r=>r.options.method==='POST').length,0);
+  assert.equal(h.local.values.su_analytics_visitor,undefined);
+ }
+ const h=harness();for(const name of uxActions)h.api.emit(name,{});
+ h.local.setItem('su_consent_v3','granted');h.consent();await h.api.flush();
+ assert.ok(h.requests.every(r=>!JSON.parse(r.options.body).events.some(e=>uxActions.includes(e.name))));
+});
+test('pending UX counts keep their retry identity and cannot cross withdrawal or account changes',async()=>{
+ for(const reset of ['withdraw','account']){
+  const h=harness(storage({su_consent_v3:'granted'}),storage(),[{ok:false,status:503},{ok:false,status:503},{ok:true,status:200}]);
+  h.api.emit('preferred_source_click',{});h.api.emit('sync_error',{});await h.api.flush();await h.api.flush();
+  assert.deepEqual(JSON.parse(h.requests[0].options.body).events,JSON.parse(h.requests[1].options.body).events);
+  if(reset==='withdraw'){h.local.setItem('su_consent_v3','denied');h.consent();}else h.auth(true,true);
+  await h.api.flush();
+  const later=h.requests.slice(2).flatMap(r=>JSON.parse(r.options.body||'{"events":[]}').events||[]);
+  assert.ok(!later.some(e=>uxActions.includes(e.name)));
+ }
+});
 test('response counts have no optional payload, even if callers pass typed or job data',async()=>{
  const h=harness(storage({su_consent_v3:'granted'}));
  for(const name of responseActions)h.api.emit(name,{major:'private study',location:'private location',info:'private notes',email:'private@example.invalid',jobId:'a'.repeat(64),url:'https://private.invalid',theme:'original',filter:'category',status:'Applied',seconds:15,capped:true,vote:'up',outboundId:'private-outbound'});

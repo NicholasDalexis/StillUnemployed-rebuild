@@ -43,25 +43,27 @@ async function feedbackUI(options={}) {
   function open(){b.app.setState({detailOpen:false,feedbackOpen:true,feedbackCo:'Example',feedbackLink:'https://example.com/job'});}
   open();
   b.document.readyState='complete';
-  const calls={imports:0,popups:0,redirects:0,alerts:[],confirms:0,syncs:0};
+  const calls={imports:0,popups:0,redirects:0,alerts:[],confirms:0,syncs:0,signouts:0,events:[],initializations:0};
+  const timers=new Map(),windowEvents={};let timerID=0,resolveSignout,rejectSignout,syncCallback;
   let authListener,mutationListener,owner=null,resolvePopup,rejectPopup,releaseSdk;
   const sdkGate=options.deferSdk?new Promise(resolve=>{releaseSdk=resolve;}):Promise.resolve();
-  const store={owner:()=>owner,activate(value){owner=value;b.app.render();}};
+  const store={owner:()=>owner,current:()=>options.cacheCurrent!==false,ownershipCurrent:()=>options.ownerMatches!==false,activate(value){owner=value;options.cacheCurrent=true;options.ownerMatches=true;b.app.render();if(mutationListener)mutationListener([{addedNodes:[b.grid]}]);}};
   const sdk={getAuth:()=>({}),GoogleAuthProvider:function GoogleAuthProvider(){},
     getRedirectResult:async()=>null,
     onAuthStateChanged(_auth,fn){authListener=fn;fn(options.initialUser||null);},
     signInWithPopup(){calls.popups++;return options.popupError?Promise.reject({code:options.popupError}):new Promise((resolve,reject)=>{resolvePopup=resolve;rejectPopup=reject;});},
-    signInWithRedirect:async()=>{calls.redirects++;if(options.redirectError)throw{code:options.redirectError};},signOut:async()=>{throw Error('feedback must never sign out');}
+    signInWithRedirect:async()=>{calls.redirects++;if(options.redirectError)throw{code:options.redirectError};},signOut:()=>{calls.signouts++;return new Promise((resolve,reject)=>{resolveSignout=resolve;rejectSignout=reject;});}
   };
-  const window={SUApp:b.app,SUStore:store,addEventListener(){},SUSync:{connect(_store,_adapter,status){calls.syncs++;status('synced');return{stop(){},queue(){}};}}};
+  const window={SUApp:b.app,SUStore:store,SUAnalytics:{emit:(name,payload)=>calls.events.push({name,payload})},addEventListener(name,fn){(windowEvents[name]??=[]).push(fn);},SUSync:{connect(_store,_adapter,status){calls.syncs++;syncCallback=status;status(options.syncFailure?'error':'synced');return{stop(){},queue(){}};}}};
   const hostname=options.hostname||'preview--stillunemployed.netlify.app';
   vm.runInNewContext(authSource.replace(/import\((['"])([^'"]+)\1\)/g,'__loadSdk($1$2$1)'),{
     location:{hostname,host:hostname},window,document:b.document,
-    console:{warn(){}},alert:message=>calls.alerts.push(message),confirm:()=>{calls.confirms++;return false;},
+    setTimeout:options.manualTimers?(fn,ms)=>{const id=++timerID;timers.set(id,{fn,ms});return id;}:setTimeout,clearTimeout:options.manualTimers?id=>timers.delete(id):clearTimeout,
+    console:{warn(){}},alert:message=>calls.alerts.push(message),confirm:()=>{calls.confirms++;return !!options.confirm;},
     MutationObserver:class{constructor(fn){mutationListener=fn;}observe(){}},
     __loadSdk:async url=>{
       calls.imports++;await sdkGate;if(options.sdkFailure)throw Error('offline SDK');
-      return url.endsWith('firebase-app.js')?{initializeApp:()=>({})}:url.endsWith('firebase-auth.js')?sdk:{getFirestore:()=>({}),doc:()=>({})};
+      return url.endsWith('firebase-app.js')?{initializeApp:()=>{calls.initializations++;return {};}}:url.endsWith('firebase-auth.js')?sdk:{getFirestore:()=>({}),doc:()=>({})};
     }
   },{filename:'js/auth.js'});
   await tick();await tick();
@@ -69,7 +71,11 @@ async function feedbackUI(options={}) {
   const google=()=>slot().querySelector('.su-auth-button');
   const close=()=>slot().querySelector('.su-feedback-close');
   const notify=node=>mutationListener&&mutationListener([{addedNodes:[node]}]);
-  return{b,calls,slot,google,close,open,notify,releaseSdk,tabStorage:b.window.sessionStorage,
+  return{b,calls,slot,google,close,open,notify,releaseSdk,tabStorage:b.window.sessionStorage,auth:window.SUAuth,
+    nav:()=>b.grid.querySelector('.su-auth-button'),
+    bootTimeout(){for(const t of timers.values())if(t.ms===20000)t.fn();},
+    syncStatus(next){syncCallback(next);},fireWindow(name,event={}){for(const fn of windowEvents[name]||[])fn(event);},
+    finishSignout(){authListener(null);resolveSignout();},failSignout(){rejectSignout(Error('offline'));},
     signIn(user){authListener(user);},finishPopup(){if(resolvePopup)resolvePopup();},
     failPopup(code){rejectPopup({code});},
     dialog:()=>b.overlay.querySelector('[role="dialog"]')};
@@ -142,7 +148,8 @@ test('Google failures and unsupported popup environments reuse existing recovery
     const ui=await feedbackUI({popupError});const note=ui.dialog();ui.google().click();await tick();await tick();
     assert.equal(ui.dialog(),note);assert.equal(ui.google().disabled,false);
     assert.equal(ui.calls.redirects,popupError==='auth/unauthorized-domain'?0:1);
-    assert.equal(ui.calls.alerts.length,popupError==='auth/unauthorized-domain'?1:0);
+    assert.equal(ui.calls.alerts.length,0);
+    if(popupError==='auth/unauthorized-domain')assert.match(ui.slot().querySelector('.su-auth-feedback').textContent,/could not finish/);
     ui.b.fire('keydown',note,{key:'Escape'});assert.equal(ui.b.app.state.feedbackOpen,false);
   }
 });
@@ -218,7 +225,7 @@ test('failed or silently blocked redirect receipt writes keep feedback in place;
     const ui=await feedbackUI({popupError:'auth/popup-blocked',tabStorage:storage});
     ui.google().click();await tick();await tick();
     assert.equal(ui.calls.redirects,0);assert.equal(ui.b.app.state.feedbackOpen,true);
-    assert.match(ui.calls.alerts[0],/allow popups/);assert.equal(ui.google().disabled,false);
+    assert.match(ui.slot().querySelector('.su-auth-feedback').textContent,/allow popups/);assert.equal(ui.calls.alerts.length,0);assert.equal(ui.google().disabled,false);
   }
   const ui=await feedbackUI({popupError:'auth/popup-blocked'});
   ui.b.fire('keydown',ui.dialog(),{key:'Escape'});
@@ -257,4 +264,65 @@ test('a late popup-blocked result after an answer cannot create a stale receipt 
   ui.failPopup('auth/popup-blocked');await tick();await tick();
   assert.equal(ui.calls.redirects,0);assert.equal(ui.tabStorage.getItem(redirectKey),null);
   assert.equal(ui.b.app.state.feedbackOpen,false);
+});
+
+test('failed SDK loading offers a real retry and never labels an unresolved account as signed in',async()=>{
+ const options={sdkFailure:true};const ui=await feedbackUI(options);
+ assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Retry sign-in');assert.equal(ui.nav().disabled,false);
+ assert.equal(ui.auth.signedIn(),false);assert.match(ui.nav().closest('.su-account-slot').querySelector('.su-auth-feedback').textContent,/could not load/);
+ options.sdkFailure=false;ui.nav().click();assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Loading…');assert.equal(ui.nav().disabled,true);
+ await tick();await tick();assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Sign In');assert.equal(ui.calls.initializations,1);
+});
+
+test('bootstrap timeout unlocks retry and an obsolete SDK load cannot initialize a second session',async()=>{
+ const options={deferSdk:true,manualTimers:true};const ui=await feedbackUI(options);
+ assert.equal(ui.nav().disabled,true);ui.bootTimeout();
+ assert.equal(ui.nav().disabled,false);assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Retry sign-in');
+ ui.nav().click();ui.releaseSdk();await tick();await tick();
+ assert.equal(ui.calls.initializations,1);assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Sign In');
+});
+
+test('late popup rejection cannot replace a newly authenticated account with an error',async()=>{
+ const ui=await feedbackUI();ui.google().click();ui.signIn({uid:'new-account'});
+ ui.failPopup('auth/unauthorized-domain');await tick();
+ assert.equal(ui.auth.signedIn(),true);assert.equal(ui.auth.syncState(),'synced');assert.equal(ui.nav().dataset.state,'synced');
+ assert(!ui.calls.events.some(e=>e.name==='signin_error'));assert.equal(ui.calls.redirects,0);
+});
+
+test('sign-out remains pending until Firebase confirms it and reports failure without false completion',async()=>{
+ const ui=await feedbackUI({initialUser:{uid:'alice'},confirm:true});
+ ui.nav().click();assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Signing out…');assert.equal(ui.nav().disabled,true);await tick();
+ assert.equal(ui.auth.signedIn(),true);assert(!ui.calls.events.some(e=>e.name==='signout_complete'));
+ ui.failSignout();await tick();assert.equal(ui.auth.signedIn(),true);assert.equal(ui.nav().disabled,false);
+ assert.match(ui.nav().closest('.su-account-slot').querySelector('.su-auth-feedback').textContent,/still signed in/);
+ assert.equal(ui.calls.events.filter(e=>e.name==='signout_error').length,1);
+ ui.nav().click();await tick();ui.finishSignout();await tick();
+ assert.equal(ui.auth.signedIn(),false);assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Sign In');
+ assert.equal(ui.calls.events.filter(e=>e.name==='signout_complete').length,1);
+ assert(!ui.calls.events.some(e=>e.name==='auth_logout'));assert(ui.calls.events.every(e=>Object.keys(e.payload).length===0));
+});
+
+test('one sync failure and recovery episode emits count-only events once across retries',async()=>{
+ const options={initialUser:{uid:'alice'},syncFailure:true};const ui=await feedbackUI(options);
+ ui.syncStatus('error');ui.auth.retrySync();ui.syncStatus('error');
+ assert.equal(ui.calls.events.filter(e=>e.name==='sync_error').length,1);assert.equal(ui.calls.events.filter(e=>e.name==='sync_retry').length,1);
+ ui.syncStatus('saving');ui.syncStatus('synced');ui.syncStatus('synced');
+ assert.equal(ui.calls.events.filter(e=>e.name==='sync_recovered').length,1);
+ assert(ui.calls.events.every(e=>Object.keys(e.payload).length===0));
+});
+
+test('online recovery cannot reclaim a cache owned by a different account in another tab',async()=>{
+ const options={initialUser:{uid:'alice',getIdToken:async()=> 'alice-fixture-token'}};const ui=await feedbackUI(options);const syncs=ui.calls.syncs;
+ options.cacheCurrent=false;options.ownerMatches=false;ui.fireWindow('storage',{key:'su_sync_owner'});ui.fireWindow('online');
+ assert.equal(ui.calls.syncs,syncs);assert.equal(ui.auth.accountCurrent(),false);assert.equal(ui.auth.syncReady(),false);assert.equal(ui.nav().disabled,true);
+ await assert.rejects(()=>ui.auth.getToken(),/Sign in required/);
+ ui.signIn({uid:'bob'});assert.equal(ui.auth.accountCurrent(),true);assert.equal(ui.auth.syncReady(),true);assert.equal(ui.nav().disabled,false);
+});
+
+test('cancelling a retry clears the earlier sign-in error without claiming success',async()=>{
+ const options={popupError:'auth/unauthorized-domain'};const ui=await feedbackUI(options);ui.google().click();await tick();
+ assert.equal(ui.auth.syncState(),'error');assert.equal(ui.slot().querySelector('.su-auth-feedback').hidden,false);
+ options.popupError='auth/popup-closed-by-user';ui.google().click();assert.equal(ui.auth.syncState(),'signing-in');await tick();
+ assert.equal(ui.auth.syncState(),'signed-out');assert.equal(ui.auth.signedIn(),false);assert.equal(ui.slot().querySelector('.su-auth-feedback').hidden,true);
+ assert.equal(ui.calls.events.filter(e=>e.name==='signin_start').length,2);assert.equal(ui.calls.events.filter(e=>e.name==='signin_cancel').length,1);
 });

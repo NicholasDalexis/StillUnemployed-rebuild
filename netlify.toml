@@ -1,5 +1,5 @@
 # StillUnemployed.com: static site with generated share and theme pages.
-# Netlify serves the repo root after the build succeeds.
+# Netlify serves only the explicit dist allowlist after the build succeeds.
 [build]
   publish = "dist"
   # Generate the static per-job share pages + Post-it OG images from the live sheet.
@@ -11,7 +11,7 @@
   # FIX 2026-08-16: this `command` line sat under [build.environment] (a Jul-13 merge mistake),
   # where Netlify reads it as an env var, NOT a build command — so branch builds silently
   # skipped page generation. It belongs HERE, in [build]. [[2026-07-14-Netlify-Build-Command-Nested-In-Wrong-Table]]
-  command = "node scripts/gen-style-guide.mjs --check && node scripts/version.mjs --check && node scripts/privacy-review.mjs && node scripts/gen-share.mjs && node scripts/gen-theme-pages.mjs && node scripts/prepare-publish.mjs"
+  command = "node scripts/gen-style-guide.mjs --check && node scripts/version.mjs --check && node scripts/privacy-review.mjs && node scripts/gen-share.mjs && node scripts/gen-theme-pages.mjs && node scripts/prepare-publish.mjs && node scripts/gen-seo.mjs"
 
 # ── Netlify secrets scanning (2026-07-12) ──────────────────────────────────────────────────────
 # Netlify scans the build output for anything that looks like a credential and FAILS THE DEPLOY if
@@ -63,6 +63,13 @@
   to = "https://stillunemployed-17de9.firebaseapp.com/__/auth/:splat"
   status = 200
   force = true
+
+# Stable public informational URL. Existing .html links remain valid and carry
+# the same canonical metadata in the finalized artifact.
+[[redirects]]
+  from = "/about"
+  to = "/about.html"
+  status = 200
 
 # Theme deep-links (added Jul 8 2026): /jobs/casino, /jobs/blackcat, /jobs/girlies, etc.
 # all serve the board (jobs.html) with the URL preserved (status 200 = rewrite, not redirect).

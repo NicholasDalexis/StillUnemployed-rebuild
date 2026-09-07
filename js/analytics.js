@@ -4,7 +4,13 @@
   var queue=[],pending=[],catalog={},profile={},generation=0,authEpoch=0,flushBusy=false;
   var visitor=null,session=null,sessionAt=0,seen={},outbound=null,lastActivity=Date.now(),activeAt=Date.now(),activeSeconds=0;
   var ENDPOINT='/.netlify/functions/analytics-events',PROFILE='/.netlify/functions/analytics-profile';
-  var COUNT_ONLY_EVENTS=['preference_save','preference_clear','preference_skip','feedback_not_fit'];
+  // Count decisions and recoveries without attaching job data or private errors.
+  // Opening Google's selector never confirms that a source was selected there.
+  var COUNT_ONLY_EVENTS=['preference_save','preference_clear','preference_skip','feedback_not_fit',
+    'preferred_source_click','feedback_open','feedback_dismiss','feedback_unavailable',
+    'feed_ready','feed_load_error','feed_retry','feed_refresh','search_empty',
+    'signin_start','signin_cancel','signin_error','signout_complete','signout_error','sync_error','sync_retry','sync_recovered',
+    'preference_open','preference_error','newsletter_dismiss','bookmark_open','view_restored','render_error'];
   function stored(k){try{return localStorage.getItem(k);}catch(e){return null;}}
   function put(k,v){try{if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){}}
   function choices(){return {analytics:stored('su_consent_v3')==='granted'&&!navigator.globalPrivacyControl,personalization:stored('su_personalization_v1')==='granted'};}

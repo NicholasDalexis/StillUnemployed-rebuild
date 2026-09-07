@@ -42,7 +42,7 @@ test('an explicitly empty reviewed feed has a current empty state, distinct from
   for(const [status,copy] of [['verified','No internships listed right now.'],['awaiting_verification','The internship notebook is getting ready.']]){
     const b=board({response:{ok:true,json:async()=>({schemaVersion:2,status,jobs:[]})}});
     b.window.SUInternships=I;await b.boot();
-    assert.equal(b.app._loadError,undefined);assert(b.grid.textContent.includes(copy));
+    assert.equal(b.app._loadError,false);assert(b.grid.textContent.includes(copy));
   }
 });
 

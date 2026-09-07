@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.2.8",
+  "currentVersion": "2.2.9",
   "releases": [
+    {
+      "version": "2.2.9",
+      "date": "2026-09-06",
+      "title": "A clearer board, with better recovery",
+      "changes": [
+        "Keep filters through short visits, retry loading without losing your place, and get clearer save and sign-in feedback. Find an optional Prefer us on Google link after Apply, plus a new explanation of how the board works."
+      ]
+    },
     {
       "version": "2.2.8",
       "date": "2026-09-06",
@@ -201,7 +209,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "5764dc37f4dbf59d4dbfe6fb127ddeb110d2590f2776d595e85985dda4e04b1f",
-    "fileCount": 137
+    "digest": "3ec3d06541c8a1da2168f8fe0e35b1424997283d28e5ed9600892d88da9baca3",
+    "fileCount": 143
   }
 }

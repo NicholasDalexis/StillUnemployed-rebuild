@@ -58,15 +58,20 @@
     if (!device) { device = Math.random().toString(36).slice(2); storage.setItem('su_sync_device', JSON.stringify(device)); }
     function key() { return 'su_sync_v2:' + (owner || 'guest'); }
     var records = merge(empty(), read(key(), null) || legacy({ saved: read(KEYS.saved, {}), tracker: read(KEYS.tracker, []) }));
-    var lastTime = 0;
+    var lastTime = 0, suspended = false;
+    function ownershipCurrent() { return read('su_sync_owner', null) === owner; }
+    function current() { return !suspended && ownershipCurrent(); }
+    function assertCurrent() { if (!current()) { var error = Error('Account changed in another tab. Please wait for sign-in to finish.'); error.code = 'sync/account-changed'; throw error; } }
     function refresh() { records = merge(records, read(key(), empty())); }
     function persist(changed) {
       if (!equal(read(key(), null), records)) storage.setItem(key(), JSON.stringify(records));
       var v = view(records);
       var savedChanged = !equal(read(KEYS.saved, null), v.saved);
       var trackerChanged = !equal(read(KEYS.tracker, null), v.tracker);
-      if (savedChanged) storage.setItem(KEYS.saved, JSON.stringify(v.saved));
-      if (trackerChanged) storage.setItem(KEYS.tracker, JSON.stringify(v.tracker));
+      // The account record above is authoritative. A full legacy mirror must
+      // not turn a durable save into a false failure or block its cloud retry.
+      try { if (savedChanged) storage.setItem(KEYS.saved, JSON.stringify(v.saved)); } catch (e) {}
+      try { if (trackerChanged) storage.setItem(KEYS.tracker, JSON.stringify(v.tracker)); } catch (e) {}
       if (notify && (changed || savedChanged || trackerChanged)) notify(changed);
     }
     function stamp(value) {
@@ -75,6 +80,7 @@
       return { value: clone(value), at: lastTime, tag: device };
     }
     function save(kind, values) {
+      assertCurrent();
       var next = kind === 'saved' ? values : {};
       if (kind === 'tracker') values.forEach(function (r) { if (id(r)) next[id(r)] = r; });
       var keys = new Set(Object.keys(records[kind]).concat(Object.keys(next)));
@@ -86,27 +92,36 @@
       });
       // Apply only this view's edits. Another tab may have saved a new item since it rendered.
       refresh();
+      var before = clone(records);
       edits.forEach(function (edit) { records[kind][edit[0]] = stamp(edit[1]); });
-      persist(edits.length > 0);
+      try { persist(edits.length > 0); } catch (e) { records = before; throw e; }
     }
     persist(false);
     return {
       saveSaved: function (v) { save('saved', v); },
       saveTracker: function (v) { save('tracker', v); },
       // Operational preferences stay account-owned. Never import these from a guest.
-      discovery: function () { refresh(); var out={}; Object.keys(records.discovery || {}).forEach(function(k){if(records.discovery[k].value !== null) out[k]=clone(records.discovery[k].value);}); return out; },
-      setDiscovery: function (k, value) { if(!owner) return false; if(!/^[a-zA-Z0-9:%_.~-]{1,2000}$/.test(k) || k === '__proto__') throw Error('Invalid preference key'); refresh(); records.discovery[k]=stamp(value); persist(true); return true; },
-      snapshot: function () { refresh(); return clone(records); },
-      receive: function (v) { refresh(); records = merge(records, v); persist(false); },
+      view: function () { if (!current()) return view(empty()); refresh(); return clone(view(records)); },
+      current: current,
+      ownershipCurrent: ownershipCurrent,
+      suspend: function () { suspended = true; },
+      discovery: function () { if (!current()) return {}; refresh(); var out={}; Object.keys(records.discovery || {}).forEach(function(k){if(records.discovery[k].value !== null) out[k]=clone(records.discovery[k].value);}); return out; },
+      setDiscovery: function (k, value) { if(!owner) return false; assertCurrent(); if(!/^[a-zA-Z0-9:%_.~-]{1,2000}$/.test(k) || k === '__proto__') throw Error('Invalid preference key'); refresh(); var before=clone(records); records.discovery[k]=stamp(value); try { persist(true); } catch(e) { records=before; throw e; } return true; },
+      snapshot: function () { assertCurrent(); refresh(); return clone(records); },
+      receive: function (v) { assertCurrent(); refresh(); var before=clone(records); records = merge(records, v); try { persist(false); } catch(e) { records=before; throw e; } },
       activate: function (uid) {
         // Guest data is imported once. Never import a previous account into a different account.
         refresh(); storage.setItem(key(), JSON.stringify(records));
-        var guest = owner === null ? merge(empty(), records) : empty();
+        var guest = owner === null && read('su_sync_owner', null) === owner ? merge(empty(), records) : empty();
         guest.discovery = {};
-        if (uid && owner === null) storage.setItem('su_sync_v2:guest', JSON.stringify(empty()));
-        owner = uid || null;
-        records = merge(read(key(), empty()), guest);
-        storage.setItem('su_sync_owner', JSON.stringify(owner));
+        var nextOwner = uid || null, nextKey = 'su_sync_v2:' + (nextOwner || 'guest');
+        var nextRecords = merge(read(nextKey, empty()), guest);
+        // Commit the destination before consuming anonymous work or switching
+        // ownership. Quota failures must not erase jobs during sign-in.
+        storage.setItem(nextKey, JSON.stringify(nextRecords));
+        if (uid && owner === null && read('su_sync_owner', null) === owner) storage.setItem('su_sync_v2:guest', JSON.stringify(empty()));
+        storage.setItem('su_sync_owner', JSON.stringify(nextOwner));
+        owner = nextOwner; records = nextRecords; suspended = false;
         persist(false);
       },
       owner: function () { return owner; }
@@ -115,35 +130,40 @@
   // Adapter.transaction must atomically merge with the latest remote document.
   function connect(store, adapter, status) {
     var stopped = false, busy = false, dirty = false, timer, retry = 0;
+    var owner = store.owner();
+    function active() { return !stopped && store.owner() === owner && (!store.current || store.current()); }
     function queue() {
+      if (!active()) return;
       dirty = true; status('saving'); clearTimeout(timer);
       timer = setTimeout(flush, 200);
     }
     async function flush() {
-      if (stopped || busy || !dirty) return;
+      if (!active() || busy || !dirty) return;
       busy = true; dirty = false;
-      var sent = store.snapshot();
       try {
+        var sent = store.snapshot();
         var result = await adapter.transaction(sent);
-        if (stopped) return;
+        if (!active()) return;
         store.receive(result); retry = 0;
         status(dirty ? 'saving' : 'synced');
       } catch (e) {
-        if (stopped) return;
+        if (!active()) return;
         dirty = true; status('error', e);
         clearTimeout(timer); timer = setTimeout(flush, Math.min(30000, 1000 * Math.pow(2, retry++)));
       } finally {
         busy = false;
-        if (!stopped && dirty && retry === 0) flush();
+        if (active() && dirty && retry === 0) flush();
       }
     }
     var unsubscribe = adapter.listen(function (remote) {
-      if (stopped) return;
+      if (!active()) return;
+      try {
       var merged = merge(store.snapshot(), decode(remote));
       store.receive(merged);
       if (!equal(merged, decode(remote))) queue();
       else if (!busy && !dirty) status('synced');
-    }, function (e) { status('error', e); });
+      } catch (e) { if (active()) status('error', e); }
+    }, function (e) { if (active()) status('error', e); });
     queue();
     return { queue: queue, flush: flush, stop: function () { stopped = true; clearTimeout(timer); unsubscribe(); } };
   }

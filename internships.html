@@ -74,13 +74,14 @@
   <script src="js/ga.js?v=7" defer></script>
   <link rel="stylesheet" href="css/discovery.css?v=2">
   <link rel="stylesheet" href="css/internships.css?v=1">
-  <link rel="stylesheet" href="css/account.css?v=4">
+  <link rel="stylesheet" href="css/account.css?v=5">
+  <link rel="stylesheet" href="css/board-runtime.css?v=1">
   <link rel="stylesheet" href="css/onboarding.css?v=6">
 </head>
 <body>
-  <!-- The board is rendered by js/app.js from jobs-data.json, reproducing the exact
-       markup the original Manus template produced. Edit jobs-data.json to add/remove roles. -->
-  <div data-screen-label="Internships" class="board" id="board" style="min-height: 100vh; font-family: 'Poppins', system-ui, sans-serif; color: #2C2118; padding-bottom: 90px;"></div>
+  <!-- Current active source rows are checked before cards render. Outages never show a stale catalog. -->
+  <div data-screen-label="Internships" class="board" id="board" style="min-height: 100vh; font-family: 'Poppins', system-ui, sans-serif; color: #2C2118; padding-bottom: 90px;"><section class="su-loading-shell"><nav aria-label="Main"><a href="/">Home</a><a href="/jobs.html">Jobs</a><a href="/internships.html">Internships</a><a href="/tracker.html">Tracker</a></nav><h1>Internships for your next chapter.</h1><p>Find roles with salary information. Save the ones that fit and keep your applications together.</p><p id="su-loading-status" role="status" aria-live="polite">Loading the board…</p><div class="su-skeletons" id="su-loading-art" aria-hidden="true"></div><noscript><p>Turn on JavaScript to check current availability, browse listings and save jobs. <a href="/about.html">How this board works</a>.</p></noscript></section></div>
+  <div id="su-runtime-error" class="su-runtime-error" role="alert" hidden><h2>A little snag in the notebook.</h2><p>This part of the page could not load. Refresh to try again.</p><a href="/internships.html">Refresh the board</a></div>
 
   <!-- Modals / popups get appended here at runtime -->
   <div id="overlay-root"></div>
@@ -98,19 +99,21 @@
   <footer class="site-footer">
     <span>&copy; 2026 Elevate Media Technologies LLC</span> &nbsp;&middot;&nbsp;
     <a href="./index.html">Home</a>
+    <a href="./about.html">How this board works</a>
     <a href="./privacy.html">Privacy Policy</a>
     <a href="./terms.html">Terms of Service</a>
-    <a data-su-version href="/versions.html#version-2-2-8" aria-label="Version 2.2.8. View version history">Version 2.2.8</a>
+    <a data-su-version href="/versions.html#version-2-2-9" aria-label="Version 2.2.9. View version history">Version 2.2.9</a>
   </footer>
 
-  <script src="js/release.js?v=2.2.8" defer></script>
+  <script src="js/release.js?v=2.2.9" defer></script>
   <script src="js/onboarding.js?v=6" defer></script>
   <script src="js/theme-art.js?v=3" defer></script>
   <script src="js/advice-content.js?v=1" defer></script>
   <script src="js/advice-illustrations.js?v=1" defer></script>
   <script src="js/discovery.js?v=2" defer></script>
   <script src="js/internships.js?v=3" defer></script>
-  <script src="js/app.js?v=app52" defer></script>
+  <script src="js/board-runtime.js?v=1" defer></script>
+  <script src="js/app.js?v=app53" defer></script>
   <!-- Google sign-in + cross-device sync. HARD-GATED OFF on stillunemployed.com (see js/auth.js). -->
   <script type="module" src="js/auth.js?v=auth10"></script>
 </body>

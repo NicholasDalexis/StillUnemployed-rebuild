@@ -10,7 +10,7 @@ const Sync=require('../../js/sync-store.js');
 function tracker(initialRows=[]) {
  const values=new Map([['su_tracker',JSON.stringify(initialRows)]]);
  const storage={getItem:key=>values.get(key)||null,setItem:(key,value)=>values.set(key,value)};
- const events={},windowEvents={};let nodes=[],exportedBlob;
+ const events={},windowEvents={},timers=[];let nodes=[],exportedBlob;
  const unescape=s=>String(s).replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
  const emit=(type,target)=>{for(const fn of events[type]||[])fn({target,preventDefault(){},stopPropagation(){}});};
  const body={appendChild(){},removeChild(){}};const document={readyState:'loading',body,activeElement:body,
@@ -50,12 +50,12 @@ function tracker(initialRows=[]) {
  window.SUJobIdentity=require('../../js/job-identity.js');
  class TestURL extends URL {}
  TestURL.createObjectURL=blob=>{exportedBlob=blob;return'blob:tracker-test';};TestURL.revokeObjectURL=()=>{};
- const context={window,document,localStorage:storage,URL:TestURL,Blob,Date,console,setTimeout,clearTimeout,location:{href:''}};
+ const context={window,document,localStorage:storage,URL:TestURL,Blob,Date,console,setTimeout:(fn,ms)=>{timers.push({fn,ms});return timers.length;},clearTimeout,location:{href:''}};
  vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../js/tracker.js'),'utf8'),context);
  const app=window.SUTracker;app.init();
  return {app,storage,document,board,window,input:id=>document.getElementById(id),
   rowControl:(tag,id,act)=>nodes.find(n=>n.tagName===tag&&n.getAttribute('data-id')===id&&(!act||n.getAttribute('data-act')===act)),
-  emit,receive(rows){storage.setItem('su_tracker',JSON.stringify(rows));for(const fn of windowEvents['su:data-sync']||[])fn();},
+  emit,runRemoval(){for(const timer of timers.splice(0))if(timer.ms===650)timer.fn();},receive(rows){const remote=Sync.merge(Sync.empty(),window.SUStore.snapshot());const now=Date.now()+10000;for(const op of Object.values(remote.tracker))op.value=null,op.at=now;for(const row of rows)remote.tracker[row.link||row.id]={value:row,at:now+1,tag:'remote'};window.SUStore.receive(remote);for(const fn of windowEvents['su:data-sync']||[])fn();},
   storageChange(key){for(const fn of windowEvents.storage||[])fn({key});},
   async exportText(){app.exportCsv();return exportedBlob.text();}
  };
@@ -144,4 +144,53 @@ test('CSV export protects every cell while retaining ordinary quotes, commas and
   '"Example, Inc.",Designer,https://example.com/job,Me,2026-09-05,Applied,"He said ""hello""\nNext step"'
  ].join('\r\n'));
  assert.equal(t.app.rows[0].company,'=1');
+});
+
+test('failed manual additions keep the complete draft and do not announce success',()=>{
+ const t=tracker();const events=[];t.window.suTrack=(...args)=>events.push(args);
+ t.input('trk-co').value='Draft employer';t.input('trk-role').value='Draft role';t.input('trk-link').value='example.com/new';
+ const save=t.window.SUStore.saveTracker;t.window.SUStore.saveTracker=()=>{throw Error('Quota');};t.app.addRow();
+ assert.equal(t.app.rows.length,0);assert.equal(t.input('trk-co').value,'Draft employer');assert.equal(t.input('trk-role').value,'Draft role');
+ assert.match(t.input('trk-form-feedback').textContent,/Could not save/);assert.equal(events.length,0);
+ t.window.SUStore.saveTracker=save;t.app.addRow();assert.equal(t.app.rows.length,1);assert.equal(t.input('trk-co').value,'');assert.equal(events.length,1);
+});
+
+test('failed note writes remain editable across remote refreshes and a retry persists the draft',()=>{
+ const t=tracker([application]);const save=t.window.SUStore.saveTracker;const events=[];t.window.SUAnalytics={emit:name=>events.push(name)};
+ t.window.SUStore.saveTracker=()=>{throw Error('Quota');};const note=t.rowControl('TEXTAREA','existing');note.value='Keep my unsaved note';note.focus();t.emit('input',note);
+ assert.equal(t.window.SUStore.view().tracker[0].notes,application.notes);assert.equal(t.app.noteDrafts.existing,'Keep my unsaved note');
+ assert.equal(t.input('trk-sync-retry').hidden,false);assert.equal(events.length,0);
+ t.receive([application,{...application,id:'new',link:'https://example.com/new'}]);assert.equal(t.rowControl('TEXTAREA','existing').value,'Keep my unsaved note');
+ t.window.SUStore.saveTracker=save;t.app.retrySave();assert.equal(t.window.SUStore.view().tracker.find(r=>r.id==='existing').notes,'Keep my unsaved note');
+ assert.deepEqual(Object.keys(t.app.noteDrafts),[]);assert.equal(t.input('trk-sync-retry').hidden,true);assert.deepEqual(events,['tracker_note_edit']);
+});
+
+test('failed status writes restore the committed status and do not emit successful changes',()=>{
+ const t=tracker([{...application,status:'Applied'}]);const events=[];t.window.suTrack=(...args)=>events.push(args);
+ t.window.SUStore.saveTracker=()=>{throw Error('Quota');};const status=t.rowControl('SELECT','existing');status.value='Offer';t.emit('change',status);
+ assert.equal(t.app.rows[0].status,'Applied');assert.equal(t.window.SUStore.view().tracker[0].status,'Applied');assert.equal(events.length,0);
+ assert.match(t.input('trk-sync-feedback').textContent,/Could not save/);
+});
+
+test('an account switch clears private drafts and invalidates an already queued removal',()=>{
+ const t=tracker([application]);t.window.SUStore.activate('alice');t.storageChange('su_sync_owner');
+ t.input('trk-co').value='Alice unfinished draft';t.app.delRow('existing');
+ t.window.SUStore.activate('bob');t.window.SUStore.saveTracker([{...application,company:'Bob own record'}]);t.storageChange('su_sync_owner');
+ assert.equal(t.input('trk-co').value,'');t.runRemoval();assert.equal(t.window.SUStore.view().tracker[0].company,'Bob own record');
+ assert.equal(t.app.rows.length,1);assert.equal(t.app.rows[0].company,'Bob own record');
+});
+
+test('the tracker distinguishes durable local changes from confirmed cloud sync',()=>{
+ const t=tracker([application]);let state='saving',retries=0;t.window.SUAuth={signedIn:()=>true,syncState:()=>state,retrySync:()=>retries++};
+ t.app.setField('existing','notes','Updated');assert.match(t.input('trk-sync-feedback').textContent,/on this device.*Syncing/);
+ state='error';t.app.refreshStatus();assert.match(t.input('trk-sync-feedback').textContent,/sync paused/);assert.equal(t.input('trk-sync-retry').hidden,false);
+ t.app.retrySave();assert.equal(retries,1);state='synced';t.app.refreshStatus();assert.equal(t.input('trk-sync-feedback').textContent,'Tracker synced to your account.');
+});
+
+test('a remote removal preserves a failed note as copyable text without resurrecting the application',()=>{
+ const t=tracker([application]);const save=t.window.SUStore.saveTracker;t.window.SUStore.saveTracker=()=>{throw Error('Quota');};
+ const note=t.rowControl('TEXTAREA','existing');note.value='Only unsaved copy';t.emit('input',note);t.window.SUStore.saveTracker=save;t.receive([]);
+ assert.equal(t.window.SUStore.view().tracker.length,0);assert.match(t.board.html,/Copy your unsaved note/);assert.match(t.board.html,/Only unsaved copy/);
+ assert.equal(t.input('trk-sync-retry').hidden,true);t.app.retrySave();assert.equal(t.window.SUStore.view().tracker.length,0);
+ t.emit('click',t.rowControl('BUTTON','existing','dismissDraft'));assert.doesNotMatch(t.board.html,/Only unsaved copy/);
 });

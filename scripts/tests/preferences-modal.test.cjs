@@ -103,7 +103,7 @@ test('keyboard focus wraps, interior clicks stay open and remote rerenders prese
   input.focus();const remote = S.create(memoryStorage());remote.activate('alice');remote.setDiscovery('profile', { major:'Remote update' });
   u.store.receive(remote.snapshot());u.b.fireWindow('su:profile-ready');
   assert.equal(u.form(), form);assert.equal(form.elements.info.value, 'Unsubmitted private draft');
-  assert.equal(u.b.document.activeElement, input);assert.equal(u.emitted.length, 0);
+  assert.equal(u.b.document.activeElement, input);assert.deepEqual(u.emitted.map(e=>e.name), ['preference_open']);
   u.action('close');u.open();assert.equal(u.form().elements.info.value, '');
   assert.equal(u.form().elements.major.value, 'Remote update', 'closing discards only the unsubmitted draft');
 });
@@ -136,9 +136,9 @@ test('failed save and clear display an error inside the preserved modal without 
   const original = u.store.setDiscovery;
   u.store.setDiscovery = () => { throw new Error('Quota exceeded'); };
   u.submit();assert.equal(u.form(), form);assert.match(form.querySelector('.su-preferences-error').textContent, /Could not save/);
-  assert.equal(form.elements.info.value, 'Keep this draft');assert.equal(u.emitted.length, 0);
+  assert.equal(form.elements.info.value, 'Keep this draft');assert.deepEqual(u.emitted.map(e=>e.name), ['preference_open','preference_error']);
   u.action('clear');assert.equal(u.form(), form);assert.match(form.querySelector('.su-preferences-error').textContent, /could not be saved/);
-  assert.equal(form.elements.major.value, 'Photography');assert.equal(u.emitted.length, 0);
+  assert.equal(form.elements.major.value, 'Photography');assert.deepEqual(u.emitted.map(e=>e.name), ['preference_open','preference_error','preference_error']);
   u.action('close');assert.equal(u.form(), null, 'storage failure never traps the visitor');
   u.store.setDiscovery = original;
 });
@@ -149,7 +149,7 @@ test('Skip for now remains a dismissal when the browser cannot persist the promp
   u.action('skip');assert.equal(u.form(), null, 'an optional question must stay skippable when storage fails');
   assert.equal(u.b.grid.inert, false);assert.equal(u.b.document.body.classList.contains('su-dialog-open'), false);
   assert.equal(u.b.document.activeElement, u.b.document.getElementById('su-preferences-open'));
-  assert.equal(u.emitted.length, 0, 'a failed persistent skip is not reported as saved');
+  assert.deepEqual(u.emitted.map(e=>e.name), ['preference_open'], 'a failed persistent skip is not reported as saved');
   u.b.app.render();assert.equal(u.form(), null, 'this visit does not immediately repeat a dismissed prompt');
 });
 
@@ -175,7 +175,7 @@ test('save and clear acknowledge local persistence separately from confirmed syn
   fail = false;u.action('retry');assert.equal(u.retries, 1);await connection.flush();
   assert.equal(u.b.document.getElementById('su-preference-status').textContent, 'Preferences cleared in your account.');
   assert.equal(u.b.document.getElementById('su-preference-retry').hidden, true);
-  assert.deepEqual(u.emitted.map(event => [event.name, Object.keys(event.payload)]), [['preference_save', []], ['preference_clear', []]]);
+  assert.deepEqual(u.emitted.map(event => [event.name, Object.keys(event.payload)]), [['preference_open', []], ['preference_save', []], ['preference_open', []], ['preference_clear', []]]);
 });
 
 test('a delayed old-account save cannot restore an old status or draft after switching accounts', async t => {
@@ -193,3 +193,12 @@ test('a delayed old-account save cannot restore an old status or draft after swi
 function memoryStorage() {
   const values = new Map();return { getItem:key => values.get(key) ?? null, setItem:(key, value) => values.set(key, String(value)), removeItem:key => values.delete(key) };
 }
+
+test('the optional third question is progressively disclosed and keeps a typed draft during refresh',t=>{
+ const u=preferencesUI(t);u.open();const details=u.form().querySelector('details');
+ assert.equal(details.getAttribute('open'),null);assert.match(details.querySelector('summary').textContent,/Anything else/);
+ assert(u.form().elements.major);assert(u.form().elements.location);
+ details.setAttribute('open','');u.input('info','Explore creative technology');u.b.fireWindow('su:profile-ready');
+ assert.equal(u.form().querySelector('details'),details);assert.equal(details.getAttribute('open'),'');assert.equal(u.form().elements.info.value,'Explore creative technology');
+ u.submit();u.open();assert.equal(u.form().querySelector('details').getAttribute('open'),'');assert.equal(u.form().elements.info.value,'Explore creative technology');
+});

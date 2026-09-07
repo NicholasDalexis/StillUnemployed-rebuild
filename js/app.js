@@ -527,9 +527,11 @@
   }
 
   // "Tracker (N)" nav badge — digits in Archivo (clearer than Indie Flower), 99+ cap, hidden at 0
+  function uxEvent(name) { if(window.SUAnalytics && typeof window.SUAnalytics.emit === 'function') window.SUAnalytics.emit(name,{}); }
+
   function suTrkBadge() {
     try {
-      var r = JSON.parse(localStorage.getItem('su_tracker') || '[]');
+      var r = window.SUStore && window.SUStore.view ? window.SUStore.view().tracker : JSON.parse(localStorage.getItem('su_tracker') || '[]');
       var n = Array.isArray(r) ? r.length : 0;
       if (!n) return '';
       return ' (<span style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 16px;">' + (n > 99 ? '99+' : n) + '</span>)';
@@ -959,7 +961,7 @@
       return false;
     }
     try {
-      var rows = JSON.parse(localStorage.getItem('su_tracker') || '[]');
+      var rows = window.SUStore && window.SUStore.view ? window.SUStore.view().tracker : JSON.parse(localStorage.getItem('su_tracker') || '[]');
       if (!Array.isArray(rows)) rows = [];
       if (link && rows.some(function (r) { return r && sameJobLink(r.link, link); })) return true;
       var d = new Date();
@@ -975,7 +977,7 @@
       });
       if (window.SUStore) window.SUStore.saveTracker(rows); else localStorage.setItem('su_tracker', JSON.stringify(rows));
       return true;
-    } catch (e) { return false; /* tracker is a bonus; never block the confirm flow */ }
+    } catch (e) { return false; /* Keep the feedback open until the application is actually stored. */ }
   }
 
   // US states (name + 2-letter code) so a state search also surfaces remote-anywhere roles.
@@ -1009,6 +1011,13 @@
       if (act === 'toggleCat' || act === 'toggleFilters') el.setAttribute('aria-expanded', String(App.state.openPanel === (act === 'toggleCat' ? 'cat' : 'filters')));
     });
     root.querySelectorAll('iframe[data-test-id="beehiiv-embed"]').forEach(function (el) { el.title = 'Newsletter signup'; });
+    var help=[['[data-act="toggleSavedOnly"]','saved','Keep roles here to revisit.'],['a[href="./tracker.html"]','tracker','Keep applications and next steps together.'],['[data-act="openLook"]','theme','Pick a different look. Your jobs stay the same.'],['#su-preferences-open','preferences','Optional hints sort roles without hiding them.']];
+    help.forEach(function(item){var el=root.querySelector(item[0]);if(!el||el.querySelector('.su-help-tip'))return;
+      var tip=document.createElement('span');tip.id='su-help-'+item[1];tip.className='su-help-tip';tip.setAttribute('role','tooltip');tip.textContent=item[2];
+      el.classList.add('su-help-anchor');el.setAttribute('aria-describedby',tip.id);el.appendChild(tip);
+      el.addEventListener('mouseleave',function(){el.removeAttribute('data-help-dismissed');});
+      el.addEventListener('focusout',function(){el.removeAttribute('data-help-dismissed');});
+    });
   }
 
   function focusIntent(el) {
@@ -1433,9 +1442,12 @@
       // background migration occurs merely because a duplicate card is hidden.
       if (alreadySaved) Object.keys(saved).forEach(function (link) { if (sameJobLink(link, key)) delete saved[link]; });
       else saved[key] = true;
-      try { if (window.SUStore) window.SUStore.saveSaved(saved); else localStorage.setItem('su_saved_jobs', JSON.stringify(saved)); } catch (e) {}
+      try { if (window.SUStore) window.SUStore.saveSaved(saved); else localStorage.setItem('su_saved_jobs', JSON.stringify(saved)); } catch (e) {
+        this._retrySaveLink=key; this._retrySaveDesired=!alreadySaved; this._actionError='Could not save this change. Your previous Saved list is still here.'; this.render(); return false;
+      }
+      this._retrySaveLink=null; this._actionError='';
       if(window.SUAnalytics) window.SUAnalytics.job(alreadySaved?'job_unsave':'job_save',key);
-      this.setState({ saved: saved });
+      this.setState({ saved: loadSaved() });
     },
 
     // apply a "Change Look?" theme, close the modal, and persist site-wide
@@ -1698,6 +1710,7 @@
     },
     setState: function (patch) {
       if (patch.feedbackOpen === false || (patch.feedbackLink && patch.feedbackLink !== this.state.feedbackLink)) this.clearFeedbackRedirect();
+      if(patch.feedbackOpen === true && !this.state.feedbackOpen) { this._feedbackError=''; uxEvent('feedback_open'); }
       Object.assign(this.state, patch);
       var overlayOnly = Object.keys(patch).length > 0;
       for (var k in patch) { if (!this.OVERLAY_KEYS[k]) { overlayOnly = false; break; } }
@@ -1709,6 +1722,10 @@
     // RENDER — rebuilds the whole .board markup, reproducing the template.
     // =======================================================================
     render: function () {
+      try { this.renderBoard(); var error=document.getElementById('su-runtime-error');if(error)error.hidden=true; }
+      catch(e){uxEvent('render_error');var notice=document.getElementById('su-runtime-error');if(notice)notice.hidden=false;}
+    },
+    renderBoard: function () {
       var self = this;
       var board = document.getElementById('board');
       var sc = this.computeShown();
@@ -2122,6 +2139,9 @@
         '<div style="margin-left: auto; font-family: \'Indie Flower\', cursive; font-size: 18px; color: ' + showInk + ';">' + esc(showingLabel) + '</div>' +
       '</div>';
 
+      if(this._refreshing) out += '<p class="su-feed-status" role="status">Checking the latest roles…</p>';
+      if(this._actionError) out += '<div class="su-action-error" role="status">'+esc(this._actionError)+' <button type="button" data-act="retrySave">Try again</button></div>';
+
       // saved section title
       if (this.state.savedOnly) {
         out += '<div style="display: flex; align-items: center; gap: 14px; margin-top: 30px; padding: 0 8px;">' +
@@ -2135,6 +2155,11 @@
       out += '<div class="job-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(298px, 1fr)); gap: 54px 40px; margin-top: 32px; padding: 12px 8px 0;">' +
         feedHtml +
       '</div>';
+
+      if(!this._loadError && !shown.length && this.jobs.length && (this.state.q || this.state.cat!=='all' || this.state.ws!=='Any' || this.state.pr!=='Any' || this.state.st!=='all' || this.state.fr!=='Any' || this.state.savedOnly)) {
+        var emptyKey=JSON.stringify([this.state.q,this.state.cat,this.state.ws,this.state.pr,this.state.st,this.state.fr,this.state.savedOnly]);
+        if(this._emptyKey!==emptyKey) uxEvent('search_empty'); this._emptyKey=emptyKey;
+      } else this._emptyKey=null;
 
       // empty state
       if(INTERNSHIPS && !this.jobs.length){
@@ -2233,7 +2258,7 @@
       // Account activation/sync can refresh the board while this note is open.
       // Preserve its controls and focus when the application question is unchanged.
       var feedbackIdentity = dialogKey === 'feedback' ? JSON.stringify([this.state.feedbackCo, this.state.feedbackLink]) : null;
-      if (previousDialog && previousKey === 'feedback' && dialogKey === 'feedback' && this._feedbackIdentity === feedbackIdentity) return;
+      if (previousDialog && previousKey === 'feedback' && dialogKey === 'feedback' && this._feedbackIdentity === feedbackIdentity) { var feedbackError=document.getElementById('su-feedback-error');if(feedbackError) {feedbackError.textContent=this._feedbackError||'';feedbackError.hidden=!this._feedbackError;} return; }
       this._feedbackIdentity = feedbackIdentity;
       var preferenceOwner = dialogKey === 'preferences' ? window.SUDiscovery.dialogOwner() : null;
       if (previousDialog && previousKey === 'preferences' && dialogKey === 'preferences' && this._preferenceOwner === preferenceOwner) { window.SUDiscovery.refreshDialog(); return; }
@@ -2305,6 +2330,8 @@
               '</div>' +
             '</div>' +
             '<div data-act="notFit" style="margin-top: 18px; text-align: center; font-family: \'Indie Flower\', cursive; font-size: 19px; color: #8A7558; cursor: pointer;">job wasn\'t a right fit →</div>' +
+            '<p id="su-feedback-error" class="su-action-error" role="status"'+(this._feedbackError?'':' hidden')+'>'+esc(this._feedbackError||'')+'</p>' +
+            '<div class="su-preferred-source"><a data-act="preferredSource" href="https://www.google.com/preferences/source?q=stillunemployed.com" target="_blank" rel="noopener noreferrer">Prefer us on Google ↗</a><p>An optional Google Search preference. Separate from board sign-in.</p></div>' +
           '</div>' +
         '</div>';
       }
@@ -2610,7 +2637,9 @@
         if (document.querySelector('#su-launch[open]')) return;
         var dialog = document.querySelector('#overlay-root [role="dialog"]');
         if (e.key === 'Escape') {
+          document.querySelectorAll('.su-help-anchor').forEach(function(el){el.setAttribute('data-help-dismissed','true');});
           if (dialog) {
+            if(self._dialogKey==='feedback')uxEvent('feedback_dismiss');
             e.preventDefault();
             if (self._dialogKey === 'preferences' && window.SUDiscovery) { window.SUDiscovery.closePreferences(); return; }
             self.setState({ detailOpen:false, feedbackOpen:false, adviceOpen:null, signupOpen:null, lookOpen:false, modalOpen:false });
@@ -2644,7 +2673,9 @@
         }
 
         switch (act) {
-          case 'retryJobs': location.reload(); break;
+          case 'retryJobs': uxEvent('feed_retry'); refreshFeed(); break;
+          case 'retrySave': if(self._retrySaveLink) { self.state.saved=loadSaved(); if(self.isSaved(self._retrySaveLink)===self._retrySaveDesired) { self._retrySaveLink=null;self._actionError='';self.render(); } else self.toggleSave(self._retrySaveLink); } break;
+          case 'preferredSource': uxEvent('preferred_source_click'); break;
           case 'openWelcome':
             self.setState({ modalOpen:false });
             if (window.SUWelcome) window.SUWelcome.open();
@@ -2652,15 +2683,16 @@
           case 'openModal': self.setState({ modalOpen: true }); break;
           case 'closeModal': self.setState({ modalOpen: false }); break;
           case 'closePreferences': if(window.SUDiscovery)window.SUDiscovery.closePreferences();break;
-          case 'closeFeedback': self.setState({ feedbackOpen: false }); break;
+          case 'closeFeedback': uxEvent('feedback_dismiss'); self.setState({ feedbackOpen: false }); break;
           case 'markApplied': {
-            postReport('applied', self.state.feedbackCo, self.state.feedbackLink);
             // also drop the application into the on-device Tracker (tracker.html)
             var tj = null;
             for (var ti = 0; ti < self.jobs.length; ti++) {
               if (jobHasLink(self.jobs[ti], self.state.feedbackLink)) { tj = self.jobs[ti]; break; }
             }
             var tracked = trackerLog(self.state.feedbackCo, self.state.feedbackLink, tj ? tj.role : '');
+            if(!tracked) { self._feedbackError='Could not add this to your tracker. Please try I applied again. Your answer is still here.'; self.renderOverlays(); break; }
+            postReport('applied', self.state.feedbackCo, self.state.feedbackLink);
             if(window.SUDiscovery)window.SUDiscovery.dismiss(self.state.feedbackLink,'applied');
             self.setState({ feedbackOpen: false });
             self.render();
@@ -2673,6 +2705,7 @@
             self.setState({feedbackOpen:false});self.render();break;
           }
           case 'reportBroken': {
+            uxEvent('feedback_unavailable');
             self.clearFeedbackRedirect();
             var _bl = self.state.feedbackLink;
             // SPAM GUARD (Nic, 2026-07-11): max 3 reports/min and 10/day per visitor. Over the
@@ -2690,6 +2723,7 @@
           }
           case 'closeDetail': self.setState({ detailOpen: false }); break;
           case 'hideRecipe':
+            uxEvent('newsletter_dismiss');
             self._recipeHidden = true;   // memory only — an accidental ✕ comes back on reload
             postReport('recipe_hide', el.getAttribute('data-co') || '', el.getAttribute('data-link') || '');
             self.setState({});
@@ -2942,7 +2976,17 @@
         .map(function (x) { return x.j; });
     },
 
+    updateJobs: function(jobs) {
+      this.jobs=uniqueJobs(jobs);
+      if(window.SUAnalytics)window.SUAnalytics.registerJobs(this.jobs);
+      if(window.SUDiscovery && window.SUDiscovery.updateCatalog)window.SUDiscovery.updateCatalog(this.jobs);
+      if(this.state.detailOpen && !this.jobs.some(function(j){return jobHasLink(j,App.state.detailLink);}))this.state.detailOpen=false;
+      this.render();
+    },
+
     init: function (jobs) {
+      if(this._initialized) { this.updateJobs(jobs); return; }
+      this._initialized=true;
       if(!window.SUDiscovery){try{var legacyHidden=JSON.parse(localStorage.getItem('su_reported_links')||'[]');jobs=jobs.filter(function(j){return !legacyHidden.some(function(link){return jobHasLink(j,link);});});}catch(e){}}
       var self = this;
       window.addEventListener('su:local-change', function () {
@@ -2950,7 +2994,7 @@
         if (trackerTab) trackerTab.innerHTML = 'Tracker' + suTrkBadge();
       });
       window.addEventListener('su:data-sync', function () { self.state.saved = loadSaved(); self.render(); });
-      window.addEventListener('storage', function (e) { if (e.key === 'su_saved_jobs' || e.key === 'su_tracker') { self.state.saved = loadSaved(); self.render(); } });
+      window.addEventListener('storage', function (e) { if (e.key === 'su_saved_jobs' || e.key === 'su_tracker' || e.key === 'su_sync_owner') { self.state.saved = loadSaved(); self.render(); } });
       this.state.saved = loadSaved();
       this.internships = INTERNSHIPS;
       this.jobs = INTERNSHIPS ? uniqueJobs(jobs) : this.shuffleFresh(uniqueJobs(jobs));
@@ -2958,7 +3002,7 @@
       if(window.SUAnalytics)window.SUAnalytics.registerJobs(this.jobs);
       window.addEventListener('su:profile-ready',function(event){if(event.detail&&event.detail.reset){self._personalOrder=null;self._profileGeneration=-1;self._feedInteracted=false;}if(!self._feedInteracted)self.render();});
       document.addEventListener('pointerdown',function(){self._feedInteracted=true;},{once:true});
-      window.addEventListener('su:auth-changed',function(){self._profileGeneration=-1;self._feedInteracted=false;self.render();});
+      window.addEventListener('su:auth-changed',function(){if(window.SUBoardRuntime)window.SUBoardRuntime.clear();self.state.saved=loadSaved();self._actionError='';self._retrySaveLink=null;self._profileGeneration=-1;self._feedInteracted=false;self.render();});
       window.addEventListener('su:consent-changed',function(){armThemeVote(self.state.look);self._profileGeneration=-1;self._feedInteracted=false;self.render();});
       this.bindEvents();
       this.restoreFeedbackRedirect();
@@ -2972,7 +3016,7 @@
 
   // ---- module-scope helpers (used by initial state) ----
   function loadSaved() {
-    try { return JSON.parse(localStorage.getItem('su_saved_jobs') || '{}') || {}; } catch (e) { return {}; }
+    try { return window.SUStore && window.SUStore.view ? window.SUStore.view().saved : JSON.parse(localStorage.getItem('su_saved_jobs') || '{}') || {}; } catch (e) { return {}; }
   }
   function loadLook() {
     try {
@@ -2988,8 +3032,8 @@
   // The board reads jobs straight from the Google Sheet, so Nic can add a job,
   // edit one, or flip a job to "Dead" by editing the sheet — no code change and
   // no redeploy. The sheet must be shared "Anyone with the link -> Viewer".
-  // If the sheet can't be reached (offline, not shared yet, Google hiccup) the
-  // board falls back to the bundled jobs-data.json so it never shows up empty.
+  // If the current feed cannot be verified, keep navigation and offer retry.
+  // Never re-publish an old bundled catalog during an availability outage.
   //
   // To point at a different sheet: change SHEET_ID (the long id in the sheet's
   // URL: docs.google.com/spreadsheets/d/<SHEET_ID>/edit).
@@ -3119,40 +3163,60 @@
     try { var parsed = new URL(u); return parsed.hostname && !parsed.username && !parsed.password ? u : ''; } catch (e) { return ''; }
   }
 
-  function showLoadError() {
-    var board = document.getElementById('board');
-    if (board) board.innerHTML = '<div style="max-width:760px;margin:80px auto;padding:0 24px;font-family:\'Indie Flower\',cursive;font-size:24px;color:#B23A1E;">Could not load jobs. If you opened this file directly, serve the folder over http (e.g. <code>python3 -m http.server</code>) so the browser can fetch the data.</div>';
-  }
-
-  // Never silently republish the undated bundled sample during a feed outage.
-  function boot() {
+  var feedRequest=null, lastFeedCheck=0, firstFeed=true;
+  function loadFeed(signal) {
     if(INTERNSHIPS){
-      // Local static previews use the reviewed snapshot. Hosted pages must also
-      // respect current Sheet removals; a failed status check has no fallback.
       var localPreview=['localhost','127.0.0.1','[::1]'].includes(location.hostname)||location.protocol==='file:';
-      var internshipFeed=localPreview?'./internships-data.json':'/.netlify/functions/internships-catalog';
-      fetch(internshipFeed,{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('Internship feed unavailable');return r.json();}).then(function(data){
-        if(!window.SUInternships)throw Error('Internship validator unavailable');
-        if(!localPreview)return data;
-        // The private local source tree can show reviewed copy. Hosted visitors
-        // receive only surviving rows and their copy from the catalog endpoint.
-        return fetch('./netlify/functions/lib/internship-display.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('Local presentation unavailable');return r.json();}).then(function(copy){
-          if(!copy||typeof copy!=='object'||!Array.isArray(data.jobs))return data;
-          return Object.assign({},data,{jobs:data.jobs.map(function(job){return window.SUInternships.withPresentation(job,copy[job.link]);})});
-        }).catch(function(){return data;});
-      }).then(function(data){App._internshipStatus=data.status;App.init(window.SUInternships.jobs(data));}).catch(function(){App._loadError=true;App.init([]);});return;
+      return fetch(localPreview?'./internships-data.json':'/.netlify/functions/internships-catalog',{cache:'no-store',signal:signal})
+        .then(function(r){if(!r.ok)throw Error('Internship feed unavailable');return r.json();})
+        .then(function(data){
+          if(!window.SUInternships)throw Error('Internship validator unavailable');
+          if(!localPreview)return data;
+          return fetch('./netlify/functions/lib/internship-display.json',{cache:'no-store',signal:signal})
+            .then(function(r){if(!r.ok)throw Error('Local presentation unavailable');return r.json();})
+            .then(function(copy){return Object.assign({},data,{jobs:data.jobs.map(function(job){return window.SUInternships.withPresentation(job,copy[job.link]);})});})
+            .catch(function(){return data;});
+        }).then(function(data){App._internshipStatus=data.status;return window.SUInternships.jobs(data);});
     }
-    fetch(SHEET_CSV_URL + '&_=' + Date.now(), { cache: 'no-cache' })  // &_=ts busts Google's server-side gviz cache so the board always sees the live sheet
-      .then(function (r) { if (!r.ok) throw new Error('sheet ' + r.status); return r.text(); })
-      .then(function (text) {
-        var jobs = rowsToJobs(parseCSV(text));
-        App.init(jobs);
-      })
-      .catch(function (err) {
-        console.warn('[StillUnemployed] live sheet unavailable:', err && err.message);
-        App._loadError = true;
-        App.init([]);
-      });
+    return fetch(SHEET_CSV_URL+'&_='+Date.now(),{cache:'no-cache',signal:signal})
+      .then(function(r){if(!r.ok)throw Error('Jobs feed unavailable');return r.text();})
+      .then(function(text){return rowsToJobs(parseCSV(text));});
+  }
+  function loadingNote(){
+    if(App._initialized)return;
+    var node=document.getElementById('su-loading-status');
+    if(node)node.textContent='Checking the latest roles…';
+    var shell=document.getElementById('su-loading-art');
+    if(!shell)return;
+    var P=App.THEMES[App.state.look]||App.THEMES.original;
+    shell.innerHTML=[P.hiCard,P.midCard||'var(--su-salary-mid-paper)',P.lowCard||'var(--su-salary-low-paper)'].map(function(paper,i){return '<div class="su-skeleton" style="background:'+paper+';color:'+(i===0?P.hiInk:i===1?P.midInk||P.baseInk||P.ink:P.baseInk||P.ink)+'"><i></i><i></i><i></i></div>';}).join('');
+  }
+  function refreshFeed(){
+    if(feedRequest)return feedRequest;
+    var initial=firstFeed, loadingTimer=initial?setTimeout(loadingNote,150):null;
+    if(!initial){App._refreshing=true;App.render();uxEvent('feed_refresh');}
+    var runtime=window.SUBoardRuntime;
+    feedRequest=(runtime?runtime.request(INTERNSHIPS?'internships':'jobs',loadFeed):loadFeed()).then(function(jobs){
+      App._loadError=false;App._refreshing=false;lastFeedCheck=Date.now();
+      var restored=null;
+      if(initial && runtime && !location.search && !location.hash){restored=runtime.read(INTERNSHIPS?'internships':'jobs');if(restored)Object.assign(App.state,restored.state);}
+      App.init(jobs);uxEvent('feed_ready');
+      if(restored){uxEvent('view_restored');setTimeout(function(){if(window.scrollTo)window.scrollTo(0,restored.y);},0);}
+    }).catch(function(){
+      App._loadError=true;App._refreshing=false;lastFeedCheck=Date.now();
+      // Unknown availability never revives a static catalog. Filters and account state remain.
+      App.init([]);uxEvent('feed_load_error');
+    }).finally(function(){if(loadingTimer)clearTimeout(loadingTimer);firstFeed=false;feedRequest=null;});
+    return feedRequest;
+  }
+  function boot(){
+    refreshFeed();
+    window.addEventListener('storage',function(e){if(e.key==='su_sync_owner' && window.SUBoardRuntime)window.SUBoardRuntime.clear();});
+    window.addEventListener('pagehide',function(){if(window.SUBoardRuntime)window.SUBoardRuntime.save(INTERNSHIPS?'internships':'jobs',App.state);});
+    function recheck(){if(!firstFeed && !document.hidden && Date.now()-lastFeedCheck>=60000)refreshFeed();}
+    window.addEventListener('focus',recheck);
+    window.addEventListener('pageshow',function(e){if(e.persisted)recheck();});
+    document.addEventListener('visibilitychange',recheck);
   }
 
   if (document.readyState === 'loading') {

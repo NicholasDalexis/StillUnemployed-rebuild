@@ -9,7 +9,11 @@
   var COUNT_KEYS = ['events', 'visits', 'visitors', 'signups', 'logins', 'job_opens', 'saves', 'apply_clicks', 'reported_applied', 'tracker_users'];
   var THEME_NAMES = {original:'Original',girly:'For the girlies',poker:'Casino',mermaid:'Mermaidcore',bratt:'bratt',noir:'Black Cat',beauty:'Beauty',chess:'Chess'};
   function themeRows(rows) { return rows.map(function(row){return {label:THEME_NAMES[row.label] || row.label,count:row.count};}); }
-  var EVENT_NAMES = {preference_save:'Preference save actions',preference_clear:'Preference clear actions',preference_skip:'Preference skip actions',feedback_not_fit:'Not a fit responses'};
+  var EVENT_NAMES = {preference_save:'Preference save actions',preference_clear:'Preference clear actions',preference_skip:'Preference skip actions',feedback_not_fit:'Not a fit responses',
+    preferred_source_click:'Google source selector link clicks',feedback_open:'Feedback notes shown',feedback_dismiss:'Feedback notes dismissed',feedback_unavailable:'Reported unavailable responses',
+    feed_ready:'Completed feed loads',feed_load_error:'Feed loading failures',feed_retry:'Feed retry actions',feed_refresh:'Feed refresh starts',search_empty:'Searches with no matches',
+    signin_start:'Sign-in starts',signin_cancel:'Sign-in cancellations',signin_error:'Sign-in failures',signout_complete:'Completed sign-outs',signout_error:'Sign-out failures',sync_error:'Sync failures',sync_retry:'Sync retry actions',sync_recovered:'Sync recoveries',
+    preference_open:'Preference opens',preference_error:'Preference save failures',newsletter_dismiss:'Newsletter dismissals',bookmark_open:'Bookmark help opens',view_restored:'Board views restored',render_error:'Display failures'};
   function eventRows(rows) { return rows.map(function(row){return {label:Object.prototype.hasOwnProperty.call(EVENT_NAMES,row.label)?EVENT_NAMES[row.label]:row.label,count:row.count};}); }
   function count(value) { return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? Math.floor(value) : null; }
   function format(value) { var n = count(value); return n === null ? 'N/A' : n.toLocaleString('en-US'); }
@@ -37,7 +41,7 @@
       }).sort(function (a, b) { return a.date.localeCompare(b.date); }),
       fields: list(raw.fields), roles: list(raw.roles), themes: list(raw.themes), events: list(raw.events), jobs: list(raw.jobs), companies: list(raw.companies),
       themeVotes: raw.themeVotes && Array.isArray(raw.themeVotes.up) && Array.isArray(raw.themeVotes.down) ? {up:list(raw.themeVotes.up),down:list(raw.themeVotes.down)} : null,
-      pageTiming: Array.isArray(raw.pageTiming) ? raw.pageTiming.slice(0, 20).filter(function (x) { return x && ['home','board','tracker','privacy','terms','suggest','other'].indexOf(x.label) >= 0; }).map(function (x) { return { label: x.label, count: count(x.count), meanActiveSeconds: count(x.meanActiveSeconds) }; }) : [],
+      pageTiming: Array.isArray(raw.pageTiming) ? raw.pageTiming.slice(0, 20).filter(function (x) { return x && ['home','board','internships','tracker','privacy','terms','suggest','other'].indexOf(x.label) >= 0; }).map(function (x) { return { label: x.label, count: count(x.count), meanActiveSeconds: count(x.meanActiveSeconds) }; }) : [],
       timing: { returned: count(timing.returned), unknown: count(timing.unknown), capped: count(timing.capped), meanAwaySeconds: count(timing.meanAwaySeconds) },
       privacy: { rawRetentionDays: count(privacy.rawRetentionDays), minimumCohort: count(privacy.minimumCohort) },
       coverage: { complete: raw.coverage ? raw.coverage.complete === true : null }
@@ -128,7 +132,7 @@
       bars('themes',themeRows(data.themes));
       ['up','down'].forEach(function(direction){bars(direction==='up'?'theme-likes':'theme-dislikes',data.themeVotes?themeRows(data.themeVotes[direction]):[],data.themeVotes?'No reportable votes in this direction. Activity may be absent or below the privacy threshold.':'Theme vote breakdowns are unavailable in this response. Missing votes are not zero.');});
       bars('popular-jobs', data.jobs.slice(0, 10)); bars('companies', data.companies.slice(0, 10));
-      el('page-timing').replaceChildren(); var pageNames = { home: 'Home', board: 'Jobs board', tracker: 'Tracker', privacy: 'Privacy Policy', terms: 'Terms of Service', suggest: 'Suggest a job', other: 'Other pages' };
+      el('page-timing').replaceChildren(); var pageNames = { home: 'Home', board: 'Jobs board', internships: 'Internships', tracker: 'Tracker', privacy: 'Privacy Policy', terms: 'Terms of Service', suggest: 'Suggest a job', other: 'Other pages' };
       var pageMax = data.pageTiming.reduce(function (n, r) { return Math.max(n, r.meanActiveSeconds || 0); }, 0);
       if (!data.pageTiming.length) el('page-timing').appendChild(node('li', 'No reportable page timing in this window. This may reflect missing measurements or small groups being withheld.', 'empty-chart'));
       data.pageTiming.forEach(function (r) { var li = node('li'), labels = node('div', undefined, 'bar-labels'), track = node('div', undefined, 'bar-track'), fill = node('div', undefined, 'bar-fill'); labels.append(node('span', pageNames[r.label]), node('strong', duration(r.meanActiveSeconds))); fill.style.setProperty('--bar-size', percent(r.meanActiveSeconds, pageMax) + '%'); track.setAttribute('aria-hidden', 'true'); track.appendChild(fill); li.append(labels, track, node('p', format(r.count) + ' timing events', 'small-note')); el('page-timing').appendChild(li); });

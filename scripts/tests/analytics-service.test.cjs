@@ -37,6 +37,28 @@ test('personalization-only requests retain no response behavior in storage or ow
  assert.doesNotMatch(JSON.stringify([...d.db.data]),/preference_save|preference_clear|preference_skip|feedback_not_fit|private typed answer|jobId/);
 });
 test('personalization-only produces a profile without owner-report behavior',async()=>{const d=deps();await S.collect(request('alice',undefined,{consent:{analytics:false,personalization:true}}),d);const admin=await S.admin({...request('owner'),httpMethod:'GET'},d);assert.equal(admin.totals.events,0);assert.equal((await S.profile({...request(),httpMethod:'GET'},d)).jobs[jobId].weight,1);});
+const uxActions=['preferred_source_click','feedback_open','feedback_dismiss','feedback_unavailable',
+ 'feed_ready','feed_load_error','feed_retry','feed_refresh','search_empty','signin_start','signin_cancel','signin_error','signout_complete','signout_error',
+ 'sync_error','sync_retry','sync_recovered','preference_open','preference_error','newsletter_dismiss','bookmark_open','view_restored','render_error'];
+test('UX counts accept guests, remove optional data, deduplicate, and never claim a Google selection or application',async()=>{
+ const d=deps(),r=request('alice',uxActions.map(name=>({name,jobId,theme:'poker',status:'Applied',seconds:99,outboundId:'private-outbound',message:'private failure',url:'https://private.invalid',query:'private question'})),{consent:{analytics:true,personalization:false}});
+ delete r.headers.authorization;
+ assert.equal((await S.collect(r,d)).accepted,uxActions.length);assert.equal((await S.collect(r,d)).accepted,0);
+ const out=await S.admin({...request('owner'),httpMethod:'GET'},d);
+ assert.deepEqual(out.events,uxActions.map(label=>({label,count:1})));
+ assert.equal(out.totals.reported_applied,0);assert.equal(out.totals.logins,0);assert.deepEqual(out.jobs,[]);assert.deepEqual(out.themes,[]);
+ assert.deepEqual(out.timing,{returned:0,unknown:0,capped:0,meanAwaySeconds:null});
+ for(const [key,value] of d.db.data)if(key.startsWith('suAnalyticsEvents/'))assert.deepEqual(Object.keys(value).sort(),['actor','analytics','at','expiresAt','id','name','page','session']);
+ assert.doesNotMatch(JSON.stringify([...d.db.data]),/private|jobId|jobLabel|outboundId|poker/);
+ for(const name of ['preferred_source_added','preferred_source_complete','preferred_source_success'])assert.throws(()=>C.cleanEvent({name,id:'invalid-event-12345',page:'board'},{}),e=>e.status===400);
+});
+test('forged UX metadata cannot train recommendations in personalization-only requests',async()=>{
+ const d=deps();await S.collect(request('alice',uxActions.map(name=>({name,jobId,notes:'private',status:'Applied'})),{consent:{analytics:false,personalization:true}}),d);
+ assert.deepEqual((await S.profile({...request(),httpMethod:'GET'},d)).jobs,{});
+ const out=await S.admin({...request('owner'),httpMethod:'GET'},d);assert.equal(out.totals.events,0);assert.deepEqual(out.events,[]);
+ for(const [key,value] of d.db.data)if(key.startsWith('suAnalyticsEvents/'))assert.equal(value.name,undefined);
+ assert.doesNotMatch(JSON.stringify([...d.db.data]),/private|jobId|jobLabel|preferred_source|signin_|sync_error/);
+});
 test('owner allowlist is server-enforced and query excludes other private metadata',async()=>{const d=deps();await S.collect(request(),d);await assert.rejects(()=>S.admin({...request('alice'),httpMethod:'GET'},d),e=>e.status===403);const out=await S.admin({...request('owner'),httpMethod:'GET'},d);assert.equal(out.totals.job_opens,1);assert.deepEqual(out.fields,[]);assert.doesNotMatch(JSON.stringify(out),/alice|visitor123|session123|testevent/);});
 test('signup counts require verified Auth creation and ignores browser-declared signup',async()=>{const d=deps();await S.collect(request('alice',[{name:'auth_signup'},{name:'auth_login'}]),d);const out=await S.admin({...request('owner'),httpMethod:'GET'},d);assert.equal(out.totals.signups,1);assert.equal(out.totals.logins,1);});
 test('reset clears profile and raw data, preserves other tenant and blocks queued older event',async()=>{const d=deps();await S.collect(request(),d);await S.collect(request('bob'),d);const out=await S.profile({...request(),httpMethod:'DELETE'},d);assert.equal(out.reset,true);assert.deepEqual((await S.profile({...request(),httpMethod:'GET'},d)).jobs,{});assert.equal((await S.profile({...request('bob'),httpMethod:'GET'},d)).jobs[jobId].weight,1);assert.equal((await S.collect(request('alice',[{name:'job_save',jobId,id:'newreceipt12345678'}]),d)).accepted,0);});

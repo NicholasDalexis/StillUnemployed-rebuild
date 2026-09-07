@@ -10,7 +10,7 @@
   var mac = /Mac|iPhone|iPad|iPod/i.test(navigator.platform || navigator.userAgent || '');
   var shortcut = mac ? '⌘ + D' : 'Ctrl + D';
   var lastTrigger = null;
-  function log(action) { try { if (typeof window.suTrack === 'function') window.suTrack(action, '', ''); } catch (e) {} }
+  function log(action) { try { if(action==='bookmark_help' && window.SUAnalytics && typeof window.SUAnalytics.emit==='function')window.SUAnalytics.emit('bookmark_open',{}); if (typeof window.suTrack === 'function') window.suTrack(action, '', ''); } catch (e) {} }
   function reserveMobileSpace() {
     var prompt = document.getElementById('su-bm-bar');
     var height = prompt ? prompt.getBoundingClientRect().height : 0;

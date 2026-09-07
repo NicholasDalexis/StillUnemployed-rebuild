@@ -101,6 +101,22 @@ test('response event labels preserve counts without adding absent responses or c
  assert.match(html,/contain no typed answers or per-job not-fit details/);
 });
 
+test('UX labels distinguish clicks, shown notes and recoveries from unobserved outcomes',()=>{
+ const raw=[{label:'preferred_source_click',count:2},{label:'feedback_open',count:9},{label:'sync_error',count:3},{label:'sync_recovered',count:1},{label:'signin_cancel',count:0}];
+ const before=JSON.stringify(raw);
+ assert.deepEqual(dashboard.eventRows(raw),[
+  {label:'Google source selector link clicks',count:2},{label:'Feedback notes shown',count:9},{label:'Sync failures',count:3},{label:'Sync recoveries',count:1},{label:'Sign-in cancellations',count:0}
+ ]);
+ assert.equal(JSON.stringify(raw),before);
+ assert.doesNotMatch(JSON.stringify(dashboard.eventRows(raw)),/source added|successful preference|confirmed application|employer return/i);
+});
+
+test('Internships timing is retained while unknown page labels and absent timing remain unavailable',()=>{
+ const raw=sample();raw.pageTiming=[{label:'internships',count:8,meanActiveSeconds:42},{label:'private-route',count:9,meanActiveSeconds:50}];
+ assert.deepEqual(dashboard.normalize(raw).pageTiming,[{label:'internships',count:8,meanActiveSeconds:42}]);
+ delete raw.pageTiming;assert.deepEqual(dashboard.normalize(raw).pageTiming,[]);
+});
+
 test('vote breakdowns preserve missing versus suppressed, public labels, and action-count meaning',()=>{
  const data=sample();
  assert.match(dashboard.answer('Which theme has the most likes?',data),/Casino leads with 36 recorded like votes/);
