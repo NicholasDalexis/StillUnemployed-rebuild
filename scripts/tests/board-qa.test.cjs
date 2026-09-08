@@ -173,7 +173,7 @@ test('unknown and inherited theme query names are ignored without blank filter c
 });
 test('unlisted saved links remain visible and can be removed from persistent Saved state',()=>{
  const missing='https://example.com/old-posting';const b=board({saved:{[missing]:true}});b.init();b.app.setState({savedOnly:true});
- const section=b.grid.querySelector('.su-unlisted-saved');assert(section);const button=section.querySelector('[data-act="toggleSave"]');assert.equal(button.tagName,'BUTTON');assert.equal(button.getAttribute('data-link'),missing);button.click();
+ const section=b.grid.querySelector('.note[data-link="'+missing+'"]');assert(section);const button=section.querySelector('[data-act="toggleSave"]');assert.equal(button.getAttribute('role'),'button');assert.equal(button.getAttribute('data-link'),missing);button.click();
  assert.equal(b.app.state.saved[missing],undefined);assert.equal(JSON.parse(b.localStorage.getItem('su_saved_jobs'))[missing],undefined);assert.equal(b.grid.querySelector('.su-unlisted-saved'),null);
 });
 test('share URLs carry an encoded recoverable job link and the selected visual theme',()=>{
@@ -245,7 +245,7 @@ test('a missing identity dependency shows feed recovery while existing Saved lin
  const link='https://example.com/already-saved',b=board({identityAvailable:false,saved:{[link]:true}});
  await b.boot();assert.equal(b.app._loadError,true);assert.equal(b.app.jobs.length,0);assert(b.grid.querySelector('[data-act="retryJobs"]'));
  assert.equal(b.requests.length,1);assert.deepEqual(JSON.parse(b.localStorage.getItem('su_saved_jobs')),{[link]:true});
- b.app.setState({savedOnly:true});const saved=b.grid.querySelector('.su-unlisted-saved');assert(saved);
+ b.app.setState({savedOnly:true});const saved=b.grid.querySelector('.note[data-link="'+link+'"]');assert(saved);
  saved.querySelector('[data-act="toggleSave"]').click();assert.deepEqual(JSON.parse(b.localStorage.getItem('su_saved_jobs')),{});
 });
 

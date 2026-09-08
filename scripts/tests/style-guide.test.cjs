@@ -53,7 +53,7 @@ test('changed palettes, canvas, font faces and source picker labels cannot pass 
   ['js/app.js',"navBg:'#D4AF37'","navBg:'#D4AF38'",'palette'],
   ['css/styles.css','#4F0F1C','#4F0F1D','canvas'],
   ['css/fonts.css','font-weight: 400;','font-weight: 450;','font'],
-  ['js/app.js','>Casino</div>','>Casino Royale</div>','picker label']
+  ['js/app.js','>Casino</span>','>Casino Royale</span>','picker label']
  ]){
   const dir=sourceFixture();try{const target=path.join(dir,name),before=fs.readFileSync(target,'utf8');assert(before.includes(from),reason+' fixture target');fs.writeFileSync(target,before.replace(from,to));assert.throws(()=>generate(dir),undefined,reason+' drift must fail');if(reason!=='picker label'){generate(dir,true);assert.doesNotThrow(()=>generate(dir));}}finally{fs.rmSync(dir,{recursive:true,force:true});}
  }
@@ -83,7 +83,7 @@ const tokens=Object.fromEntries([...fs.readFileSync(path.join(root,'css/brand.cs
 const resolveToken=value=>value.replace(/var\((--[\w-]+)\)/g,(_,key)=>tokens[key]);
 for(const theme of catalog.themes)test(theme.label+' guide salary specimens match the actual board renderer in all three bands',()=>{
  const b=board({look:theme.look}), bands=['low','mid','high'];
- const jobs=bands.map((tier,i)=>job({link:'https://example.com/'+tier,pay:['$70–79K','$80–99K','$90–110K'][i]}));b.init(jobs);
+ const jobs=bands.map((tier,i)=>job({link:'https://example.com/'+tier,pay:['$70–79K','$80–99K','$90–110K'][i]}));b.init(jobs);b.app.jobs.forEach((_j,id)=>b.app.state.openNotes[id]='done');b.app.render();
  const p=page({search:'?theme='+theme.slug});
  for(const [i,tier]of bands.entries()){
   const card=b.grid.querySelectorAll('.note[data-link]').find(el=>el.getAttribute('data-link')===jobs[i].link), specimen=p.document.querySelector('[data-salary-band="'+tier+'"]');

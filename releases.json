@@ -1,7 +1,27 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.3.3",
+  "currentVersion": "2.3.4",
   "releases": [
+    {
+      "version": "2.3.4",
+      "date": "2026-09-07",
+      "title": "Keep your place, with clearer internship cards",
+      "changes": [
+        "Preserve account-owned public saved-card snapshots and backfill existing bookmarks from retained retired Jobs rows. Confirm closure only from exact Dead evidence; missing or cross-board saves stay distinct and never disappear silently.",
+        "Simplify the internship pay filter and labels, use a stable diverse decorative paper cycle, add full-contrast Internship stamps, enlarge bookmarks and remove redundant Pay Details in job popups while retaining raw source data.",
+        "Use one lined help note at a time, remove Tracker help and Google Preferred Sources promotion, move State first, close filters on outside taps, put About Nic in Board menu, open notebook preferences without input focus and remove Clear answers.",
+        "Keep newsletter iframe nodes through background refresh, render the form as it arrives, replace external fallback with inline retry; shrink advice art, randomize appropriate open notes, suppress notes in hidden review, and show themed feedback for five seconds with four-second wider toasts.",
+        "Exclude the verified QA account from measurement and closure reports. Creator Version 3 experiment stays paused and separate; open-note, Portfolio Graded CTA and Lexend mockups remain private review artifacts."
+      ],
+      "public": {
+        "title": "Your saved jobs stay with you",
+        "changes": [
+          "Saved listings keep their card details when they leave the board, with a clear note about availability.",
+          "Internships have shorter pay labels, varied paper colors and their own stamp. Bookmarks are easier to tap.",
+          "Smaller theme previews, clearer menus and quieter notebook popups make browsing easier on your phone."
+        ]
+      }
+    },
     {
       "version": "2.3.3",
       "date": "2026-09-07",
@@ -271,7 +291,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "53d0a5bf95184fd7dfe7082a2fdf0383af81919897416a0d13a794a2e4aab75d",
+    "digest": "610466d57ebb4b1ea4b7a65934d8992d5a577b94cc28248d952d384c57077da4",
     "fileCount": 146
   }
 }

@@ -44,7 +44,7 @@ function colors(rendered) {
 
 for (const look of ['original', 'poker', 'mermaid', 'girly', 'bratt', 'noir', 'beauty', 'chess']) {
   test('featured markers preserve low/mid/high salary surfaces and matching text in ' + look, () => {
-    const b = board({ look }), jobs = specimens();b.init(jobs);
+    const b = board({ look }), jobs = specimens();b.init(jobs);b.app.jobs.forEach((_j,id)=>b.app.state.openNotes[id]='done');b.app.render();
     assert.equal(b.app.state.look, look);
     const before = jobs.map((listing, i) => {
       assert.equal(b.app.payTier(listing.pay), bands[i].tier);
@@ -81,7 +81,7 @@ test('rendered original Apply text meets normal-text contrast against every sala
       .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
     return rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722;
   }
-  const b = board(), jobs = specimens();b.init(jobs);
+  const b = board(), jobs = specimens();b.init(jobs);b.app.jobs.forEach((_j,id)=>b.app.state.openNotes[id]='done');b.app.render();
   for (const listing of jobs) {
     const rendered = renderedCard(b, listing.link), ink = resolve(rendered.apply);
     const stops = resolve(rendered.background).match(/#[a-f0-9]{6}\b/gi);

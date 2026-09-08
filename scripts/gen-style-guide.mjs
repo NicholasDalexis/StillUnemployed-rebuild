@@ -107,13 +107,15 @@ export function buildCatalog(root = ROOT) {
   const picker = [...pickerContext.out.matchAll(/data-act="(pick\w+)"/g)].map((match, index, all) => {
     const card = pickerContext.out.slice(match.index, all[index + 1]?.index || pickerContext.out.length);
     const labels = [...card.matchAll(/<div[^>]*font-family:\s*'Archivo Black'[^>]*>([^<>]+)<\/div>/g)];
-    if (!labels.length || !actions[match[1]]) throw new Error('Theme picker extraction changed');
-    return { look:actions[match[1]], label:labels.at(-1)[1] };
+    const mini = card.match(/class="su-mini-theme[^"]*"[^>]*><span>([^<>]+)<\/span>/);
+    const label = mini ? mini[1] : labels.at(-1)?.[1];
+    if (!label || !actions[match[1]]) throw new Error('Theme picker extraction changed');
+    return { look:actions[match[1]], label };
   });
   if (picker.length !== publicThemes.length || new Set(picker.map(item => item.look)).size !== picker.length) throw new Error('Theme picker and public guide coverage disagree');
   for (const item of picker) {
     const theme = publicThemes.find(theme => theme.look === item.look);
-    if (!theme || (item.label !== theme.label && !(item.look === 'original' && item.label === 'Original version'))) throw new Error('Theme picker label/route mismatch: ' + item.look);
+    if (!theme || (item.label !== theme.label && !(item.look === 'original' && item.label === 'Original version') && !(item.look === 'mermaid' && item.label === 'Mermaid'))) throw new Error('Theme picker label/route mismatch: ' + item.look);
   }
   publicThemes.sort((a,b) => picker.findIndex(item => item.look === a.look) - picker.findIndex(item => item.look === b.look));
   const setAllow = [...block(app, 'setLook: function').matchAll(/look !== '([^']+)'/g)].map(match => match[1]);

@@ -36,3 +36,9 @@
   .su-preferences { max-height:calc(100dvh - 32px); padding:24px 20px; }
   .su-preferences h2 { font-size:28px; }
 }
+
+/* The preference sheet keeps the same notebook identity as advice. */
+.su-preferences { background-image:linear-gradient(90deg,transparent 17px,rgba(194,85,47,.34) 17px,rgba(194,85,47,.34) 18px,transparent 18px),repeating-linear-gradient(180deg,transparent 0 31px,var(--su-rule) 31px 32px); background-position:0 0,0 8px; padding-left:34px; }
+.su-preferences input,.su-preferences textarea { background:var(--su-paper); }
+.su-preferences-actions>button[type="submit"] { background:var(--su-action-paper,var(--su-yellow-paper)); color:var(--su-action-ink,var(--su-ink)); border-color:currentColor; }
+@media(max-width:700px) { .su-preferences { padding-left:30px; } }

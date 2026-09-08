@@ -83,7 +83,7 @@ for(const route of ['/jobs.html','/internships.html']) {
     assert.equal(b.grid.querySelector('.su-unlisted-saved'),null);
     b.runTimers(600);assert.equal(automatic,0);
     p.finish();await tick();await tick();
-    assert(b.grid.querySelector('.su-unlisted-saved'));assert(automatic>0);
+    assert(b.grid.querySelector('.note[data-link="https://example.com/previous"]'));assert(automatic>0);
     b.grid.querySelector('[data-act="toggleSavedOnly"]').click();
     assert.equal(b.app.state.savedOnly,false,'boot and init must not attach a second toggling handler');
     b.runTimers(600);assert.notEqual(b.document.getElementById('su-feed-progress').getAttribute('hidden'),null,'a settled request cancels its delayed message');
