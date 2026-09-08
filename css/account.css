@@ -50,7 +50,7 @@
 .su-auth-feedback:not(:empty){position:absolute;top:100%;right:0;z-index:95;width:220px;max-width:calc(100vw - 48px);padding:8px 10px;margin-top:5px;border:1px solid #CDBD9E;background:#FCFAF3;color:#2A2118;box-shadow:2px 4px 12px #2a211818;font:13px/1.5 var(--su-body,Archivo,sans-serif);white-space:normal;text-align:left}
 .su-feedback-account .su-auth-feedback:not(:empty){position:static;width:auto;max-width:240px}
 
-#trk-sync-feedback{font:14px/1.5 var(--su-body,Archivo,sans-serif);margin:10px 0}
+#trk-sync-feedback{font:14px/1.5 var(--su-body,Archivo,sans-serif);margin:10px 0;color:var(--trk-ink,var(--su-ink,#2A2118))}
 #trk-sync-feedback:empty{display:none}.trk-unsaved-note{padding:18px;background:var(--su-paper,#FCFAF3);color:var(--su-ink,#2A2118);border-left:3px solid var(--su-orange-text,#A63D20);margin:16px 0;font:16px/1.5 var(--su-body,Archivo,sans-serif)}
 .trk-unsaved-note textarea{display:block;box-sizing:border-box;width:100%;min-height:90px;font:inherit;padding:10px;background:transparent;color:inherit;border:1px solid #bcae98}.trk-unsaved-note button{min-height:44px;font:inherit;color:inherit;background:transparent;border:0;text-decoration:underline;cursor:pointer}
 #trk-sync-retry[hidden],#su-preference-retry[hidden]{display:none}

@@ -1,21 +1,20 @@
 {
-  "version": "2.4.1",
+  "version": "2.4.2",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-08T22:13:03.584319+00:00",
+  "reviewedAt": "2026-09-08T22:37:18.881226+00:00",
   "reviewer": "Codex/Astra root, independent release and catalog reviewers",
-  "sourceDigest": "8426a70121ccc936049292051f77fcbb40233511c8a90f6b5ef0649e59b4cbbd",
+  "sourceDigest": "a139974b8ef5a920b4ceea5103f7f22fba348e9d1baf0509f3c30e0755641ad0",
   "sourceFileCount": 149,
-  "privacyChanged": true,
+  "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Saved reminders add a current-owner local count without links; tab-local section state clears only the Saved view. Tracker controls and BFCache owner checks preserve account boundaries. City/state/pay labels, count spacing and Latest Update focus/version are presentation changes. No new provider, analytics event, network transmission, auth privilege or audio.",
+  "scope": "Presentation-only follow-up: Tracker status paragraph uses existing theme ink. Five account.css cache references advance. No behavior, data, storage, auth, analytics, provider or consent change.",
   "checks": {
-    "fullSuite": "744/744 tests pass; zero failures, cancellations or skips.",
-    "tracker": "35 focused Tracker tests and twelve real browser cases; two additional owner-restoration tests pass. Same-owner native control/focus is retained; different-owner suspended views reset. Physical iOS native picker acceptance remains separate.",
-    "renderedUI": "48 Jobs/Internship layout cases across eight themes at 320,390,1440px and three real section-navigation checks pass. No overflow, count/art overlap, page errors or non-GET requests. Root viewed the 390px Saved reminder.",
-    "boundaries": "Independent code/privacy/security review found no remaining blockers in this patch. Privacy discloses bookmark reminder count and tab marker; Terms reviewed without wording change. Existing operational open items preserved.",
-    "hosted": "Pending exact 2.4.1 preview deployment and hosted acceptance."
+    "fullSuite": "744/744 pass after the CSS correction.",
+    "renderedUI": "Ten caption checks: eight themes at390px plusOriginal/Casino1440px. Minimum rendered-texture contrast4.83:1; Casino10.46:1 mobile and9.82:1 desktop. No page errors or attempted network writes.",
+    "boundaries": "Independent minimal-diff review confirms only caption color and stylesheet cache keys changed before version generation. Privacy and Terms reviewed; no further wording changes needed. All 2.4.1 features/limitations and earlier open items preserved.",
+    "hosted": "Pending exact2.4.2 preview and hosted caption readback."
   },
-  "baselineReview": "docs/privacy-reviews/2.4.0.json",
+  "baselineReview": "docs/privacy-reviews/2.4.1.json",
   "openItems": [
     "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
     "Function-scoped Firebase and Netlify configuration and actual owner UID",
@@ -31,5 +30,5 @@
     "Search Console domain property Not verified; Bing has no existing IAB session",
     "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive"
   ],
-  "policySummary": "Privacy updated for device-only reminder and section-view state. Terms reviewed with no wording change required for this release. Existing operational limits remain open. Engineering review, not legal certification."
+  "policySummary": "Existing Privacy and Terms remain accurate for a caption-color correction. No text changes. Existing operational limits preserved; engineering review, not legal certification."
 }
