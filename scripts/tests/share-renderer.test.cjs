@@ -35,6 +35,39 @@ test('reused share surface matches fresh surfaces across all themes and varied c
   assert.deepEqual(reused(cases[0], 'unknown'), retainedCopy, 'unknown themes retain the original fallback');
 });
 
+test('footer star renders in every theme without any font glyph or glyph metrics', async () => {
+  const { createCanvas, loadImage } = await import('@napi-rs/canvas');
+  const { createCardRenderer } = await import(generatorURL);
+  const render = await createCardRenderer();
+  const probe = createCanvas(1200, 630).getContext('2d');
+  const proto = Object.getPrototypeOf(probe);
+  const originals = { fillText: proto.fillText, measureText: proto.measureText };
+  // Model a build host with no star glyph: neither drawing nor sizing may use it.
+  for (const method of Object.keys(originals)) {
+    proto[method] = function (text, ...args) {
+      assert.doesNotMatch(String(text), /\u2605/, 'the footer star must not depend on host fonts');
+      return originals[method].call(this, text, ...args);
+    };
+  }
+  const colors = {
+    original: [178, 58, 30, 255], poker: [212, 175, 55, 255], girly: [58, 14, 38, 255],
+    mermaid: [255, 199, 184, 255], bratt: [10, 20, 0, 255], noir: [236, 236, 238, 255],
+    beauty: [243, 217, 184, 255], chess: [244, 244, 244, 255],
+  };
+  try {
+    for (const theme of themes) {
+      const png = render({ co: 'Example', role: 'Designer', pay: '$90K', loc: 'New York, NY', style: 'Hybrid', exp: '1–3 years' }, theme);
+      probe.drawImage(await loadImage(png), 0, 0);
+      const pixel = (x, y) => Array.from(probe.getImageData(x, y, 1, 1).data);
+      assert.deepEqual(pixel(115, 500), colors[theme], theme + ': star center stays visible');
+      assert.deepEqual(pixel(115, 489), colors[theme], theme + ': upper point stays visible');
+      assert.notDeepEqual(pixel(102, 491), colors[theme], theme + ': the mark is a star, not a filled box');
+    }
+  } finally {
+    for (const method of Object.keys(originals)) proto[method] = originals[method];
+  }
+});
+
 test('sequential share batches keep native canvas memory bounded', { timeout: 45000 }, () => {
   // Run separately so other tests and their native allocations cannot affect RSS.
   // The old renderer grew by >500 MiB in 176 images. A generous 384 MiB growth

@@ -10,8 +10,8 @@
  * Netlify serves a matching FILE before applying a (non-forced) redirect, so these win over the
  * /jobs/* rewrite, and any unknown slug still falls through to jobs.html.
  *
- * Each page is a copy of jobs.html with only the og/twitter tags swapped, so it can never drift
- * from the real board. jobs.html's own pre-paint script reads location.pathname and applies the
+ * Each page copies jobs.html, swaps the og/twitter tags and makes navigation root-relative.
+ * jobs.html's own pre-paint script reads location.pathname and applies the
  * theme, so no extra JS is needed here.
  *
  * Deliberately standalone: these pages do not depend on the sheet. The combined Netlify build
@@ -53,7 +53,18 @@ const THEMES = {
 };
 
 const DESC = 'Find roles with salary information. Save the ones that fit and keep your applications together.';
-const board = readFileSync(join(ROOT, 'jobs.html'), 'utf8');
+// Netlify's pretty-URL pass resolves relative index.html links against the
+// generated directory, ignoring <base href="/">. Explicit root paths prevent
+// Home from becoming /jobs/<theme>/ and protect every static navigation link.
+// Leave assets, external destinations, query-only links and fragments untouched.
+const board = readFileSync(join(ROOT, 'jobs.html'), 'utf8').replace(
+  /(<a\b[^>]*\bhref\s*=\s*)(["'])([^"']*)\2/gi,
+  (tag, before, quote, href) => {
+    if (!href || /^(?:[a-z][a-z\d+.-]*:|\/|#|\?)/i.test(href)) return tag;
+    const rootLink = new URL(href, 'https://stillunemployed.com/');
+    return before + quote + rootLink.pathname + rootLink.search + rootLink.hash + quote;
+  }
+);
 
 let made = 0;
 for (const [slug, label] of Object.entries(THEMES)) {

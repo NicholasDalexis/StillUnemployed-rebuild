@@ -1,21 +1,21 @@
 {
-  "version": "2.3.7",
+  "version": "2.3.8",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-08T03:49:47.647Z",
-  "reviewer": "Codex/Astra root and independent catalog reviewer",
-  "sourceDigest": "2abd09478d39e3f3ae8f1086c3a44bba35fa270c96e52a9b8ecb500ea4616937",
+  "reviewedAt": "2026-09-08T04:12:19.506092+00:00",
+  "reviewer": "Codex/Astra root, independent release and catalog reviewers",
+  "sourceDigest": "c7e77352d77765a40c2c7a72da451d08cfa61ded303a3c60037a57d48b08549c",
   "sourceFileCount": 147,
-  "privacyChanged": true,
-  "termsChanged": true,
-  "scope": "2.3.7: immediate deliberate-announcement browser acknowledgment, nonmodal one-time reminder after three newly saved guest applications, visible sign-in/QA owner labels, safer sign-in invocation, salary-neutral ordering with feed-refresh coherence, mobile UI and contrast corrections. No audio ships.",
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "2.3.8 corrects generated theme navigation and vector-draws the share-image star. No account, collection, provider, policy, application behavior, or audio changes from2.3.7.",
   "checks": {
-    "fullSuite": "713/713 tests pass; zero failures, cancelled or skipped.",
-    "independentCode": "46/46 focused onboarding, code-review and reminder checks pass.",
-    "independentPrivacy": "78/78 account, service, runtime and publication checks pass. No new collection, provider or authorization grant.",
-    "renderedUI": "72 cases: eight themes across Jobs, Internships and Tracker at 320, 390 and 1440 pixels. Category hint and Tracker small-text contrast corrections included; final receipt in private QA folder.",
-    "native": "Actual WebKit initial-shell intro, acknowledgment, mobile founder fit at measured 325x703 CSS viewport, shorter-screen scroll fallback; native hosted readback remains a deployment check."
+    "fullSuite": "716/716 tests pass; zero failures, cancellations or skips.",
+    "navigation": "25 focused theme/version/SEO tests pass; both new navigation regressions fail against2.3.7.",
+    "shareRenderer": "12 share/build tests pass; new test fails against2.3.7. All eight themes have identical pixels outside the star area.",
+    "renderedUI": "2.3.7 UI coverage remains applicable:72 theme/page/width cases and16 lower Tracker cases. No UI source changed in2.3.8.",
+    "hosted": "2.3.7 hosted audit surfaced these two generator fixes.2.3.8 hosted acceptance remains required after deployment."
   },
-  "baselineReview": "docs/privacy-reviews/2.3.6.json",
+  "baselineReview": "docs/privacy-reviews/2.3.7.json",
   "openItems": [
     "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
     "Function-scoped Firebase and Netlify configuration and actual owner UID",
@@ -31,5 +31,5 @@
     "Search Console domain property Not verified; Bing has no existing IAB session",
     "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive"
   ],
-  "policySummary": "Privacy and Terms now explain browser announcement/reminder receipts and remove salary-based ordering language. Existing counters count newly saved records, not lifetime unique applications. Earlier operational limits remain open. Engineering review, not legal certification."
+  "policySummary": "Reviewed current Privacy and Terms against this generator-only correction; neither needs a text change. Earlier operational limits remain open. Engineering review, not legal certification."
 }

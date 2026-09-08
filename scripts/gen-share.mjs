@@ -269,12 +269,20 @@ function drawCard(job, themeKey, cv) {
   ctx.font = `30px ${F_BODY}`; ctx.fillStyle = hexToRgba(P.ink, 0.85);
   ctx.fillText([job.loc, job.style, job.exp].filter(Boolean).join('  ·  ').slice(0, 54), px, y + 350);
 
-  // footer brand line: red star (sans has the glyph) + handwritten domain — same
-  // as the board's "★ StillUnemployed.com / roles I'd actually apply to".
+  // Draw the footer star rather than relying on a host font's symbol coverage.
+  // Netlify's Linux fonts may render a missing-glyph box for the Unicode star.
   const by = y + h - 128;
   ctx.fillStyle = P.apply;
-  ctx.font = `34px sans-serif`; ctx.fillText('★', px, by + 10);
-  const sw = ctx.measureText('★').width;
+  ctx.beginPath();
+  for (let point = 0; point < 10; point++) {
+    const angle = -Math.PI / 2 + point * Math.PI / 5;
+    const radius = point % 2 ? 6 : 15;
+    const sx = px + 15 + Math.cos(angle) * radius;
+    const sy = by + 24 + Math.sin(angle) * radius;
+    if (point === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+  }
+  ctx.closePath(); ctx.fill();
+  const sw = 29.41; // Preserve existing footer spacing without host font metrics.
   ctx.font = `46px ${F_HAND}`; ctx.fillText('stillunemployed.com', px + sw + 14, by);
   ctx.font = `30px ${F_HAND}`; ctx.fillStyle = hexToRgba(P.ink, 0.72);
   ctx.fillText("roles I'd actually apply to", px, by + 58);
