@@ -47,7 +47,7 @@
       if (errorCode) text += '. ' + errorCode;
       if(accountChanging)text='Checking the account selected in another tab';
       button.removeAttribute('title'); button.setAttribute('aria-label', text);
-      button.setAttribute('data-su-help', user ? 'You’re signed in. Click here to sign out.' : 'Sign in to keep your saved jobs and tracker together.');
+      button.setAttribute('data-su-help', user ? (syncState==='error' ? 'You’re signed in. Click to retry syncing your jobs.' : 'You’re signed in. Click here to sign out.') : 'Sign in to keep your saved jobs and tracker together.');
       button.dataset.state = user ? syncState : (loadingSdk || !authReady && !errorCode ? 'loading' : errorCode ? 'error' : signingIn ? 'signing-in' : 'signed-out');
       var label = button.querySelector('.su-auth-label');
       if (label) label.textContent = signingOut ? 'Signing out…' : signingIn ? 'Signing in…' : user ? 'Signed In' : loadingSdk || !authReady && !errorCode ? 'Loading…' : !authReady && errorCode ? 'Retry sign-in' : 'Sign In';

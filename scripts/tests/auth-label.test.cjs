@@ -35,7 +35,7 @@ test('auth shows Sign In when signed out and Signed In when authenticated', asyn
   assert.equal(ui.label.textContent, 'Signed In');assert.equal(ui.button.dataset.state, 'synced');
   assert.match(ui.attrs['aria-label'], /Saved jobs and tracker synced/);
   assert.match(ui.attrs['aria-label'], /test@example\.invalid/);
-  ui.syncError();assert.equal(ui.label.textContent, 'Signed In');assert.match(ui.attrs['aria-label'], /Sync failed/);
+  ui.syncError();assert.equal(ui.label.textContent, 'Signed In');assert.match(ui.attrs['aria-label'], /Sync failed/);assert.equal(ui.attrs['data-su-help'],'You’re signed in. Click to retry syncing your jobs.');
   ui.signIn(null);assert.equal(ui.label.textContent, 'Sign In');
 });
 
