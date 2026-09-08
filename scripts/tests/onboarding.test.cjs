@@ -11,64 +11,46 @@ before(async () => { ({ renderReleaseScript } = await import(pathToFileURL(path.
 
 function store(entries = []) {
   const values = new Map(entries);
-  return { values, getItem:key => values.get(key) ?? null, setItem(key, value) { values.set(key, String(value)); } };
+  return { values, getItem:key => values.get(key) ?? null, setItem(key, value) { values.set(key, String(value)); }, removeItem(key) { values.delete(key); } };
 }
 const blocked = { getItem() { throw new Error('Storage denied'); }, setItem() { throw new Error('Storage denied'); } };
 
 // The offline lock adapter queues callbacks by resource name, as separate tabs
 // sharing one origin do. It does not claim to test a browser's native lock service.
 function lockManager() {
-  const tails = new Map(), active = new Set(), requests = [];
+  const active = new Set(), requests = [];
   return { active, requests, request(name, options, callback) {
-    requests.push({ name, mode:options.mode });
-    const task = (tails.get(name) || Promise.resolve()).then(async () => {
-      active.add(name);try { return await callback({ name, mode:options.mode }); } finally { active.delete(name); }
-    });
-    tails.set(name, task.catch(() => {}));return task;
+    requests.push({ name, ...options });
+    if (active.has(name) && options.ifAvailable) return Promise.resolve(callback(null));
+    active.add(name);
+    return Promise.resolve().then(() => callback({ name })).finally(() => active.delete(name));
   } };
 }
 
-test('the Version 2 family retains old receipts and stores count plus dismissal without touching account data', async () => {
-  assert.equal(policy.key, 'su_welcome_v2_seen');
-  assert.equal(policy.stateKey, 'su_welcome_v2_state');assert.equal(policy.limit, 2);
-  const local = store([['su_saved_jobs', 'private jobs'], ['su_sync_v2:account', 'private tracker']]);
-  assert.deepEqual(policy.readState([local]), { shown:0, dismissed:false });
-  assert.equal(policy.writeState([local], { shown:1, dismissed:false }), true);
-  assert.deepEqual(policy.readState([local]), { shown:1, dismissed:false });
-  assert.equal(local.getItem(policy.key), null, 'viewing does not count as explicit dismissal');
-  assert.equal(local.values.get('su_saved_jobs'), 'private jobs');
-  assert.equal(local.values.get('su_sync_v2:account'), 'private tracker');
-  assert.equal(local.values.size, 3);
-  for (const value of ['', '0', 'true', 'null', '{"seen":true}']) {
-    assert.equal(policy.readState([store([[policy.key, value]])]).dismissed, false);
-  }
-  assert.equal(policy.readState([store([[policy.key, '1']])]).dismissed, true, 'legacy visitors are never automatically reintroduced');
-  assert.equal(policy.writeState([local], { shown:1, dismissed:true }), true);
-  assert.equal(local.getItem(policy.key), '1', 'older cached releases can honor dismissal');
+test('the deliberate announcement receipt is separate from old V2 receipts and account data', () => {
+  assert.equal(policy.key, 'su_welcome_announcement_237_ack');
+  const local = store([['su_welcome_v2_seen', '1'], ['su_welcome_v2_state', '{"shown":2,"dismissed":true}'], ['su_sync_v2:account', 'private tracker']]);
+  const old = [...local.values];
+  assert.equal(policy.acknowledged([local]), false);
+  assert.equal(policy.writeReceipt([local], '1'), true);
+  assert.equal(policy.acknowledged([local]), true);
+  for (const [key, value] of old) assert.equal(local.getItem(key), value);
+  assert.equal(local.values.size, old.length + 1);
 });
 
-test('storage failures and silent rejected writes fall back to a verified session receipt', async () => {
+test('receipts are exact, read failures are safe, and verified writes fall back to session storage', () => {
+  for (const value of ['', '0', 'true', 'null', '{"seen":true}']) assert.equal(policy.acknowledged([store([[policy.key, value]])]), false);
   const session = store(), silent = { getItem() { return null; }, setItem() {} };
-  assert.equal(policy.writeState([null, blocked, silent, session], { shown:2, dismissed:false }), true);
-  assert.deepEqual(policy.readState([blocked, session]), { shown:2, dismissed:false });
-  assert.equal(policy.writeState([null, blocked, silent], { shown:1, dismissed:true }), false);
-  assert.deepEqual(policy.readState([null, blocked, silent]), { shown:0, dismissed:false });
-  const local = store([[policy.stateKey, '{"shown":1,"dismissed":true}']]);
-  assert.deepEqual(policy.readState([local, session]), { shown:2, dismissed:true }, 'the strongest receipt wins over a stale store');
-  for (const value of ['{', 'null', '1', '{"shown":-1,"dismissed":false}', '{"shown":1.5,"dismissed":false}', '{"shown":"2","dismissed":false}', '{"shown":1,"dismissed":"false"}']) {
-    assert.deepEqual(policy.readState([store([[policy.stateKey, value]])]), { shown:0, dismissed:false }, value);
-  }
-  assert.deepEqual(policy.readState([store([[policy.stateKey, '{"shown":99,"dismissed":false}']])]), { shown:2, dismissed:false });
+  assert.equal(policy.writeReceipt([null, blocked, silent, session], '1'), true);
+  assert.equal(policy.acknowledged([blocked, session]), true);
+  assert.equal(policy.writeReceipt([null, blocked, silent], '1'), false);
+  assert.equal(policy.acknowledged([null, blocked, silent]), false);
 });
 
-test('incoming job links and OAuth returns keep their requested task', async () => {
-  for (const query of ['?job=https%3A%2F%2Fcompany.com%2Fjob', '?job=', '?%6Aob=1', '?code=1&state=2', '?state=1', '?error=access_denied', '?oauth_token=1']) {
-    assert.equal(policy.incomingTask(query, ''), true, query);
-  }
-  for (const hash of ['#access_token=abc', '#id_token=abc&state=xyz']) assert.equal(policy.incomingTask('', hash), true, hash);
-  for (const [query, hash] of [['', ''], ['?theme=casino', ''], ['?utm_source=newsletter', '#top'], ['?job_title=designer', '']]) {
-    assert.equal(policy.incomingTask(query, hash), false, query + hash);
-  }
+test('incoming job links and OAuth returns keep their requested task', () => {
+  for (const query of ['?job=https%3A%2F%2Fcompany.com%2Fjob', '?job=', '?%6Aob=1', '?code=1&state=2', '?state=1', '?error=access_denied', '?oauth_token=1']) assert.equal(policy.incomingTask(query, ''), true);
+  for (const hash of ['#access_token=abc', '#id_token=abc&state=xyz']) assert.equal(policy.incomingTask('', hash), true);
+  for (const [query, hash] of [['', ''], ['?theme=casino', ''], ['?utm_source=newsletter', '#top'], ['?job_title=designer', '']]) assert.equal(policy.incomingTask(query, hash), false);
 });
 
 // Executes the complete browser script. This adapter models native dialog API
@@ -88,7 +70,7 @@ function welcome({ local = store(), session = store(), locks = lockManager(), se
     now = end;await new Promise(resolve => setImmediate(resolve));
   }
   class Element {
-    constructor(tag, attrs = {}) { this.tagName = tag.toUpperCase();this.attrs = attrs;this.children = [];this.text = '';this.listeners = {};this.style = {};this.parentElement = null;this.scrollTop = 0;this.open = false; }
+    constructor(tag, attrs = {}) { this.tagName = tag.toUpperCase();this.attrs = attrs;this.children = [];this.text = '';this.listeners = {};this.style = { setProperty(key, value) { this[key] = value; } };this.parentElement = null;this.scrollTop = 0;this.open = false; }
     get isConnected() { return this === document.body || !!(this.parentElement && this.parentElement.isConnected); }
     set id(value) { this.attrs.id = value; } get id() { return this.attrs.id; }
     set className(value) { this.attrs.class = value; }
@@ -125,7 +107,8 @@ function welcome({ local = store(), session = store(), locks = lockManager(), se
       return null;
     }
     closest(selector) { for (let node = this;node;node = node.parentElement) if (node.matches(selector)) return node;return null; }
-    focus() { document.activeElement = this; }
+    focus(options) { document.activeElement = this;this.lastFocusOptions = options; }
+    remove() { if (this.parentElement) { this.parentElement.children = this.parentElement.children.filter(el => el !== this);this.parentElement = null; } }
     getClientRects() { for (let el = this; el; el = el.parentElement) if (el.hidden || el.getAttribute('hidden') !== null || el.style.display === 'none') return []; return [{}]; }
     getBoundingClientRect() { return { left:10, right:750, top:20, bottom:700 }; }
     showModal() { showCalls++;if (showError) throw new Error('Cannot show dialog');this.open = true;(this.querySelector('[autofocus]') || this).focus(); }
@@ -149,7 +132,7 @@ function welcome({ local = store(), session = store(), locks = lockManager(), se
     querySelector(selector) { return selector === '#overlay-root [role="dialog"]' ? this.overlay : this.body.querySelector(selector); } };
   document.body = new Element('body');document.body.style.overflow = 'auto';
   const opener = document.body.appendChild(new Element('button', { 'data-act':'openWelcome' }));document.activeElement = opener;
-  const window = { document, navigator:{ locks }, SUApp:{ state:{} }, setTimeout:setTimer, clearTimeout:clearTimer };
+  const window = { scrollY:0, document, navigator:{ locks }, SUApp:{ state:{} }, setTimeout:setTimer, clearTimeout:clearTimer };
   for (const [name, value] of [['localStorage', local], ['sessionStorage', session]]) {
     if (value === 'getter-denied') Object.defineProperty(window, name, { get() { throw new Error('Storage property denied'); } });
     else window[name] = value;
@@ -158,404 +141,283 @@ function welcome({ local = store(), session = store(), locks = lockManager(), se
   if (releaseAvailable) vm.runInContext(renderReleaseScript({ schemaVersion:1, currentVersion:version,
     releases:[{ version, date:'2026-09-05', title:'Test release', changes:['Test release.'] }] }), context);
   vm.runInContext(source, context);
-  return { window, document, opener, local, session, locks, advance, get now() { return now; }, get timerCount() { return timers.size; }, async auto() { const pending = window.SUWelcome.maybeShow();await advance(30000);await pending; }, get dialog() { return dialog; }, get showCalls() { return showCalls; },
+  return { window, document, opener, local, session, locks, advance, get now() { return now; }, get timerCount() { return timers.size; }, async auto() { const pending = window.SUWelcome.maybeShow();await advance(0);await pending; }, get dialog() { return dialog; }, get showCalls() { return showCalls; },
     click(selector) { const target = dialog.querySelector(selector);assert(target, selector);dialog.dispatch('click', { target });return target; } };
 }
 
-test('explicit first-visit dismissal suppresses future automatic displays across Version 2 patches', async () => {
-  const local = store(), first = welcome({ local });
+test('new announcement opens at the initial shell without a feed wait, then primary acknowledgment survives patches and routes', async () => {
+  const local = store([['su_welcome_v2_seen', '1'], ['su_welcome_v2_state', '{"shown":2,"dismissed":true}']]);
+  const first = welcome({ local });first.window.SUApp._loading = true;
   await first.auto();
-  assert.equal(first.showCalls, 1);assert.equal(first.dialog.tagName, 'DIALOG');assert.equal(first.dialog.open, true);
-  assert.equal(first.document.body.style.overflow, 'hidden');
-  assert.equal(first.document.activeElement.getAttribute('aria-label'), 'Close Latest Update');
-  assert.deepEqual(policy.readState([local]), { shown:1, dismissed:false });
-  await first.auto();assert.equal(first.showCalls, 1);
-  first.click('[data-launch-close]');
-  assert.deepEqual(policy.readState([local]), { shown:1, dismissed:true });
-  assert.equal(first.dialog.open, false);assert.equal(first.document.body.style.overflow, 'auto');assert.equal(first.document.activeElement, first.opener);
-  for (const version of ['2.1.0', '2.1.1', '2.1.9', '2.2.0']) {
-    const reload = welcome({ local, version });await reload.auto();assert.equal(reload.showCalls, 0, version);
+  assert.equal(first.now, 0);assert.equal(first.timerCount, 0);assert.equal(first.showCalls, 1);
+  assert.equal(first.dialog.open, true);assert.equal(first.document.activeElement.id, 'su-launch-title');
+  assert.equal(first.document.body.style.overflow, 'hidden');assert.equal(policy.acknowledged([local]), false);
+  assert.equal(local.values.size, 2, 'display leaves no durable probe or view receipt');
+  first.click('.su-launch-primary');
+  assert.equal(first.dialog.open, false);assert.equal(policy.acknowledged([local]), true);
+  assert.equal(first.document.body.style.overflow, 'auto');assert.equal(first.document.activeElement, first.opener);
+  assert.equal(first.opener.lastFocusOptions.preventScroll, true);
+  for (const version of ['2.3.7', '2.3.8', '2.4.9', '3.0.0']) {
+    const next = welcome({ local, version });await next.auto();assert.equal(next.showCalls, 0, version);
+    assert.equal(next.window.SUWelcome.open(), true, 'manual access is always available');
   }
+  assert.equal(local.getItem('su_welcome_v2_seen'), '1');
+  assert.equal(local.getItem('su_welcome_v2_state'), '{"shown":2,"dismissed":true}');
 });
 
-test('X, the primary action, Escape and an outside click all persist explicit dismissal before the cap', async () => {
-  for (const dismiss of [w => w.click('.su-launch-close'), w => w.click('.su-launch-primary'), w => w.dialog.dispatch('cancel'), w => w.dialog.dispatch('click', { clientX:0, clientY:0 })]) {
-    const local = store(), first = welcome({ local });await first.auto();
-    dismiss(first);assert.equal(first.dialog.open, false);
-    assert.deepEqual(policy.readState([local]), { shown:1, dismissed:true });
-    const reload = welcome({ local });await reload.auto();assert.equal(reload.showCalls, 0);
-    assert.equal(reload.window.SUWelcome.open(), true, 'What’s new stays available after every dismissal path');
-  }
-});
-
-test('reload without dismissal permits at most two automatic appearances, while manual What’s new still opens', async () => {
+test('an unacknowledged reload can introduce again; no old display count silently substitutes for acknowledgment', async () => {
   const local = store();
-  for (const [index, version] of ['2.2.0', '2.2.1', '2.3.0', '2.4.9'].entries()) {
-    const visit = welcome({ local, version });
-    Object.defineProperty(visit.window, 'SUAuth', { get() { throw new Error('Welcome must not depend on sign-in'); } });
-    await visit.auto();await visit.auto();
-    assert.equal(visit.showCalls, index < 2 ? 1 : 0, version);
-    assert.deepEqual(policy.readState([local]), { shown:Math.min(index + 1, 2), dismissed:false });
-  }
-  const manual = welcome({ local });assert.equal(manual.window.SUWelcome.open(), true);
-  assert.deepEqual(policy.readState([local]), { shown:2, dismissed:false }, 'manual opening spends no automatic appearance');
-  manual.click('.su-launch-primary');
-  assert.deepEqual(policy.readState([local]), { shown:2, dismissed:true });
-  assert.equal(manual.window.SUWelcome.open(), true, 'explicit dismissal never removes manual discovery');
-});
-
-test('legacy local or session receipts suppress automatic onboarding without a migration popup', async () => {
-  for (const target of ['local', 'session']) {
-    const previous = store([[policy.key, '1']]);
-    const visit = welcome({ [target]:previous });await visit.auto();
-    assert.equal(visit.showCalls, 0);assert.equal(previous.getItem(policy.stateKey), null, 'reading old state does not rewrite it');
-    assert.equal(visit.window.SUWelcome.open(), true);
+  for (let visit = 0;visit < 3;visit++) {
+    const w = welcome({ local });await w.auto();assert.equal(w.showCalls, 1);
+    assert.equal(policy.acknowledged([local]), false);
   }
 });
 
-test('without verified shared storage automatic entry stays quiet, while session fallback remembers manual dismissal', async () => {
-  const session = store(), first = welcome({ local:'getter-denied', session });await first.auto();assert.equal(first.showCalls, 0);
-  assert.equal(session.getItem(policy.stateKey), null, 'a tab-only receipt cannot reserve a browser-wide appearance');
-  assert.equal(first.window.SUWelcome.open(), true);first.click('[data-launch-close]');
-  assert.deepEqual(policy.readState([session]), { shown:0, dismissed:true });
-  assert.equal(session.getItem(policy.key), '1');
-  const reload = welcome({ local:blocked, session });await reload.auto();assert.equal(reload.showCalls, 0);
-  assert.equal(reload.window.SUWelcome.open(), true, 'session dismissal preserves manual discovery after reload');
-  const silent = welcome({ local:{ getItem() { return null; }, setItem() {} } });
-  await silent.auto();assert.equal(silent.showCalls, 0, 'silently rejected local writes cannot enable automatic entry');
-  assert.equal(silent.session.getItem(policy.stateKey), null);
-  const denied = welcome({ local:'getter-denied', session:'getter-denied' });
-  await denied.auto();await denied.auto();assert.equal(denied.showCalls, 0);
-  assert.equal(denied.window.SUWelcome.open(), true);assert.equal(denied.dialog.open, true);
-  denied.click('[data-launch-close]');await denied.auto();assert.equal(denied.showCalls, 1);
-  assert.equal(denied.window.SUWelcome.open(), true, 'in-memory dismissal preserves manual access');
-});
-
-test('queued tabs reread the shared receipt inside one exclusive lock and cannot exceed two automatic appearances', async () => {
-  const locks = lockManager(), local = store([[policy.stateKey, '{"shown":1,"dismissed":false}']]);
-  let release;
-  const blocker = locks.request('su-welcome-v2-auto', { mode:'exclusive' }, () => new Promise(resolve => { release = resolve; }));
-  await Promise.resolve();
-  const a = welcome({ local, locks }), b = welcome({ local, locks });
-  a.window.SUWelcome.maybeShow();b.window.SUWelcome.maybeShow();await a.advance(30000);await b.advance(30000);
-  const first = a.window.SUWelcome.maybeShow(), second = b.window.SUWelcome.maybeShow();
-  assert.equal(a.window.SUWelcome.maybeShow(), first, 'one tab does not queue duplicate reservations on rerender');
-  assert.equal(a.showCalls + b.showCalls, 0, 'neither tab opens while another holder owns the same resource');
-  assert.equal(local.getItem(policy.stateKey), '{"shown":1,"dismissed":false}');
-  assert.equal(locks.requests.length, 3);
-  for (const request of locks.requests) assert.deepEqual(request, { name:'su-welcome-v2-auto', mode:'exclusive' });
-  release();await Promise.all([blocker, first, second]);
-  assert.equal(a.showCalls + b.showCalls, 1, 'only the second lifetime automatic appearance is allowed across the two tabs');
-  assert.deepEqual(policy.readState([local]), { shown:2, dismissed:false });
-  const reload = welcome({ local, locks });await reload.auto();assert.equal(reload.showCalls, 0);
-});
-
-test('unavailable or rejected Web Locks fail quietly without consuming storage or disabling manual discovery', async () => {
-  for (const locks of [null, {}, { request() { throw new Error('Lock request denied'); } }, { request() { return Promise.reject(new Error('Lock service failed')); } }]) {
-    const w = welcome({ locks });
-    await w.auto();await w.auto();
-    assert.equal(w.showCalls, 0);assert.equal(w.local.getItem(policy.stateKey), null);
-    assert.equal(w.window.SUWelcome.open(), true);w.click('[data-launch-close]');
-    assert.deepEqual(policy.readState([w.local]), { shown:0, dismissed:true });
+test('automatic intro has no X and ignores backdrop, internal blank clicks and Escape without writing an acknowledgment', async () => {
+  const w = welcome();await w.auto();assert.equal(w.dialog.querySelector('.su-launch-close'), null);
+  for (const action of [() => w.dialog.dispatch('cancel'), () => w.dialog.dispatch('click', { clientX:0, clientY:0 }), () => w.dialog.dispatch('click', { clientX:20, clientY:30 })]) {
+    action();assert.equal(w.dialog.open, true);assert.equal(policy.acknowledged([w.local]), false);
   }
-  const denied = welcome();
-  Object.defineProperty(denied.window.navigator, 'locks', { get() { throw new Error('Locks unavailable'); } });
-  await denied.auto();assert.equal(denied.showCalls, 0);
-  assert.equal(denied.local.getItem(policy.stateKey), null);assert.equal(denied.window.SUWelcome.open(), true);
+  assert.equal(w.dialog.dispatch('cancel').defaultPrevented, true);
+  w.click('.su-launch-primary');assert.equal(w.dialog.open, false);
 });
 
-test('a manual opening or a new filter while queued is checked again before automatic entry', async () => {
-  for (const event of ['manual', 'filter']) {
-    const locks = lockManager(), w = welcome({ locks });let release;
-    const blocker = locks.request('su-welcome-v2-auto', { mode:'exclusive' }, () => new Promise(resolve => { release = resolve; }));
-    await Promise.resolve();
-    w.window.SUWelcome.maybeShow();await w.advance(30000);const queued = w.window.SUWelcome.maybeShow();
-    if (event === 'manual') { assert.equal(w.window.SUWelcome.open(), true);w.click('[data-launch-close]'); }
-    else w.window.SUApp.state.openPanel = 'cat';
-    release();await Promise.all([blocker, queued]);
-    assert.equal(w.showCalls, event === 'manual' ? 1 : 0);
-    assert.deepEqual(policy.readState([w.local]), { shown:0, dismissed:event === 'manual' });
-    if (event === 'filter') {
-      w.window.SUApp.state.openPanel = null;await w.auto();
-      assert.equal(w.showCalls, 1, 'a deferred visit can introduce the welcome after the competing filter closes');
-    }
-  }
-});
-
-test('clearing browser storage resets browser-local welcome history without consulting account data', async () => {
-  const local = store(), first = welcome({ local });await first.auto();first.click('.su-launch-close');
-  local.values.clear();
-  const reset = welcome({ local });await reset.auto();assert.equal(reset.showCalls, 1);
-  assert.deepEqual(policy.readState([local]), { shown:1, dismissed:false }, 'cleared storage cannot retain an earlier receipt');
-});
-
-test('shared links do not consume the receipt, and manual reopening can still introduce the release', async () => {
-  const local = store(), shared = welcome({ local, search:'?job=https%3A%2F%2Fcompany.com%2Fjob' });
-  await shared.auto();assert.equal(shared.showCalls, 0);assert.equal(local.getItem(policy.key), null);assert.equal(local.getItem(policy.stateKey), null);
-  const normal = welcome({ local });await normal.auto();assert.equal(normal.showCalls, 1);
-  const authReturn = welcome({ local:store(), hash:'#id_token=secret-token' });
-  await authReturn.auto();assert.equal(authReturn.showCalls, 0);
-  assert.equal(authReturn.window.SUWelcome.open(), true);assert.equal(authReturn.local.getItem(policy.key), null);
-  authReturn.click('[data-launch-close]');assert.equal(authReturn.local.getItem(policy.key), '1');
-  assert(!authReturn.dialog.html.includes('secret-token'));
-});
-
-test('load errors, open filters and existing dialogs defer automatic onboarding without consuming the receipt', async () => {
-  const w = welcome();
-  w.window.SUApp._loadError = true;await w.auto();assert.equal(w.showCalls, 0);
-  w.window.SUApp._loadError = false;w.window.SUApp.state.openPanel = 'cat';await w.auto();assert.equal(w.showCalls, 0);
-  w.window.SUApp.state.openPanel = null;w.document.overlay = {};await w.auto();assert.equal(w.showCalls, 0);
-  assert.equal(w.window.SUWelcome.open(), false);assert.equal(w.local.getItem(policy.key), null);
-  w.document.overlay = null;await w.auto();assert.equal(w.showCalls, 1);
-});
-
-test('turning a card and returning restores focus; Escape and outside clicks close and restore the opener', async () => {
-  const w = welcome();w.window.SUWelcome.open();
-  w.click('[data-launch-feature="themes"]');
-  assert.equal(w.document.activeElement.getAttribute('data-launch-back'), '');
-  w.click('[data-launch-back]');assert.equal(w.document.activeElement.getAttribute('data-launch-feature'), 'themes');
-  w.dialog.dispatch('click', { clientX:100, clientY:100 });assert.equal(w.dialog.open, true, 'dialog interior is not the backdrop');
-  const cancel = w.dialog.dispatch('cancel');assert.equal(cancel.defaultPrevented, true);assert.equal(w.dialog.open, false);assert.equal(w.document.activeElement, w.opener);
-  w.window.SUWelcome.open();w.dialog.dispatch('click', { clientX:0, clientY:0 });assert.equal(w.dialog.open, false);assert.equal(w.document.body.style.overflow, 'auto');
-});
-
-test('closing after the board replaces its opener focuses the current What’s new control', async () => {
-  const w = welcome();w.window.SUWelcome.open();
-  const replacement = w.document.createElement('button');replacement.setAttribute('data-act', 'openWelcome');
-  w.document.body.children = w.document.body.children.filter(node => node !== w.opener);w.opener.parentElement = null;w.document.body.appendChild(replacement);
-  w.click('[data-launch-close]');assert.equal(w.document.activeElement, replacement);
-});
-
-test('automatic entry from BODY returns to What’s new instead of leaving keyboard focus on the page', async () => {
-  const w = welcome();w.document.activeElement = w.document.body;await w.auto();
-  w.click('[data-launch-close]');assert.equal(w.document.activeElement, w.opener);
-});
-
-test('Tab and Shift+Tab wrap at the current dialog boundaries after every feature changes the content', async () => {
-  const w = welcome();w.window.SUWelcome.open();
-  function checkBoundaries() {
-    const actions = w.dialog.querySelectorAll('button:not(:disabled),a[href],[tabindex="0"]').filter(el => el.getClientRects().length);
-    const first = actions[0], last = actions.at(-1);
-    if (w.dialog.querySelector('.su-launch-detail')) {
-      if (actions.length === 2) assert.equal(last.getAttribute('role'), 'region', 'detail ends at its keyboard-scrollable content');
-      else assert.equal(last.getAttribute('href'), '/internships.html', 'internships detail ends at its optional internal browse link');
-    } else assert.equal(last, w.dialog.querySelector('.su-launch-primary'), 'overview ends at its single closing action');
-    last.focus();assert.equal(w.dialog.dispatch('keydown', { key:'Tab' }).defaultPrevented, true);assert.equal(w.document.activeElement, first);
-    first.focus();assert.equal(w.dialog.dispatch('keydown', { key:'Tab', shiftKey:true }).defaultPrevented, true);assert.equal(w.document.activeElement, last);
-    if (actions.length > 2) { actions[1].focus();assert.notEqual(w.dialog.dispatch('keydown', { key:'Tab' }).defaultPrevented, true, 'ordinary browser tab order remains available'); }
-  }
-  checkBoundaries();
-  for (const key of ['advice','themes','sync','internships']) { w.click('[data-launch-feature="'+key+'"]');checkBoundaries();w.click('[data-launch-back]');checkBoundaries(); }
-});
-
-test('the overview has four feature notes and only X plus the primary closing action', async () => {
-  for (const releaseAvailable of [true, false]) {
-    const w = welcome({ releaseAvailable });assert.equal(w.window.SUWelcome.open(), true);
-    assert.equal(w.dialog.querySelectorAll('[data-launch-feature]').length, 4);
-    assert.equal(w.dialog.querySelectorAll('a').length, 0, 'no competing footer navigation');
-    assert.equal(w.dialog.querySelector('[data-su-version]'), null);
-    assert.equal(w.dialog.querySelector('.su-launch-reopen'), null);
-    assert.doesNotMatch(w.dialog.textContent, /Suggest Jobs|Version history|Version 2\./i);
-    const actions = w.dialog.querySelectorAll('button').filter(el => el.getClientRects().length);
-    assert.equal(actions.length, 6, 'four features, X and Let’s find a role');
-    assert.equal(actions[0].getAttribute('aria-label'), 'Close Latest Update');
-    assert.equal(actions.at(-1), w.dialog.querySelector('.su-launch-primary'));
-    w.click('[data-launch-feature="sync"]');w.click('[data-launch-back]');
-    assert.equal(w.dialog.querySelectorAll('a').length, 0, 'returning does not restore removed footer links');
-    w.click('.su-launch-primary');assert.equal(w.dialog.open, false);
-    assert.equal(policy.readState([w.local]).dismissed, true);
-  }
-});
-
-test('unavailable or failed native modal APIs fail without throwing or locking the page', async () => {
-  for (const options of [{ unavailable:true }, { showError:true }]) {
-    const w = welcome(options);assert.equal(w.window.SUWelcome.open(), false);
-    assert.equal(w.dialog.open, false);assert.equal(w.document.body.style.overflow, 'auto');assert.equal(w.local.getItem(policy.key), null);
-  }
-});
-
-test('a failed automatic native dialog does not spend an appearance or retry on each board render', async () => {
-  for (const options of [{ unavailable:true }, { showError:true }]) {
-    const local = store(), failed = welcome({ local, ...options });
-    await failed.auto();await failed.auto();
-    assert.equal(failed.showCalls, options.unavailable ? 0 : 1);
-    assert.equal(failed.dialog.open, false);assert.equal(failed.document.body.style.overflow, 'auto');
-    assert.deepEqual(policy.readState([local]), { shown:0, dismissed:false });
-    const retry = welcome({ local });await retry.auto();assert.equal(retry.showCalls, 1);
-    assert.deepEqual(policy.readState([local]), { shown:1, dismissed:false });
-  }
-});
-
-test('Latest Update replaces Portfolio Graded with an informational internships card and internal browse action', async () => {
-  const w = welcome();assert.equal(w.window.SUWelcome.open(), true);
-  assert.equal(w.dialog.querySelector('#su-launch-title').textContent, 'Latest Update');
-  const card = w.dialog.querySelector('[data-launch-feature="internships"]');
-  assert(card);assert.equal(card.tagName, 'BUTTON');assert.equal(card.getAttribute('type'), 'button');
-  assert.equal(card.getAttribute('href'), null);assert.equal(card.getAttribute('target'), null);
-  assert.equal(w.dialog.querySelector('[data-launch-feature="portfolio"]'), null);
-  assert.doesNotMatch(w.dialog.textContent, /Portfolio Graded|portfolio homepage|coming soon/i);
-  assert.doesNotMatch(source, /portfoliograded\.com|portfoliograder\.com|EXAMPLE FEEDBACK|su-launch-tier/);
-  w.click('[data-launch-feature="internships"]');
-  const detail = w.dialog.querySelector('.su-launch-detail'), link = detail.querySelector('.su-launch-detail-link');
-  assert.match(detail.textContent, /internship/i);assert(link);
-  assert.match(link.textContent, /Browse internships/);assert.equal(link.getAttribute('href'), '/internships.html');
-  assert.equal(link.getAttribute('target'), null, 'the board section opens in the same tab');
-  assert.equal(new URL(link.getAttribute('href'), 'https://preview--stillunemployed.netlify.app/jobs/casino/').pathname, '/internships.html');
-  assert.doesNotMatch(detail.textContent, /Portfolio Graded|portfolio homepage|coming soon/i);
-  w.click('[data-launch-back]');assert.equal(w.document.activeElement.getAttribute('data-launch-feature'), 'internships');
-  w.click('[data-launch-feature="sync"]');
-  assert.equal(w.dialog.querySelector('.su-launch-detail').querySelector('a'), null, 'tracker detail stays informational');
-});
-
-test('Browse internships remembers dismissal while allowing natural same-tab navigation', async () => {
-  const local = store(), first = welcome({ local });await first.auto();
-  first.click('[data-launch-feature="internships"]');
-  const link = first.dialog.querySelector('.su-launch-detail-link');
-  const event = first.dialog.dispatch('click', { target:link });
-  assert.equal(link.getAttribute('href'), '/internships.html');
-  assert.equal(link.getAttribute('target'), null);
-  assert.notEqual(event.defaultPrevented, true, 'the browser remains free to follow the internal link');
-  assert.equal(first.dialog.open, false);
-  assert.deepEqual(policy.readState([local]), { shown:1, dismissed:true }, 'dismissal is durable before navigation');
-  assert.equal(local.getItem(policy.key), '1', 'the destination and older releases share the dismissal receipt');
-  const destination = welcome({ local });await destination.auto();
-  assert.equal(destination.showCalls, 0, 'the same-browser destination does not introduce the update again');
-  assert.equal(destination.window.SUWelcome.open(), true, 'manual What’s new remains available');
-});
-
-
-test('feature details have one visible Back action and restore the complete overview', async () => {
-  const w = welcome();w.window.SUWelcome.open();
-  for (const feature of ['advice','themes','sync','internships']) {
+test('automatic card details keep acknowledgment pending and return focus to their own card', async () => {
+  const w = welcome();await w.auto();
+  for (const feature of ['advice', 'themes', 'internships', 'sync']) {
     w.click('[data-launch-feature="'+feature+'"]');
-    const actions = w.dialog.querySelectorAll('button:not(:disabled),a[href]').filter(el => el.getClientRects().length);
-    assert.equal(actions.length, feature === 'internships' ? 2 : 1);
-    assert.equal(actions[0].getAttribute('data-launch-back'), '');
     assert.equal(w.dialog.getAttribute('aria-labelledby'), 'su-launch-detail-title');
-    for (const selector of ['.su-launch-overview-title','.su-launch-close','.su-launch-intro','.su-launch-footer']) assert(w.dialog.querySelector(selector).hidden);
+    assert.equal(w.document.activeElement.getAttribute('data-launch-back'), '');
+    assert.equal(w.dialog.querySelectorAll('a').length, 0, 'no link bypasses the automatic intro acknowledgment');
+    assert.equal(w.dialog.querySelector('.su-launch-footer').hidden, true);
+    w.dialog.dispatch('cancel');assert.equal(w.dialog.open, true);
+    assert.equal(policy.acknowledged([w.local]), false);
     w.click('[data-launch-back]');
-    assert.equal(w.dialog.getAttribute('aria-labelledby'), 'su-launch-title');
     assert.equal(w.document.activeElement.getAttribute('data-launch-feature'), feature);
-    assert.equal(w.dialog.querySelector('.su-launch-footer').hidden, false);
+    assert.equal(w.document.activeElement.lastFocusOptions.preventScroll, true);
   }
+  w.click('.su-launch-primary');assert.equal(policy.acknowledged([w.local]), true);
 });
 
-test('detail keyboard focus reaches its named scroll region without adding another visible action', async () => {
-  const w = welcome();w.window.SUWelcome.open();
-  for (const feature of ['advice','themes','sync','internships']) {
-    w.click('[data-launch-feature="'+feature+'"]');
-    const back = w.dialog.querySelector('[data-launch-back]');
-    const scroll = w.dialog.querySelector('.su-launch-scroll');
-    const focusable = w.dialog.querySelectorAll('button:not(:disabled),a[href],[tabindex="0"]').filter(el => el.getClientRects().length);
-    const link = w.dialog.querySelector('.su-launch-detail-link');
-    assert.deepEqual(focusable, link ? [back, scroll, link] : [back, scroll]);
-    assert.equal(w.document.activeElement, back, 'Back keeps initial focus');
-    assert.notEqual(w.dialog.dispatch('keydown', { key:'Tab' }).defaultPrevented, true, 'native Tab can enter the scroll region');
-    assert.equal(scroll.getAttribute('role'), 'region');
-    assert.equal(scroll.getAttribute('aria-labelledby'), w.dialog.querySelector('#su-launch-detail-title').id);
-    scroll.focus();
-    assert.notEqual(w.dialog.dispatch('keydown', { key:'PageDown' }).defaultPrevented, true, 'native keyboard scrolling is not suppressed');
-    if (link) { assert.notEqual(w.dialog.dispatch('keydown', { key:'Tab' }).defaultPrevented, true);link.focus(); }
-    assert.equal(w.dialog.dispatch('keydown', { key:'Tab' }).defaultPrevented, true);
-    assert.equal(w.document.activeElement, back, 'Tab from content wraps to Back');
-    w.click('[data-launch-back]');
-    for (const attr of ['role','aria-labelledby','tabindex']) assert.equal(scroll.getAttribute(attr), null, attr+' is removed in overview');
-    assert.equal(w.document.activeElement.getAttribute('data-launch-feature'), feature);
-  }
+test('manual opening has the same sole acknowledgment action and preserves board scroll', () => {
+  const w = welcome();w.window.scrollY = 1680;
+  w.window.scrollTo = () => assert.fail('onboarding must not scroll the board');
+  assert.equal(w.window.SUWelcome.open(), true);
+  assert.equal(w.dialog.dispatch('cancel').defaultPrevented, true);
+  w.dialog.dispatch('click', { clientX:0, clientY:0 });
+  assert.equal(w.dialog.open, true);assert.equal(policy.acknowledged([w.local]), false);
+  w.click('[data-launch-feature="themes"]');w.click('[data-launch-back]');w.click('.su-launch-primary');
+  assert.equal(w.dialog.open, false);assert.equal(w.window.scrollY, 1680);
+  assert.equal(w.document.activeElement, w.opener);assert.equal(w.opener.lastFocusOptions.preventScroll, true);
+  assert.equal(policy.acknowledged([w.local]), true);
 });
 
-test('automatic entry waits 30 seconds without spending a receipt or queuing duplicate timers', async () => {
-  const w = welcome();w.window.SUWelcome.maybeShow();
-  assert.equal(w.showCalls, 0);assert.equal(w.timerCount, 1);assert.equal(w.locks.requests.length, 0);
-  assert.deepEqual(policy.readState([w.local]), { shown:0, dismissed:false });
-  await w.advance(29999);w.window.SUWelcome.maybeShow();
-  assert.equal(w.showCalls, 0);assert.equal(w.timerCount, 1, 'board rerenders keep the original deadline');
-  assert.equal(w.local.getItem(policy.stateKey), null);
-  await w.advance(1);
-  assert.equal(w.showCalls, 1);assert.equal(w.dialog.open, true);assert.equal(w.locks.requests.length, 1);
-  assert.deepEqual(policy.readState([w.local]), { shown:1, dismissed:false });
-  await w.auto();assert.equal(w.showCalls, 1, 'later rerenders do not reopen within this visit');
+test('manual internship detail is informational with go back only, never a navigation bypass', () => {
+  const w = welcome();w.window.SUWelcome.open();w.click('[data-launch-feature="internships"]');
+  assert.equal(w.dialog.querySelector('.su-launch-detail').querySelector('a'), null);
+  const actions = w.dialog.querySelectorAll('button').filter(el => el.getClientRects().length);
+  assert.equal(actions.length, 1);assert.equal(actions[0].getAttribute('data-launch-back'), '');
+  w.dialog.dispatch('cancel');assert.equal(w.dialog.open, true);assert.equal(policy.acknowledged([w.local]), false);
+  w.click('[data-launch-back]');w.click('.su-launch-primary');assert.equal(w.dialog.open, false);
 });
 
-test('manual What’s new opens immediately and its dismissal cancels the scheduled automatic introduction', async () => {
-  const w = welcome();w.window.SUWelcome.maybeShow();await w.advance(1000);
-  assert.equal(w.window.SUWelcome.open(), true);assert.equal(w.showCalls, 1);assert.equal(w.now, 1000);
+test('welcome toast is nonblocking for exactly five seconds and does not take focus', async () => {
+  const w = welcome();await w.auto();w.click('.su-launch-primary');
+  const toast = w.document.querySelector('.su-launch-toast');assert(toast);
+  assert.equal(toast.querySelector('[role="status"]').textContent, 'Welcome to version 2');
+  assert.equal(toast.querySelector('button').textContent, 'version 2');
+  assert.equal(w.document.activeElement, w.opener);
+  await w.advance(4999);assert.equal(toast.isConnected, true);
+  await w.advance(1);assert.equal(toast.isConnected, false);assert.equal(w.timerCount, 0);
+});
+
+test('underlined version 2 reopens the same overview without scrolling and retains sole primary dismissal', async () => {
+  const w = welcome();await w.auto();w.click('.su-launch-primary');w.window.scrollY = 940;
+  const toast = w.document.querySelector('.su-launch-toast'), button = toast.querySelector('button');
+  button.focus();toast.dispatch('click', { target:button });
+  assert.equal(w.dialog.open, true);assert.equal(w.window.scrollY, 940);assert.equal(toast.isConnected, false);
   assert.equal(w.dialog.querySelector('#su-launch-title').textContent, 'Latest Update');
-  assert.deepEqual(policy.readState([w.local]), { shown:0, dismissed:false }, 'manual discovery spends no automatic appearance');
-  w.click('[data-launch-close]');await w.advance(60000);await w.auto();
-  assert.equal(w.showCalls, 1);assert.deepEqual(policy.readState([w.local]), { shown:0, dismissed:true });
-  assert.equal(w.local.getItem(policy.key), '1');assert.equal(w.window.SUWelcome.open(), true);
+  assert.equal(w.dialog.querySelectorAll('[data-launch-feature]').length, 4);
+  w.dialog.dispatch('cancel');assert.equal(w.dialog.open, true);w.click('.su-launch-primary');assert.equal(w.dialog.open, false);assert.equal(w.window.scrollY, 940);
 });
 
-test('an overlay or filter opened during the delay still defers the automatic popup without consuming an appearance', async () => {
-  for (const blocker of ['dialog','filter','feed']) {
-    const w = welcome();w.window.SUWelcome.maybeShow();await w.advance(15000);
+test('repeated acknowledgments replace the old toast and restart its full five seconds', async () => {
+  const w = welcome();w.window.SUWelcome.open();w.click('.su-launch-primary');
+  await w.advance(3000);const old = w.document.querySelector('.su-launch-toast');
+  w.window.SUWelcome.open();w.click('.su-launch-primary');
+  const latest = w.document.querySelector('.su-launch-toast');assert.notEqual(old, latest);assert.equal(old.isConnected, false);
+  await w.advance(4999);assert(latest.isConnected);await w.advance(1);assert(!latest.isConnected);
+});
+
+test('blocked or silently rejected durable storage skips auto and still permits manual acknowledgment with session fallback', async () => {
+  for (const local of ['getter-denied', blocked, { getItem() { return null; }, setItem() {}, removeItem() {} }]) {
+    const session = store(), w = welcome({ local, session });await w.auto();assert.equal(w.showCalls, 0);
+    assert.equal(w.window.SUWelcome.open(), true);w.click('.su-launch-primary');
+    assert.equal(session.getItem(policy.key), '1');
+    const reload = welcome({ local, session });await reload.auto();assert.equal(reload.showCalls, 0);
+  }
+  const w = welcome({ local:'getter-denied', session:'getter-denied' });await w.auto();
+  assert.equal(w.window.SUWelcome.open(), true);w.click('.su-launch-primary');await w.auto();assert.equal(w.showCalls, 1);
+});
+
+test('storage failure at acknowledgment still closes and remembers in memory, with session persistence when available', async () => {
+  const local = store(), w = welcome({ local });await w.auto();
+  local.setItem = () => { throw new Error('Quota changed'); };
+  w.click('.su-launch-primary');assert.equal(w.dialog.open, false);
+  assert.equal(w.session.getItem(policy.key), '1');await w.auto();assert.equal(w.showCalls, 1);
+});
+
+test('a second tab never queues a late automatic intro behind the first tab', async () => {
+  const local = store(), locks = lockManager(), first = welcome({ local, locks });await first.auto();
+  const second = welcome({ local, locks });await second.auto();assert.equal(second.showCalls, 0);
+  assert.equal(locks.requests.every(request => request.ifAvailable === true), true);
+  first.click('.su-launch-primary');await second.advance(2000);await second.auto();assert.equal(second.showCalls, 0);
+  assert.equal(locks.active.size, 0);const third = welcome({ local, locks });await third.auto();assert.equal(third.showCalls, 0);
+});
+
+test('missing lock support can open immediately, while rejected lock requests never trigger delayed retries', async () => {
+  const supported = welcome({ locks:null });await supported.auto();assert.equal(supported.showCalls, 1);
+  for (const locks of [{ request() { throw new Error('Denied'); } }, { request() { return Promise.reject(new Error('Denied')); } }]) {
+    const w = welcome({ locks });await w.auto();await w.advance(30000);assert.equal(w.showCalls, 0);
+    assert.equal(w.window.SUWelcome.open(), true);
+  }
+});
+
+test('lock callback rechecks scroll and competing tasks rather than opening late', async () => {
+  let run;const locks = { request(name, options, callback) { run = callback;return Promise.resolve(); } };
+  for (const block of [w => { w.window.scrollY = 200; }, w => { w.document.overlay = {}; }, w => { w.window.SUWelcome.open();w.click('.su-launch-primary'); }]) {
+    const w = welcome({ locks });w.window.SUWelcome.maybeShow();block(w);
+    await run({});assert.equal(w.dialog?.open || false, false);assert(w.showCalls <= 1);
+  }
+});
+
+test('already-scrolled, restored, hidden or busy boards never get an automatic interruption later', async () => {
+  for (const blocker of ['scroll', 'hidden', 'panel', 'dialog', 'error']) {
+    const w = welcome();
+    if (blocker === 'scroll') w.window.scrollY = 900;
+    if (blocker === 'hidden') w.document.hidden = true;
+    if (blocker === 'panel') w.window.SUApp.state.openPanel = 'cat';
     if (blocker === 'dialog') w.document.overlay = {};
-    else if (blocker === 'filter') w.window.SUApp.state.openPanel = 'cat';
-    else w.window.SUApp._loadError = true;
-    await w.advance(15000);assert.equal(w.showCalls, 0, blocker);assert.deepEqual(policy.readState([w.local]), { shown:0, dismissed:false });
-    w.document.overlay = null;w.window.SUApp.state.openPanel = null;w.window.SUApp._loadError = false;
-    w.window.SUWelcome.maybeShow();await w.advance(0);
-    assert.equal(w.showCalls, 1, blocker+' resumes immediately after its elapsed delay and competing task finish');
+    if (blocker === 'error') w.window.SUApp._loadError = true;
+    await w.auto();assert.equal(w.showCalls, 0, blocker);
+    w.window.scrollY = 0;w.document.hidden = false;w.window.SUApp.state.openPanel = null;w.document.overlay = null;w.window.SUApp._loadError = false;
+    await w.advance(30000);await w.auto();assert.equal(w.showCalls, 0, blocker+' does not resume');
+    assert.equal(w.timerCount, 0);assert.equal(w.window.SUWelcome.open(), true);
   }
 });
 
-test('the delay starts with the first eligible request rather than elapsed time on a blocked page', async () => {
-  const w = welcome();w.window.SUApp._loadError = true;w.window.SUWelcome.maybeShow();await w.advance(45000);
-  assert.equal(w.showCalls, 0);assert.equal(w.timerCount, 0);assert.equal(w.local.getItem(policy.stateKey), null);
-  w.window.SUApp._loadError = false;w.window.SUWelcome.maybeShow();await w.advance(29999);
-  assert.equal(w.showCalls, 0);await w.advance(1);assert.equal(w.showCalls, 1);
+test('shared-job and auth returns skip automatic intro but preserve manual discovery', async () => {
+  for (const options of [{ search:'?job=123' }, { search:'?code=auth' }, { hash:'#access_token=abc' }]) {
+    const w = welcome(options);await w.auto();assert.equal(w.showCalls, 0);assert.equal(w.window.SUWelcome.open(), true);
+  }
 });
 
+test('manual access works with any account state and no release metadata dependency', () => {
+  const w = welcome({ releaseAvailable:false });
+  Object.defineProperty(w.window, 'SUAuth', { get() { throw new Error('No account access needed'); } });
+  assert.equal(w.window.SUWelcome.open(), true);
+  assert.equal(w.dialog.querySelector('#su-launch-title').textContent, 'Latest Update');
+});
 
-test('drawn arrows remain decorative and clicks on their paths use the surrounding action', async () => {
+test('keyboard can reach the primary action from initial focus and cycle overview and every detail', async () => {
+  const w = welcome();await w.auto();
+  const primary = w.dialog.querySelector('.su-launch-primary');
+  assert.equal(w.dialog.dispatch('keydown', { key:'Tab', shiftKey:true }).defaultPrevented, true);
+  assert.equal(w.document.activeElement, primary);
+  function boundaries() {
+    const items = w.dialog.querySelectorAll('button:not(:disabled),a[href],[tabindex="0"]').filter(el => el.getClientRects().length);
+    const first = items[0], last = items.at(-1);
+    first.focus();assert.equal(w.dialog.dispatch('keydown', { key:'Tab', shiftKey:true }).defaultPrevented, true);assert.equal(w.document.activeElement, last);
+    last.focus();assert.equal(w.dialog.dispatch('keydown', { key:'Tab' }).defaultPrevented, true);assert.equal(w.document.activeElement, first);
+  }
+  boundaries();
+  for (const feature of ['advice', 'themes', 'internships', 'sync']) {
+    w.click('[data-launch-feature="'+feature+'"]');boundaries();
+    const scroll = w.dialog.querySelector('.su-launch-scroll');
+    assert.equal(scroll.getAttribute('role'), 'region');assert.equal(scroll.getAttribute('aria-labelledby'), 'su-launch-detail-title');
+    scroll.focus();assert.notEqual(w.dialog.dispatch('keydown', { key:'PageDown' }).defaultPrevented, true);
+    w.click('[data-launch-back]');assert.equal(scroll.getAttribute('tabindex'), null);boundaries();
+  }
+});
+
+test('focus returns to the current opener after its old board node is replaced', () => {
+  const w = welcome();w.window.SUWelcome.open();w.opener.remove();
+  const replacement = w.document.createElement('button');replacement.setAttribute('data-act', 'openWelcome');w.document.body.appendChild(replacement);
+  w.click('.su-launch-primary');assert.equal(w.document.activeElement, replacement);assert.equal(replacement.lastFocusOptions.preventScroll, true);
+});
+
+test('native dialog API failure does not freeze scrolling or write an acknowledgment', async () => {
+  for (const options of [{ unavailable:true }, { showError:true }]) {
+    const w = welcome(options);await w.auto();await w.auto();
+    assert.equal(w.dialog.open, false);assert.equal(w.document.body.style.overflow, 'auto');assert.equal(policy.acknowledged([w.local]), false);
+    assert.equal(w.showCalls, options.unavailable ? 0 : 1);
+  }
+});
+
+test('overview keeps four notes in the new order, each with Click here, no label arrows or competing footer links', () => {
   const w = welcome();w.window.SUWelcome.open();
-  assert.doesNotMatch(source, /[\u2190-\u21ff\u27a0-\u27bf\ufe0f]/u, 'popup arrows never depend on character or emoji rendering');
-  assert.equal(w.dialog.querySelector('.su-launch-intro').textContent.trim(), 'pick a note to see what’s new');
-  function checkDecorations() {
-    const drawings = w.dialog.querySelectorAll('svg');assert(drawings.length > 0);
-    for (const drawing of drawings) {
-      assert.equal(drawing.getAttribute('aria-hidden'), 'true');
-      assert.equal(drawing.getAttribute('focusable'), 'false');
-      assert.equal(drawing.getAttribute('tabindex'), null);
-      assert(drawing.querySelector('path'));
-    }
+  const cards = w.dialog.querySelectorAll('[data-launch-feature]');
+  assert.deepEqual(cards.map(card => card.getAttribute('data-launch-feature')), ['advice', 'themes', 'internships', 'sync']);
+  for (const card of cards) {
+    assert.equal(card.querySelector('.su-launch-card-label').querySelector('svg'), null);
+    assert.equal(card.querySelector('.su-launch-card-hint').textContent, 'Click here');
+    assert.equal(card.querySelector('.su-launch-preview').getAttribute('aria-hidden'), 'true');
+    assert.equal(card.querySelector('button'), null);
   }
-  checkDecorations();
-  const card = w.dialog.querySelector('[data-launch-feature="themes"]');
-  w.dialog.dispatch('click', { target:card.querySelector('.su-launch-card-label').querySelector('path') });
+  assert.equal(cards[2].querySelector('.su-launch-card-label').textContent, 'Internships');
+  assert.equal(w.dialog.querySelectorAll('a').length, 0);
+  assert.equal(w.dialog.querySelectorAll('button').filter(el => el.getClientRects().length).length, 5);
+  assert.doesNotMatch(w.dialog.textContent, /Suggest Jobs|Portfolio Graded|Version history|Internships are here/);
+  const hint = cards[1].querySelector('.su-launch-card-hint');w.dialog.dispatch('click', { target:hint });
   assert.equal(w.dialog.querySelector('#su-launch-detail-title').textContent, 'Make it feel like you');
-  checkDecorations();
-  const back = w.dialog.querySelector('[data-launch-back]');
-  assert.equal(back.textContent.trim(), 'go back');
-  w.dialog.dispatch('click', { target:back.querySelector('path') });
-  assert.equal(w.document.activeElement.getAttribute('data-launch-feature'), 'themes');
-  const closeAction = w.dialog.querySelector('.su-launch-primary');
-  w.dialog.dispatch('click', { target:closeAction.querySelector('path') });
-  assert.equal(w.dialog.open, false);assert.equal(policy.readState([w.local]).dismissed, true);
 });
 
-test('tracker overview and reverse share three illustrative status cards, with explicit Google sync copy', async () => {
+test('internship post-it uses the current actual theme paper and ink on each opening', () => {
+  const w = welcome();
+  w.window.SUApp.THEMES = { original:{ hiCard:'var(--su-yellow-paper)', hiInk:'#2A2118' }, beauty:{ hiCard:'linear-gradient(160deg,#7E1728,#5A0F1C)', hiInk:'#F3D9B8' } };
+  w.window.SUApp.state.look = 'beauty';w.window.SUWelcome.open();
+  assert.equal(w.dialog.style['--su-launch-intern-paper'], w.window.SUApp.THEMES.beauty.hiCard);
+  assert.equal(w.dialog.style['--su-launch-intern-ink'], '#F3D9B8');
+  w.click('.su-launch-primary');w.window.SUApp.state.look = 'original';w.window.SUWelcome.open();
+  assert.equal(w.dialog.style['--su-launch-intern-paper'], 'var(--su-yellow-paper)');
+  assert.equal(w.dialog.style['--su-launch-intern-ink'], '#2A2118');
+});
+
+test('tracker retains three faithful illustrative status rows and informational Google copy', () => {
   const w = welcome();w.window.SUWelcome.open();
-  function rowsIn(root) {
-    return root.querySelectorAll('.su-launch-tracker-row').map(row => {
-      const status = row.querySelector('.su-launch-tracker-status');
-      assert(status.querySelector('.su-launch-chevron'), 'each status has a drawn dropdown cue');
-      return [row.querySelector('.su-launch-tracker-role').textContent, status.textContent];
-    });
-  }
+  function rows(root) { return root.querySelectorAll('.su-launch-tracker-row').map(row => [row.querySelector('.su-launch-tracker-role').textContent, row.querySelector('.su-launch-tracker-status').textContent]); }
   const expected = [['Social Media Manager', 'Apply'], ['Graphic Designer', 'Interview'], ['Photographer', 'Offer']];
-  const front = w.dialog.querySelector('[data-launch-feature="sync"]');
-  assert.deepEqual(rowsIn(front), expected);
-  assert.equal(front.querySelector('.su-launch-preview').getAttribute('aria-hidden'), 'true');
-  assert.equal(front.querySelector('select'), null, 'preview statuses do not promise editable controls');
-  assert.equal(front.querySelectorAll('button').length, 0, 'the feature card has no nested interactive controls');
-  assert.match(front.textContent, /one less spreadsheet/);
-  w.click('[data-launch-feature="sync"]');
-  const detail = w.dialog.querySelector('.su-launch-detail');
-  assert.deepEqual(rowsIn(detail), expected);
-  assert.match(detail.textContent, /Illustrative preview/);
-  assert.match(detail.textContent, /Applications, interviews, offers\. Keep it all here\. Sign in with Google to pick up on your phone or computer\./);
-  assert.equal(detail.querySelector('select'), null);
-  assert.equal(detail.querySelector('button'), null);
+  assert.deepEqual(rows(w.dialog.querySelector('[data-launch-feature="sync"]')), expected);
+  w.click('[data-launch-feature="sync"]');assert.deepEqual(rows(w.dialog.querySelector('.su-launch-detail')), expected);
+  assert.match(w.dialog.textContent, /Sign in with Google to pick up on your phone or computer/);
+  assert.equal(w.dialog.querySelector('.su-launch-detail').querySelector('a'), null);
+});
+
+test('narrow viewport structure reserves primary action outside the scrolling card region', () => {
+  const w = welcome();w.window.SUWelcome.open();
+  const scroll = w.dialog.querySelector('.su-launch-scroll'), footer = w.dialog.querySelector('.su-launch-footer');
+  assert.equal(footer.parentElement, w.dialog);assert.equal(scroll.querySelector('.su-launch-footer'), null);
+  const css = fs.readFileSync(path.join(__dirname, '../../css/onboarding.css'), 'utf8');
+  assert.match(css, /\.su-launch-scroll\s*\{[^}]*min-height:0;[^}]*overflow:auto/);
+  assert.match(css, /\.su-launch-footer\s*\{[^}]*flex:none/);
+  assert.match(css, /max-height:calc\(100svh - 24px\)/);
+  assert.match(css, /\.su-launch-preview\s*\{\s*min-height:120px/);
+  assert.match(css, /\.su-launch-toast\s*\{[^}]*pointer-events:none/);
+  assert.match(css, /\.su-launch-toast button\s*\{[^}]*pointer-events:auto/);
+  assert.match(css, /\.su-launch-toast button\s*\{[^}]*text-decoration:underline/);
+  // This verifies structural constraints only. Actual 320/390px geometry is native QA.
+});
+
+test('a removed toast or feed-render opener restores the visible Board menu summary', () => {
+  const w = welcome();w.window.SUWelcome.open();w.opener.remove();
+  const summary = w.document.createElement('summary');summary.id = 'su-board-menu-trigger';w.document.body.appendChild(summary);
+  const hiddenLink = w.document.createElement('button');hiddenLink.setAttribute('data-act', 'openWelcome');hiddenLink.hidden = true;w.document.body.appendChild(hiddenLink);
+  w.click('.su-launch-primary');assert.equal(w.document.activeElement, summary);assert.equal(summary.lastFocusOptions.preventScroll, true);
+});
+
+test('slow script loading before the first shell is allowed, but a delayed lock callback cannot interrupt later', async () => {
+  const slow = welcome();await slow.advance(12000);await slow.auto();assert.equal(slow.showCalls, 1);
+  let run;const w = welcome({ locks:{ request(name, options, callback) { run = callback;return Promise.resolve(); } } });
+  w.window.SUWelcome.maybeShow();await w.advance(1500);await run({});
+  assert.equal(w.showCalls, 0);await w.auto();assert.equal(w.showCalls, 0);
 });

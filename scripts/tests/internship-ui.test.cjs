@@ -123,7 +123,7 @@ test('USD amounts keep an explicit currency marker in both the card and detail',
   assert.equal(b.app.jobs[0].pay,'USD 23.75/hour');assert.equal(b.app.jobs[0].payBasis,'hour');
 });
 
-test('internship open notes use the approved student deck, retain their stamp, and stay stable during the visit', () => {
+test('internship open notes use the approved student deck, hide the stamp until closed, and stay stable during the visit', () => {
   const rows = Array.from({ length:12 }, (_, index) => listing({ link:'https://example.com/program/annualized/' + index,
     pay:'$120,000/year (annualized)', payBasis:'annualized_year' }));
   const b = ui(rows);assert.equal(b.cards().length, 12);
@@ -132,7 +132,7 @@ test('internship open notes use the approved student deck, retain their stamp, a
   const copy=[];
   for(const card of noteCards){
     const link=card.getAttribute('data-link');b.card(link).querySelector('[data-act="openNote"]').click();
-    const opened=b.card(link);assert(opened.textContent.includes('Internship'),'the internship stamp remains visible beside its open note');
+    const opened=b.card(link);assert.equal(opened.querySelector('.su-internship-stamp'),null,'the note occupies the stamp area until closed');
     const note=Array.from(b.app.INTERNSHIP_NOTES).find(text=>opened.textContent.includes(text));assert(note,'only the student-specific deck appears');copy.push(note);
     for(const fullTime of b.app.NOTES)assert(!opened.textContent.includes(fullTime),'full-time endorsement text is not reused');
     b.app.render();assert(b.card(link).textContent.includes(note),'ordinary renders do not reshuffle an open note');
@@ -322,7 +322,7 @@ test('every internship paper variant uses matching theme ink and visible saved c
     for(const row of rows)examples[b.helpers.internshipSurface(row)] ||= row;
     const surfaces=[];
     for(const [variant,row] of Object.entries(examples)){
-      const card=b.card(row.link);surfaces.push(card.style.background);
+      let card=b.card(row.link);const envelope=card.querySelector('[data-act="openNote"]');if(envelope){assert.equal(card.querySelector('.su-internship-stamp'),null);envelope.click();b.card(row.link).querySelector('[data-act="closeNote"]').click();b.runTimers(290);card=b.card(row.link);}surfaces.push(card.style.background);
       const ink=variant==='high'?P.hiInk:variant==='mid'&&P.midInk?P.midInk:(P.baseInk||'#3A2A1B');
       assert.equal(card.style.color,ink,look+'/'+variant+' matches the paper ink');
       const action=(look==='mermaid'||(look==='bratt'&&variant==='mid')||(look==='beauty'&&variant!=='high'))?ink:variant==='high'?P.hiApply:variant==='mid'&&P.midApply?P.midApply:(P.baseApply||'var(--su-orange-on-card)');

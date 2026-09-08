@@ -27,10 +27,10 @@
     if(['Brand & Marketing','Growth & CRM','PR & Partnerships','Influencer'].indexOf(c)>=0)return 'marketing';return 'other';
   }
   function starter(jobs,P){var lanes=['marketing','graphic','product','photography','social','copy'],used=new Set(),out=[];
-    function cmp(a,b){var ap=P.salary(a.pay),bp=P.salary(b.pay);return Number(bp.basis==='annual'&&bp.minimum>=100000)-Number(ap.basis==='annual'&&ap.minimum>=100000)||(ap.basis===bp.basis?(bp.minimum||0)-(ap.minimum||0):0)||String(a.link).localeCompare(String(b.link));}
-    lanes.forEach(function(want){var pool=jobs.filter(function(j){return !used.has(j.link)&&lane(j)===want;}).sort(cmp);if(pool[0]){used.add(pool[0].link);out.push(pool[0]);}});
+    lanes.forEach(function(want){var pool=jobs.filter(function(j){return !used.has(j.link)&&lane(j)===want;});if(pool[0]){used.add(pool[0].link);out.push(pool[0]);}});
+    // Keep the existing fresh/varied order within each lane. Pay never buys a top slot.
     // Missing lanes leave room for real remaining roles. Never manufacture a card.
-    return out.concat(jobs.filter(function(j){return !used.has(j.link);}).sort(function(a,b){return String(a.link).localeCompare(String(b.link));}));
+    return out.concat(jobs.filter(function(j){return !used.has(j.link);}));
   }
   function create(root){var App,first=true,started=false,account=null,showHidden=false,form=false,draft=null,undo=null,message='',visitReady=false,recommendations=[],recOpen=false,promptDismissed=false,preferenceResult='',formError='',messageTimer=null;
     function signed(){return !!(root.SUAuth&&root.SUAuth.signedIn()&&(!root.SUAuth.accountCurrent||root.SUAuth.accountCurrent())&&root.SUStore&&root.SUStore.owner());}

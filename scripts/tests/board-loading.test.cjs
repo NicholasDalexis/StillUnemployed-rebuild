@@ -75,13 +75,13 @@ for(const route of ['/jobs.html','/internships.html']) {
     assert.equal(b.app._loading,false);assert.equal(b.app.jobs.length,1);assert.equal(b.grid.querySelector('h1').innerHTML,headingHTML);
     assert.notEqual(b.document.getElementById('su-feed-progress').getAttribute('hidden'),null);
   });
-  test(route+': controls bind once and loading never declares saved links absent or starts an automatic popup',async()=>{
+  test(route+': controls bind once, loading protects saved links, and the intro is attempted before the feed arrives',async()=>{
     const p=pending({saved:{'https://example.com/previous':true}}),b=p.b;let automatic=0;
     b.window.SUWelcome={maybeShow(){automatic++;},open(){}};
-    await b.boot();assert.equal(automatic,0);
+    await b.boot();assert.equal(automatic,1,'the first shell attempts the once-per-announcement intro');
     b.grid.querySelector('[data-act="toggleSavedOnly"]').click();assert.equal(b.app.state.savedOnly,true);
     assert.equal(b.grid.querySelector('.su-unlisted-saved'),null);
-    b.runTimers(600);assert.equal(automatic,0);
+    const attemptsBeforeTimer=automatic;b.runTimers(600);assert.equal(automatic,attemptsBeforeTimer,'no delayed intro timer is scheduled by the loading shell');
     p.finish();await tick();await tick();
     assert(b.grid.querySelector('.note[data-link="https://example.com/previous"]'));assert(automatic>0);
     b.grid.querySelector('[data-act="toggleSavedOnly"]').click();

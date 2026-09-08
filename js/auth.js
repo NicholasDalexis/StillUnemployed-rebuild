@@ -18,11 +18,15 @@
 
   var user = null, session = null, auth, sdk, store = window.SUStore, excludedSession = false;
   var syncState = 'loading', errorCode = '', signingIn = false, signingOut = false, authReady = false, authMessage = '', loadingSdk = false, bootAttempt = 0, sessionGeneration = 0, syncFailed = false;
-  function accountCurrent(){return !!(user&&authReady&&store&&store.owner()===user.uid&&(!store.current||store.current()));}
+  function accountCurrent(){return !!(user&&authReady&&(!store||(store.owner()===user.uid&&(!store.current||store.current())&&(!store.ownershipCurrent||store.ownershipCurrent()))));}
   // Client suppression follows the resolved Firebase user, never a DOM/email
   // preference. The ingestion service independently verifies ID-token claims.
   function measurementExcluded(){return excludedSession;}
-  window.SUAuth = { signedIn:function(){return !!user;}, accountCurrent:accountCurrent, measurementExcluded:measurementExcluded, measurementReady:function(){return authReady&&!signingIn&&!signingOut&&(!user||accountCurrent());}, syncReady:function(){return accountCurrent()&&syncState==='synced';}, syncState:function(){return syncState;}, retrySync:function(){if(user&&syncState==='error'){track('sync_retry');startSync();}}, getToken:function(){return accountCurrent() ? user.getIdToken() : Promise.reject(new Error('Sign in required'));} };
+  // This label describes QA measurement exclusion only. Admin dashboard access
+  // remains a separate server-verified permission; the label grants no access.
+  function qaAdmin(){return !!(authReady&&user&&user.emailVerified===true&&String(user.email||'').toLowerCase()==='nicholasdalexis@gmail.com'&&(!store||!store.ownershipCurrent||store.ownershipCurrent()));}
+  function signIn(trigger){if(user)return;onClick({currentTarget:trigger||null});}
+  window.SUAuth = { signedIn:function(){return !!user;}, signIn:signIn, qaAdmin:qaAdmin, accountCurrent:accountCurrent, measurementExcluded:measurementExcluded, measurementReady:function(){return authReady&&!signingIn&&!signingOut&&(!user||accountCurrent());}, syncReady:function(){return accountCurrent()&&syncState==='synced';}, syncState:function(){return syncState;}, retrySync:function(){if(user&&syncState==='error'){track('sync_retry');startSync();}}, getToken:function(){return accountCurrent() ? user.getIdToken() : Promise.reject(new Error('Sign in required'));} };
   function track(name) { if(window.SUAnalytics&&typeof window.SUAnalytics.emit==='function')window.SUAnalytics.emit(name,{}); }
   function notifyAuth(){var changed=false;try{var owner=user?user.uid:'guest',prior=sessionStorage.getItem('su_analytics_auth_owner');changed=prior!==null&&prior!==owner;sessionStorage.setItem('su_analytics_auth_owner',owner);}catch(e){}if(window.dispatchEvent && typeof CustomEvent !== 'undefined')window.dispatchEvent(new CustomEvent('su:auth-changed',{detail:{signedIn:!!user,accountChanged:changed}}));}
   function loginResult(result){if(result && window.SUAnalytics)window.SUAnalytics.emit('auth_login',{});return result;}
@@ -44,13 +48,19 @@
       var text = user ? (syncState === 'synced' ? 'Saved jobs and tracker synced' : syncState === 'error' ? 'Sync failed. Tap to retry' : 'Syncing saved jobs and tracker') : signingIn ? 'Signing in with Google' : loadingSdk || !authReady && !errorCode ? 'Checking Google sign-in' : 'Sign in with Google';
       if(user&&!store)text='Signed in';
       if (user) text += '. ' + (user.email || user.displayName || 'Signed in');
+      if (user) text = 'Account. ' + text;
+      if (qaAdmin()) text += '. QA admin: your testing is excluded from board analytics';
       if (errorCode) text += '. ' + errorCode;
       if(accountChanging)text='Checking the account selected in another tab';
       button.removeAttribute('title'); button.setAttribute('aria-label', text);
-      button.setAttribute('data-su-help', user ? (syncState==='error' ? 'You’re signed in. Click to retry syncing your jobs.' : 'You’re signed in. Click here to sign out.') : 'Sign in to keep your saved jobs and tracker together.');
+      var help = user ? (syncState==='error' ? 'You’re signed in. Click to retry syncing your jobs.' : 'You’re signed in. Click here to sign out.') : 'Sign in to keep your saved jobs and tracker together.';
+      if (qaAdmin()) help = 'QA admin: your testing is excluded from board analytics. ' + help;
+      button.setAttribute('data-su-help', help);
       button.dataset.state = user ? syncState : (loadingSdk || !authReady && !errorCode ? 'loading' : errorCode ? 'error' : signingIn ? 'signing-in' : 'signed-out');
       var label = button.querySelector('.su-auth-label');
-      if (label) label.textContent = signingOut ? 'Signing out…' : signingIn ? 'Signing in…' : user ? 'Signed In' : loadingSdk || !authReady && !errorCode ? 'Loading…' : !authReady && errorCode ? 'Retry sign-in' : 'Sign In';
+      if (label) label.textContent = signingOut ? 'Signing out…' : signingIn ? 'Signing in…' : user ? 'Account' : loadingSdk || !authReady && !errorCode ? 'Loading…' : !authReady && errorCode ? 'Retry sign-in' : 'Sign in';
+      var qaLabel = button.querySelector('.su-auth-qa');
+      if (qaLabel) qaLabel.hidden = !qaAdmin();
       if(accountChanging){button.dataset.state='loading';if(label)label.textContent='Loading…';}
       button.disabled = accountChanging || loadingSdk || (!authReady && !errorCode) || signingIn || signingOut;
       button.setAttribute('aria-busy', String(accountChanging || loadingSdk || !authReady && !errorCode || signingIn || signingOut));
@@ -82,7 +92,7 @@
       feedbackFocus = null;
     }
     document.querySelectorAll('.su-auth-feedback').forEach(function (feedback) {
-      var message = authMessage || (syncState === 'error' ? (user ? 'Sync paused. Your changes are on this device. Tap Google to retry.' : 'Sign-in is unavailable. Tap Google to retry.') : '');
+      var message = authMessage || (syncState === 'error' ? (user ? 'Sync paused. Your changes are on this device. Tap Account to retry.' : 'Sign-in is unavailable. Tap Sign in to retry.') : '');
       feedback.textContent = message; feedback.hidden = !message;
     });
   }
@@ -144,13 +154,13 @@
       if (slot.querySelector('.su-auth-button')) return;
       var button = document.createElement('button');
       button.type = 'button'; button.className = 'su-auth-button';
-    var g = '<svg width="16" height="16" viewBox="0 0 18 18" style="flex:none;">' +
+    var g = '<svg width="16" height="16" viewBox="0 0 18 18" style="flex:none;" aria-hidden="true" focusable="false">' +
       '<path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62z"/>' +
       '<path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.81.54-1.84.86-3.05.86-2.34 0-4.33-1.58-5.04-3.71H.96v2.33A9 9 0 0 0 9 18z"/>' +
       '<path fill="#FBBC05" d="M3.96 10.71a5.41 5.41 0 0 1 0-3.42V4.96H.96a9 9 0 0 0 0 8.08l3-2.33z"/>' +
       '<path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.96l3 2.33C4.67 5.16 6.66 3.58 9 3.58z"/></svg>';
 
-      button.innerHTML = g + '<span class="su-auth-label" aria-hidden="true"></span>'; button.addEventListener('click', onClick); slot.appendChild(button);
+      button.innerHTML = g + '<span class="su-auth-copy" aria-hidden="true"><span class="su-auth-label"></span><span class="su-auth-qa" hidden>QA admin</span></span>'; button.addEventListener('click', onClick); slot.appendChild(button);
       var feedback = document.createElement('span'); feedback.className = 'su-auth-feedback'; feedback.setAttribute('role', 'status'); feedback.setAttribute('aria-live', 'polite'); feedback.hidden = true; slot.appendChild(feedback);
     });
     render();

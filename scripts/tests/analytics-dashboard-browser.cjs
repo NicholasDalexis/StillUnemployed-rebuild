@@ -79,6 +79,9 @@ const server=http.createServer((req,res)=> {
     status=503;await page.locator('#refresh').click();await page.waitForSelector('#service-state[data-state="error"]');
     check('service error clears previous private data',await page.locator('#dashboard-data').isHidden() && await page.locator('.metric').count()===0);
     await page.screenshot({path:path.join(output,'service-unavailable.png'),fullPage:true});
+    payload={error:'Analytics is not configured'};await page.locator('#refresh').click();await page.waitForSelector('#service-state[data-state="unconfigured"]');
+    check('configuration gap is distinct from a connection or permission failure',(await page.locator('#state-detail').textContent()).includes('dashboard access and live numbers cannot be checked'));
+    check('configuration gap never displays missing counts as zeros',await page.locator('#dashboard-data').isHidden() && await page.locator('.metric').count()===0);
     status=403;await page.locator('#refresh').click();await page.waitForSelector('#service-state[data-state="denied"]');
     check('unauthorized account shows permission denial',await page.locator('#dashboard-data').isHidden());
     status=200;payload=dashboard.fixture(30);await page.locator('#refresh').click();await page.waitForSelector('#dashboard-data:not([hidden])');

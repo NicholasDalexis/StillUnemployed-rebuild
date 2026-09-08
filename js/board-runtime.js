@@ -14,7 +14,7 @@
     pending[key]=Promise.race([work,timeout]).finally(function(){root.clearTimeout(timer);delete pending[key];});
     return pending[key];
   }
-  function owner(){try{return root.localStorage.getItem('su_sync_owner')||'guest';}catch(e){return null;}}
+  function owner(){try{var value=root.localStorage.getItem('su_sync_owner');return !value||value==='null'?'guest':value;}catch(e){return null;}}
   // Device-local reminder cadence, isolated to the current account or guest.
   // Only called after a new tracker record has been successfully saved.
   function recordApplication(){
@@ -30,6 +30,7 @@
     }catch(e){return false;}
   }
   var observedOwner=owner();
+  function applicationCount(){try{var value=JSON.parse(root.localStorage.getItem('su_tracker_hint_v1')||'null');return value&&value.owner===owner()&&Number.isSafeInteger(value.count)&&value.count>=0?value.count:0;}catch(e){return 0;}}
   function checkOwner(){var next=owner();if(next===observedOwner)return false;observedOwner=next;clear();return true;}
   function read(section){
     try{var value=JSON.parse(root.sessionStorage.getItem('su_view_'+section)||'null');
@@ -42,5 +43,5 @@
     try{var o=owner();if(o===null||o!==observedOwner)return;var out={};keys.forEach(function(k){out[k]=state[k];});root.sessionStorage.setItem('su_view_'+section,JSON.stringify({v:1,owner:o,at:Date.now(),state:out,y:root.scrollY||0}));}catch(e){}
   }
   function clear(){try{root.sessionStorage.removeItem('su_view_jobs');root.sessionStorage.removeItem('su_view_internships');}catch(e){}}
-  return {owner:owner,recordApplication:recordApplication,request:request,read:read,save:save,clear:clear,checkOwner:checkOwner,emit:emit};
+  return {owner:owner,recordApplication:recordApplication,applicationCount:applicationCount,request:request,read:read,save:save,clear:clear,checkOwner:checkOwner,emit:emit};
 });

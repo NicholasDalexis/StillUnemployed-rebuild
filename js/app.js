@@ -550,18 +550,20 @@
   // The problem is nobody KNOWS that. So the first time someone taps it, we say so once, with a
   // post-it they can tap straight through to /tracker.
   //
-  // ONCE, EVER. Not once per session — once per person. Nic was explicit: "I don't want to do that
-  // every time." A nudge that repeats stops being a nudge and becomes nagging, and this fires at
-  // the exact moment someone is feeling good about applying. Burn that moment once, well.
-  // The flag lives in localStorage; clearing site data resets it, which is fine.
+  // The first and every tenth newly saved application gets a small Tracker shortcut.
+  // The separate sign-in reminder is guest-only after the third confirmation.
+  // Both receipts are device-local; identity switches do not borrow another count.
   function suTrackerNudge() {
     var runtime=window.SUBoardRuntime;
-    if (!runtime || !runtime.recordApplication()) return;
+    if (!runtime) return;
+    var showTracker=runtime.recordApplication();
+    if(window.SUSigninReminder)window.SUSigninReminder.afterApplication();
+    if(!showTracker)return;
     var identity=runtime.owner();
     setTimeout(function () {
       if (identity !== runtime.owner() || document.getElementById('su-tracker-nudge')) return;
       var wrap=document.createElement('div');wrap.id='su-tracker-nudge';wrap.className='su-tracker-nudge';
-      wrap.innerHTML='<a href="tracker.html">View jobs you applied to <svg width="24" height="14" viewBox="0 0 28 14" fill="none" aria-hidden="true"><path d="M1 7 Q12 1 25 7 M19 2 L26 7 L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a><button type="button" aria-label="Dismiss tracker reminder">×</button>';
+      wrap.innerHTML='<a href="tracker.html"><span>Check applied jobs</span> <svg width="24" height="14" viewBox="0 0 28 14" fill="none" aria-hidden="true"><path d="M1 7 Q12 1 25 7 M19 2 L26 7 L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="su-tracker-sticky">Tracker</span></a><button type="button" aria-label="Dismiss tracker reminder">×</button>';
       var timer;
       function hide(){clearTimeout(timer);if(wrap.parentNode)wrap.parentNode.removeChild(wrap);window.removeEventListener('su:auth-changed',hide);window.removeEventListener('storage',ownerChanged);}
       function ownerChanged(){if(identity!==runtime.owner())hide();}
@@ -1534,8 +1536,16 @@
       }
       else if(!INTERNSHIPS && window.SUPersonalization && window.SUAnalytics) {
         var profileGeneration=window.SUAnalytics.generation();
-        if(this._profileGeneration!==profileGeneration && (!this._feedInteracted || this._profileGeneration===undefined || this._profileGeneration===-1)){
-          this._personalOrder=window.SUDiscovery ? window.SUDiscovery.order(this.jobs,window.SUPersonalization,window.SUAnalytics.profile()) : window.SUPersonalization.rank(this.jobs,window.SUAnalytics.profile());
+        var catalogChanged=this._orderCatalog!==this.jobs;
+        if(catalogChanged || (this._profileGeneration!==profileGeneration && (!this._feedInteracted || this._profileGeneration===undefined || this._profileGeneration===-1))){
+          var nextOrder=window.SUDiscovery ? window.SUDiscovery.order(this.jobs,window.SUPersonalization,window.SUAnalytics.profile()) : window.SUPersonalization.rank(this.jobs,window.SUAnalytics.profile());
+          if(catalogChanged && this._feedInteracted && this._personalOrder && this._personalOrder.length){
+            // Refresh job objects without moving surviving cards after browsing starts.
+            var previous=this._personalOrder.map(function(job){return job.link;});
+            nextOrder.sort(function(a,b){var ai=previous.indexOf(a.link),bi=previous.indexOf(b.link);return (ai<0?Infinity:ai)-(bi<0?Infinity:bi)||0;});
+          }
+          this._personalOrder=nextOrder;
+          this._orderCatalog=this.jobs;
           this._profileGeneration=profileGeneration;
         }
         var order=this._personalOrder||this.jobs;
@@ -1744,8 +1754,8 @@
         var showEnvelope = hasNote && !noteState;
         var noteOpen = hasNote && (noteState === 'open' || noteState === 'closing');
         var noteAnim = noteState === 'closing' ? 'noteFold .3s ease forwards' : 'noteUnfold .34s cubic-bezier(.2,.9,.3,1.25) both';
-        var showVerified = !j.savedUnavailable && (!!j.internship || !hasNote || noteState === 'done');
-        var stampClass = j.internship ? 'su-internship-stamp' : (hasNote && noteState === 'done') ? 'stampfade' : '';
+        var showVerified = !j.savedUnavailable && (!hasNote || noteState === 'done');
+        var stampClass = (j.internship ? 'su-internship-stamp ' : '') + ((hasNote && noteState === 'done') ? 'stampfade' : '');
         var noteRot = (k % 2 === 0 ? 4 : -4);
         var personalNote = noteFor[k] || null;
 
@@ -1810,7 +1820,7 @@
         '</div>';
 
         // company + role
-        html += '<div style="display: flex; align-items: flex-start; gap: 10px; padding-right: 30px;">' +
+        html += '<div style="display: flex; align-items: flex-start; gap: 10px; padding-right: 48px;">' +
             '<div class="card-co" title="' + esc(j.co) + '" style="font-family: \'Archivo Black\', \'Archivo\', sans-serif; font-weight: 900; font-size: 23px; line-height: 1.13; letter-spacing: -0.4px;"><span style="">' + esc(j.co) + '</span></div>' +
           '</div>' +
           '<div class="card-role" title="' + esc(j.role) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16.5px; margin-top: 9px; line-height: 1.3;">' + esc(j.role) + '</div>' +
@@ -1983,7 +1993,7 @@
       // category panel
       if (this.state.openPanel === 'cat') {
         out += '<div data-su-panel="cat" style="position: absolute; right: 92px; top: calc(100% + 12px); width: 268px; background: #FBF6E9; border: 1.5px dashed #CDB88C; border-radius: 6px; box-shadow: 4px 8px 22px -8px rgba(44,33,24,0.4); padding: 10px; display: flex; flex-direction: column; gap: 2px; transform: rotate(-0.8deg);">' +
-          '<div style="font-family: \'Indie Flower\', cursive; font-size: 16px; color: #A8825F; padding: 2px 6px 6px;">pick a lane ↓</div>' +
+          '<div style="font-family: \'Indie Flower\', cursive; font-size: 16px; color: #6F5E45; padding: 2px 6px 6px;">pick a lane ↓</div>' +
           catRowsHtml +
         '</div>';
       }
@@ -2018,7 +2028,7 @@
         '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + P.payHi + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$100K+</span></div>' +
       '</div>';
 
-      out += '<div class="su-board-utilities"><span class="su-results-count" aria-live="polite">' + (this._loading ? '' : esc(showingLabel)) + '</span>' +
+      out += '<span class="su-results-count" aria-live="polite">' + (this._loading ? '' : esc(showingLabel)) + '</span><div class="su-board-utilities">' +
         '<details id="su-board-menu" class="su-board-menu"><summary id="su-board-menu-trigger">Board menu <svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>' +
           '<div class="su-board-menu-sheet">' + (window.SUDiscovery && window.SUDiscovery.toolsHTML ? window.SUDiscovery.toolsHTML(esc) : '') +
             '<a href="./suggest.html">Suggest jobs</a><button type="button" data-act="openWelcome">What’s new</button><button type="button" data-act="openModal">About Nic</button>' +
@@ -2161,15 +2171,15 @@
 
       // About modal
       if (this.state.modalOpen) {
-        out += '<div data-act="closeModal" style="position: fixed; inset: 0; z-index: 200; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
-          '<div data-act="stop" style="margin: auto;width: 588px; max-width: 100%; background: #FCFAF3; border-radius: 5px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.8deg); font-family: \'Archivo\', sans-serif;">' +
+        out += '<div class="su-founder-overlay" data-act="closeModal" style="position: fixed; inset: 0; z-index: 200; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
+          '<div class="su-founder-note" data-act="stop" style="margin: auto;width: 588px; max-width: 100%; background: #FCFAF3; border-radius: 5px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.8deg); font-family: \'Archivo\', sans-serif;">' +
             '<div style="position: absolute; top: -13px; left: 66px; width: 122px; height: 30px; background: rgba(228,202,128,0.72); transform: rotate(-4deg); box-shadow: 0 2px 5px rgba(44,33,24,0.14); z-index: 5;"></div>' +
             '<div style="position: absolute; top: -12px; right: 62px; width: 122px; height: 30px; background: rgba(228,202,128,0.72); transform: rotate(3.5deg); box-shadow: 0 2px 5px rgba(44,33,24,0.14); z-index: 5;"></div>' +
             '<div data-act="closeModal" style="position: absolute; top: 20px; right: 20px; width: 38px; height: 38px; border-radius: 50%; background: rgba(252,250,243,0.94); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 8; box-shadow: 0 2px 8px rgba(44,33,24,0.2);">' +
               '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.2" stroke-linecap="round"></path></svg>' +
             '</div>' +
-            '<div style="padding: 16px 16px 0;">' +
-              '<div style="position: relative; height: 244px; overflow: hidden; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(44,33,24,0.06);">' +
+            '<div class="su-founder-image-wrap" style="padding: 16px 16px 0;">' +
+              '<div class="su-founder-image" style="position: relative; height: 244px; overflow: hidden; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(44,33,24,0.06);">' +
                 '<img src="assets/home-founder-nic.jpg" alt="Nic, the founder, on SiriusXM" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; filter: saturate(1.04) brightness(1.02);">' +
                 '<div style="position: absolute; bottom: 14px; left: 14px; display: inline-flex; align-items: center; gap: 6px; border: 2.6px solid #FFFFFF; color: #FFFFFF; border-radius: 5px; padding: 5px 10px; font-family: \'Archivo\', sans-serif; font-weight: 900; font-size: 11.5px; letter-spacing: 0.14em; transform: rotate(-3deg); box-shadow: 0 2px 10px rgba(0,0,0,0.28);">' +
                   '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.4"></circle><path d="M8.3 12.2l2.4 2.4 4.9-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
@@ -2177,15 +2187,15 @@
                 '</div>' +
               '</div>' +
             '</div>' +
-            '<div style="padding: 22px 42px 40px;">' +
-              '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 23px; color: #D8502E; transform: rotate(-1.5deg); display: block;">hey stranger,</div>' +
+            '<div class="su-founder-copy" style="padding: 22px 42px 40px;">' +
+              '<div class="su-founder-hello" style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 23px; color: #D8502E; transform: rotate(-1.5deg); display: block;">hey stranger,</div>' +
               '<div style="position: relative; display: block; margin-top: 4px;">' +
-                '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 32px; line-height: 1.06; letter-spacing: -0.02em; color: #2C2118; width: 300px;">Hey, I\'m Nic. I built this.</div>' +
+                '<div class="su-founder-title" style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 32px; line-height: 1.06; letter-spacing: -0.02em; color: #2C2118; width: 300px;">Hey, I\'m Nic. I built this.</div>' +
                 '<svg width="220" height="12" viewBox="0 0 220 12" fill="none" style="position: absolute; left: 4px; bottom: -8px;"><path d="M3 7 C 55 2, 120 2, 217 6" stroke="#F2C231" stroke-width="4" stroke-linecap="round"></path></svg>' +
               '</div>' +
-              '<div style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 18px;">I sent <strong style="font-weight: 800; color: #2C2118;">1,500 applications</strong> and got ghosted more times than I can count. Seven months later, <strong style="font-weight: 800; color: #2C2118;">Instagram</strong> said yes. <strong style="font-weight: 800; color: #2C2118;">StillUnemployed</strong> is the board I wish I\'d had. Find roles with salary information, save the ones that fit and keep your applications together.</div>' +
-              '<div style="font-size: 13px; font-weight: 600; color: #6f6253; letter-spacing: 0.01em; margin-top: 18px;">Content Specialist at Instagram · Class of 2025</div>' +
-              '<div style="display: flex; align-items: center; gap: 16px; margin-top: 22px; flex-wrap: wrap;">' +
+              '<div class="su-founder-bio" style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 18px;">I sent <strong style="font-weight: 800; color: #2C2118;">1,500 applications</strong> and got ghosted more times than I can count. Seven months later, <strong style="font-weight: 800; color: #2C2118;">Instagram</strong> said yes. <strong style="font-weight: 800; color: #2C2118;">StillUnemployed</strong> is the board I wish I\'d had. Find roles with salary information, save the ones that fit and keep your applications together.</div>' +
+              '<div class="su-founder-credit" style="font-size: 13px; font-weight: 600; color: #6f6253; letter-spacing: 0.01em; margin-top: 18px;">Content Specialist at Instagram · Class of 2025</div>' +
+              '<div class="su-founder-actions" style="display: flex; align-items: center; gap: 16px; margin-top: 22px; flex-wrap: wrap;">' +
                 '<a href="https://NicholasAlexis.com" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 11px; background: #5C4033; color: #F4EEE2; font-size: 16px; font-weight: 700; padding: 15px 26px; border-radius: 12px; cursor: pointer; box-shadow: 0 10px 24px rgba(44,33,24,0.22); text-decoration: none; transform: rotate(-1deg); font-family: \'Archivo\', sans-serif;">View My Portfolio' +
                   '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#F4EEE2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
                 '</a>' +
@@ -2415,7 +2425,7 @@
         if (previousKey === dialogKey && previousFocus && previousFocus.act && previousFocus.act !== 'stop') restoreIntent(previousFocus);
         if (!dialog.contains(document.activeElement)) dialog.focus({ preventScroll:true });
       } else if (previousDialog) { restoreIntent(this._dialogReturn); this._dialogReturn = null; }
-      if (!this._loading && !dialog && window.SUWelcome) window.SUWelcome.maybeShow();
+      if (!dialog && window.SUWelcome) window.SUWelcome.maybeShow();
     },
 
     closeBoardPanels: function () {
@@ -3039,6 +3049,8 @@
     return feedRequest;
   }
   function boot(){
+    // A Google sign-in return resumes its existing question before any introduction.
+    App.restoreFeedbackRedirect();
     initialView=restoreView(window.SUBoardRuntime,true);
     App._loading=true;App.internships=INTERNSHIPS;App.state.saved=loadSaved();App.bindEvents();App.render();
     document.addEventListener('pointerdown',function(){App._feedInteracted=true;},{once:true});
@@ -3053,12 +3065,13 @@
     document.addEventListener('visibilitychange',recheck);
   }
 
+  // Available to the first-shell welcome before any feed request resolves.
+  window.SUApp = App;
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
   } else {
     boot();
   }
 
-  // expose for debugging / console checks
-  window.SUApp = App;
 })();

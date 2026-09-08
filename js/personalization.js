@@ -51,8 +51,8 @@
     });
     return {fields:fields,roles:roles};
   }
-  // Deficit interleave preserves proportional interests, including ties. Salary
-  // sorts within a role and pay basis; hourly is never annualized or compared to annual.
+  // Deficit interleave preserves proportional interests, including ties, and
+  // the varied within-role order. Pay does not determine relevance.
   function interleave(groups, weights) {
     var keys=Object.keys(groups), emitted={}, out=[];
     keys.forEach(function(k){emitted[k]=0;});
@@ -75,11 +75,8 @@
     Object.keys(fields).forEach(function(field){
       var roleWeights={};
       Object.keys(fields[field]).forEach(function(role){
-        var list=fields[field][role], bases={};
-        list.forEach(function(job){var basis=salary(job.pay).basis;(bases[basis]||(bases[basis]=[])).push(job);});
-        Object.keys(bases).forEach(function(basis){bases[basis].sort(function(a,b){return (salary(b.pay).minimum||0)-(salary(a.pay).minimum||0);});});
-        // Keep pay-basis slots in their original order, sorting only comparable values.
-        fields[field][role]=list.map(function(job){return bases[salary(job.pay).basis].shift();});
+        // Interest relevance affects fields and roles; preserve variety within each.
+        // A higher salary is not a stronger match for an early-career visitor.
         roleWeights[role]=p.roles[field+'|'+role]||0.1;
       });
       fieldQueues[field]=interleave(fields[field],roleWeights);

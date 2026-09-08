@@ -162,7 +162,7 @@ test('state control events update effective results, full-name chip and compact 
   assert.equal(b.app.state.st,'all'); assert.equal(b.grid.querySelector('.su-results-count').textContent,'2 jobs');
 });
 
-test('real discovery actions stay in Board menu beside the count, separate from theme and Saved controls', () => {
+test('real discovery actions stay in Board menu below the far-right count, separate from theme and Saved controls', () => {
   for (const signedIn of [false,true]) {
     const b = ui(), root = b.window;
     root.document=b.document; root.localStorage=b.localStorage;
@@ -171,7 +171,7 @@ test('real discovery actions stay in Board menu beside the count, separate from 
     root.SUDiscovery=Discovery.create(root); b.init();
     const menu=b.document.getElementById('su-board-menu'); assert(menu);
     assert.equal(menu.tagName,'DETAILS'); assert.equal(menu.getAttribute('open'),null);
-    const count=b.grid.querySelector('.su-results-count'); assert.equal(menu.parentElement,count.parentElement);
+    const count=b.grid.querySelector('.su-results-count'); assert.equal(menu.parentElement.parentElement,count.parentElement);assert(count.parentElement.classList.contains('su-board-meta'));
     assert(menu.parentElement.classList.contains('su-board-utilities'));
     const actions=menu.querySelectorAll('a,button'); assert.equal(actions.length,signedIn?5:4);
     assert(menu.querySelector('[data-discovery="hidden"]')); assert(menu.querySelector('a[href="./suggest.html"]')); assert(menu.querySelector('[data-act="openWelcome"]'));

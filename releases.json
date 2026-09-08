@@ -1,7 +1,27 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.3.6",
+  "currentVersion": "2.3.7",
   "releases": [
+    {
+      "version": "2.3.7",
+      "date": "2026-09-07",
+      "title": "Clearer sign-in and a calmer first visit",
+      "changes": [
+        "Show a compact, theme-aware Latest Update at the initial board shell, once per deliberate announcement with browser acknowledgment; preserve OAuth return tasks and manual-reopen scroll. Add a five-second version welcome note.",
+        "Label Google sign-in on mobile and offer a one-time reminder after three newly saved guest applications. Preserve verified QA owner exclusions and surface analytics service configuration failures accurately.",
+        "Replace the application nudge with a Tracker sticky note, enlarge mobile bookmarks, compact About Nic, prevent internship stamp overlap and align counts away from doodles.",
+        "Remove salary preference from discovery ordering, preserve ordering after feed refresh, update Privacy and Terms, and correct small-text contrast across board and Tracker surfaces. Sound effects remain deferred outside the website."
+      ],
+      "public": {
+        "title": "A clearer board, from the first visit",
+        "changes": [
+          "Sign-in is easier to find, with a reminder to keep your applications together.",
+          "Larger save buttons, a smaller About note and clearer internship cards make phone browsing easier.",
+          "The latest updates appear before you start browsing and stay available in Board menu.",
+          "Higher pay no longer decides which roles appear first."
+        ]
+      }
+    },
     {
       "version": "2.3.6",
       "date": "2026-09-07",
@@ -319,7 +339,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "89593c76dcef0c502221c8f9fb496fc2312797867941563357456bd5e2cd05e7",
-    "fileCount": 146
+    "digest": "2abd09478d39e3f3ae8f1086c3a44bba35fa270c96e52a9b8ecb500ea4616937",
+    "fileCount": 147
   }
 }

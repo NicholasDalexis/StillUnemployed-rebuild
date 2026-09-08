@@ -161,6 +161,11 @@
         if (serial !== request || !signedIn()) return;
         if (response.status === 401) throw new Error('unauthorized');
         if (response.status === 403) throw new Error('forbidden');
+        if (response.status === 503) {
+          var failure = await response.json().catch(function () { return null; });
+          if (serial !== request || !signedIn()) return;
+          if (failure && failure.error === 'Analytics is not configured') throw new Error('unconfigured');
+        }
         if (!response.ok) throw new Error('unavailable');
         var raw = await response.json(); if (serial !== request || !signedIn()) return;
         var next = normalize(raw); if (next.windowDays !== Number(days)) throw new Error('invalid-window');
@@ -170,6 +175,7 @@
         clear();
         if (error.message === 'forbidden') state('denied', 'This account does not have dashboard access.', 'Sign in with an authorized owner account. Your job-board account still works normally.');
         else if (error.message === 'unauthorized') state('signed-out', 'Your sign-in needs refreshing.', 'Sign in again, then choose Refresh. No analytics are displayed.');
+        else if (error.message === 'unconfigured') state('unconfigured', 'The analytics notebook still needs setup.', 'Google sign-in is working. The private analytics service is not configured yet, so dashboard access and live numbers cannot be checked. Your saved jobs and tracker are separate.');
         else state('error', 'Analytics are unavailable right now.', 'The service could not return a usable response. Check your connection and choose Refresh. No missing data has been replaced with zeros.');
       } finally { win.clearTimeout(timer); if (serial === request) { controller = null; el('refresh').disabled = false; } }
     }

@@ -271,7 +271,7 @@ test('failed SDK loading offers a real retry and never labels an unresolved acco
  assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Retry sign-in');assert.equal(ui.nav().disabled,false);
  assert.equal(ui.auth.signedIn(),false);assert.match(ui.nav().closest('.su-account-slot').querySelector('.su-auth-feedback').textContent,/could not load/);
  options.sdkFailure=false;ui.nav().click();assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Loading…');assert.equal(ui.nav().disabled,true);
- await tick();await tick();assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Sign In');assert.equal(ui.calls.initializations,1);
+ await tick();await tick();assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Sign in');assert.equal(ui.calls.initializations,1);
 });
 
 test('bootstrap timeout unlocks retry and an obsolete SDK load cannot initialize a second session',async()=>{
@@ -279,7 +279,7 @@ test('bootstrap timeout unlocks retry and an obsolete SDK load cannot initialize
  assert.equal(ui.nav().disabled,true);ui.bootTimeout();
  assert.equal(ui.nav().disabled,false);assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Retry sign-in');
  ui.nav().click();ui.releaseSdk();await tick();await tick();
- assert.equal(ui.calls.initializations,1);assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Sign In');
+ assert.equal(ui.calls.initializations,1);assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Sign in');
 });
 
 test('late popup rejection cannot replace a newly authenticated account with an error',async()=>{
@@ -297,7 +297,7 @@ test('sign-out remains pending until Firebase confirms it and reports failure wi
  assert.match(ui.nav().closest('.su-account-slot').querySelector('.su-auth-feedback').textContent,/still signed in/);
  assert.equal(ui.calls.events.filter(e=>e.name==='signout_error').length,1);
  ui.nav().click();await tick();ui.finishSignout();await tick();
- assert.equal(ui.auth.signedIn(),false);assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Sign In');
+ assert.equal(ui.auth.signedIn(),false);assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Sign in');
  assert.equal(ui.calls.events.filter(e=>e.name==='signout_complete').length,1);
  assert(!ui.calls.events.some(e=>e.name==='auth_logout'));assert(ui.calls.events.every(e=>Object.keys(e.payload).length===0));
 });
@@ -325,4 +325,16 @@ test('cancelling a retry clears the earlier sign-in error without claiming succe
  options.popupError='auth/popup-closed-by-user';ui.google().click();assert.equal(ui.auth.syncState(),'signing-in');await tick();
  assert.equal(ui.auth.syncState(),'signed-out');assert.equal(ui.auth.signedIn(),false);assert.equal(ui.slot().querySelector('.su-auth-feedback').hidden,true);
  assert.equal(ui.calls.events.filter(e=>e.name==='signin_start').length,2);assert.equal(ui.calls.events.filter(e=>e.name==='signin_cancel').length,1);
+});
+
+
+test('public signIn action starts the existing popup once and never signs out an account',async()=>{
+ const ui=await feedbackUI({confirm:true});const trigger=ui.google();trigger.focus();
+ ui.auth.signIn(trigger);ui.auth.signIn(trigger);
+ assert.equal(ui.calls.popups,1);assert.equal(trigger.querySelector('.su-auth-label').textContent,'Signing in…');assert.equal(trigger.disabled,true);
+ ui.failPopup('auth/popup-closed-by-user');await tick();await tick();
+ assert.equal(ui.auth.signedIn(),false);assert.equal(trigger.disabled,false);assert.equal(trigger.querySelector('.su-auth-label').textContent,'Sign in');
+ ui.signIn({uid:'qa',email:'NicholasdAlexis@gmail.com',emailVerified:true});
+ assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Account');assert.equal(ui.nav().querySelector('.su-auth-qa').hidden,false);
+ ui.auth.signIn(ui.nav());await tick();assert.equal(ui.calls.popups,1);assert.equal(ui.calls.signouts,0);assert.equal(ui.calls.confirms,0);
 });

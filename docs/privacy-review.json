@@ -1,19 +1,21 @@
 {
-  "version": "2.3.6",
+  "version": "2.3.7",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-08T02:48:42.963868+00:00",
+  "reviewedAt": "2026-09-08T03:49:47.647Z",
   "reviewer": "Codex/Astra root and independent catalog reviewer",
-  "sourceDigest": "89593c76dcef0c502221c8f9fb496fc2312797867941563357456bd5e2cd05e7",
-  "sourceFileCount": 146,
-  "privacyChanged": false,
-  "termsChanged": false,
-  "scope": "2.3.6: closed Board menu stays below All Roles and Filters; open disclosure keeps its existing layer. CSS stacking correction only; no event, data, provider, storage, account, consent or legal behavior changed.",
+  "sourceDigest": "2abd09478d39e3f3ae8f1086c3a44bba35fa270c96e52a9b8ecb500ea4616937",
+  "sourceFileCount": 147,
+  "privacyChanged": true,
+  "termsChanged": true,
+  "scope": "2.3.7: immediate deliberate-announcement browser acknowledgment, nonmodal one-time reminder after three newly saved guest applications, visible sign-in/QA owner labels, safer sign-in invocation, salary-neutral ordering with feed-refresh coherence, mobile UI and contrast corrections. No audio ships.",
   "checks": {
-    "targetedTests": "85/85 passed, including four new CSS stacking regressions that fail on prior 2.3.5 source.",
-    "native": "WebKit at390px Internships and320px Jobs: Filters X hit-test passes, All Roles covers closed menu summary, outside click dismisses and reopening Board menu restores layer100; no horizontal overflow.",
-    "fullSuite": "695/695 final tests passed; zero failures, skipped or cancelled."
+    "fullSuite": "713/713 tests pass; zero failures, cancelled or skipped.",
+    "independentCode": "46/46 focused onboarding, code-review and reminder checks pass.",
+    "independentPrivacy": "78/78 account, service, runtime and publication checks pass. No new collection, provider or authorization grant.",
+    "renderedUI": "72 cases: eight themes across Jobs, Internships and Tracker at 320, 390 and 1440 pixels. Category hint and Tracker small-text contrast corrections included; final receipt in private QA folder.",
+    "native": "Actual WebKit initial-shell intro, acknowledgment, mobile founder fit at measured 325x703 CSS viewport, shorter-screen scroll fallback; native hosted readback remains a deployment check."
   },
-  "baselineReview": "docs/privacy-reviews/2.3.5.json",
+  "baselineReview": "docs/privacy-reviews/2.3.6.json",
   "openItems": [
     "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
     "Function-scoped Firebase and Netlify configuration and actual owner UID",
@@ -29,5 +31,5 @@
     "Search Console domain property Not verified; Bing has no existing IAB session",
     "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive"
   ],
-  "policySummary": "Privacy and Terms reviewed, no wording change needed for CSS-only layering correction. Previous operational limits stay open. Engineering review, not legal certification."
+  "policySummary": "Privacy and Terms now explain browser announcement/reminder receipts and remove salary-based ordering language. Existing counters count newly saved records, not lifetime unique applications. Earlier operational limits remain open. Engineering review, not legal certification."
 }
