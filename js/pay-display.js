@@ -40,7 +40,7 @@
     if (!Number.isFinite(low) || !Number.isFinite(high) || low < 0 || high < low) return null;
     var explicitBasis = basisOf(value), basis = explicitBasis || fallbackBasis || '';
     if (/\btime unit not listed\b/i.test(value)) basis = '';
-    if (!prefix && /\bminimum\b|\+$/i.test(rest.trim())) prefix = '+';
+    if (!prefix && (/\bminimum\b|\+$/i.test(rest.trim()) || /^\s*\+(?=\s*(?:\/|per\b|hourly\b|weekly\b|monthly\b|annually\b|$))/i.test(rest))) prefix = '+';
     if (!prefix && /\bestimat(?:ed|e)|\bapprox(?:imate(?:ly)?)?\b/i.test(rest)) prefix = '~';
     return { low:low, high:high, currency:currencies[0] || '', basis:basis, prefix:prefix, k:firstK || secondK, range:hasRange };
   }
@@ -52,7 +52,7 @@
     function amount(value) { return useK ? String(Math.round(value / 1000)) + 'K' : whole(value); }
     var low = amount(parsed.low), high = amount(parsed.high);
     var suffix = { hour:'/hour', week:'/week', month:'/month', program:'/program', annualized_year:'/year', year:'/year' }[parsed.basis] || '';
-    return (parsed.prefix === '+' ? '' : parsed.prefix) + parsed.currency + low + (low === high ? '' : '–' + high) + (parsed.prefix === '+' ? '+' : '') + suffix;
+    return (parsed.prefix === '+' ? '' : parsed.prefix) + parsed.currency + low + (low === high ? '' : '–' + high) + suffix + (parsed.prefix === '+' ? '+' : '');
   }
   function compact(pay, options) {
     options = options || {};

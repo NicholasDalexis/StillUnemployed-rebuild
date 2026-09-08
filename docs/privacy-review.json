@@ -1,21 +1,21 @@
 {
-  "version": "2.4.0",
+  "version": "2.4.1",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-08T05:11:33.207962+00:00",
+  "reviewedAt": "2026-09-08T22:13:03.584319+00:00",
   "reviewer": "Codex/Astra root, independent release and catalog reviewers",
-  "sourceDigest": "25abd80f908e693b44e267017f7d2127e22b6c8a4a2abf19ec2d40ccdedfc9a8",
-  "sourceFileCount": 148,
-  "privacyChanged": false,
+  "sourceDigest": "8426a70121ccc936049292051f77fcbb40233511c8a90f6b5ef0649e59b4cbbd",
+  "sourceFileCount": 149,
+  "privacyChanged": true,
   "termsChanged": false,
-  "scope": "Presentation only: main job card fronts and generated share images compact multiple locations. Full public employer geography remains in raw records, details, search, state filters and share metadata. No new storage, collection, provider, auth, analytics, policy or audio behavior.",
+  "scope": "Saved reminders add a current-owner local count without links; tab-local section state clears only the Saved view. Tracker controls and BFCache owner checks preserve account boundaries. City/state/pay labels, count spacing and Latest Update focus/version are presentation changes. No new provider, analytics event, network transmission, auth privilege or audio.",
   "checks": {
-    "fullSuite": "721/721 tests pass, zero failures/cancellations/skips.",
-    "locations": "162 actual labels from 489 listings; 34 compacted. Independent 24-case synthetic probe and 32 focused tests pass after address-note, alias and ZIP corrections.",
-    "renderedUI": "24 real Microsoft card/detail cases: all eight themes at 320,390,1440px. Raw city search, CA/WA/NY state filters, same-state Green Dot and internship smoke pass; no overflow or browser errors.",
-    "boundaries": "No new I/O or personal data processing. Privacy and Terms unchanged and reviewed for this presentation scope. Existing operational open items retained.",
-    "hosted": "Pending exact 2.4.0 preview deployment and hosted acceptance."
+    "fullSuite": "744/744 tests pass; zero failures, cancellations or skips.",
+    "tracker": "35 focused Tracker tests and twelve real browser cases; two additional owner-restoration tests pass. Same-owner native control/focus is retained; different-owner suspended views reset. Physical iOS native picker acceptance remains separate.",
+    "renderedUI": "48 Jobs/Internship layout cases across eight themes at 320,390,1440px and three real section-navigation checks pass. No overflow, count/art overlap, page errors or non-GET requests. Root viewed the 390px Saved reminder.",
+    "boundaries": "Independent code/privacy/security review found no remaining blockers in this patch. Privacy discloses bookmark reminder count and tab marker; Terms reviewed without wording change. Existing operational open items preserved.",
+    "hosted": "Pending exact 2.4.1 preview deployment and hosted acceptance."
   },
-  "baselineReview": "docs/privacy-reviews/2.3.9.json",
+  "baselineReview": "docs/privacy-reviews/2.4.0.json",
   "openItems": [
     "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
     "Function-scoped Firebase and Netlify configuration and actual owner UID",
@@ -31,5 +31,5 @@
     "Search Console domain property Not verified; Bing has no existing IAB session",
     "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive"
   ],
-  "policySummary": "Current Privacy and Terms reviewed against this presentation-only correction; no text change required. Existing operational limits remain open. Engineering review, not legal certification."
+  "policySummary": "Privacy updated for device-only reminder and section-view state. Terms reviewed with no wording change required for this release. Existing operational limits remain open. Engineering review, not legal certification."
 }

@@ -38,14 +38,13 @@
 .su-pay-source p{margin:0 0 8px;color:var(--su-ink,#2A2118)}
 @media(max-width:700px){.su-board-meta{gap:10px;margin-top:12px}.su-pay-key{gap:8px 12px}.su-board-utilities{width:100%;justify-content:space-between;gap:12px;font-size:17px}.su-board-menu-sheet{width:240px}.su-internship-summary{display:none}}
 
-/* Result count owns the far-right column, away from the first-card drawing. */
-.su-board-meta{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 20px}
-.su-results-count{grid-column:2;justify-self:end;font:18px/1.4 var(--su-hand,'Indie Flower',cursive);text-align:right}
-.su-board-utilities{grid-column:1 / -1;justify-self:end;justify-content:flex-end;width:auto;margin:0}
+/* Count and Board menu share a row; the illustration has its own space below. */
+.su-board-meta{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 20px}
+.su-pay-key,.su-internship-summary{grid-column:1 / -1}
+.su-results-count{grid-column:1;justify-self:start;font:18px/1.4 var(--su-hand,'Indie Flower',cursive);text-align:left}
+.su-board-utilities{grid-column:2;justify-self:end;justify-content:flex-end;width:auto;margin:0}
 @media(max-width:700px){
   .su-board-meta{column-gap:12px}
-  .su-pay-key{grid-column:1 / -1}
-  .su-results-count{grid-column:2;font-size:17px}
-  .su-board-utilities{grid-column:2;justify-content:flex-end;width:auto}
+  .su-results-count{font-size:17px}
+  .su-board-utilities{justify-content:flex-end;width:auto}
 }
-@media(min-width:560px){.su-pay-key{grid-column:1}.su-results-count{grid-row:1}}

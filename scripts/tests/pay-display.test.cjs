@@ -95,8 +95,24 @@ test('browser export works without DOM, storage, network or CommonJS dependencie
 
 test('internship-only small single rates use the requested hourly convention without overwriting an explicit period',()=>{
  const options={internship:true,basis:'not_listed',status:'paid'};
- for(const [raw,want] of [['$23.00','$23/hour'],['$28 (time unit not listed)','$28/hour'],['From $23','$23+/hour'],['Up to $25','≤$25/hour'],['$25/month','$25/month'],['$25/year','$25/year'],['$25 for the program','$25/program'],['$100','$100'],['$20–25','$20–25'],['$25; $30','$25–30'],['$25K','$25K']])assert.equal(Pay.compact(raw,options),want,raw);
+ for(const [raw,want] of [['$23.00','$23/hour'],['$28 (time unit not listed)','$28/hour'],['From $23','$23/hour+'],['Up to $25','≤$25/hour'],['$25/month','$25/month'],['$25/year','$25/year'],['$25 for the program','$25/program'],['$100','$100'],['$20–25','$20–25'],['$25; $30','$25–30'],['$25K','$25K']])assert.equal(Pay.compact(raw,options),want,raw);
  assert.equal(Pay.compact('$23.00',{basis:'not_listed'}),'$23');
  assert.equal(Pay.compact('$23.00',{...options,basis:'month'}),'$23/month');
  assert.equal(Pay.compact('Paid; amount not disclosed',options),'$ Paid');
+});
+
+test('minimum-pay plus follows the period for explicit, inferred and already-plus rates', () => {
+  for (const [raw, expected] of [
+    ['From $29/hour', '$29/hour+'], ['$29+/hour', '$29/hour+'],
+    ['$29/hour+', '$29/hour+'], ['$29+ per hour', '$29/hour+'],
+    ['$29.10 minimum per hour', '$29/hour+'], ['Starting at $500/week', '$500/week+'],
+    ['At least $2,000/month', '$2,000/month+'], ['From $70K/year', '$70K/year+'],
+    ['From $5,000 for the program', '$5,000/program+'], ['From $70K', '$70K+'],
+    ['Up to $29/hour', '≤$29/hour'], ['$29/hour plus commission', '$29/hour'],
+    ['$29-$35/hour', '$29–35/hour'], ['CAD 29+/hour', 'CAD 29/hour+'],
+  ]) assert.equal(Pay.compact(raw), expected, raw);
+  const job = Object.freeze({pay:'From $29', payBasis:'not_listed', internship:true});
+  const before = JSON.stringify(job);
+  assert.equal(Pay.compact(job.pay, {basis:job.payBasis, internship:true}), '$29/hour+');
+  assert.equal(JSON.stringify(job), before, 'the employer amount and source basis stay exact');
 });

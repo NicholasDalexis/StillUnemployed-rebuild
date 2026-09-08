@@ -1,0 +1,35 @@
+{
+  "version": "2.4.0",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-08T05:11:33.207962+00:00",
+  "reviewer": "Codex/Astra root, independent release and catalog reviewers",
+  "sourceDigest": "25abd80f908e693b44e267017f7d2127e22b6c8a4a2abf19ec2d40ccdedfc9a8",
+  "sourceFileCount": 148,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Presentation only: main job card fronts and generated share images compact multiple locations. Full public employer geography remains in raw records, details, search, state filters and share metadata. No new storage, collection, provider, auth, analytics, policy or audio behavior.",
+  "checks": {
+    "fullSuite": "721/721 tests pass, zero failures/cancellations/skips.",
+    "locations": "162 actual labels from 489 listings; 34 compacted. Independent 24-case synthetic probe and 32 focused tests pass after address-note, alias and ZIP corrections.",
+    "renderedUI": "24 real Microsoft card/detail cases: all eight themes at 320,390,1440px. Raw city search, CA/WA/NY state filters, same-state Green Dot and internship smoke pass; no overflow or browser errors.",
+    "boundaries": "No new I/O or personal data processing. Privacy and Terms unchanged and reviewed for this presentation scope. Existing operational open items retained.",
+    "hosted": "Pending exact 2.4.0 preview deployment and hosted acceptance."
+  },
+  "baselineReview": "docs/privacy-reviews/2.3.9.json",
+  "openItems": [
+    "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
+    "Function-scoped Firebase and Netlify configuration and actual owner UID",
+    "Real authenticated collector, profile and aggregate readback with cross-account/direct-client denials",
+    "Hosted retention, reset and account-deletion execution; legacy logs and backups",
+    "Six moderate dependency findings; no high or critical advisories in saved audit",
+    "Actual new discovery-schema Firestore round trip and deployed ownership rules",
+    "Main-board inherited Human verified badges lack audited per-row historical provenance in this change",
+    "Live report-triage delivery and concurrent-device visit-counter limitations",
+    "Real authenticated Saved/Tracker round trip for admitted internships",
+    "Separate maintenance-owner scope: five internship checks remain unresolved and cursor rotation incomplete; main Jobs evening check timed out. First internship evening scheduled firing is verified in the 2026-09-06 sourcing setup receipt.",
+    "Preview analytics profile/admin503 not configured; actual collector/retention/hosted account evidence unavailable",
+    "Search Console domain property Not verified; Bing has no existing IAB session",
+    "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive"
+  ],
+  "policySummary": "Current Privacy and Terms reviewed against this presentation-only correction; no text change required. Existing operational limits remain open. Engineering review, not legal certification."
+}

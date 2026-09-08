@@ -173,6 +173,49 @@ test('an unacknowledged reload can introduce again; no old display count silentl
   }
 });
 
+test('overview shows the current release as quiet text without adding another dismissal action', async () => {
+  const w = welcome({ version:'2.4.1' });await w.auto();
+  const footer = w.dialog.querySelector('.su-launch-footer');
+  const version = footer.querySelector('.su-launch-version');
+  assert.equal(version.textContent, 'v2.4.1');assert.equal(version.hidden, false);
+  assert.equal(footer.children[0], version);
+  assert.equal(version.tagName, 'SMALL');assert.equal(version.getAttribute('tabindex'), null);
+  assert.equal(version.getAttribute('data-su-version'), null, 'generic version renderer must not replace the short label');
+  assert.equal(footer.querySelectorAll('button').length, 1);assert.equal(footer.querySelectorAll('a').length, 0);
+  w.click('[data-launch-feature="advice"]');assert.equal(footer.hidden, true);
+  w.click('[data-launch-back]');assert.equal(footer.hidden, false);assert.equal(version.textContent, 'v2.4.1');
+  assert.equal(policy.acknowledged([w.local]), false);
+});
+
+test('release label refreshes on reopening and missing metadata does not block the dialog', () => {
+  const w = welcome({ releaseAvailable:false });w.window.SUWelcome.open();
+  const version = w.dialog.querySelector('.su-launch-version');
+  assert.equal(version.hidden, true);assert.equal(version.textContent, '');
+  w.click('.su-launch-primary');
+  w.window.SURelease = { version:'2.4.1' };w.window.SUWelcome.open();
+  assert.equal(version.textContent, 'v2.4.1');assert.equal(version.hidden, false);
+  w.click('.su-launch-primary');
+  w.window.SURelease = { version:'2.4.2' };w.window.SUWelcome.open();
+  assert.equal(version.textContent, 'v2.4.2');
+  w.click('.su-launch-primary');
+  w.window.SURelease = { version:'<img src=x onerror=alert(1)>' };w.window.SUWelcome.open();
+  assert.equal(version.hidden, true);assert.equal(version.textContent, '');
+  assert.equal(version.querySelector('img'), null);
+});
+
+test('initial focus remains on the static title and its outline exception does not target controls', async () => {
+  const w = welcome();await w.auto();
+  const title = w.dialog.querySelector('#su-launch-title');
+  assert.equal(w.document.activeElement, title);assert.equal(title.tagName, 'H2');
+  assert.equal(title.getAttribute('tabindex'), '-1');assert.equal(title.getAttribute('autofocus'), '');
+  const css = fs.readFileSync(path.join(__dirname, '../../css/onboarding.css'), 'utf8');
+  assert.match(css, /\.su-launch #su-launch-title:focus\s*\{\s*outline:none;\s*\}/);
+  assert.match(css, /\.su-launch :focus-visible\s*\{\s*outline:3px solid var\(--su-orange-text\)/);
+  assert.match(css, /\.su-launch-version\s*\{\s*margin-right:auto/);
+  assert.match(css, /\.su-launch-footer\s*\{[^}]*flex-wrap:wrap/);
+  // Native computed focus/geometry is verified separately during integration QA.
+});
+
 test('automatic intro has no X and ignores backdrop, internal blank clicks and Escape without writing an acknowledgment', async () => {
   const w = welcome();await w.auto();assert.equal(w.dialog.querySelector('.su-launch-close'), null);
   for (const action of [() => w.dialog.dispatch('cancel'), () => w.dialog.dispatch('click', { clientX:0, clientY:0 }), () => w.dialog.dispatch('click', { clientX:20, clientY:30 })]) {

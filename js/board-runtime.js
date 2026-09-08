@@ -29,6 +29,15 @@
       return count===1 || count%10===0;
     }catch(e){return false;}
   }
+  function recordSave(){
+    try{
+      var who=owner();if(who===null)return false;
+      var key='su_saved_hint_v1',value=JSON.parse(root.localStorage.getItem(key)||'null');
+      var count=value&&value.owner===who&&Number.isSafeInteger(value.count)&&value.count>=0?value.count:0;
+      count++;var receipt=JSON.stringify({owner:who,count:count});root.localStorage.setItem(key,receipt);
+      return root.localStorage.getItem(key)===receipt&&(count===1||count%5===0);
+    }catch(e){return false;}
+  }
   var observedOwner=owner();
   function applicationCount(){try{var value=JSON.parse(root.localStorage.getItem('su_tracker_hint_v1')||'null');return value&&value.owner===owner()&&Number.isSafeInteger(value.count)&&value.count>=0?value.count:0;}catch(e){return 0;}}
   function checkOwner(){var next=owner();if(next===observedOwner)return false;observedOwner=next;clear();return true;}
@@ -42,6 +51,32 @@
   function save(section,state){
     try{var o=owner();if(o===null||o!==observedOwner)return;var out={};keys.forEach(function(k){out[k]=state[k];});root.sessionStorage.setItem('su_view_'+section,JSON.stringify({v:1,owner:o,at:Date.now(),state:out,y:root.scrollY||0}));}catch(e){}
   }
+  // Section navigation resets the Saved view, never the saved records. A reload
+  // or return from an employer keeps the same section and its normal view receipt.
+  function clearSavedViews(){
+    ['jobs','internships'].forEach(function(section){
+      try{
+        var key='su_view_'+section,value=JSON.parse(root.sessionStorage.getItem(key)||'null');
+        if(value&&value.owner===owner()&&value.state&&value.state.savedOnly){
+          value.state.savedOnly=false;value.y=0;root.sessionStorage.setItem(key,JSON.stringify(value));
+        }
+      }catch(e){}
+    });
+  }
+  function enterSection(section){
+    if(['jobs','internships','tracker'].indexOf(section)<0)return false;
+    try{
+      var prior=root.sessionStorage.getItem('su_board_section');
+      var changed=!!prior&&prior!==section;
+      if(changed)clearSavedViews();
+      root.sessionStorage.setItem('su_board_section',section);return changed;
+    }catch(e){return false;}
+  }
+  // Tracker does not run app.js, but participates in the same tab navigation.
+  if(root.location&&/^\/tracker(?:\.html)?\/?$/.test(root.location.pathname)){
+    enterSection('tracker');
+    if(root.addEventListener)root.addEventListener('pageshow',function(e){if(e.persisted)enterSection('tracker');});
+  }
   function clear(){try{root.sessionStorage.removeItem('su_view_jobs');root.sessionStorage.removeItem('su_view_internships');}catch(e){}}
-  return {owner:owner,recordApplication:recordApplication,applicationCount:applicationCount,request:request,read:read,save:save,clear:clear,checkOwner:checkOwner,emit:emit};
+  return {owner:owner,recordSave:recordSave,enterSection:enterSection,clearSavedViews:clearSavedViews,recordApplication:recordApplication,applicationCount:applicationCount,request:request,read:read,save:save,clear:clear,checkOwner:checkOwner,emit:emit};
 });

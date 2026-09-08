@@ -1,7 +1,27 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.4.0",
+  "currentVersion": "2.4.1",
   "releases": [
+    {
+      "version": "2.4.1",
+      "date": "2026-09-08",
+      "title": "Saved reminders and steadier mobile navigation",
+      "changes": [
+        "Add a current-owner device-only Saved shortcut after successful new bookmarks 1,5,10; coordinate with other reminders and preserve saved records.",
+        "Preserve native Tracker selects through status changes and sync echoes; clear suspended previous-account views before showing board or Tracker state.",
+        "Clear Saved-only views on section navigation; put count left and Board menu right with protected illustration spacing; normalize known single-office city/state and trailing hourly plus.",
+        "Latest Update adds current version at footer left and removes only the static heading outline. Privacy discloses bookmark cadence and tab section storage. Sound effects and creator subsections remain deferred; preview only."
+      ],
+      "public": {
+        "title": "A smoother board on your phone",
+        "changes": [
+          "Find saved jobs with a small Saved shortcut after your first bookmark and every fifth one.",
+          "Tracker status changes stay steady, and switching sections opens the full board again.",
+          "Shorter location labels and clearer spacing keep job cards easier to scan.",
+          "Latest Update now shows the current version at the bottom."
+        ]
+      }
+    },
     {
       "version": "2.4.0",
       "date": "2026-09-08",
@@ -384,7 +404,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "25abd80f908e693b44e267017f7d2127e22b6c8a4a2abf19ec2d40ccdedfc9a8",
-    "fileCount": 148
+    "digest": "8426a70121ccc936049292051f77fcbb40233511c8a90f6b5ef0649e59b4cbbd",
+    "fileCount": 149
   }
 }

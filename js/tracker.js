@@ -213,6 +213,14 @@
     }
   }
 
+  function statusShape(rows) {
+    return JSON.stringify(rows.map(function (row) {
+      return Object.keys(row).sort().filter(function (key) {
+        return key !== 'status' && key !== 'updated';
+      }).map(function (key) { return [key, row[key]]; });
+    }));
+  }
+
   var Trk = {
     rows: loadRows(),
     look: loadLook(),
@@ -225,6 +233,10 @@
     noteDrafts: {},
     localChanged: false,
     writeError: '',
+    renderedStatusShape: null,
+    renderedStatuses: [],
+    renderedOwner: null,
+    renderedLook: null,
 
     syncStatus: function () {
       if(this.writeError)return this.writeError;
@@ -253,6 +265,35 @@
         else if (r.status === 'Ghosted') c.ghosted++;
       });
       return c;
+    },
+
+    refreshStatusControls: function (changedId) {
+      var board=document.getElementById('board');
+      if(this.owner!==accountKey() || this.renderedOwner!==this.owner || this.renderedLook!==this.look ||
+         this.pendingRemoval || Object.keys(this.deleting).length || this.renderedStatusShape!==statusShape(this.rows)) return false;
+      var controls=Array.from(board.querySelectorAll('select.trk-status'));
+      if(controls.length!==this.rows.length || controls.some(function(control,i){return control.getAttribute('data-id')!==this.rows[i].id;},this)) return false;
+      var self=this;
+      controls.forEach(function(control,i){
+        var row=self.rows[i];
+        // Keep the same native select and its focus. Replacing and refocusing it
+        // during change can reopen a mobile picker. An unchanged sync echo must
+        // also leave any not-yet-committed native selection alone.
+        if(control.value!==row.status && (row.id===changedId || row.status!==self.renderedStatuses[i])) control.value=row.status;
+        control.className='trk-status '+statusCls(row.status);
+      });
+      var counts=this.counts();
+      [['total',counts.total],['interviews',counts.ints],['offers',counts.offers]].forEach(function(pair){
+        var node=document.getElementById('trk-count-'+pair[0]);if(node)node.textContent=String(pair[1]);
+      });
+      this.renderedStatuses=this.rows.map(function(row){return row.status;});
+      this.refreshStatus();
+      return true;
+    },
+
+    refreshRows: function () {
+      this.rows=loadRows();
+      if(!this.refreshStatusControls()) this.render();
     },
 
     render: function (options) {
@@ -316,9 +357,9 @@
         // to someone who is already living it. Nic cut Ghosted; I cut Rejected with it for the same
         // reason. The row still adds up (rejections are visible on the rows themselves), it just
         // doesn't lead with them.
-        '<div class="trk-pill p1"><b>' + c.total + '</b><span>applied</span></div>' +
-        '<div class="trk-pill p2"><b>' + c.ints + '</b><span>interviews</span></div>' +
-        '<div class="trk-pill p3"><b>' + c.offers + '</b><span>offers</span></div>' +
+        '<div class="trk-pill p1"><b id="trk-count-total">' + c.total + '</b><span>applied</span></div>' +
+        '<div class="trk-pill p2"><b id="trk-count-interviews">' + c.ints + '</b><span>interviews</span></div>' +
+        '<div class="trk-pill p3"><b id="trk-count-offers">' + c.offers + '</b><span>offers</span></div>' +
         '<button type="button" data-act="exportCsv" class="trk-export">' +
           '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
           'Export CSV' +
@@ -393,6 +434,10 @@
         sizeNote(opens[oi]);
       }
       restoreFocus(board, focus);
+      this.renderedStatusShape=statusShape(this.rows);
+      this.renderedStatuses=this.rows.map(function(row){return row.status;});
+      this.renderedOwner=this.owner;
+      this.renderedLook=this.look;
       this.refreshStatus();
     },
 
@@ -542,10 +587,12 @@
         var t = e.target;
         if (!t) return;
         if (t.classList && t.classList.contains('trk-status')) {
-          var saved=self.setField(t.getAttribute('data-id'), 'status', t.value);
-          if (saved && typeof window.suTrack === 'function') window.suTrack('tracker-status', '', t.value, '');
-          self.render(); // recolor the select + refresh the summary pills
-          if (saved && t.value === 'Offer') suOfferParty((LOOKS[self.look] || LOOKS.original).acc);   // 🎈🎆
+          if(self.owner!==accountKey() || !document.getElementById('board').contains(t)) { self.refreshRows(); return; }
+          var id=t.getAttribute('data-id'),value=t.value;
+          var saved=self.setField(id, 'status', value);
+          if (saved && typeof window.suTrack === 'function') window.suTrack('tracker-status', '', value, '');
+          if(!self.refreshStatusControls(id)) self.render();
+          if (saved && value === 'Offer') suOfferParty((LOOKS[self.look] || LOOKS.original).acc);   // 🎈🎆
         } else if (t.classList && t.classList.contains('trk-notes')) {
           self.setField(t.getAttribute('data-id'), 'notes', t.value); // no re-render; keep typing flow
         }
@@ -593,8 +640,9 @@
       });
 
       window.addEventListener('su:sync-status', function () { self.refreshStatus(); });
-      window.addEventListener('su:auth-changed', function () { self.rows=loadRows(); self.render(); });
-      window.addEventListener('su:data-sync', function () { self.rows = loadRows(); self.render(); });
+      window.addEventListener('su:auth-changed', function () { self.refreshRows(); });
+      window.addEventListener('su:data-sync', function () { self.refreshRows(); });
+      window.addEventListener('pageshow', function (e) { if(e.persisted) self.refreshRows(); });
       // A narrower viewport wraps notes onto more lines without replacing the field.
       window.addEventListener('resize', function () {
         Array.from(document.getElementById('board').querySelectorAll('textarea.trk-notes')).forEach(sizeNote);
@@ -602,7 +650,7 @@
 
       // if the board tab logs an application while this tab is open, pick it up
       window.addEventListener('storage', function (e) {
-        if (e.key === 'su_tracker' || e.key === 'su_sync_owner') { self.rows = loadRows(); self.render(); }
+        if (e.key === 'su_tracker' || e.key === 'su_sync_owner') self.refreshRows();
         if (e.key === 'su_look') { self.look = loadLook(); self.render(); }
       });
     },

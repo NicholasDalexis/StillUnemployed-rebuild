@@ -86,3 +86,26 @@ test('tracker reminder respects the legacy hint, isolates owners and silently sk
  h.local.set('su_sync_owner','another-account');assert.equal(h.api.recordApplication(),true);
  h.root.localStorage.setItem=()=>{throw Error('blocked')};assert.equal(h.api.recordApplication(),false);
 });
+
+test('new bookmark reminder counts first and every fifth save, persists per current owner and stays quiet without storage',()=>{
+ const h=harness(),shown=[];for(let i=1;i<=12;i++)if(h.api.recordSave())shown.push(i);
+ assert.deepEqual(shown,[1,5,10]);assert.equal(JSON.parse(h.local.get('su_saved_hint_v1')).count,12);
+ const reload=require('../../js/board-runtime.js')(h.root);assert.equal(reload.recordSave(),false);
+ h.local.set('su_sync_owner','alice');assert.equal(reload.recordSave(),true);
+ assert.equal(JSON.parse(h.local.get('su_saved_hint_v1')).owner,'alice');
+ h.local.set('su_sync_owner','bob');h.root.localStorage.setItem=()=>{};assert.equal(reload.recordSave(),false);
+ h.root.localStorage.setItem=()=>{throw Error('quota')};assert.equal(reload.recordSave(),false);
+});
+test('switching board sections clears Saved-only and its scroll without altering bookmarks or other filters',()=>{
+ const h=harness();h.api.enterSection('jobs');h.api.save('jobs',{q:'design',st:'CA',savedOnly:true});h.local.set('su_saved_jobs','kept');
+ assert.equal(h.api.enterSection('jobs'),false);assert.equal(h.api.read('jobs').state.savedOnly,true);
+ assert.equal(h.api.enterSection('tracker'),true);const view=h.api.read('jobs');
+ assert.equal(view.state.savedOnly,false);assert.equal(view.state.q,'design');assert.equal(view.state.st,'CA');assert.equal(view.y,0);assert.equal(h.local.get('su_saved_jobs'),'kept');
+ h.api.save('internships',{q:'summer',savedOnly:true});assert.equal(h.api.enterSection('internships'),true);assert.equal(h.api.read('internships').state.savedOnly,false);
+ assert.equal(h.api.enterSection('not a board'),false);assert.equal(h.session.get('su_board_section'),'internships');
+});
+test('section navigation tolerates malformed storage and does not rewrite another owner view',()=>{
+ const h=harness();h.api.enterSection('jobs');h.api.save('jobs',{q:'private',savedOnly:true});const before=h.session.get('su_view_jobs');h.local.set('su_sync_owner','someone-else');
+ h.session.set('su_view_internships','broken');assert.doesNotThrow(()=>h.api.enterSection('tracker'));assert.equal(h.session.get('su_view_jobs'),before);
+ h.root.sessionStorage.setItem=()=>{throw Error('quota')};assert.equal(h.api.enterSection('jobs'),false);
+});

@@ -119,12 +119,19 @@
     dialog.style.setProperty('--su-launch-intern-paper', palette ? palette.hiCard : 'var(--su-yellow-paper)');
     dialog.style.setProperty('--su-launch-intern-ink', palette ? palette.hiInk : 'var(--su-ink)');
   }
+  function releaseVersion() {
+    var label = dialog.querySelector('.su-launch-version');
+    var version = global.SURelease && global.SURelease.version;
+    var available = typeof version === 'string' && /^\d+(?:\.\d+){2,3}$/.test(version);
+    label.textContent = available ? 'v' + version : '';
+    label.hidden = !available;
+  }
   function build() {
     if (dialog) return;
     dialog = doc.createElement('dialog');
     dialog.id = 'su-launch'; dialog.className = 'su-launch';
     dialog.setAttribute('aria-labelledby','su-launch-title');
-    dialog.innerHTML = '<header class="su-launch-header"><div class="su-launch-overview-title"><h2 id="su-launch-title" tabindex="-1" autofocus>Latest Update</h2></div><button type="button" class="su-launch-back" data-launch-back hidden>'+arrow('left')+' go back</button></header><div class="su-launch-scroll"><p class="su-launch-intro">pick a note to see what’s new '+arrow('down')+'</p><div class="su-launch-stage"></div></div><footer class="su-launch-footer"><button type="button" class="su-launch-primary" data-launch-close>Let’s find a role '+arrow('right')+'</button></footer>';
+    dialog.innerHTML = '<header class="su-launch-header"><div class="su-launch-overview-title"><h2 id="su-launch-title" tabindex="-1" autofocus>Latest Update</h2></div><button type="button" class="su-launch-back" data-launch-back hidden>'+arrow('left')+' go back</button></header><div class="su-launch-scroll"><p class="su-launch-intro">pick a note to see what’s new '+arrow('down')+'</p><div class="su-launch-stage"></div></div><footer class="su-launch-footer"><small class="su-launch-version" hidden></small><button type="button" class="su-launch-primary" data-launch-close>Let’s find a role '+arrow('right')+'</button></footer>';
     doc.body.appendChild(dialog);
     dialog.addEventListener('click', function (event) {
       var feature = event.target.closest('[data-launch-feature]');
@@ -155,7 +162,7 @@
     automatic = isAutomatic === true;
     if (!automatic) manualOpened = true;
     returnFocus = doc.activeElement;
-    renderOverview();themePreview();
+    renderOverview();themePreview();releaseVersion();
     bodyOverflow = doc.body.style.overflow;
     try { dialog.showModal(); } catch (_) { return false; }
     doc.body.style.overflow = 'hidden';

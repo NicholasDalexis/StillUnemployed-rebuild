@@ -162,7 +162,7 @@ test('state control events update effective results, full-name chip and compact 
   assert.equal(b.app.state.st,'all'); assert.equal(b.grid.querySelector('.su-results-count').textContent,'2 jobs');
 });
 
-test('real discovery actions stay in Board menu below the far-right count, separate from theme and Saved controls', () => {
+test('real discovery actions share the count row in Board menu, separate from theme and Saved controls', () => {
   for (const signedIn of [false,true]) {
     const b = ui(), root = b.window;
     root.document=b.document; root.localStorage=b.localStorage;

@@ -58,7 +58,8 @@
 .su-launch-intern-note strong,.su-launch-intern-note span,.su-launch-intern-note b { display:block; font-family:var(--su-body); line-height:1.3; }
 .su-launch-intern-note strong { font-size:14px; font-weight:700; }.su-launch-intern-note span { font-size:11px; }.su-launch-intern-note b { margin-top:8px; font-size:17px; font-weight:700; }
 .su-launch-internships > em { display:block; margin-top:7px; color:var(--su-orange-text); font-style:normal; font-size:14px; text-align:right; }
-.su-launch-footer { display:flex; flex:none; align-items:center; justify-content:flex-end; padding:16px 38px 24px; }
+.su-launch-footer { display:flex; flex:none; flex-wrap:wrap; gap:8px 16px; align-items:center; justify-content:flex-end; padding:16px 38px 24px; }
+.su-launch-version { margin-right:auto; color:var(--su-muted); font:400 13px/1.3 var(--su-body); }
 .su-launch-primary { display:inline-flex; min-height:44px; gap:8px; padding:10px 16px; align-items:center; justify-content:center; border:0; border-radius:2px; background:var(--su-yellow-paper); color:var(--su-ink); font:400 22px/1.2 var(--su-hand); text-decoration:none; transform:rotate(-1deg); box-shadow:2px 4px 9px #2c211826; }
 .su-launch-primary:hover { transform:rotate(1deg); }
 .su-launch-detail { max-width:520px; margin:4px auto 36px; animation:su-launch-turn .25s ease-out; }
@@ -69,6 +70,8 @@
 .su-launch-detail h3 { font:400 30px/1.2 var(--su-hand); margin:0 0 8px; }.su-launch-detail > p:not(.su-launch-eyebrow) { font:400 16px/1.6 var(--su-body); margin:0 0 8px; }
 .su-launch-detail-link { display:inline-flex; gap:7px; align-items:center; min-height:44px; margin-top:8px; color:var(--su-orange-text); font:400 20px/1.3 var(--su-hand); text-underline-offset:4px; }
 .su-launch :focus-visible { outline:3px solid var(--su-orange-text); outline-offset:3px; }
+/* The static heading receives initial dialog focus without looking actionable. */
+.su-launch #su-launch-title:focus { outline:none; }
 .su-launch button:active { filter:brightness(.96); }
 .su-founder-release { display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; margin-top:18px; font:14px 'Archivo',sans-serif; color:#6f5e45; }
 .su-founder-release a,.su-founder-release button { display:inline-flex; align-items:center; min-height:44px; color:inherit; }.su-founder-release button,.su-whats-new { border:0; background:none; padding:0; font:inherit; cursor:pointer; text-decoration:underline; text-underline-offset:4px; }.su-whats-new { min-height:44px; font:18px 'Indie Flower',cursive; }

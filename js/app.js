@@ -561,7 +561,7 @@
     if(!showTracker)return;
     var identity=runtime.owner();
     setTimeout(function () {
-      if (identity !== runtime.owner() || document.getElementById('su-tracker-nudge')) return;
+      if (identity !== runtime.owner() || document.getElementById('su-tracker-nudge') || document.getElementById('su-saved-nudge')) return;
       var wrap=document.createElement('div');wrap.id='su-tracker-nudge';wrap.className='su-tracker-nudge';
       wrap.innerHTML='<a href="tracker.html"><span>Check applied jobs</span> <svg width="24" height="14" viewBox="0 0 28 14" fill="none" aria-hidden="true"><path d="M1 7 Q12 1 25 7 M19 2 L26 7 L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="su-tracker-sticky">Tracker</span></a><button type="button" aria-label="Dismiss tracker reminder">×</button>';
       var timer;
@@ -1323,6 +1323,8 @@
       this._retrySaveLink=null; this._actionError='';
       if(window.SUAnalytics) window.SUAnalytics.job(alreadySaved?'job_unsave':'job_save',key);
       this.setState({ saved: loadSaved() });
+      if(!alreadySaved&&this.isSaved(key)&&window.SUSavedReminder)window.SUSavedReminder.afterSave();
+      return true;
     },
 
     // apply a "Change Look?" theme, close the modal, and persist site-wide
@@ -3052,6 +3054,7 @@
   function boot(){
     // A Google sign-in return resumes its existing question before any introduction.
     App.restoreFeedbackRedirect();
+    if(window.SUBoardRuntime&&window.SUBoardRuntime.enterSection)window.SUBoardRuntime.enterSection(INTERNSHIPS?'internships':'jobs');
     initialView=restoreView(window.SUBoardRuntime,true);
     App._loading=true;App.internships=INTERNSHIPS;App.state.saved=loadSaved();App.bindEvents();App.render();
     document.addEventListener('pointerdown',function(){App._feedInteracted=true;},{once:true});
@@ -3062,7 +3065,26 @@
     window.addEventListener('pagehide',function(){if(window.SUBoardRuntime)window.SUBoardRuntime.save(INTERNSHIPS?'internships':'jobs',App.state);});
     function recheck(){if(!firstFeed && !document.hidden && Date.now()-lastFeedCheck>=60000)refreshFeed();}
     window.addEventListener('focus',recheck);
-    window.addEventListener('pageshow',function(e){if(e.persisted)recheck();});
+    window.addEventListener('pageshow',function(e){
+      if(!e.persisted)return;
+      var runtime=window.SUBoardRuntime;
+      var ownerChanged=checkViewOwner();
+      var sectionChanged=runtime&&runtime.enterSection&&runtime.enterSection(INTERNSHIPS?'internships':'jobs');
+      if(ownerChanged)App.state.saved=loadSaved();
+      if(ownerChanged||sectionChanged)App.setState({savedOnly:false});
+      recheck();
+    });
+    document.addEventListener('click',function(e){
+      if(e.defaultPrevented||e.button>0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
+      var link=e.target.closest&&e.target.closest('a[href]');
+      if(!link||link.target==='_blank'||link.hasAttribute('download'))return;
+      try{
+        var url=new URL(link.href,location.href);
+        if(url.origin!==location.origin||!/^\/(?:jobs(?:\.html|\/[^/]+)?|internships(?:\.html)?|tracker(?:\.html)?)\/?$/.test(url.pathname))return;
+        App.state.savedOnly=false;
+        if(window.SUBoardRuntime){if(window.SUBoardRuntime.clearSavedViews)window.SUBoardRuntime.clearSavedViews();window.SUBoardRuntime.save(INTERNSHIPS?'internships':'jobs',App.state);}
+      }catch(_){}
+    });
     document.addEventListener('visibilitychange',recheck);
   }
 

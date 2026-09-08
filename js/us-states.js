@@ -80,7 +80,7 @@
     var original = clean(value);
     if (!original) return original;
     var text = original.replace(/\([^)]*\)/g, ' ').trim();
-    if (/\b(?:multiple|various)\s+locations\b|^Any\s+.+\s+Station\s+Location$/i.test(text)) return 'Multiple locations';
+    if (/\b(?:multiple|various)\s+locations\b|^Any\s+.+\s+Station\s+Location$/i.test(text)) return 'Multiple Locations';
     var regions = namePattern + '|District\\s+of\\s+Columbia|DC|' + Object.keys(BY_CODE).join('|');
     var suffix = new RegExp('([^,;|]+),\\s*(' + regions + ')(?=\\s*(?:,| - |\\d{5}(?:-\\d{4})?\\b|$))', 'gi');
     var prefix = new RegExp('^(' + regions + ')[\\s,-]+([A-Za-z].*)$', 'i');
@@ -96,19 +96,28 @@
     };
     var places = Object.create(null);
     function add(city, region) {
-      city = city.trim().toLowerCase().replace(/\b(st|ft)\./g, '$1');
+      // Workday puts street addresses after the city in state-first labels.
+      // This only changes the display label; the source value is never edited.
+      city = city.replace(/\s+\d[\s\S]*$/, '').trim();
+      if (!city || /^\d/.test(city) || country.test(city)) return;
+      var displayCity = city;
+      city = city.toLowerCase().replace(/\b(st|ft)\./g, '$1');
       var code = normalize(region) || (/^(?:dc|district\s+of\s+columbia)$/i.test(region) ? 'DC' : region);
       if (city === 'ny' && code === 'NY') city = 'new york'; // NY, New York / New York, NY
       if (Object.prototype.hasOwnProperty.call(cities, city) && (!code || code === cities[city][1])) {
-        code = cities[city][1]; city = cities[city][0];
+        code = cities[city][1]; city = cities[city][0]; displayCity = city;
       }
-      places[city + '|' + code] = true;
+      if (displayCity === displayCity.toLowerCase() || displayCity === displayCity.toUpperCase()) {
+        displayCity = displayCity.toLowerCase().replace(/\b[a-z]/g, function (letter) { return letter.toUpperCase(); });
+      }
+      var key = city + '|' + code;
+      if (!places[key]) places[key] = code ? displayCity + ', ' + code : displayCity;
     }
     text.split(/\s*(?:;|\/|\||\s+or\s+|\s+and\s+|\s+&\s+)\s*/).forEach(function (part) {
       part = part.trim();
       // A semicolon before a street address or attendance note is not a new city.
-      if (!part || /^\d/.test(part) || country.test(part) || note.test(part)) return;
-      if (/^(?:(?:US|USA|United States)\s+)?Remote(?:\s*,?\s*(?:US|USA|United States))?$/i.test(part)) {
+      if (!part || country.test(part) || note.test(part)) return;
+      if (/^(?:(?:US|USA|United States)\s+)?Remote(?:\s*[,-]?\s*(?:US|USA|United States))?$/i.test(part)) {
         add('Remote', ''); return;
       }
       var cityList = part.toLowerCase().split(',').map(function (city) { return city.trim(); });
@@ -116,6 +125,15 @@
         cityList.forEach(function (city) { add(city, ''); }); return;
       }
       var match, found = false;
+      // Preserve reverse postal labels, particularly DC, Washington (not WA)
+      // and NY, New York, before the ordinary city/state suffix scan.
+      var reverse = part.match(/^([A-Z]{2})[\s,-]+([A-Za-z].*)$/);
+      if (reverse && (BY_CODE[reverse[1]] || reverse[1] === 'DC')) {
+        var nextRegion = normalize(reverse[2]);
+        if (!nextRegion || nextRegion === reverse[1] || (reverse[1] === 'DC' && /^Washington$/i.test(reverse[2]))) {
+          add(reverse[2], reverse[1]); return;
+        }
+      }
       suffix.lastIndex = 0;
       while ((match = suffix.exec(part))) {
         if (!country.test(match[1].trim())) { add(match[1], match[2]); found = true; }
@@ -124,7 +142,10 @@
       match = part.match(prefix);
       if (match) { add(match[2], match[1]); return; }
     });
-    return Object.keys(places).length > 1 ? 'Multiple locations' : original;
+    var keys = Object.keys(places);
+    if (keys.length > 1) return 'Multiple Locations';
+    if (keys.length === 1) return places[keys[0]];
+    return country.test(text.split(';')[0].trim()) ? 'Location not listed' : original;
   }
   return Object.freeze({ STATES: Object.freeze(STATES), BY_CODE: Object.freeze(BY_CODE), normalize: normalize, extract: extract, label: label, cardLocation: cardLocation });
 });
