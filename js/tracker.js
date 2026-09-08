@@ -29,7 +29,7 @@
   var LOOKS = {
     original: { cls: '',        ink: '#2A2118', sub: '#6F5E45', acc: '#F2E14B', accInk: '#2A2118', navBg: 'var(--su-yellow-paper)', navInk: '#1f1c14', star: '#C2552F', hl: 'rgba(238,224,70,0.95)' },
     cod:      { cls: 'cod',     ink: '#E9E3D2', sub: '#AEB29B', acc: '#555B38', accInk: '#EDE7CF', navBg: '#5C6B3A', navInk: '#EDE7CF', star: '#AEB29B', hl: 'rgba(120,140,75,0.92)' },
-    girly:    { cls: 'girly',   ink: '#2A0E1E', sub: '#8A2B5E', acc: '#E84B9C', accInk: '#FFF3FA', navBg: '#F25CA2', navInk: '#FFFFFF', star: '#D6277E', hl: 'rgba(233,59,146,0.92)' },
+    girly:    { cls: 'girly',   ink: '#2A0E1E', sub: '#8A2B5E', acc: '#E84B9C', accInk: '#3A0E26', navBg: '#F25CA2', navInk: '#3A0E26', star: '#D6277E', hl: 'rgba(233,59,146,0.92)' },
     poker:    { cls: 'poker',   ink: '#F2E4C8', sub: '#D9B989', acc: '#D4AF37', accInk: '#2A1810', navBg: '#D4AF37', navInk: '#2A1810', star: '#D4AF37', hl: 'rgba(31,107,58,0.92)' },
     mermaid:  { cls: 'mermaid', ink: '#0E4A5C', sub: '#1B6B7D', acc: '#FF7E67', accInk: '#4A160D', navBg: '#0E4A5C', navInk: '#E9FBFF', star: '#D9553C', hl: 'rgba(255,126,103,0.85)' },
     // 2026-07-11 late: the 4 newer board themes, ported from app.js THEMES so the tracker

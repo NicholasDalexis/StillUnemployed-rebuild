@@ -202,14 +202,14 @@
         "low": {
           "background": "linear-gradient(160deg,#FBEFF1 0%,#F3C9D2 100%)",
           "ink": "#5A2230",
-          "apply": "#A83048",
+          "apply": "#5A2230",
           "stamp": "#5A2230",
           "stampHTML": "\u003cdiv class=\"\" style=\"display: inline-flex; align-items: center; gap: 5px; border: 1.6px solid; color: #5A2230; border-radius: 4px; padding: 3px 8px; transform: rotate(-4deg); font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; opacity: 0.72;\">\u003csvg width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"none\" style=\"flex: none;\">\u003ccircle cx=\"12\" cy=\"12\" r=\"9\" stroke=\"currentColor\" stroke-width=\"2.4\">\u003c/circle>\u003cpath d=\"M8.3 12.2l2.4 2.4 4.9-5\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\u003c/path>\u003c/svg>Human verified\u003c/div>"
         },
         "mid": {
           "background": "linear-gradient(160deg,#F5D3DA 0%,#EAB4C0 100%)",
           "ink": "#5A2230",
-          "apply": "#A83048",
+          "apply": "#5A2230",
           "stamp": "#5A2230",
           "stampHTML": "\u003cdiv class=\"\" style=\"display: inline-flex; align-items: center; gap: 5px; border: 1.6px solid; color: #5A2230; border-radius: 4px; padding: 3px 8px; transform: rotate(-4deg); font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; opacity: 0.72;\">\u003csvg width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"none\" style=\"flex: none;\">\u003ccircle cx=\"12\" cy=\"12\" r=\"9\" stroke=\"currentColor\" stroke-width=\"2.4\">\u003c/circle>\u003cpath d=\"M8.3 12.2l2.4 2.4 4.9-5\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\u003c/path>\u003c/svg>Human verified\u003c/div>"
         },
@@ -259,14 +259,14 @@
       },
       "palette": {
         "acc": "#E84B9C",
-        "accInk": "#FFF3FA",
+        "accInk": "#3A0E26",
         "cls": "girly",
         "ink": "#2A0E1E",
         "sub": "#8A2B5E",
         "pay": "#8A2B5E",
         "show": "#8A2B5E",
         "navBg": "#F25CA2",
-        "navInk": "#FFFFFF",
+        "navInk": "#3A0E26",
         "hl": "rgba(233,59,146,0.92)",
         "hiCard": "linear-gradient(160deg,#FF77BC 0%,#F23E98 100%)",
         "hiInk": "#3A0E26",
@@ -360,21 +360,21 @@
         "low": {
           "background": "linear-gradient(160deg,#FFFFFF 0%,#EAF6F6 55%,#F5EEF7 100%)",
           "ink": "#0E4A5C",
-          "apply": "#D9553C",
+          "apply": "#0E4A5C",
           "stamp": "#0E4A5C",
           "stampHTML": "\u003cdiv class=\"\" style=\"display: inline-flex; align-items: center; gap: 5px; border: 1.6px solid; color: #0E4A5C; border-radius: 4px; padding: 3px 8px; transform: rotate(-4deg); font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; opacity: 0.72;\">\u003csvg width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"none\" style=\"flex: none;\">\u003ccircle cx=\"12\" cy=\"12\" r=\"9\" stroke=\"currentColor\" stroke-width=\"2.4\">\u003c/circle>\u003cpath d=\"M8.3 12.2l2.4 2.4 4.9-5\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\u003c/path>\u003c/svg>Human verified\u003c/div>"
         },
         "mid": {
           "background": "linear-gradient(160deg,#FDFEFF 0%,#DFF2F1 55%,#F0E7F4 100%)",
           "ink": "#0E4A5C",
-          "apply": "#D9553C",
+          "apply": "#0E4A5C",
           "stamp": "#0E4A5C",
           "stampHTML": "\u003cdiv class=\"\" style=\"display: inline-flex; align-items: center; gap: 5px; border: 1.6px solid; color: #0E4A5C; border-radius: 4px; padding: 3px 8px; transform: rotate(-4deg); font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; opacity: 0.72;\">\u003csvg width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"none\" style=\"flex: none;\">\u003ccircle cx=\"12\" cy=\"12\" r=\"9\" stroke=\"currentColor\" stroke-width=\"2.4\">\u003c/circle>\u003cpath d=\"M8.3 12.2l2.4 2.4 4.9-5\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\u003c/path>\u003c/svg>Human verified\u003c/div>"
         },
         "high": {
           "background": "linear-gradient(160deg,#177287 0%,#0E4A5C 100%)",
           "ink": "#F2FBFA",
-          "apply": "#FFC7B8",
+          "apply": "#F2FBFA",
           "stamp": "#EAF7F4",
           "stampHTML": "\u003cdiv class=\"\" style=\"display: inline-flex; align-items: center; gap: 5px; border: 1.6px solid; color: #EAF7F4; border-radius: 4px; padding: 3px 8px; transform: rotate(-4deg); font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; opacity: 0.72;\">\u003csvg width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"none\" style=\"flex: none;\">\u003ccircle cx=\"12\" cy=\"12\" r=\"9\" stroke=\"currentColor\" stroke-width=\"2.4\">\u003c/circle>\u003cpath d=\"M8.3 12.2l2.4 2.4 4.9-5\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\u003c/path>\u003c/svg>Human verified\u003c/div>"
         }
@@ -448,7 +448,7 @@
         "mid": {
           "background": "linear-gradient(160deg,#EAF7C4 0%,#DCEF9E 100%)",
           "ink": "#1A2A0A",
-          "apply": "#3A7A00",
+          "apply": "#1A2A0A",
           "stamp": "#1A2A0A",
           "stampHTML": "\u003cdiv class=\"\" style=\"display: inline-flex; align-items: center; gap: 5px; border: 1.6px solid; color: #1A2A0A; border-radius: 4px; padding: 3px 8px; transform: rotate(-4deg); font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; opacity: 0.72;\">\u003csvg width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"none\" style=\"flex: none;\">\u003ccircle cx=\"12\" cy=\"12\" r=\"9\" stroke=\"currentColor\" stroke-width=\"2.4\">\u003c/circle>\u003cpath d=\"M8.3 12.2l2.4 2.4 4.9-5\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\u003c/path>\u003c/svg>Human verified\u003c/div>"
         },

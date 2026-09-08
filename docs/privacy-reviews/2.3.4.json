@@ -1,20 +1,18 @@
 {
-  "version": "2.3.5",
+  "version": "2.3.4",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-08T02:07:18.128108+00:00",
+  "reviewedAt": "2026-09-08T01:33:08.935416+00:00",
   "reviewer": "Codex/Astra with independent saved-data, controls and release reviewers",
-  "sourceDigest": "deb198ab47d8eca9856e050d7c8bf932e466f9c56fcf9ebf6dae3a278aef5731",
+  "sourceDigest": "610466d57ebb4b1ea4b7a65934d8992d5a577b94cc28248d952d384c57077da4",
   "sourceFileCount": 146,
-  "privacyChanged": false,
-  "termsChanged": false,
-  "scope": "2.3.5 completes the same preview QA with readable Apply defaults/hover, Girlies navigation and Tracker status, and a readable filter-count badge. Visual-only correction after 2.3.4; no new data flow, provider, persistence, permission or consent change. Existing operational open items are preserved.",
+  "privacyChanged": true,
+  "termsChanged": true,
+  "scope": "Saved public-card snapshots and confirmed retirement backfill; verified QA exclusion; compact internship pay and decorative papers; accessible notebook controls, smaller theme chooser, quieter feedback and preserved embedded signup.",
   "checks": {
     "integratedTests": 673,
     "finalThemeTests": 63,
     "independentTargetedTests": 192,
-    "browser": "Native WebKit390px all eight internship themes: diverse first3 papers, full-opacity stamps,58px bookmarks,no horizontal overflow. At320px menus mutually exclude, State first, Any/Paid only, outside click dismisses. Actual Beehiiv iframe email input and Subscribe rendered; no external fallback. The final narrow theme label adjustment is covered by63 focused tests; hosted acceptance follows. Real cross-device auth and physical iPhone certification not claimed.",
-    "themeContrast": "Expanded regression: all8themes x3papers on Jobs/Internships, normal/hover plus Girlies board/tracker nav/accent and filter badge.27pass correctedsource;11fail on prior71a3dff proving regressioncoverage. Full rerun pending receipt.",
-    "finalFullSuite": "691/691 tests passed after all2.3.5 code, generated catalog and source seal changes. Expanded contrast regression27/27pass; prior2.3.4fixture11fail verifies meaningful coverage."
+    "browser": "Native WebKit390px all eight internship themes: diverse first3 papers, full-opacity stamps,58px bookmarks,no horizontal overflow. At320px menus mutually exclude, State first, Any/Paid only, outside click dismisses. Actual Beehiiv iframe email input and Subscribe rendered; no external fallback. The final narrow theme label adjustment is covered by63 focused tests; hosted acceptance follows. Real cross-device auth and physical iPhone certification not claimed."
   },
   "baselineReview": "docs/privacy-reviews/2.3.3.json",
   "openItems": [

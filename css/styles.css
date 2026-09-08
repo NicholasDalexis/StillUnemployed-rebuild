@@ -166,7 +166,7 @@ body { margin: 0; background: #EFE6D4; }
     }
     .note:hover .doodle-arrow { transform: translateX(5px) rotate(-3deg); }
     .doodle-arrow { transition: transform .24s cubic-bezier(.2,.9,.3,1.4); }
-    .applylink2:hover { color: #B23A1E !important; }
+    .applylink2:hover { text-decoration: underline; text-underline-offset: 4px; }
     .bmbtn { transition: transform .14s ease; }
     .bmbtn:hover { transform: scale(1.22) rotate(-7deg); }
     .tab:hover { filter: brightness(1.03); }

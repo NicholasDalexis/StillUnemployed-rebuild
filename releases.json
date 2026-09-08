@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.3.4",
+  "currentVersion": "2.3.5",
   "releases": [
+    {
+      "version": "2.3.5",
+      "date": "2026-09-07",
+      "title": "Readable actions across every theme",
+      "changes": [
+        "Apply links on Jobs now share the readable paper-specific ink already used by internships. Hover underlines preserve contrast. Girlies navigation and Tracker status use matching dark ink; filter counts have a darker readable badge."
+      ],
+      "public": {
+        "title": "Clearer actions in every theme",
+        "changes": [
+          "Apply links, navigation and filter counts are easier to read, including on pink and dark themes."
+        ]
+      }
+    },
     {
       "version": "2.3.4",
       "date": "2026-09-07",
@@ -291,7 +305,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "610466d57ebb4b1ea4b7a65934d8992d5a577b94cc28248d952d384c57077da4",
+    "digest": "deb198ab47d8eca9856e050d7c8bf932e466f9c56fcf9ebf6dae3a278aef5731",
     "fileCount": 146
   }
 }

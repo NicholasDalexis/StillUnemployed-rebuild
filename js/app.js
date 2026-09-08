@@ -932,7 +932,7 @@
     // ---- "Change Look?" palettes — values copied VERBATIM from MAIN FILE.dc.html ----
     THEMES: {
       cod:      { acc:'#555B38', accInk:'#EDE7CF', cls:'cod',   ink:'#E9E3D2', sub:'#AEB29B', pay:'#AEB29B', show:'#AEB29B', navBg:'#5C6B3A', navInk:'#EDE7CF', hl:'rgba(120,140,75,0.92)', hiCard:'linear-gradient(160deg,#5C6440 0%,#4B5234 100%)', hiInk:'#F1E9D8', hiApply:'#FFFFFF', hiStamp:'#FFFFFF', payHi:'linear-gradient(160deg,#5C6440,#4B5234)' },
-      girly:    { acc:'#E84B9C', accInk:'#FFF3FA', cls:'girly', ink:'#2A0E1E', sub:'#8A2B5E', pay:'#8A2B5E', show:'#8A2B5E', navBg:'#F25CA2', navInk:'#FFFFFF', hl:'rgba(233,59,146,0.92)', hiCard:'linear-gradient(160deg,#FF77BC 0%,#F23E98 100%)', hiInk:'#3A0E26', hiApply:'#3A0E26', hiStamp:'#3A0E26', payHi:'linear-gradient(160deg,#FF77BC,#F23E98)' },
+      girly:    { acc:'#E84B9C', accInk:'#3A0E26', cls:'girly', ink:'#2A0E1E', sub:'#8A2B5E', pay:'#8A2B5E', show:'#8A2B5E', navBg:'#F25CA2', navInk:'#3A0E26', hl:'rgba(233,59,146,0.92)', hiCard:'linear-gradient(160deg,#FF77BC 0%,#F23E98 100%)', hiInk:'#3A0E26', hiApply:'#3A0E26', hiStamp:'#3A0E26', payHi:'linear-gradient(160deg,#FF77BC,#F23E98)' },
       original: { acc:'#F2E14B', accInk:'#2A2118', cls:'',      ink:'#2A2118', sub:'#6F5E45', pay:'#9C8367', show:'#3A2A1B', navBg:'var(--su-yellow-paper)', navInk:'#1f1c14', hl:'rgba(238,224,70,0.95)', hiCard:'var(--su-yellow-paper)', hiInk:'#2A2118', hiApply:'var(--su-orange-on-card)', hiStamp:'#3A2A1B', payHi:'var(--su-yellow-paper)' },
       // poker + mermaid extend the shape with optional card overrides (lowCard/midCard/baseInk/
       // baseApply/baseStamp) and a featured-pick treatment (pickCard/pickInk/pickApply/pickStamp/
@@ -1715,7 +1715,7 @@
         var applyColor = (tier === 'high') ? P.hiApply : (tier === 'mid' && P.midApply) ? P.midApply : (P.baseApply || 'var(--su-orange-on-card)');
         // These small action labels need the stronger matching ink on paper
         // variants where the theme's decorative accent has low contrast.
-        if(j.internship && (mermaid || (bratt && tier === 'mid') || (beauty && tier !== 'high')))applyColor=ink;
+        if(mermaid || (bratt && tier === 'mid') || (beauty && tier !== 'high'))applyColor=ink;
         var stampColor = j.internship ? ink : (tier === 'high') ? P.hiStamp : (tier === 'mid' && P.midStamp) ? P.midStamp : (P.baseStamp || '#3A2A1B');
         var gStamp = j.internship ? ink : (tier === 'high') ? '#FFFFFF' : '#C24A78'; // girly heart-stamp color
         var hasNote = !!noteFor[k];
@@ -1897,7 +1897,7 @@
 
       var filterBadge = filterCount > 0 ? String(filterCount) : '';
       var filterBadgeStyle = filterCount > 0
-        ? 'display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:18px; padding:0 5px; box-sizing:border-box; border-radius:999px; background:#D8502E; color:#fff; font-size:11px; font-weight:700;'
+        ? 'display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:18px; padding:0 5px; box-sizing:border-box; border-radius:999px; background:#A23C20; color:#fff; font-size:11px; font-weight:700;'
         : 'display:none;';
 
       // ---- active chips ----

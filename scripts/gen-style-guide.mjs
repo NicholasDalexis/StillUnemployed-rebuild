@@ -160,7 +160,7 @@ export function buildCatalog(root = ROOT) {
     const gutter = theme.look === 'original' ? canvasStyle['background-color'] : declarations(block(css, 'body.theme-' + theme.look).slice(1, -1)).background.replace(/\s*!important$/, '');
     const palette = Object.fromEntries(Object.entries(P).filter(([key]) => !key.startsWith('pick')).map(([key, value]) => [key, resolveTokens(value)]));
     const bands = Object.fromEntries(['low', 'mid', 'high'].map(tier => {
-      const context = { P, tier, j:{internship:false}, cod:false, girly:theme.look === 'girly', stampClass:'', html:'' };
+      const context = { P, tier, j:{internship:false}, cod:false, girly:theme.look === 'girly', mermaid:theme.look === 'mermaid', bratt:theme.look === 'bratt', beauty:theme.look === 'beauty', stampClass:'', html:'' };
       const band = evaluate(bandCode + '\n({background:bg,ink:ink,apply:applyColor,stamp:stampColor})', context);
       evaluate(stampColorCode + '\n' + stampCode, context);
       if (context.girly) band.stamp=context.gStamp;
