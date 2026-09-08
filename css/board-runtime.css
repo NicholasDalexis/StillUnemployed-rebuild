@@ -21,7 +21,10 @@
 .su-pay-key{display:flex;align-items:center;flex-wrap:wrap;gap:8px 20px}
 .su-board-utilities{display:flex;align-items:center;justify-content:flex-end;gap:12px 24px;margin-left:auto;font:18px/1.4 var(--su-hand,'Indie Flower',cursive)}
 .su-results-count{white-space:nowrap}.su-internship-summary{font:19px/1.4 var(--su-hand,'Indie Flower',cursive)}
-.su-board-menu{position:relative;z-index:100}
+/* The closed summary must sit below the toolbar panels (40), while an open
+   disclosure still clears the cards. Closing details alone does not lower it. */
+.su-board-menu{position:relative;z-index:10}
+.su-board-menu[open]{z-index:100}
 .su-board-menu summary{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 2px;cursor:pointer;list-style:none;text-decoration:underline;text-underline-offset:4px}
 .su-board-menu summary::-webkit-details-marker{display:none}
 .su-board-menu[open] summary svg{transform:rotate(180deg)}

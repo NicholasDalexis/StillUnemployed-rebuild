@@ -1,22 +1,19 @@
 {
-  "version": "2.3.5",
+  "version": "2.3.6",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-08T02:07:18.128108+00:00",
-  "reviewer": "Codex/Astra with independent saved-data, controls and release reviewers",
-  "sourceDigest": "deb198ab47d8eca9856e050d7c8bf932e466f9c56fcf9ebf6dae3a278aef5731",
+  "reviewedAt": "2026-09-08T02:48:42.963868+00:00",
+  "reviewer": "Codex/Astra root and independent catalog reviewer",
+  "sourceDigest": "89593c76dcef0c502221c8f9fb496fc2312797867941563357456bd5e2cd05e7",
   "sourceFileCount": 146,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "2.3.5 completes the same preview QA with readable Apply defaults/hover, Girlies navigation and Tracker status, and a readable filter-count badge. Visual-only correction after 2.3.4; no new data flow, provider, persistence, permission or consent change. Existing operational open items are preserved.",
+  "scope": "2.3.6: closed Board menu stays below All Roles and Filters; open disclosure keeps its existing layer. CSS stacking correction only; no event, data, provider, storage, account, consent or legal behavior changed.",
   "checks": {
-    "integratedTests": 673,
-    "finalThemeTests": 63,
-    "independentTargetedTests": 192,
-    "browser": "Native WebKit390px all eight internship themes: diverse first3 papers, full-opacity stamps,58px bookmarks,no horizontal overflow. At320px menus mutually exclude, State first, Any/Paid only, outside click dismisses. Actual Beehiiv iframe email input and Subscribe rendered; no external fallback. The final narrow theme label adjustment is covered by63 focused tests; hosted acceptance follows. Real cross-device auth and physical iPhone certification not claimed.",
-    "themeContrast": "Expanded regression: all8themes x3papers on Jobs/Internships, normal/hover plus Girlies board/tracker nav/accent and filter badge.27pass correctedsource;11fail on prior71a3dff proving regressioncoverage. Full rerun pending receipt.",
-    "finalFullSuite": "691/691 tests passed after all2.3.5 code, generated catalog and source seal changes. Expanded contrast regression27/27pass; prior2.3.4fixture11fail verifies meaningful coverage."
+    "targetedTests": "85/85 passed, including four new CSS stacking regressions that fail on prior 2.3.5 source.",
+    "native": "WebKit at390px Internships and320px Jobs: Filters X hit-test passes, All Roles covers closed menu summary, outside click dismisses and reopening Board menu restores layer100; no horizontal overflow.",
+    "fullSuite": "695/695 final tests passed; zero failures, skipped or cancelled."
   },
-  "baselineReview": "docs/privacy-reviews/2.3.3.json",
+  "baselineReview": "docs/privacy-reviews/2.3.5.json",
   "openItems": [
     "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
     "Function-scoped Firebase and Netlify configuration and actual owner UID",
@@ -32,5 +29,5 @@
     "Search Console domain property Not verified; Bing has no existing IAB session",
     "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive"
   ],
-  "policySummary": "Privacy describes retained public pay/location/summary snapshots and last-stock-note counter; removes retired Preferred Sources placement. Terms describes rounding and the explicitly requested sub100 single-amount hourly display convention. Source compensation records stay unchanged. Engineering review, not legal certification."
+  "policySummary": "Privacy and Terms reviewed, no wording change needed for CSS-only layering correction. Previous operational limits stay open. Engineering review, not legal certification."
 }
