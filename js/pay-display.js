@@ -22,8 +22,8 @@
   }
   function parse(value, fallbackBasis) {
     var prefix = '';
-    value = value.trim().replace(/^(?:up to|at most|maximum(?: salary)?\s*:?)\s*/i, function () { prefix = 'Up to '; return ''; })
-      .replace(/^(?:from|starting at|at least|minimum(?: salary)?\s*:?)\s*/i, function () { prefix = 'From '; return ''; })
+    value = value.trim().replace(/^(?:up to|at most|maximum(?: salary)?\s*:?)\s*/i, function () { prefix = '≤'; return ''; })
+      .replace(/^(?:from|starting at|at least|minimum(?: salary)?\s*:?)\s*/i, function () { prefix = '+'; return ''; })
       .replace(/^(?:~|approximately|approx\.?|estimated)\s*/i, function () { prefix = '~'; return ''; });
     var match = value.match(AMOUNTS);
     if (!match) return null;
@@ -40,9 +40,9 @@
     if (!Number.isFinite(low) || !Number.isFinite(high) || low < 0 || high < low) return null;
     var explicitBasis = basisOf(value), basis = explicitBasis || fallbackBasis || '';
     if (/\btime unit not listed\b/i.test(value)) basis = '';
-    if (!prefix && /\bminimum\b|\+$/i.test(rest.trim())) prefix = 'From ';
+    if (!prefix && /\bminimum\b|\+$/i.test(rest.trim())) prefix = '+';
     if (!prefix && /\bestimat(?:ed|e)|\bapprox(?:imate(?:ly)?)?\b/i.test(rest)) prefix = '~';
-    return { low:low, high:high, currency:currencies[0] || '', basis:basis, prefix:prefix, k:firstK || secondK };
+    return { low:low, high:high, currency:currencies[0] || '', basis:basis, prefix:prefix, k:firstK || secondK, range:hasRange };
   }
   function whole(value) { return String(Math.round(value)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
   function label(parsed) {
@@ -52,20 +52,23 @@
     function amount(value) { return useK ? String(Math.round(value / 1000)) + 'K' : whole(value); }
     var low = amount(parsed.low), high = amount(parsed.high);
     var suffix = { hour:'/hour', week:'/week', month:'/month', program:'/program', annualized_year:'/year', year:'/year' }[parsed.basis] || '';
-    return parsed.prefix + parsed.currency + low + (low === high ? '' : '–' + high) + suffix;
+    return (parsed.prefix === '+' ? '' : parsed.prefix) + parsed.currency + low + (low === high ? '' : '–' + high) + (parsed.prefix === '+' ? '+' : '') + suffix;
   }
   function compact(pay, options) {
     options = options || {};
     var value = typeof pay === 'string' ? pay.trim() : '';
     if (options.status === 'unpaid' || /^unpaid\b/i.test(value)) return 'Unpaid';
     if (options.status === 'not_disclosed') return 'Pay not disclosed';
-    if (!value || !/\d/.test(value)) return options.status === 'paid' || /^paid\b/i.test(value) ? 'Paid' : 'Pay not disclosed';
+    if (!value || !/\d/.test(value)) return options.status === 'paid' || /^paid\b/i.test(value) ? '$ Paid' : 'Pay not disclosed';
     // Semicolon-separated student rates become a compact envelope. Their exact
     // qualification-specific rates and all caveats remain in the original pay.
     var parts = value.replace(/\([^)]*\)/g, '').split(';');
     var fallbackBasis = /\btime unit not listed\b/i.test(value) ? '' : options.basis;
     var parsed = parse(parts[0], fallbackBasis);
     if (!parsed) return value;
+    // Nic's internship-only display convention. An explicit period always wins;
+    // never apply it to ranges, multiple rates, K amounts or the Jobs board.
+    if (options.internship === true && parts.length === 1 && !parsed.range && !parsed.k && parsed.low > 0 && parsed.low < 100 && !basisOf(value) && (!parsed.basis || parsed.basis === 'not_listed')) parsed.basis = 'hour';
     if (/\b(?:estimated|approximately|approximate|projected)\b/i.test(value) && !parsed.prefix) parsed.prefix = '~';
     for (var i = 1; i < parts.length; i++) {
       var next = parse(parts[i], fallbackBasis);

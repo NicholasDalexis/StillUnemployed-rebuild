@@ -2,10 +2,10 @@ const {test}=require('node:test'),assert=require('node:assert/strict');
 const D=require('../../js/discovery.js'),P=require('../../js/personalization.js'),S=require('../../js/sync-store.js'),I=require('../../js/internships.js'),ID=require('../../js/job-identity.js');
 function storage(){const m=new Map();return{getItem:k=>m.get(k)||null,setItem:(k,v)=>m.set(k,v),removeItem:k=>m.delete(k)};}
 const job=(ind,n,pay='$80K',role=ind)=>({co:'Fixture',link:'https://example.org/jobs/'+n,role,ind,pay,loc:'Chicago',desc:''});
-function fixture(){const events={},clicks={},ls=storage(),store=S.create(ls);let authenticated=false,ready=false;
- const root={SUStore:store,localStorage:ls,SUJobIdentity:ID,SUPersonalization:P,SUAnalytics:{profile:()=>({})},SUAuth:{signedIn:()=>authenticated,syncReady:()=>ready},addEventListener:(e,f)=>(events[e]||(events[e]=[])).push(f),document:{querySelector:()=>null,getElementById:()=>null,addEventListener:(e,f)=>clicks[e]=f}};
+function fixture(){const events={},clicks={},ls=storage(),store=S.create(ls);let authenticated=false,ready=false,clock=0,nextTimer=0;const timers=new Map();
+ const root={setTimeout:(fn,ms)=>{const id=++nextTimer;timers.set(id,{fn,at:clock+ms});return id;},clearTimeout:id=>timers.delete(id),SUStore:store,localStorage:ls,SUJobIdentity:ID,SUPersonalization:P,SUAnalytics:{profile:()=>({})},SUAuth:{signedIn:()=>authenticated,syncReady:()=>ready},addEventListener:(e,f)=>(events[e]||(events[e]=[])).push(f),document:{querySelector:()=>null,getElementById:()=>null,addEventListener:(e,f)=>clicks[e]=f}};
  const app={jobs:[job('Brand & Marketing',1)],state:{cat:'all'},render(){},matchesBase:()=>true};const d=D.create(root);d.start(app);
- return {d,store,root,app,sign(uid){authenticated=!!uid;ready=false;store.activate(uid);(events['su:auth-changed']||[]).forEach(f=>f());},ready(){ready=true;(events['su:account-ready']||[]).forEach(f=>f());},action(action,extra={}){clicks.click({preventDefault(){},target:{closest:()=>({getAttribute:k=>k==='data-discovery'?action:extra[k]})}});},html:()=>d.html(x=>String(x).replace(/[<>]/g,'')),ls};
+ return {d,store,root,app,advance(ms){clock+=ms;for(const [id,timer] of timers)if(timer.at<=clock){timers.delete(id);timer.fn();}},sign(uid){authenticated=!!uid;ready=false;store.activate(uid);(events['su:auth-changed']||[]).forEach(f=>f());},ready(){ready=true;(events['su:account-ready']||[]).forEach(f=>f());},action(action,extra={}){clicks.click({preventDefault(){},target:{closest:()=>({getAttribute:k=>k==='data-discovery'?action:extra[k]})}});},html:()=>d.html(x=>String(x).replace(/[<>]/g,'')),ls};
 }
 test('starter six keep the intended lanes, highest annual minimum, with no duplicates',()=>{
  const jobs=[job('Fashion Design',0,'$180K','Technical Designer'),job('Brand & Marketing',1,'$75K'),job('Brand & Marketing',2,'$105K'),job('Video & Creative',3,'$110K','Graphic Designer'),job('UX/UI Design',4,'$100K','Product Designer'),job('Photography',5,'$75K'),job('Social',6,'$125K'),job('Content & Copy',7,'$95K')];
@@ -77,4 +77,12 @@ test('Board menu tools reflect only the current account and expose disabled empt
  f.sign('alice');assert.equal(f.d.hiddenCount(),0);assert.match(f.d.toolsHTML(String),/id="su-preferences-open"[^>]*data-discovery="settings"/);assert.equal(f.html(),'');
  f.d.dismiss(f.app.jobs[0].link,'applied');assert.equal(f.d.hiddenCount(),1);f.sign('bob');assert.equal(f.d.hiddenCount(),0);assert.equal(f.html(),'');
  f.sign('alice');assert.equal(f.d.hiddenCount(),1);f.sign(null);assert.equal(f.d.hiddenCount(),1,'guest history stays separate and returns only for the guest');
+});
+
+
+test('dismissal notice expires after five seconds, resets for a new action and never crosses account ownership',()=>{
+ const f=fixture();f.sign('alice');f.d.dismiss(f.app.jobs[0].link,'not_fit');assert.match(f.html(),/su-discovery-feedback/);f.advance(4999);assert.match(f.html(),/Undo/);
+ f.d.dismiss('https://example.org/jobs/2','applied');f.advance(1);assert.match(f.html(),/Application noted/);f.advance(4999);assert.equal(f.html(),'');assert(f.d.hidden(f.app.jobs[0]),'expiry only clears the notice, not the saved disposition');
+ f.d.dismiss(f.app.jobs[0].link,'not_fit');f.sign('bob');f.advance(5000);assert.equal(f.html(),'');assert.equal(f.d.hidden(f.app.jobs[0]),false);
+ f.d.dismiss(f.app.jobs[0].link,'not_fit');f.action('undo');assert.match(f.html(),/Restored/);f.advance(5000);assert.equal(f.html(),'');assert.equal(f.d.hidden(f.app.jobs[0]),false);
 });

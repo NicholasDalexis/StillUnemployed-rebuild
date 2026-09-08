@@ -14,12 +14,18 @@
   function stored(k){try{return localStorage.getItem(k);}catch(e){return null;}}
   function put(k,v){try{if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){}}
   function choices(){return {analytics:stored('su_consent_v3')==='granted'&&!navigator.globalPrivacyControl,personalization:stored('su_personalization_v1')==='granted'};}
-  function excluded(){return stored('su_admin')==='1';}
+  function excluded(){return stored('su_admin')==='1'||!!(window.SUAuth&&window.SUAuth.measurementExcluded&&window.SUAuth.measurementExcluded());}
+  function identityReady(){
+    // Module initialization can follow this deferred script. Do not count an
+    // unresolved preview account as anonymous while Firebase is still loading.
+    if(!window.SUAuth&&location.hostname&&!/^(www\.)?stillunemployed\.com$/.test(location.hostname)&&document.querySelector&&document.querySelector('script[src^="js/auth.js"]'))return false;
+    return !window.SUAuth||!window.SUAuth.measurementReady||window.SUAuth.measurementReady();
+  }
   function signedIn(){return !!(window.SUAuth&&window.SUAuth.signedIn());}
   function randomId(){if(!window.crypto||!window.crypto.getRandomValues)return null;var a=new Uint8Array(16);window.crypto.getRandomValues(a);return Array.from(a).map(function(x){return x.toString(16).padStart(2,'0');}).join('');}
   function page(){var p=location.pathname;return /^\/internships/.test(p)?'internships':/^\/(jobs|j\/)/.test(p)?'board':/tracker/.test(p)?'tracker':/privacy/.test(p)?'privacy':/terms/.test(p)?'terms':/suggest/.test(p)?'suggest':p==='/'||/index/.test(p)?'home':'other';}
   function identifiers(){if(!session){try{var prior=JSON.parse(sessionStorage.getItem('su_analytics_session')||'null');if(prior&&Date.now()-prior.at<1800000){session=prior.id;sessionAt=prior.at;}}catch(e){}}if(!visitor){visitor=stored('su_analytics_visitor')||randomId();if(visitor&&choices().analytics)put('su_analytics_visitor',visitor);}if(!session||Date.now()-sessionAt>1800000){session=randomId();}sessionAt=Date.now();try{sessionStorage.setItem('su_analytics_session',JSON.stringify({id:session,at:sessionAt}));}catch(e){}return !!visitor&&!!session;}
-  function consentEnabled(){var c=choices();return !excluded()&&(c.analytics||(c.personalization&&signedIn()));}
+  function consentEnabled(){var c=choices();return identityReady()&&!excluded()&&(c.analytics||(c.personalization&&signedIn()));}
   function emit(name,params){
     var countOnly=COUNT_ONLY_EVENTS.indexOf(name)>=0;
     if(countOnly&&!choices().analytics)return;
@@ -65,10 +71,10 @@
   }
   async function loadProfile(){
     var epoch=authEpoch;profile={};
-    if(!signedIn()||!choices().personalization||excluded())return;
+    if(!identityReady()||!signedIn()||!choices().personalization||excluded())return;
     try{var token=await window.SUAuth.getToken();var r=await fetch(PROFILE,{headers:{Authorization:'Bearer '+token},credentials:'same-origin',cache:'no-store'});if(!r.ok)throw new Error('profile');var data=await r.json();if(epoch!==authEpoch||!signedIn()||!choices().personalization)return;profile=data.jobs||{};generation++;window.dispatchEvent(new CustomEvent('su:profile-ready',{detail:{generation:generation}}));}catch(e){}
   }
-  function tick(){var now=Date.now();if(choices().analytics&&!excluded()&&!document.hidden&&now-lastActivity<=60000)activeSeconds+=Math.min(5,(now-activeAt)/1000);activeAt=now;}
+  function tick(){var now=Date.now();if(identityReady()&&choices().analytics&&!excluded()&&!document.hidden&&now-lastActivity<=60000)activeSeconds+=Math.min(5,(now-activeAt)/1000);activeAt=now;}
   function flushEngagement(){tick();if(activeSeconds>=1){emit('page_engagement',{seconds:Math.min(900,Math.round(activeSeconds))});activeSeconds=0;}flush();}
   function visibility(){
     tick();
@@ -80,7 +86,7 @@
     if(signedIn()||visitor||stored('su_analytics_visitor')){var headers={'Content-Type':'application/json'};if(signedIn())headers.Authorization='Bearer '+await window.SUAuth.getToken();var r=await fetch(PROFILE,{method:'DELETE',headers:headers,body:JSON.stringify({visitor:visitor||stored('su_analytics_visitor')}),credentials:'same-origin'});if(!r.ok)throw new Error('Reset could not finish. Please try again.');}
     put('su_analytics_visitor',null);visitor=null;window.dispatchEvent(new CustomEvent('su:profile-ready',{detail:{generation:generation,reset:true}}));
   }
-  window.SUAnalytics={emit:emit,job:jobEvent,registerJobs:registerJobs,flush:flush,choices:choices,profile:function(){return profile;},generation:function(){return generation;},reset:reset,loadProfile:loadProfile};
+  window.SUAnalytics={emit:emit,job:jobEvent,registerJobs:registerJobs,flush:flush,choices:choices,excluded:excluded,profile:function(){return profile;},generation:function(){return generation;},reset:reset,loadProfile:loadProfile};
   window.suTrack=function(action,company,role,link){
     if(action==='cta'){var eventName={newsletter:'newsletter_click',story:'founder_open',carousel:'board_open'}[company];if(eventName)emit(eventName,{});return;}
     if(action==='themevote'){

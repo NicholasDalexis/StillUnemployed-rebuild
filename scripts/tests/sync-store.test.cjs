@@ -13,7 +13,7 @@ test('four anonymous saved jobs reach a second device; both devices retain their
 test('unsave and application removal survive a stale device reconnect',()=>{
  const a=S.create(memory());a.saveSaved({job:true});a.saveTracker([{link:'job',id:'a',status:'Applied'}]);
  const stale=a.snapshot();a.saveSaved({});a.saveTracker([]);a.receive(stale);
- assert.deepEqual(view(a),{saved:{},tracker:[]});
+ assert.deepEqual(view(a),{saved:{},savedJobs:{},tracker:[]});
 });
 test('linkless manual applications survive; tracker status and notes propagate',()=>{
  const a=S.create(memory());a.saveTracker([{id:'manual',link:'',status:'Applied',notes:''}]);
@@ -110,7 +110,7 @@ test('stopped listeners and stale account callbacks cannot alter status or start
  const live=S.connect(a,{listen:(ok,bad)=>{receive=ok;failure=bad;return()=>{};},transaction:async r=>r},s=>statuses.push(s));
  const b=S.create(storage);b.activate('bob');const after=statuses.slice();
  failure(Error('old account listener'));receive({saved:{alice:true}});live.queue();await live.flush();
- assert.deepEqual(statuses,after);assert.deepEqual(b.view(),{saved:{},tracker:[]});live.stop();
+ assert.deepEqual(statuses,after);assert.deepEqual(b.view(),{saved:{},savedJobs:{},tracker:[]});live.stop();
 });
 
 test('a failed snapshot releases the in-flight guard so explicit retry can recover',async()=>{
@@ -135,7 +135,7 @@ test('a legacy mirror failure keeps the durable account view authoritative and i
  const storage=memory();const write=storage.setItem;const a=S.create(storage);a.activate('alice');
  storage.setItem=(key,value)=>{if(key==='su_saved_jobs'||key==='su_tracker')throw Error('Mirror full');write(key,value);};
  a.saveSaved({kept:true});a.saveTracker([{id:'manual',notes:'Saved'}]);
- assert.deepEqual(a.view(),{saved:{kept:true},tracker:[{id:'manual',notes:'Saved'}]});
+ assert.deepEqual(a.view(),{saved:{kept:true},savedJobs:{},tracker:[{id:'manual',notes:'Saved'}]});
  const exposed=a.view();exposed.saved.unsafe=true;exposed.tracker[0].notes='Not saved';assert.equal(a.view().tracker[0].notes,'Saved');assert.equal(a.view().saved.unsafe,undefined);
  assert.deepEqual(JSON.parse(storage.getItem('su_saved_jobs')),{});
 });
@@ -143,7 +143,7 @@ test('a legacy mirror failure keeps the durable account view authoritative and i
 test('cross-tab ownership blocks stale writes and hides the previous account immediately',()=>{
  const storage=memory({su_saved_jobs:{guest:true}}),a=S.create(storage),stale=S.create(storage);
  a.activate('alice');a.saveSaved({guest:true,alice:true});
- assert.equal(stale.current(),false);assert.deepEqual(stale.view(),{saved:{},tracker:[]});assert.deepEqual(stale.discovery(),{});
+ assert.equal(stale.current(),false);assert.deepEqual(stale.view(),{saved:{},savedJobs:{},tracker:[]});assert.deepEqual(stale.discovery(),{});
  assert.throws(()=>stale.saveSaved({wrong:true}),{code:'sync/account-changed'});
  stale.activate('bob');assert.deepEqual(stale.view().saved,{},'stale anonymous tab must not re-import consumed guest jobs');
  assert.throws(()=>a.saveTracker([{id:'alice'}]),{code:'sync/account-changed'});assert.deepEqual(a.view().tracker,[]);
@@ -158,4 +158,44 @@ test('failed account activation never consumes guest jobs before the destination
   fail=false;a.activate('alice');assert.deepEqual(a.view().saved,{guest:true});
   a.activate(null);a.activate('bob');assert.deepEqual(a.view().saved,{});
  }
+});
+
+const savedJob=(n=1,extra={})=>({co:'Saved Company',role:'Designer',pay:'$70,250–85,000',loc:'Chicago, IL',state:'IL',ind:'Video & Creative',style:'Hybrid',exp:'2+ yrs',desc:'The complete saved description',tldr:'Design campaigns; Work with the team',link:'https://example.com/jobs/'+n,...extra});
+test('saved public snapshots survive catalog absence, account sync and a stale tombstone replay',()=>{
+ const a=S.create(memory());a.activate('alice');const job=savedJob();a.saveSaved({[job.link]:true},job);
+ const b=S.create(memory());b.activate('alice');b.receive(a.snapshot());assert.deepEqual(b.view().savedJobs[job.link],job);
+ assert.deepEqual(b.archivedSaved([job]),[]);const missing=b.archivedSaved([])[0];assert.equal(missing.co,job.co);assert.equal(missing.tldr,job.tldr);assert.equal(missing.savedUnavailable,true);assert.equal(missing.confirmedClosed,false);
+ assert.equal(b.archivedSaved([],new Set([job.link+'?utm_source=review']))[0].confirmedClosed,true);
+ const old=b.snapshot();b.saveSaved({});b.receive(old);assert.deepEqual(b.archivedSaved([]),[]);assert.deepEqual(b.view().savedJobs,{});
+ a.activate('bob');assert.deepEqual(a.archivedSaved([]),[]);a.activate('alice');assert.equal(a.archivedSaved([]).length,1);
+});
+test('capturing existing bookmarks upgrades only current matching jobs and never deletes disappeared saves',()=>{
+ const a=S.create(memory()),first=savedJob(),second=savedJob(2);a.saveSaved({[first.link+'?utm_source=old']:true});
+ assert.equal(a.captureSaved([first,second]),true);assert.equal(a.captureSaved([first,second]),false);
+ assert.equal(Object.keys(a.view().saved).length,1);assert.equal(a.view().savedJobs[first.link+'?utm_source=old'].role,'Designer');
+ assert.equal(a.captureSaved([]),false);assert.equal(a.archivedSaved([]).length,1);
+ a.saveSaved(a.view().saved);assert.equal(a.archivedSaved([]).length,1,'legacy boolean view does not downgrade the snapshot');
+ const current={...first,role:'Updated Designer'};a.captureSaved([current]);assert.equal(a.archivedSaved([])[0].role,'Updated Designer');
+});
+test('snapshots exclude private fields and cannot supply their own closure or another posting identity',()=>{
+ const a=S.create(memory()),job=savedJob(1,{privateNotes:'Private',email:'private@example.invalid',confirmedClosed:true,savedUnavailable:true,apiToken:'Private'});
+ a.saveSaved({[job.link]:true},job);assert.doesNotMatch(JSON.stringify(a.snapshot()),/privateNotes|private@example|confirmedClosed|apiToken/);
+ assert.equal(a.archivedSaved([],['https://example.com/jobs/2'])[0].confirmedClosed,false);
+ a.saveSaved({[job.link]:true},savedJob(2));assert.equal(a.view().savedJobs[job.link].link,job.link);
+ const forged=S.empty();forged.saved[job.link]={at:Date.now()+100,tag:'remote',value:{job:savedJob(2)}};a.receive(forged);assert.deepEqual(a.view().savedJobs,{});
+});
+test('snapshot quota failure and cross-tab account switch preserve the prior durable bookmark',()=>{
+ const storage=memory(),a=S.create(storage),job=savedJob();a.activate('alice');a.saveSaved({[job.link]:true});const write=storage.setItem;
+ storage.setItem=(key,value)=>{if(key==='su_sync_v2:alice')throw Error('Quota');write(key,value);};assert.throws(()=>a.captureSaved([job]),/Quota/);assert.equal(a.view().saved[job.link],true);assert.deepEqual(a.view().savedJobs,{});
+ storage.setItem=write;const other=S.create(storage);other.activate('bob');assert.throws(()=>a.captureSaved([job]),/Account changed/);assert.deepEqual(a.archivedSaved([]),[]);
+});
+
+test('all admitted internship saved snapshots preserve the source-bound four-bullet presentation and exact pay',()=>{
+ const I=require('../../js/internships.js'),feed=require('../../internships-data.json'),copy=require('../../netlify/functions/lib/internship-display.json');const before=JSON.stringify(feed),a=S.create(memory());
+ for(const original of feed.jobs){const row={...I.withPresentation(original,copy[original.link]),internship:true,pick:false};a.saveSaved({...a.view().saved,[row.link]:true},row);const saved=a.view().savedJobs[row.link];assert.equal(saved.pay,row.pay);assert.equal(saved.collegeCredit,row.collegeCredit);assert.deepEqual(I.detailBullets(saved),I.detailBullets(row),row.co);assert.equal(I.locationLabel(saved),I.locationLabel(row),row.co);}
+ assert.equal(a.archivedSaved([]).length,feed.jobs.length);assert.equal(JSON.stringify(feed),before);
+});
+test('confirmed closure identity accepts a Set supplied by a separate browser realm',()=>{
+ const a=S.create(memory()),job=savedJob();a.saveSaved({[job.link]:true},job);
+ const closed=require('node:vm').runInNewContext('new Set(["https://example.com/jobs/1"])');assert.equal(a.archivedSaved([],closed)[0].confirmedClosed,true);
 });

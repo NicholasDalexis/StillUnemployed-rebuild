@@ -86,7 +86,7 @@ test('signed-out feedback uses the existing Google popup action and changes to X
   const note=ui.dialog(),google=ui.google(),applied=note.querySelector('[data-act="markApplied"]');
   assert.equal(google.hidden,false);assert.equal(ui.close().hidden,true);
   assert.equal(google.getAttribute('aria-label'),'Sign in with Google');
-  assert.equal(google.title,'Sign in with Google');
+  assert.equal(google.getAttribute('title'),null);assert.equal(google.getAttribute('data-su-help'),'Sign in to keep your saved jobs and tracker together.');
   assert.equal(google.disabled,false);
   google.focus();google.click();assert.equal(ui.calls.popups,1);
   assert.equal(google.disabled,true);assert.equal(b.app.state.feedbackOpen,true);

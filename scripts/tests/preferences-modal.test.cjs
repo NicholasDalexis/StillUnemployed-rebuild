@@ -100,7 +100,7 @@ test('preferences open in the shared modal layer and all dismissal paths restore
     assert.equal(form.closest('#overlay-root'), u.b.overlay);assert.equal(form.getAttribute('role'), 'dialog');
     assert.equal(form.getAttribute('aria-modal'), 'true');assert.equal(u.b.grid.inert, true);
     assert.equal(u.b.document.body.classList.contains('su-dialog-open'), true);
-    assert.equal(u.b.document.activeElement, form.elements.major);
+    assert.equal(u.b.document.activeElement, form);assert.equal(form.getAttribute('tabindex'),'-1');assert.equal(form.querySelector('[data-discovery="clear"]'),null);
     if (close === 'Escape') u.b.fire('keydown', form, { key:'Escape' });
     else if (close === 'backdrop') u.b.overlay.children[0].click();
     else u.action(close);
@@ -150,14 +150,12 @@ test('application counts and closing other dialogs never open preferences withou
   u.open();assert(u.form());assert.equal(u.b.overlay.querySelectorAll('[role="dialog"]').length, 1);
 });
 
-test('failed save and clear display an error inside the preserved modal without losing answers or emitting success', t => {
+test('failed saves display an error inside the preserved modal without losing answers or emitting success', t => {
   const u = preferencesUI(t), form = u.open();u.input('major', 'Photography');u.input('info', 'Keep this draft');
   const original = u.store.setDiscovery;
   u.store.setDiscovery = () => { throw new Error('Quota exceeded'); };
   u.submit();assert.equal(u.form(), form);assert.match(form.querySelector('.su-preferences-error').textContent, /Could not save/);
   assert.equal(form.elements.info.value, 'Keep this draft');assert.deepEqual(u.emitted.map(e=>e.name), ['preference_open','preference_error']);
-  u.action('clear');assert.equal(u.form(), form);assert.match(form.querySelector('.su-preferences-error').textContent, /could not be saved/);
-  assert.equal(form.elements.major.value, 'Photography');assert.deepEqual(u.emitted.map(e=>e.name), ['preference_open','preference_error','preference_error']);
   u.action('close');assert.equal(u.form(), null, 'storage failure never traps the visitor');
   u.store.setDiscovery = original;
 });
@@ -187,14 +185,14 @@ test('save and clear acknowledge local persistence separately from confirmed syn
   assert.doesNotMatch(u.b.document.getElementById('su-preference-status').textContent, /in your account/);
   finish();hold = false;await pending;await tick();
   assert.equal(u.b.document.getElementById('su-preference-status').textContent, 'Preferences saved in your account.');
-  u.open();fail = true;u.action('clear');await connection.flush();
-  assert.equal(u.store.discovery().profile, undefined);
-  assert.equal(u.b.document.getElementById('su-preference-status').textContent, 'Preferences cleared on this device. Account sync paused.');
+  u.open();u.input('major','');u.input('location','');u.input('info','');fail = true;u.submit();await connection.flush();
+  assert.deepEqual(u.store.discovery().profile,{major:'',location:'',info:''});
+  assert.equal(u.b.document.getElementById('su-preference-status').textContent, 'Preferences saved on this device. Account sync paused.');
   assert.equal(u.b.document.getElementById('su-preference-retry').hidden, false);
   fail = false;u.action('retry');assert.equal(u.retries, 1);await connection.flush();
-  assert.equal(u.b.document.getElementById('su-preference-status').textContent, 'Preferences cleared in your account.');
+  assert.equal(u.b.document.getElementById('su-preference-status').textContent, 'Preferences saved in your account.');
   assert.equal(u.b.document.getElementById('su-preference-retry').hidden, true);
-  assert.deepEqual(u.emitted.map(event => [event.name, Object.keys(event.payload)]), [['preference_open', []], ['preference_save', []], ['preference_open', []], ['preference_clear', []]]);
+  assert.deepEqual(u.emitted.map(event => [event.name, Object.keys(event.payload)]), [['preference_open', []], ['preference_save', []], ['preference_open', []], ['preference_save', []]]);
 });
 
 test('a delayed old-account save cannot restore an old status or draft after switching accounts', async t => {

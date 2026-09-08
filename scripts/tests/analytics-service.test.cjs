@@ -86,3 +86,18 @@ test('realshareCSVloader preserves careerCategory for the servercatalog',async()
  assert.equal(jobs[0].ind,'Social');const catalog=C.catalog(jobs),meta=Object.values(catalog)[0];
  assert.equal(meta.field,'Marketing');assert.equal(meta.role,'Social Media');
 });
+
+test('verified QA email and configured admin UID create no statistics, profile or rate writes',async()=>{
+ for(const claims of [{uid:'qa',email:'nicholasdalexis@gmail.com',email_verified:true},{uid:'qa',email:'NICHOLASDALEXIS@GMAIL.COM',email_verified:true},{uid:'owner'}]){
+  const d=deps();d.auth.verifyIdToken=async(token,revoked)=>{assert.equal(token,'signed-token');assert.equal(revoked,true);return claims;};d.getJobs=()=>{throw Error('excluded events must not load catalog');};
+  const r=request('signed-token',[{name:'application_reported',jobId},{name:'feedback_unavailable'},{name:'apply_click',jobId},{name:'auth_login'}]);
+  assert.deepEqual(await S.collect(r,d),{accepted:0,excluded:true});assert.equal(d.db.data.size,0);
+  assert.deepEqual(await S.profile({...r,httpMethod:'GET'},d),{jobs:{},updatedAt:null,excluded:true});assert.equal(d.db.data.size,0);
+ }
+});
+test('an unverified or client-declared admin email cannot trigger the trusted measurement exclusion',async()=>{
+ for(const claims of [{uid:'alice',email:'nicholasdalexis@gmail.com',email_verified:false},{uid:'alice',email:'different@example.invalid',email_verified:true},{uid:'alice'}]){
+  const d=deps();d.auth.verifyIdToken=async()=>claims;
+  assert.equal((await S.collect(request('signed-token',undefined,{admin:true,email:'nicholasdalexis@gmail.com',email_verified:true}),d)).accepted,1);assert(d.db.data.size>0);
+ }
+});

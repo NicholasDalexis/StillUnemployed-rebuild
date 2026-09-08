@@ -16,10 +16,13 @@
   };
 
 
-  var user = null, session = null, auth, sdk, store = window.SUStore;
+  var user = null, session = null, auth, sdk, store = window.SUStore, excludedSession = false;
   var syncState = 'loading', errorCode = '', signingIn = false, signingOut = false, authReady = false, authMessage = '', loadingSdk = false, bootAttempt = 0, sessionGeneration = 0, syncFailed = false;
   function accountCurrent(){return !!(user&&authReady&&store&&store.owner()===user.uid&&(!store.current||store.current()));}
-  window.SUAuth = { signedIn:function(){return !!user;}, accountCurrent:accountCurrent, syncReady:function(){return accountCurrent()&&syncState==='synced';}, syncState:function(){return syncState;}, retrySync:function(){if(user&&syncState==='error'){track('sync_retry');startSync();}}, getToken:function(){return accountCurrent() ? user.getIdToken() : Promise.reject(new Error('Sign in required'));} };
+  // Client suppression follows the resolved Firebase user, never a DOM/email
+  // preference. The ingestion service independently verifies ID-token claims.
+  function measurementExcluded(){return excludedSession;}
+  window.SUAuth = { signedIn:function(){return !!user;}, accountCurrent:accountCurrent, measurementExcluded:measurementExcluded, measurementReady:function(){return authReady&&!signingIn&&!signingOut&&(!user||accountCurrent());}, syncReady:function(){return accountCurrent()&&syncState==='synced';}, syncState:function(){return syncState;}, retrySync:function(){if(user&&syncState==='error'){track('sync_retry');startSync();}}, getToken:function(){return accountCurrent() ? user.getIdToken() : Promise.reject(new Error('Sign in required'));} };
   function track(name) { if(window.SUAnalytics&&typeof window.SUAnalytics.emit==='function')window.SUAnalytics.emit(name,{}); }
   function notifyAuth(){var changed=false;try{var owner=user?user.uid:'guest',prior=sessionStorage.getItem('su_analytics_auth_owner');changed=prior!==null&&prior!==owner;sessionStorage.setItem('su_analytics_auth_owner',owner);}catch(e){}if(window.dispatchEvent && typeof CustomEvent !== 'undefined')window.dispatchEvent(new CustomEvent('su:auth-changed',{detail:{signedIn:!!user,accountChanged:changed}}));}
   function loginResult(result){if(result && window.SUAnalytics)window.SUAnalytics.emit('auth_login',{});return result;}
@@ -43,7 +46,8 @@
       if (user) text += '. ' + (user.email || user.displayName || 'Signed in');
       if (errorCode) text += '. ' + errorCode;
       if(accountChanging)text='Checking the account selected in another tab';
-      button.title = text; button.setAttribute('aria-label', text);
+      button.removeAttribute('title'); button.setAttribute('aria-label', text);
+      button.setAttribute('data-su-help', user ? 'You’re signed in. Click here to sign out.' : 'Sign in to keep your saved jobs and tracker together.');
       button.dataset.state = user ? syncState : (loadingSdk || !authReady && !errorCode ? 'loading' : errorCode ? 'error' : signingIn ? 'signing-in' : 'signed-out');
       var label = button.querySelector('.su-auth-label');
       if (label) label.textContent = signingOut ? 'Signing out…' : signingIn ? 'Signing in…' : user ? 'Signed In' : loadingSdk || !authReady && !errorCode ? 'Loading…' : !authReady && errorCode ? 'Retry sign-in' : 'Sign In';
@@ -51,6 +55,7 @@
       button.disabled = accountChanging || loadingSdk || (!authReady && !errorCode) || signingIn || signingOut;
       button.setAttribute('aria-busy', String(accountChanging || loadingSdk || !authReady && !errorCode || signingIn || signingOut));
     });
+    if(window.SUBoardControls&&window.SUBoardControls.start)window.SUBoardControls.start();
     // The post-apply note offers sign-in only while signed out and auth is ready.
     // Its fallback X is real board markup, so production/SDK failures stay dismissible.
     // Toggle the two controls in place: never rebuild the note or its response state.
@@ -221,6 +226,9 @@
       authReady = true; authMessage = ''; sessionGeneration++;
       if (session) session.stop(); session = null;
       user = next || null;
+      // Keep a QA account's sign-out completion out of anonymous statistics too.
+      // A different resolved account starts its own measurement decision.
+      if(user)excludedSession=user.emailVerified===true&&String(user.email||'').toLowerCase()==='nicholasdalexis@gmail.com';
       try { if (store && (store.owner() !== (user ? user.uid : null) || store.current && !store.current())) store.activate(user ? user.uid : null); }
       catch(e) { if(store.suspend)store.suspend(); notifyAuth(); status('error', e); return; }
       notifyAuth();

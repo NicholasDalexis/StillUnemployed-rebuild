@@ -22,11 +22,17 @@ function dependencies(env=process.env) {
   return {db:getFirestore(app),auth:getAuth(app),env,now:()=>Date.now(),jobs:Core.catalog(bundled),getJobs:liveCatalog};
 }
 function hmac(env,value){return crypto.createHmac('sha256',env.SU_ANALYTICS_SECRET).update(value).digest('hex');}
-async function identity(request,d,required=false) {
+async function verifiedIdentity(request,d,required=false) {
   const authorization=request.headers.authorization||request.headers.Authorization||'';
   if(!authorization){if(required)throw error(401,'Sign in required');return null;}
   if(!/^Bearer [^\s]+$/.test(authorization))throw error(401,'Invalid authentication');
-  try {const decoded=await d.auth.verifyIdToken(authorization.slice(7),true);return decoded.uid;}catch{throw error(401,'Invalid authentication');}
+  try {const decoded=await d.auth.verifyIdToken(authorization.slice(7),true);if(!decoded.uid)throw Error('Missing identity');return decoded;}catch{throw error(401,'Invalid authentication');}
+}
+async function identity(request,d,required=false){const decoded=await verifiedIdentity(request,d,required);return decoded?decoded.uid:null;}
+function excludedAccount(decoded,env){
+  if(!decoded)return false;
+  const admins=(env.SU_ANALYTICS_ADMIN_UIDS||'').split(',').map(s=>s.trim()).filter(Boolean);
+  return admins.includes(decoded.uid)||(decoded.email_verified===true&&String(decoded.email||'').toLowerCase()==='nicholasdalexis@gmail.com');
 }
 function body(request){if(Buffer.byteLength(request.body||'')>32768)throw error(413,'Request too large');try{return JSON.parse(request.body||'{}');}catch{throw error(400,'Invalid JSON');}}
 async function collect(request,d) {
@@ -35,7 +41,10 @@ async function collect(request,d) {
   if(choices.analytics!==true && choices.personalization!==true)throw error(403,'Consent required');
   if(!Array.isArray(input.events)||input.events.length>30||!input.events.length)throw error(400,'Invalid batch');
   if(!/^[a-zA-Z0-9_-]{16,64}$/.test(input.session||''))throw error(400,'Invalid session');
-  const uid=await identity(request,d,choices.personalization===true);
+  const decoded=await verifiedIdentity(request,d,choices.personalization===true),uid=decoded?decoded.uid:null;
+  // No event, rate, signup or recommendation writes for verified QA accounts.
+  // Browser-supplied email/admin properties never enter this decision.
+  if(excludedAccount(decoded,d.env))return {accepted:0,excluded:true};
   if(!uid&&!/^[a-zA-Z0-9_-]{16,64}$/.test(input.visitor||''))throw error(400,'Invalid visitor');
   const actor=hmac(d.env,uid?'account:'+uid:'guest:'+input.visitor);
   if(d.getJobs&&input.events.some(e=>e.jobId))d.jobs=await d.getJobs();
@@ -78,7 +87,8 @@ async function collect(request,d) {
   });
 }
 async function profile(request,d) {
-  Core.authorizeOrigin(request,d.env);const uid=await identity(request,d,request.httpMethod!=='DELETE');
+  Core.authorizeOrigin(request,d.env);const decoded=await verifiedIdentity(request,d,request.httpMethod!=='DELETE'),uid=decoded?decoded.uid:null;
+  if(request.httpMethod!=='DELETE'&&excludedAccount(decoded,d.env))return {jobs:{},updatedAt:null,excluded:true};
   const input=request.httpMethod==='DELETE'?body(request):{};if(!uid&&!/^[a-zA-Z0-9_-]{16,64}$/.test(input.visitor||''))throw error(401,'Identity required');
   const actor=hmac(d.env,uid?'account:'+uid:'guest:'+input.visitor),ref=d.db.doc('suAnalyticsProfiles/'+actor);
   if(request.httpMethod==='DELETE') {
@@ -137,4 +147,4 @@ function handler(action,methods){return async request=>{
   const headers={'Content-Type':'application/json','Cache-Control':'private, no-store','Vary':'Origin, Authorization','X-Content-Type-Options':'nosniff'};
   try{if(!methods.includes(request.httpMethod))throw error(405,'Method not allowed');const result=await action(request,dependencies());return {statusCode:200,headers,body:JSON.stringify(result)};}catch(e){return {statusCode:e.status||503,headers,body:JSON.stringify({error:e.status?e.message:'Analytics service unavailable'})};}
 };}
-module.exports={dependencies,identity,collect,profile,admin,cleanup,handler,hmac};
+module.exports={dependencies,identity,excludedAccount,collect,profile,admin,cleanup,handler,hmac};

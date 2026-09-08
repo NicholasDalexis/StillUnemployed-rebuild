@@ -5,6 +5,24 @@
   'use strict';
   var KEYS = { saved: 'su_saved_jobs', tracker: 'su_tracker' };
   var KINDS = ['saved', 'tracker', 'discovery'];
+  var Identity = typeof module !== 'undefined' && module.exports ? require('./job-identity.js') : null;
+  function identity() { return Identity || root.SUJobIdentity; }
+  function keys(link) { var i=identity(); return i ? i.keys(link) : []; }
+  function same(key, link) { var i=identity(); return key===link || keys(link).indexOf(key)>=0 || !!(i&&i.equivalent(key,link)); }
+  function savedSnapshot(job) {
+    if (!job || !keys(job.link).length || typeof job.co!=='string' || typeof job.role!=='string') return null;
+    var out={};
+    ['co','role','link','loc','state','ind','pay','style','exp','desc','tldr','added','posted','payStatus','payBasis','collegeCredit','applicationStatus','cycle','startDate','startDateISO','applicationsOpen','applicationsOpenISO','deadline','deadlineISO','eligibility','timingSourceUrl'].forEach(function(k){if(typeof job[k]==='string')out[k]=job[k].slice(0,k==='desc'||k==='eligibility'?12000:2000);});
+    ['internship','pick'].forEach(function(k){if(typeof job[k]==='boolean')out[k]=job[k];});
+    ['duties','eligibilityFlags','benefits'].forEach(function(k){if(Array.isArray(job[k]))out[k]=job[k].filter(function(v){return typeof v==='string';}).slice(0,k==='duties'?3:30).map(function(v){return v.slice(0,1000);});});
+    if(job.verification&&typeof job.verification==='object'){out.verification={};['status','checkedAt','sourceUrl','reviewerType','humanVerifiedAt'].forEach(function(k){if(typeof job.verification[k]==='string')out.verification[k]=job.verification[k].slice(0,k==='sourceUrl'?2000:100);});['sourceAnnounced','upcomingApproved'].forEach(function(k){if(typeof job.verification[k]==='boolean')out.verification[k]=job.verification[k];});}
+    // This is already a source-bound public presentation. The internship helper
+    // validates it again when rendering; no private review/source-map data enters.
+    var internships=root.SUInternships;
+    if(!internships&&typeof module!=='undefined'&&module.exports)internships=require('./internships.js');
+    if(job.internship&&internships){var publicRow=internships.publicJob(job);if(publicRow.presentation)out.presentation=publicRow.presentation;}
+    return out;
+  }
   function empty() { return { saved: {}, tracker: {}, discovery: {} }; }
   function id(row) { return row && (row.link || row.id); }
   function clone(v) { return JSON.parse(JSON.stringify(v)); }
@@ -45,8 +63,8 @@
     return clone(out);
   }
   function view(records) {
-    var out = { saved: {}, tracker: [] };
-    Object.keys(records.saved).forEach(function (k) { if (records.saved[k].value) out.saved[k] = true; });
+    var out = { saved: {}, savedJobs: {}, tracker: [] };
+    Object.keys(records.saved).forEach(function (k) { var value=records.saved[k].value;if(value){out.saved[k]=true;var job=value&&savedSnapshot(value.job);if(job&&same(k,job.link))out.savedJobs[k]=job;} });
     Object.keys(records.tracker).forEach(function (k) { if (records.tracker[k].value) out.tracker.push(records.tracker[k].value); });
     out.tracker.sort(function (a, b) { return String(b.dateApplied || '').localeCompare(String(a.dateApplied || '')) || String(id(a)).localeCompare(String(id(b))); });
     return out;
@@ -79,15 +97,16 @@
       lastTime = Math.max(Date.now(), lastTime + 1);
       return { value: clone(value), at: lastTime, tag: device };
     }
-    function save(kind, values) {
+    function save(kind, values, job) {
       assertCurrent();
       var next = kind === 'saved' ? values : {};
       if (kind === 'tracker') values.forEach(function (r) { if (id(r)) next[id(r)] = r; });
       var keys = new Set(Object.keys(records[kind]).concat(Object.keys(next)));
       var edits = [];
       keys.forEach(function (k) {
-        var v = kind === 'saved' ? !!next[k] : (next[k] || null);
         var previous = records[kind][k];
+        var v = kind === 'saved' ? (next[k] ? previous&&previous.value || true : false) : (next[k] || null);
+        if(kind==='saved'&&next[k]&&job&&same(k,job.link)){var snapshot=savedSnapshot(job);if(snapshot)v={job:snapshot};}
         if (!equal(previous ? previous.value : (kind === 'saved' ? false : null), v)) edits.push([k, v]);
       });
       // Apply only this view's edits. Another tab may have saved a new item since it rendered.
@@ -98,7 +117,17 @@
     }
     persist(false);
     return {
-      saveSaved: function (v) { save('saved', v); },
+      saveSaved: function (v, job) { save('saved', v, job); },
+      captureSaved: function (jobs) {
+        assertCurrent();refresh();var before=clone(records),changed=false;
+        Object.keys(records.saved).forEach(function(k){if(!records.saved[k].value)return;var job=(jobs||[]).find(function(j){return same(k,j.link);}),snapshot=savedSnapshot(job);if(snapshot&&!equal(records.saved[k].value,{job:snapshot})){records.saved[k]=stamp({job:snapshot});changed=true;}});
+        try{if(changed)persist(true);}catch(e){records=before;throw e;}
+        return changed;
+      },
+      archivedSaved: function (jobs, closedLinks) {
+        if(!current())return [];refresh();var saved=view(records).savedJobs,seen=new Set(),closed=Object.prototype.toString.call(closedLinks)==='[object Set]'?Array.from(closedLinks):Array.isArray(closedLinks)?closedLinks:[];
+        return Object.keys(saved).map(function(k){return saved[k];}).filter(function(job){var canonical=keys(job.link)[0];if(seen.has(canonical)||(jobs||[]).some(function(j){return same(j.link,job.link);}))return false;seen.add(canonical);return true;}).map(function(job){return Object.assign({},job,{savedUnavailable:true,confirmedClosed:closed.some(function(link){return typeof link==='string'&&same(link,job.link);})});});
+      },
       saveTracker: function (v) { save('tracker', v); },
       // Operational preferences stay account-owned. Never import these from a guest.
       view: function () { if (!current()) return view(empty()); refresh(); return clone(view(records)); },

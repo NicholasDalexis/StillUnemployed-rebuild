@@ -133,3 +133,13 @@ test('response action retries preserve IDs and withdrawal/account changes discar
   assert.equal(later.filter(e=>responseActions.includes(e.name)).length,0);
  }
 });
+
+test('unresolved authentication and resolved QA identity collect no events or identifiers',async()=>{
+ const h=harness(storage({su_consent_v3:'granted',su_personalization_v1:'granted'}));let ready=false,excluded=false;
+ h.window.SUAuth.measurementReady=()=>ready;h.window.SUAuth.measurementExcluded=()=>excluded;
+ h.start();h.api.emit('feedback_unavailable');h.tick(30000);await h.api.flush();assert.equal(h.requests.length,0);assert.equal(h.local.values.su_analytics_visitor,undefined);
+ ready=true;excluded=true;h.auth(true);await h.api.registerJobs([{link:'https://example.com/jobs/qa'}]);
+ h.api.job('apply_click','https://example.com/jobs/qa');h.api.job('application_reported','https://example.com/jobs/qa');h.api.emit('feedback_unavailable');h.tick(30000);await h.api.flush();
+ assert.equal(h.api.excluded(),true);assert.equal(h.requests.length,0);assert.equal(h.local.values.su_analytics_visitor,undefined);
+ excluded=false;h.auth(true,true);h.api.emit('feedback_unavailable');await h.api.flush();assert(h.requests.some(r=>r.options.method==='POST'));
+});

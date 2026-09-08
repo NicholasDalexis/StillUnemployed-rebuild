@@ -183,5 +183,15 @@
     });return out;
   }
   function counts(rows,now){var out={accepting:0,upcoming:0,needs_recheck:0,total:rows.length};rows.forEach(function(job){out[applicationState(job,now)]++;});return out;}
-  return {jobs:jobs,payLabel:payLabel,locationLabel:locationLabel,detailBullets:detailBullets,withPresentation:withPresentation,applicationState:applicationState,canApply:canApply,counts:counts,publicJob:publicJob,safeUrl:safeUrl,dateValue:dateValue};
+  // Decorative papers, never salary tiers. Assign once to the full default
+  // catalog; filtering and alternate sorts must not recolor a familiar card.
+  var surfaces=new Map(),surfaceMembership='',paperCycle=['high','mid','low','high','high','high','mid','high','low','high','high','mid','high','high','mid','high','low','high','mid','high'];
+  function surfaceKey(job){return Identity&&Identity.keys(job&&job.link)[0]||'';}
+  function setSurfaceCatalog(rows){
+    var keys=(Array.isArray(rows)?rows:[]).map(surfaceKey).filter(Boolean),unique=Array.from(new Set(keys));
+    var membership=JSON.stringify(unique.slice().sort());if(membership===surfaceMembership)return;
+    surfaceMembership=membership;surfaces=new Map();unique.forEach(function(key,index){surfaces.set(key,paperCycle[index%paperCycle.length]);});
+  }
+  function cardSurface(job){var key=surfaceKey(job);if(surfaces.has(key))return surfaces.get(key);var hash=2166136261;for(var i=0;i<key.length;i++)hash=Math.imul(hash^key.charCodeAt(i),16777619);return paperCycle[(hash>>>0)%paperCycle.length];}
+  return {jobs:jobs,payLabel:payLabel,locationLabel:locationLabel,detailBullets:detailBullets,withPresentation:withPresentation,applicationState:applicationState,canApply:canApply,counts:counts,publicJob:publicJob,safeUrl:safeUrl,dateValue:dateValue,setSurfaceCatalog:setSurfaceCatalog,cardSurface:cardSurface};
 });

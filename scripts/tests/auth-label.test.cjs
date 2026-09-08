@@ -8,7 +8,7 @@ const source = fs.readFileSync(path.join(__dirname, '../../js/auth.js'), 'utf8')
 const tick = () => new Promise(resolve => setImmediate(resolve));
 
 async function authUI(hostname = 'preview--stillunemployed.netlify.app') {
-  const label = { textContent:'' }, attrs = {}, button = { dataset:{}, querySelector:() => label, setAttribute(name, value) { attrs[name] = value; } };
+  const label = { textContent:'' }, attrs = {}, button = { dataset:{}, removeAttribute(name) { delete attrs[name]; }, querySelector:() => label, setAttribute(name, value) { attrs[name] = value; } };
   let listener, notifySync, owner = null, imports = 0;
   const store = { owner:() => owner, activate:value => { owner = value; } };
   const authSdk = { getAuth:() => ({}), getRedirectResult:async () => null, onAuthStateChanged(_auth, fn) { listener = fn; } };
@@ -24,7 +24,7 @@ async function authUI(hostname = 'preview--stillunemployed.netlify.app') {
     __loadSdk:async url => { imports++;return url.endsWith('firebase-app.js') ? { initializeApp:() => ({}) } : url.endsWith('firebase-auth.js') ? authSdk : firestoreSdk; }
   });
   await tick();await tick();
-  return { label, attrs, button, imports, signIn:user => listener(user), syncError:() => notifySync('error', { code:'test/offline' }) };
+  return { label, attrs, button, imports, api:window.SUAuth, signIn:user => listener(user), syncError:() => notifySync('error', { code:'test/offline' }) };
 }
 
 test('auth shows Sign In when signed out and Signed In when authenticated', async () => {
@@ -43,4 +43,13 @@ test('public production hostnames still do not initialize Google authentication'
   for (const hostname of ['stillunemployed.com', 'www.stillunemployed.com']) {
     const ui = await authUI(hostname);assert.equal(ui.imports, 0);assert.equal(ui.label.textContent, '');
   }
+});
+
+test('resolved Firebase QA identity suppresses measurement while hints remain ordinary readable help',async()=>{
+ const ui=await authUI();assert.equal(ui.api.measurementReady(),false);ui.signIn(null);assert.equal(ui.api.measurementReady(),true);assert.equal(ui.api.measurementExcluded(),false);
+ assert.equal(ui.attrs['data-su-help'],'Sign in to keep your saved jobs and tracker together.');assert.equal(ui.attrs.title,undefined);
+ ui.signIn({uid:'qa',email:'nicholasdalexis@gmail.com',emailVerified:false});assert.equal(ui.api.measurementExcluded(),false);
+ ui.signIn({uid:'qa',email:'nicholasdalexis@gmail.com',emailVerified:true});assert.equal(ui.api.measurementExcluded(),true);assert.equal(ui.attrs['data-su-help'],'You’re signed in. Click here to sign out.');
+ ui.signIn(null);assert.equal(ui.api.measurementExcluded(),true,'QA sign-out completion remains excluded in this page session');
+ ui.signIn({uid:'different',email:'different@example.invalid',emailVerified:true});assert.equal(ui.api.measurementExcluded(),false);
 });

@@ -45,8 +45,8 @@ test('known currencies are retained or normalized without turning non-USD pay in
 });
 
 test('compact status labels distinguish confirmed paid, unpaid and undisclosed compensation', () => {
-  assert.equal(Pay.compact('Paid; amount not disclosed', { status:'paid' }), 'Paid');
-  assert.equal(Pay.compact('', { status:'paid' }), 'Paid');
+  assert.equal(Pay.compact('Paid; amount not disclosed', { status:'paid' }), '$ Paid');
+  assert.equal(Pay.compact('', { status:'paid' }), '$ Paid');
   assert.equal(Pay.compact('Unpaid', { status:'unpaid' }), 'Unpaid');
   assert.equal(Pay.compact('Unpaid · College credit'), 'Unpaid');
   assert.equal(Pay.compact('Pay not disclosed', { status:'not_disclosed' }), 'Pay not disclosed');
@@ -56,9 +56,9 @@ test('compact status labels distinguish confirmed paid, unpaid and undisclosed c
 });
 
 test('short qualifiers preserve limits and estimates while program duration stays outside the pay range', () => {
-  assert.equal(Pay.compact('Up to $15/hour'), 'Up to $15/hour');
-  assert.equal(Pay.compact('$23.00 minimum', { basis:'not_listed' }), 'From $23');
-  assert.equal(Pay.compact('$70K+'), 'From $70K');
+  assert.equal(Pay.compact('Up to $15/hour'), '≤$15/hour');
+  assert.equal(Pay.compact('$23.00 minimum', { basis:'not_listed' }), '$23+');
+  assert.equal(Pay.compact('$70K+'), '$70K+');
   assert.equal(Pay.compact('$8,500/month (estimated)'), '~$8,500/month');
   assert.equal(Pay.compact('$9,000 for the 9-week summer program', { basis:'program' }), '$9,000/program');
   assert.equal(Pay.compact('$1,250.50/week'), '$1,251/week');
@@ -91,4 +91,12 @@ test('browser export works without DOM, storage, network or CommonJS dependencie
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../../js/pay-display.js'), 'utf8'), context);
   assert.equal(typeof context.window.SUPayDisplay.compact, 'function');
   assert.equal(context.window.SUPayDisplay.compact('$45.00-55.00/hour'), '$45–55/hour');
+});
+
+test('internship-only small single rates use the requested hourly convention without overwriting an explicit period',()=>{
+ const options={internship:true,basis:'not_listed',status:'paid'};
+ for(const [raw,want] of [['$23.00','$23/hour'],['$28 (time unit not listed)','$28/hour'],['From $23','$23+/hour'],['Up to $25','≤$25/hour'],['$25/month','$25/month'],['$25/year','$25/year'],['$25 for the program','$25/program'],['$100','$100'],['$20–25','$20–25'],['$25; $30','$25–30'],['$25K','$25K']])assert.equal(Pay.compact(raw,options),want,raw);
+ assert.equal(Pay.compact('$23.00',{basis:'not_listed'}),'$23');
+ assert.equal(Pay.compact('$23.00',{...options,basis:'month'}),'$23/month');
+ assert.equal(Pay.compact('Paid; amount not disclosed',options),'$ Paid');
 });
