@@ -87,7 +87,7 @@ function ui(rows, options = {}) {
   };
 }
 
-test('internship cards compact pay while detail disclosures retain exact employer amounts and units across all themes', () => {
+test('internship cards and details share compact pay while source amounts and units remain unchanged across all themes', () => {
   const values = [
     { pay:'$22.50/hour', payBasis:'hour', display:'$23/hour' }, { pay:'$1,100/week', payBasis:'week', display:'$1,100/week' },
     { pay:'$4,500 program stipend', payBasis:'program', display:'$4,500/program' },
@@ -100,12 +100,10 @@ test('internship cards compact pay while detail disclosures retain exact employe
       const card = b.card(row.link), label = card.querySelector('.su-internship-pay');assert(label);
       assert.equal(label.textContent, values[index].display, look + ' compact ' + row.pay);
       surfaces.push(card.style.background);
-      const detail = b.detail(row.link);assert(detail.textContent.includes(row.pay));
-      const disclosure = detail.querySelector('.su-pay-source');
-      if (values[index].display !== row.pay) {
-        assert(disclosure); assert.equal(disclosure.querySelector('p').textContent, row.pay);
-        assert.equal(disclosure.getAttribute('open'), null, 'source details are collapsed initially');
-      }
+      const detail = b.detail(row.link);assert(detail.textContent.includes(values[index].display));
+      assert.equal(detail.querySelector('.su-pay-source'),null,'no extra pay disclosure on the TL;DR');
+      assert(!detail.textContent.includes('Pay details'));
+      assert.equal(b.app.jobs.find(job=>job.link===row.link).payBasis,row.payBasis);
       assert.equal(b.app.jobs.find(job=>job.link===row.link).pay, row.pay, 'rendering never edits source pay');
       b.app.setState({ detailOpen:false });
     }
@@ -121,14 +119,28 @@ test('USD amounts keep an explicit currency marker in both the card and detail',
   const label = b.card(row.link).querySelector('.su-internship-pay').textContent;
   assert.equal(label, '$24/hour');
   const detail=b.detail(row.link);assert(detail.textContent.includes(label));
-  assert.match(detail.querySelector('.su-pay-source').textContent, /(?:USD|\$)\s*23\.75\/hour/);
+  assert.equal(detail.querySelector('.su-pay-source'),null);
+  assert.equal(b.app.jobs[0].pay,'USD 23.75/hour');assert.equal(b.app.jobs[0].payBasis,'hour');
 });
 
-test('a full internship grid does not add the full-time high-salary endorsement notes', () => {
+test('internship open notes use the approved student deck, retain their stamp, and stay stable during the visit', () => {
   const rows = Array.from({ length:12 }, (_, index) => listing({ link:'https://example.com/program/annualized/' + index,
     pay:'$120,000/year (annualized)', payBasis:'annualized_year' }));
   const b = ui(rows);assert.equal(b.cards().length, 12);
-  for (const card of b.cards()) assert.equal(card.querySelector('[data-act="openNote"]'), null);
+  const noteCards=b.cards().filter(card=>card.querySelector('[data-act="openNote"]'));
+  assert(noteCards.length>=2,'an internship board includes several personal open notes');
+  const copy=[];
+  for(const card of noteCards){
+    const link=card.getAttribute('data-link');b.card(link).querySelector('[data-act="openNote"]').click();
+    const opened=b.card(link);assert(opened.textContent.includes('Internship'),'the internship stamp remains visible beside its open note');
+    const note=Array.from(b.app.INTERNSHIP_NOTES).find(text=>opened.textContent.includes(text));assert(note,'only the student-specific deck appears');copy.push(note);
+    for(const fullTime of b.app.NOTES)assert(!opened.textContent.includes(fullTime),'full-time endorsement text is not reused');
+    b.app.render();assert(b.card(link).textContent.includes(note),'ordinary renders do not reshuffle an open note');
+  }
+  assert.equal(new Set(copy).size,Math.min(copy.length,b.app.INTERNSHIP_NOTES.length),'the available notes rotate before repeating');
+  const first=b.app.shuffledNotes()[0],next=board();next.window.SUInternships=I;next.localStorage.setItem('su_last_open_note_internships',first);
+  next.init(I.jobs({schemaVersion:2,status:'verified',jobs:rows}));
+  assert.notEqual(next.app.shuffledNotes()[0],first,'a new visit avoids repeating its prior first note');
 });
 
 test('compact fronts contain city and state but no attendance, timing or source-review commentary', () => {
@@ -304,12 +316,10 @@ test('every internship paper variant uses matching theme ink and visible saved c
   const resolve=value=>value.replace(/var\((--[\w-]+)\)/g,(_,key)=>brand.match(new RegExp(key+': ([^;]+)'))[1]);
   const luminance=color=>{const rgb=color.match(/[0-9a-f]{2}/ig).map(value=>parseInt(value,16)/255).map(value=>value<=.04045?value/12.92:((value+.055)/1.055)**2.4);return rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722;};
   const contrast=(first,second)=>{const pair=[luminance(first),luminance(second)].sort((a,b)=>a-b);return (pair[1]+.05)/(pair[0]+.05);};
-  const probe=ui([listing()]),surface=probe.helpers.internshipSurface,examples={};
-  for(let index=0;Object.keys(examples).length<3;index++){
-    const row=listing({link:'https://example.com/program/color/'+index});examples[surface(row)] ||= row;
-  }
+  const rows=Array.from({length:6},(_,index)=>listing({link:'https://example.com/program/color/'+index}));
   for(const look of ['original','poker','beauty','girly','mermaid','bratt','noir','chess']){
-    const b=ui(Object.values(examples),{look}),P=b.app.THEMES[look];
+    const b=ui(rows,{look}),P=b.app.THEMES[look],examples={};
+    for(const row of rows)examples[b.helpers.internshipSurface(row)] ||= row;
     const surfaces=[];
     for(const [variant,row] of Object.entries(examples)){
       const card=b.card(row.link);surfaces.push(card.style.background);
@@ -317,6 +327,9 @@ test('every internship paper variant uses matching theme ink and visible saved c
       assert.equal(card.style.color,ink,look+'/'+variant+' matches the paper ink');
       const action=(look==='mermaid'||(look==='bratt'&&variant==='mid')||(look==='beauty'&&variant!=='high'))?ink:variant==='high'?P.hiApply:variant==='mid'&&P.midApply?P.midApply:(P.baseApply||'var(--su-orange-on-card)');
       assert.equal(card.querySelector('.applylink2').style.color,action,look+'/'+variant+' matches the action ink');
+      const stamp=card.querySelector('.su-internship-stamp');assert(stamp,look+'/'+variant+' retains the internship label');
+      assert.equal(stamp.style.color,ink,look+'/'+variant+' stamp uses its readable card ink');
+      assert(stamp.textContent.includes('Internship'));assert(!stamp.textContent.includes('Human'));
       for(const stop of resolve(card.style.background).match(/#[0-9a-f]{6}/ig)){
         assert(contrast(resolve(ink),stop)>=4.5,look+'/'+variant+' body text contrast');
         assert(contrast(resolve(action),stop)>=4.5,look+'/'+variant+' small action label contrast');

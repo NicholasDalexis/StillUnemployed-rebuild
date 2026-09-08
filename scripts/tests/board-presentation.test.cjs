@@ -44,16 +44,15 @@ function intern(extra = {}) {
     duties:['Prepare design files.', 'Research visual concepts.', 'Present ideas.'], eligibility:'Current college students.', ...extra });
 }
 
-test('real Jobs cards and detail headings compact annual pay while preserving the source disclosure and tier', () => {
+test('real Jobs cards and detail headings compact annual pay while preserving source data and salary tier', () => {
   for (const [pay, compact, tier] of [['$75,600', '$76K', 'low'], ['$138,600', '$139K', 'high'], ['$41,460', '$41K', 'low'], ['$79,999', '$80K', 'low']]) {
     const b = ui(), original = job({pay}); b.init([original]);
     const front = card(b, original.link); assert(front.textContent.includes(compact)); assert(!front.textContent.includes(pay));
     assert.equal(b.app.payTier(original.pay), tier, 'rounding never changes the salary-band input');
     const dialog = detail(b, original.link);
-    const disclosure = dialog.querySelector('.su-pay-source'); assert(disclosure);
-    assert.equal(disclosure.querySelector('summary').textContent, 'Pay details');
-    assert.equal(disclosure.querySelector('p').textContent, pay);
-    assert.equal(disclosure.getAttribute('open'), null, 'exact detail stays collapsed initially');
+    assert.equal(dialog.querySelector('.su-pay-source'), null, 'the TL;DR no longer adds a Pay details disclosure');
+    assert(!dialog.textContent.includes('Pay details'));
+    assert(!dialog.textContent.includes(pay), 'the exact amount is not duplicated below the compact heading');
     assert(dialog.children.some(node => node.textContent === compact), 'compact value is in the actual detail heading');
     assert.equal(original.pay, pay); assert.equal(b.app.jobs[0].pay, pay);
   }
@@ -64,28 +63,29 @@ test('internship faces and detail headings use compact paid labels without losin
     [{pay:'$22.50/hour',payBasis:'hour'}, '$23/hour'],
     [{pay:'$1,100/week',payBasis:'week'}, '$1,100/week'],
     [{pay:'$138,600/year (annualized)',payBasis:'annualized_year'}, '$139K/year'],
-    [{pay:'Paid; amount not disclosed',payBasis:'not_listed'}, 'Paid']
+    [{pay:'Paid; amount not disclosed',payBasis:'not_listed'}, '$ Paid']
   ];
   for (const [fields, compact] of cases) {
     const b = ui({pathname:'/internships.html'}), original = intern(fields); b.init([original]);
     assert.equal(card(b, original.link).querySelector('.su-internship-pay').textContent, compact);
     const dialog = detail(b, original.link);
     assert(dialog.children.some(node => node.textContent === compact), 'internship detail heading uses ' + compact);
-    const source = Internships.payLabel(original), disclosure = dialog.querySelector('.su-pay-source');
-    if (source !== compact) { assert(disclosure); assert.equal(disclosure.querySelector('p').textContent, source); }
-    else assert.equal(disclosure, null, 'no duplicate disclosure when display is unchanged');
-    assert.equal(original.pay, fields.pay);
+    assert.equal(dialog.querySelector('.su-pay-source'), null, 'the detail keeps one compact pay label');
+    assert.equal(original.pay, fields.pay);assert.equal(b.app.jobs[0].pay, fields.pay);
+    assert.equal(b.app.jobs[0].payBasis, fields.payBasis, 'display rounding never rewrites the source unit');
     if (fields.payBasis === 'hour') assert(!dialog.textContent.includes('/year'), 'hourly pay is never annualized');
   }
 });
 
-test('pay disclosure escapes source HTML and an unknown internship pay unit is not invented', () => {
+test('pay rendering stays inert and the approved small internship hourly assumption is display-only', () => {
   const b = ui(), unsafe = job({pay:'$75,600 <img src=x onerror=alert(1)>'}); b.init([unsafe]);
-  const disclosure = detail(b, unsafe.link).querySelector('.su-pay-source');
-  assert.equal(disclosure.querySelector('p').textContent, unsafe.pay);
-  assert.equal(disclosure.querySelector('img'), null);
-  const student = intern({pay:'$23.75 (time unit not listed)',payBasis:'not_listed'});
-  const label = b.helpers.cardPay(student); assert(!/\/(?:hour|year|week|month)/.test(label));
+  const dialog = detail(b, unsafe.link);
+  assert.equal(dialog.querySelector('.su-pay-source'), null);assert.equal(dialog.querySelector('img,[onerror],script'), null);
+  assert.equal(b.app.jobs[0].pay, unsafe.pay, 'raw employer text stays untouched');
+  const student = intern({pay:'$23.75 (time unit not listed)',payBasis:'not_listed'}), before=JSON.stringify(student);
+  assert.equal(b.helpers.cardPay(student), '$24/hour');
+  assert.equal(JSON.stringify(student),before,'the hourly assumption is presentation only');
+  assert.equal(b.helpers.cardPay(intern({pay:'$1,100/week',payBasis:'week'})), '$1,100/week', 'an explicit employer unit is never replaced');
   assert.equal(b.helpers.cardPay(intern({pay:'Not disclosed',payStatus:'not_disclosed'})), 'Pay not disclosed');
   assert.equal(b.helpers.cardPay(intern({pay:'Unpaid',payStatus:'unpaid'})), 'Unpaid');
 });
@@ -173,8 +173,9 @@ test('real discovery actions stay in Board menu beside the count, separate from 
     assert.equal(menu.tagName,'DETAILS'); assert.equal(menu.getAttribute('open'),null);
     const count=b.grid.querySelector('.su-results-count'); assert.equal(menu.parentElement,count.parentElement);
     assert(menu.parentElement.classList.contains('su-board-utilities'));
-    const actions=menu.querySelectorAll('a,button'); assert.equal(actions.length,signedIn?4:3);
+    const actions=menu.querySelectorAll('a,button'); assert.equal(actions.length,signedIn?5:4);
     assert(menu.querySelector('[data-discovery="hidden"]')); assert(menu.querySelector('a[href="./suggest.html"]')); assert(menu.querySelector('[data-act="openWelcome"]'));
+    assert.equal(menu.querySelector('[data-act="openModal"]').textContent,'About Nic');
     assert.equal(!!menu.querySelector('[data-discovery="settings"]'),signedIn);
     for(const action of ['toggleSavedOnly','toggleLook']) assert.equal(menu.querySelector('[data-act="'+action+'"]'),null);
     assert(!b.grid.querySelector('.su-main-nav').contains(menu));
@@ -190,4 +191,18 @@ test('Jobs and Internships entrypoints load both shared presentation modules bef
     const app=scripts.findIndex(src=>src.endsWith('/app.js'));
     for(const module of ['us-states.js','pay-display.js']){const i=scripts.findIndex(src=>src.endsWith('/'+module));assert(i>=0&&i<app,name+' loads '+module+' before app');}
   }
+});
+
+
+test('Show hidden jobs contains only dismissed cards and never advice or personal envelopes', () => {
+  const b=ui(),root=b.window,rows=Array.from({length:12},(_,i)=>job({link:'https://example.com/hidden/'+i,pay:'$120K'}));
+  root.document=b.document;root.localStorage=b.localStorage;root.SUAuth={signedIn:()=>false};root.SUDiscovery=Discovery.create(root);
+  b.init(rows);
+  for(const row of rows)assert.equal(root.SUDiscovery.dismiss(row.link,'not_fit'),true);
+  b.app.render();assert.equal(b.grid.querySelectorAll('.note[data-act="openJob"]').length,0);
+  b.grid.querySelector('[data-discovery="hidden"]').click();
+  assert.equal(root.SUDiscovery.showHidden(),true);assert.equal(b.grid.querySelectorAll('.note[data-act="openJob"]').length,12);
+  assert.equal(b.grid.querySelector('.su-advice'),null,'hidden view is a review list, not an advice feed');
+  assert.equal(b.grid.querySelector('[data-act="openNote"]'),null);assert.equal(b.grid.querySelector('[data-act="closeNote"]'),null);
+  assert.equal(b.grid.querySelectorAll('[data-discovery="restore"]').length,12);
 });

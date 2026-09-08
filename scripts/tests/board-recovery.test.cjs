@@ -36,15 +36,19 @@ test('tracker persistence failure keeps feedback visible with a readable error a
  assert.equal(events.filter(e=>e.name==='application_reported').length,1);
 });
 
-test('Google preference link is independent of board sign-in and preserves the unanswered feedback',()=>{
+test('feedback and About Nic omit the Google promotion while preserving optional sign-in and unanswered feedback',()=>{
  for(const signedIn of [false,true]){
   const b=board(),events=[];b.window.SUAuth={signedIn:()=>signedIn};b.window.SUAnalytics.emit=name=>events.push(name);b.init();
   b.app.setState({feedbackOpen:true,feedbackCo:'Example',feedbackLink:job().link});const dialog=b.overlay.querySelector('[role="dialog"]');
-  const link=dialog.querySelector('[data-act="preferredSource"]');assert(link);assert.equal(link.getAttribute('href'),'https://www.google.com/preferences/source?q=stillunemployed.com');
-  assert.equal(link.getAttribute('target'),'_blank');assert.match(link.getAttribute('rel'),/noopener/);assert.match(link.getAttribute('rel'),/noreferrer/);
-  link.click();assert.equal(b.app.state.feedbackOpen,true);assert.equal(b.overlay.querySelector('[role="dialog"]'),dialog);
-  assert.equal(events.filter(name=>name==='preferred_source_click').length,1);assert.ok(!events.some(name=>/source_(added|complete|success)|application_reported/.test(name)));
-  assert(dialog.querySelector('[data-act="markApplied"]'));assert(dialog.querySelector('[data-act="closeFeedback"]'));
+  assert.equal(dialog.querySelector('[data-act="preferredSource"]'),null);assert.doesNotMatch(dialog.textContent,/Prefer us on Google/i);
+  assert(dialog.querySelector('[data-act="markApplied"]'));
+  assert(dialog.querySelector('.su-feedback-account'),'the account module owns optional Google sign-in here');
+  assert(dialog.querySelector('[data-act="closeFeedback"]'),'the fallback close action exists before auth renders');
+  assert.equal(b.app.state.feedbackOpen,true);assert.equal(b.overlay.querySelector('[role="dialog"]'),dialog);
+  b.app.setState({feedbackOpen:false,modalOpen:true});const about=b.overlay.querySelector('[role="dialog"]');
+  assert(about);assert.equal(about.querySelector('[data-act="preferredSource"]'),null);assert.doesNotMatch(about.textContent,/Prefer us on Google/i);
+  assert(!events.some(name=>name==='preferred_source_click'||name==='application_reported'));
+  assert.deepEqual(JSON.parse(b.localStorage.getItem('su_tracker')),[]);
  }
 });
 
@@ -82,4 +86,22 @@ test('starting a background refresh preserves the live navigation and focused se
  assert.equal(b.app.jobs[0].co,'Fresh employer');assert.equal(b.app._refreshing,false);
  assert.notEqual(b.grid.querySelector('.su-main-nav'),nav,'the authoritative response may update the board');
  assert.notEqual(b.document.getElementById('su-feed-progress').getAttribute('hidden'),null);
+});
+
+
+test('saved snapshots remain readable after a listing leaves the feed without pretending it is still available',()=>{
+ const b=board(),store=require('../../js/sync-store.js').create(b.localStorage),original=job({co:'Saved Studio',role:'Visual Designer',pay:'$83,250',link:'https://example.com/saved-snapshot'}),events=[];
+ b.window.SUStore=store;b.window.SUAnalytics.job=name=>events.push(name);b.init([original]);
+ b.app.toggleSave(original.link);
+ assert.equal(store.view().savedJobs[original.link].co,original.co,'saving captures the card, not just a bare link');
+ b.app._closedLinks=[original.link];b.app.updateJobs([]);b.app.setState({savedOnly:true});
+ const card=b.grid.querySelector('.note[data-act="openJob"]');assert(card);
+ assert(card.textContent.includes(original.co));assert(card.textContent.includes(original.role));assert(card.textContent.includes('No longer available'));
+ assert.equal(card.querySelector('[data-act="openNote"]'),null);assert(!card.textContent.includes('Human-verified'));
+ card.click();const dialog=b.overlay.querySelector('[role="dialog"]');assert(dialog);assert(dialog.textContent.includes(original.co));
+ assert.equal(dialog.querySelector('[data-act="detailApply"]'),null);assert(dialog.querySelector('[data-act="detailArchived"]'));
+ dialog.querySelector('[data-act="detailArchived"]').click();
+ assert.equal(b.opened.at(-1)[0],original.link);assert.equal(b.app.state.feedbackOpen,false);
+ assert(!events.some(name=>name==='apply_click'||name==='application_reported'));assert.equal(store.view().saved[original.link],true);
+ assert.equal(store.view().savedJobs[original.link].pay,original.pay,'the retained source amount is unchanged');
 });
