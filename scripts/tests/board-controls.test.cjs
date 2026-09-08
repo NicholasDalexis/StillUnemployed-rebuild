@@ -96,9 +96,9 @@ function fixture() {
   return { window, document, ...first, board, Element, fire, advance, mutate() { observerCallback(); }, get tip() { return document.getElementById('su-board-help'); }, resize() { for (const l of window.listeners.resize || []) l.fn({}); } };
 }
 
-test('one body tooltip serves saved, tracker and theme with only the current anchor described', () => {
+test('one body tooltip serves saved and theme with only the current anchor described', () => {
   const w = fixture();assert.equal(w.tip.parentElement, w.document.body);assert.equal(w.tip.hidden, true);
-  for (const [anchor, copy] of [[w.saved, 'Keep roles here to revisit.'], [w.tracker, 'Keep applications and next steps together.'], [w.theme, 'Pick a different look. Your jobs stay the same.']]) {
+  for (const [anchor, copy] of [[w.saved, 'Keep roles here to revisit.'], [w.theme, 'Pick a different look. Your jobs stay the same!']]) {
     w.fire('pointerover', anchor, { pointerType:'mouse' });
     assert.equal(w.tip.hidden, false);assert.equal(w.tip.textContent, copy);assert.match(anchor.getAttribute('aria-describedby'), /su-board-help/);
     for (const other of [w.saved, w.tracker, w.theme].filter(item => item !== anchor)) assert.doesNotMatch(other.getAttribute('aria-describedby') || '', /su-board-help/);
@@ -137,7 +137,7 @@ test('tooltip placement is clamped at both viewport edges and chooses space abov
   w.fire('pointerover', w.saved, { pointerType:'mouse' });
   assert.equal(parseFloat(w.tip.style.left), 142);assert.equal(parseFloat(w.tip.style.top), 688);
   assert.equal(parseFloat(w.tip.style.left) + 240, w.window.innerWidth - 8);
-  w.tracker.box = { left:-35, top:0, width:30, height:20 };w.fire('pointerover', w.tracker, { pointerType:'mouse' });
+  w.theme.box = { left:-35, top:0, width:30, height:20 };w.fire('pointerover', w.theme, { pointerType:'mouse' });
   assert.equal(parseFloat(w.tip.style.left), 8);assert.equal(parseFloat(w.tip.style.top), 28);
 });
 
@@ -148,8 +148,8 @@ test('prepare resets detached anchors and reuses the single layer without duplic
   assert.equal(w.tip, tip);assert.equal(tip.hidden, true);assert.equal(old.getAttribute('aria-describedby'), 'saved-count');
   assert.equal(w.document.listeners.click.length, listenerCount);assert.equal(next.menu.listeners.toggle.length, 1);
   w.fire('pointerover', old, { pointerType:'mouse' });assert.equal(tip.hidden, true);
-  w.fire('pointerover', next.tracker, { pointerType:'mouse' });assert.equal(tip.hidden, false);
-  next.tracker.hidden = true;w.mutate();assert.equal(tip.hidden, true);
+  w.fire('pointerover', next.theme, { pointerType:'mouse' });assert.equal(tip.hidden, false);
+  next.theme.hidden = true;w.mutate();assert.equal(tip.hidden, true);
 });
 
 test('native summary toggles the Board menu without custom roles and suppresses tooltips', () => {
@@ -192,4 +192,64 @@ test('opening a modal or panel prevents menu/help entry and explicit dismissal g
   w.saved.focus();assert.equal(w.tip.hidden, true);
   w.window.SUApp.state.openPanel = null;w.fire('click', w.summary);w.preferences.focus();w.window.SUBoardControls.dismiss();
   assert.equal(w.menu.open, false);assert.equal(w.document.activeElement, w.summary);assert.equal(w.tip.hidden, true);
+});
+
+
+test('Tracker no longer exposes hover or keyboard tooltip help', () => {
+  const w = fixture();
+  w.fire('pointerover', w.tracker, { pointerType:'mouse' });assert.equal(w.tip.hidden, true);
+  w.tracker.focus();assert.equal(w.tip.hidden, true);assert.equal(w.tracker.getAttribute('aria-describedby'), null);
+});
+
+test('live Google help works outside the board and updates when account state changes', () => {
+  const w = fixture();
+  const auth = w.document.body.appendChild(new w.Element('button', { 'data-su-help':'Sign in to keep your saved jobs and tracker together.' }));
+  w.window.SUBoardControls.start();w.window.SUBoardControls.start();
+  auth.focus();assert.equal(w.tip.hidden, false);assert.equal(w.tip.textContent, auth.getAttribute('data-su-help'));
+  auth.setAttribute('data-su-help', 'You’re signed in. Click here to sign out.');w.mutate();
+  assert.equal(w.tip.textContent, 'You’re signed in. Click here to sign out.');assert.equal(w.document.querySelectorAll('#su-board-help').length, 1);
+  auth.removeAttribute('data-su-help');w.mutate();assert.equal(w.tip.hidden, true);assert.equal(auth.getAttribute('aria-describedby'), null);
+});
+
+function openPanel(w, kind) {
+  const trigger = w.root.appendChild(new w.Element('button', { 'data-act':kind === 'cat' ? 'toggleCat' : 'toggleFilters', 'aria-expanded':'true' }));
+  const panel = w.root.appendChild(new w.Element('div', { 'data-su-panel':kind }));
+  const field = panel.appendChild(new w.Element('select'));
+  w.window.SUApp.state.openPanel = kind;
+  w.window.SUApp.closeBoardPanels = function () {
+    this.state.openPanel = null;panel.remove();trigger.setAttribute('aria-expanded','false');
+  };
+  return { trigger, panel, field };
+}
+
+test('outside panel dismissal preserves clicked anchors until native navigation and delegated actions run', () => {
+  for (const eventType of ['pointerdown','click']) {
+    const w = fixture(), p = openPanel(w, 'filters');let delegated = false;
+    w.document.addEventListener(eventType, event => {
+      if (event.target !== w.tracker) return;
+      delegated = true;assert.equal(w.window.SUApp.state.openPanel, null);assert.equal(p.panel.isConnected, false);
+      assert.equal(w.tracker.isConnected, true);assert.equal(event.defaultPrevented, false);
+    });
+    w.fire(eventType, w.tracker);assert.equal(delegated, true);assert.equal(p.trigger.getAttribute('aria-expanded'),'false');
+  }
+});
+
+test('panel controls remain usable and their own toggle still owns its open-close action', () => {
+  const w = fixture(), p = openPanel(w, 'filters');
+  w.fire('pointerdown', p.field);w.fire('click', p.field);assert.equal(w.window.SUApp.state.openPanel, 'filters');
+  w.fire('click', p.trigger);assert.equal(w.window.SUApp.state.openPanel, 'filters');
+  assert.equal(p.field.isConnected, true);
+});
+
+test('opening the Board menu closes a filter panel while preserving its native summary', () => {
+  const w = fixture(), p = openPanel(w, 'filters');
+  const event = w.fire('click', w.summary);
+  assert.equal(w.window.SUApp.state.openPanel, null);assert.equal(p.panel.isConnected, false);
+  assert.equal(w.menu.open, true);assert.equal(w.summary.isConnected, true);assert.equal(event.defaultPrevented, false);
+});
+
+test('Escape dismisses a filter panel and returns focus to its stable toggle', () => {
+  const w = fixture(), p = openPanel(w, 'filters');p.field.focus();
+  const event = w.fire('keydown', p.field, { key:'Escape' });
+  assert.equal(w.window.SUApp.state.openPanel, null);assert.equal(w.document.activeElement, p.trigger);assert.equal(event.defaultPrevented, true);
 });

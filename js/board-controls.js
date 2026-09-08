@@ -7,14 +7,27 @@
   var keyboard = true, dismissedOwner = null, bound = false, observer = null;
   var help = [
     ['[data-act="toggleSavedOnly"]', 'Keep roles here to revisit.'],
-    ['a[href="./tracker.html"]', 'Keep applications and next steps together.'],
-    ['[data-act="openLook"]', 'Pick a different look. Your jobs stay the same.']
+    ['[data-act="openLook"]', 'Pick a different look. Your jobs stay the same!']
   ];
   function closest(target, selector) { return target && typeof target.closest === 'function' ? target.closest(selector) : null; }
   function connected(node) { return !!(node && node.isConnected && node.getClientRects().length); }
+  function hasDialog() { return !!doc.querySelector('#overlay-root [role="dialog"],dialog[open],[aria-modal="true"]'); }
   function modalOrPanel() {
-    return !!(doc.querySelector('#overlay-root [role="dialog"],dialog[open],[aria-modal="true"]') ||
-      (global.SUApp && global.SUApp.state && global.SUApp.state.openPanel));
+    return hasDialog() || !!(global.SUApp && global.SUApp.state && global.SUApp.state.openPanel);
+  }
+  function closePanels(restoreFocus) {
+    var app = global.SUApp, panel = app && app.state && app.state.openPanel;
+    if (!panel || typeof app.closeBoardPanels !== 'function') return false;
+    var trigger = doc.querySelector(panel === 'cat' ? '[data-act="toggleCat"]' : '[data-act="toggleFilters"]');
+    // App removes only panel nodes. Rebuilding the board here would detach a
+    // clicked link before its delegated handler or native navigation can run.
+    app.closeBoardPanels();
+    if (app.state.openPanel) return false;
+    if (restoreFocus && connected(trigger)) trigger.focus({ preventScroll:true });
+    return true;
+  }
+  function closeOutsidePanel(target) {
+    if (!closest(target, '[data-su-panel],[data-act="toggleCat"],[data-act="toggleFilters"]')) closePanels(false);
   }
   function cancelLeave() { if (leaveTimer !== null) global.clearTimeout(leaveTimer);leaveTimer = null; }
   function describe(anchor, add) {
@@ -38,7 +51,7 @@
   }
   function dismiss() { hide(true);closeMenu(true); }
   function allowed(anchor) {
-    return connected(anchor) && currentRoot && currentRoot.contains(anchor) && !modalOrPanel() && !(menu && menu.open);
+    return connected(anchor) && ((currentRoot && currentRoot.contains(anchor)) || anchor.matches('button[data-su-help]')) && !modalOrPanel() && !(menu && menu.open);
   }
   function position() {
     if (!owner || !allowed(owner)) { hide(false);return; }
@@ -56,6 +69,8 @@
     tip.style.left = left + 'px';tip.style.top = top + 'px';
   }
   function findHelp(target) {
+    var authAnchor = closest(target, 'button[data-su-help]');
+    if (authAnchor && (authAnchor.getAttribute('data-su-help') || '').trim()) return { anchor:authAnchor, text:authAnchor.getAttribute('data-su-help') };
     for (var i = 0; i < help.length; i++) {
       var anchor = closest(target, help[i][0]);
       if (anchor && currentRoot && currentRoot.contains(anchor)) return { anchor:anchor, text:help[i][1] };
@@ -64,7 +79,8 @@
   }
   function show(item, fromFocus) {
     if (!item || item.anchor === dismissedOwner || !allowed(item.anchor)) return;
-    if (owner !== item.anchor) { hide(false);owner = item.anchor;tip.textContent = item.text;describe(owner, true); }
+    if (owner !== item.anchor) { hide(false);owner = item.anchor;describe(owner, true); }
+    tip.textContent = item.text;
     cancelLeave();
     if (fromFocus) focusHere = true;else pointerHere = true;
     tip.hidden = false;position();
@@ -98,11 +114,11 @@
     if (owner === item.anchor) { focusHere = false;leaveSoon(); }
   }
   function onPointerDown(event) {
-    keyboard = false;hide(true);
+    keyboard = false;hide(true);closeOutsidePanel(event.target);
     if (menu && menu.open && !inside(menu, event.target)) closeMenu(false);
   }
   function onClick(event) {
-    hide(true);
+    hide(true);closeOutsidePanel(event.target);
     if (!menu || !menu.open) return;
     if (!inside(menu, event.target)) { closeMenu(false);return; }
     if (inside(summary, event.target)) return;
@@ -116,10 +132,13 @@
     if (event.key !== 'Escape') return;
     hide(true);
     if (menu && menu.open) { event.preventDefault();event.stopPropagation();closeMenu(true); }
+    else if (closePanels(true)) { event.preventDefault();event.stopPropagation(); }
   }
   function onToggle() {
     if (!menu || !menu.open) return;
     hide(true);
+    if (hasDialog()) { closeMenu(false);return; }
+    closePanels(false);
     if (modalOrPanel()) { closeMenu(false);return; }
     doc.querySelectorAll('details[data-board-menu][open],details.su-board-menu[open]').forEach(function (other) {
       if (other !== menu) other.open = false;
@@ -129,6 +148,10 @@
     if (modalOrPanel()) { hide(true);closeMenu(false); }
     else if (menu && menu.open) hide(true);
     else if (owner && !allowed(owner)) hide(false);
+    else if (owner && owner.matches('button[data-su-help]')) {
+      var item = findHelp(owner);
+      if (!item) hide(false);else if (tip.textContent !== item.text) { tip.textContent = item.text;position(); }
+    }
   }
   function bind() {
     if (bound) return;bound = true;
@@ -149,9 +172,10 @@
     }
     if (typeof global.MutationObserver === 'function') {
       observer = new global.MutationObserver(checkContext);
-      observer.observe(doc.body, { childList:true, subtree:true, attributes:true, attributeFilter:['open','aria-modal'] });
+      observer.observe(doc.body, { childList:true, subtree:true, attributes:true, attributeFilter:['open','aria-modal','data-su-help'] });
     }
   }
+  function start() { if (doc && doc.body) { bind();checkContext(); } }
   function prepare(root) {
     if (!doc || !doc.body || !root) return;
     bind();hide(false);dismissedOwner = null;
@@ -161,5 +185,5 @@
     if (menu) { menu.addEventListener('toggle', onToggle);onToggle(); }
     checkContext();
   }
-  global.SUBoardControls = { prepare:prepare, dismiss:dismiss };
+  global.SUBoardControls = { start:start, prepare:prepare, dismiss:dismiss };
 })(typeof window !== 'undefined' ? window : this);
