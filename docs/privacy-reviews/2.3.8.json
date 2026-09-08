@@ -1,21 +1,21 @@
 {
-  "version": "2.3.9",
+  "version": "2.3.8",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-08T04:30:35.648725+00:00",
+  "reviewedAt": "2026-09-08T04:12:19.506092+00:00",
   "reviewer": "Codex/Astra root, independent release and catalog reviewers",
-  "sourceDigest": "0a532fe5ab4ce92ba603314b98f8b03ab29389b5f32af3c85c246b207aac0c06",
-  "sourceFileCount": 148,
+  "sourceDigest": "c7e77352d77765a40c2c7a72da451d08cfa61ded303a3c60037a57d48b08549c",
+  "sourceFileCount": 147,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "2.3.9 measures generated share-image text to avoid premature mid-word truncation and adds the existing orange brand star as favicon.ico. No account, collection, provider, policy, application behavior or audio changes.",
+  "scope": "2.3.8 corrects generated theme navigation and vector-draws the share-image star. No account, collection, provider, policy, application behavior, or audio changes from2.3.7.",
   "checks": {
-    "fullSuite": "718/718 tests pass; zero failures, cancellations or skips.",
-    "shareText": "Actual WMG full-title regression fails against2.3.8. Five renderer tests pass including all eight themes, exact-width edges, long company/role/location, grapheme preservation, empty inputs and native canvas memory guard.",
-    "favicon": "Valid64px ICO with embedded PNG frame; existing publication allowlist and fingerprint include the asset.",
-    "renderedUI": "Earlier72 theme/page/width cases and16 lower Tracker cases remain applicable; no active browser JS/CSS changes in2.3.8 or2.3.9.",
-    "hosted": "2.3.8 core hosted/browser checks passed but showed long-title truncation and optional favicon404. Final2.3.9 hosted acceptance remains required."
+    "fullSuite": "716/716 tests pass; zero failures, cancellations or skips.",
+    "navigation": "25 focused theme/version/SEO tests pass; both new navigation regressions fail against2.3.7.",
+    "shareRenderer": "12 share/build tests pass; new test fails against2.3.7. All eight themes have identical pixels outside the star area.",
+    "renderedUI": "2.3.7 UI coverage remains applicable:72 theme/page/width cases and16 lower Tracker cases. No UI source changed in2.3.8.",
+    "hosted": "2.3.7 hosted audit surfaced these two generator fixes.2.3.8 hosted acceptance remains required after deployment."
   },
-  "baselineReview": "docs/privacy-reviews/2.3.8.json",
+  "baselineReview": "docs/privacy-reviews/2.3.7.json",
   "openItems": [
     "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
     "Function-scoped Firebase and Netlify configuration and actual owner UID",
@@ -31,5 +31,5 @@
     "Search Console domain property Not verified; Bing has no existing IAB session",
     "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive"
   ],
-  "policySummary": "Current Privacy and Terms reviewed against this presentation-only correction; no text change required. Existing operational limits remain open. Engineering review, not legal certification."
+  "policySummary": "Reviewed current Privacy and Terms against this generator-only correction; neither needs a text change. Earlier operational limits remain open. Engineering review, not legal certification."
 }

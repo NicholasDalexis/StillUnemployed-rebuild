@@ -223,6 +223,35 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
+const graphemes = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+
+// Keep a complete line whenever its actual font fits. Character-count caps cut
+// short narrow titles and still overflow on wide company names. If space really
+// runs out, show an omission marker and prefer the last complete word. Segment
+// graphemes so a long unbroken name cannot leave half an emoji or accent behind.
+export function fitCanvasText(ctx, value, maxWidth) {
+  const text = String(value ?? '');
+  if (!text || !Number.isFinite(maxWidth) || maxWidth <= 0) return '';
+  if (ctx.measureText(text).width <= maxWidth) return text;
+  const marker = '…';
+  if (ctx.measureText(marker).width > maxWidth) return '';
+  const parts = Array.from(graphemes.segment(text), part => part.segment);
+  let low = 0, high = parts.length;
+  while (low < high) {
+    const middle = Math.ceil((low + high) / 2);
+    const candidate = parts.slice(0, middle).join('').trimEnd() + marker;
+    if (ctx.measureText(candidate).width <= maxWidth) low = middle;
+    else high = middle - 1;
+  }
+  const prefix = parts.slice(0, low).join('');
+  let fitted = prefix.trimEnd();
+  if (!/\s$/u.test(prefix) && !/^\s/u.test(parts[low] || '')) {
+    const boundary = fitted.search(/\s+\S*$/u);
+    if (boundary > 0) fitted = fitted.slice(0, boundary).trimEnd();
+  }
+  return fitted + marker;
+}
+
 // Draw one job to look EXACTLY like the board card (flat, same fonts/colors),
 // just scaled up for the 1200x630 OG frame. No tape / peel / curl / sheen /
 // vignette — the board card doesn't have those, and Nic didn't want them.
@@ -260,14 +289,15 @@ function drawCard(job, themeKey, cv) {
 
   // text — same faces + weights as the board card, tightly packed
   const px = x + 64;
+  const textWidth = w - 128;
   ctx.textBaseline = 'top';
   ctx.fillStyle = P.ink;
-  ctx.font = `900 66px ${F_BLACK}`; ctx.fillText(String(job.co || '').slice(0, 24), px, y + 66);
+  ctx.font = `900 66px ${F_BLACK}`; ctx.fillText(fitCanvasText(ctx, job.co, textWidth), px, y + 66);
   ctx.font = `600 36px ${F_BODY}`; ctx.fillStyle = hexToRgba(P.ink, 0.92);
-  ctx.fillText(String(job.role || '').slice(0, 44), px, y + 156);
+  ctx.fillText(fitCanvasText(ctx, job.role, textWidth), px, y + 156);
   if (job.pay) { ctx.font = `800 66px ${F_BODY}`; ctx.fillStyle = P.ink; ctx.fillText(String(job.pay), px, y + 262); }
   ctx.font = `30px ${F_BODY}`; ctx.fillStyle = hexToRgba(P.ink, 0.85);
-  ctx.fillText([job.loc, job.style, job.exp].filter(Boolean).join('  ·  ').slice(0, 54), px, y + 350);
+  ctx.fillText(fitCanvasText(ctx, [job.loc, job.style, job.exp].filter(Boolean).join('  ·  '), textWidth), px, y + 350);
 
   // Draw the footer star rather than relying on a host font's symbol coverage.
   // Netlify's Linux fonts may render a missing-glyph box for the Unicode star.

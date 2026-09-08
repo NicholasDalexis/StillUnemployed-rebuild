@@ -68,6 +68,68 @@ test('footer star renders in every theme without any font glyph or glyph metrics
   }
 });
 
+test('the real renderer retains fitting full titles and bounds long copy without changing pay or footer', async () => {
+  const { createCanvas } = await import('@napi-rs/canvas');
+  const { createCardRenderer } = await import(generatorURL);
+  const render = await createCardRenderer();
+  const probe = createCanvas(1200, 630).getContext('2d');
+  const proto = Object.getPrototypeOf(probe), original = proto.fillText;
+  const wmg = { co:'Warner Music Group', role:'Junior Manager, Creator Strategy & Partnerships', pay:'$66-72K', loc:'New York, NY', style:'In-person', exp:'3+ yrs' };
+  const long = { co:'WNBC / WNJU (NBCUniversal)', role:'Worldwide creative strategy and partnerships '.repeat(8), pay:'$72,400-138,600/year', loc:'New York, NY; Los Angeles, CA; San Francisco, CA; Washington, DC; Chicago, IL', style:'Hybrid', exp:'3+ yrs' };
+  let drawn = [];
+  proto.fillText = function (text, x, y, ...rest) {
+    drawn.push({ text:String(text), x, y, font:this.font, width:this.measureText(String(text)).width });
+    return original.call(this, text, x, y, ...rest);
+  };
+  try {
+    for (const theme of themes) {
+      for (const job of [wmg, long]) {
+        drawn = [];render(job, theme);
+        const company=drawn.find(r=>r.y===98), role=drawn.find(r=>r.y===188), location=drawn.find(r=>r.y===382);
+        for(const line of [company,role,location])assert(line.width<=1004,`${theme}: ${line.text} exceeds the text area`);
+        assert.match(company.font,/66px/);assert.match(role.font,/36px/);assert.match(location.font,/30px/);
+        if(job===wmg){
+          assert.equal(company.text,wmg.co);
+          assert.equal(role.text,wmg.role,'the complete WMG title fits; never cut Partnerships');
+          assert.equal(location.text,'New York, NY  ·  In-person  ·  3+ yrs');
+        }else{
+          for(const line of [company,role,location])assert.match(line.text,/…$/,'omitted copy must be marked');
+        }
+        assert.equal(drawn.find(r=>r.y===294).text,job.pay,'employer pay remains exact');
+        const footer=drawn.find(r=>r.y===470);
+        assert.equal(footer.text,'stillunemployed.com');assert.equal(footer.x,141.41);
+        assert.equal(drawn.find(r=>r.y===528).text,"roles I'd actually apply to");
+      }
+    }
+  } finally { proto.fillText = original; }
+});
+
+test('measured single-line fitting handles exact edges, word breaks, wide words, Unicode and empty strings', async () => {
+  const { createCanvas } = await import('@napi-rs/canvas');
+  const { createCardRenderer, fitCanvasText } = await import(generatorURL);
+  await createCardRenderer();
+  const ctx=createCanvas(1200,630).getContext('2d');ctx.font="600 36px 'SUBody', Archivo, sans-serif";
+  const full='Café 👩🏽‍💻 Design';
+  const exact=ctx.measureText(full).width;
+  assert.equal(fitCanvasText(ctx,full,exact),full,'an exact-fitting line remains intact');
+  const smaller=fitCanvasText(ctx,full,exact-0.01);
+  assert.match(smaller,/…$/);assert(ctx.measureText(smaller).width<=exact-0.01);
+  const words='Creative Strategy Partnerships Worldwide';
+  const wordWidth=ctx.measureText('Creative Strategy Pa…').width;
+  assert.equal(fitCanvasText(ctx,words,wordWidth),'Creative Strategy…');
+  const wide=fitCanvasText(ctx,'W'.repeat(100),200);
+  assert.match(wide,/^W+…$/);assert(ctx.measureText(wide).width<=200);
+  const unicode='e\u0301👩🏽‍💻'.repeat(30), width=ctx.measureText('e\u0301👩🏽‍💻e\u0301…').width;
+  const shortened=fitCanvasText(ctx,unicode,width);
+  const boundaries=[...new Intl.Segmenter(undefined,{granularity:'grapheme'}).segment(unicode)].map(p=>p.index);
+  assert.match(shortened,/…$/);assert(boundaries.includes(shortened.slice(0,-1).length),'never split an accented grapheme or emoji sequence');
+  assert(ctx.measureText(shortened).width<=width);
+  assert.equal(fitCanvasText(ctx,'',1004),'');
+  assert.equal(fitCanvasText(ctx,null,1004),'');
+  assert.equal(fitCanvasText(ctx,'Designer',0),'');
+  assert.equal(fitCanvasText(ctx,'Designer',ctx.measureText('…').width-0.01),'');
+});
+
 test('sequential share batches keep native canvas memory bounded', { timeout: 45000 }, () => {
   // Run separately so other tests and their native allocations cannot affect RSS.
   // The old renderer grew by >500 MiB in 176 images. A generous 384 MiB growth
