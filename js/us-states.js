@@ -74,5 +74,57 @@
     scan(state, found, true); scan(location, found, false);
     return STATES.filter(function (item) { return found[item.code]; }).map(function (item) { return item.code; });
   }
-  return Object.freeze({ STATES: Object.freeze(STATES), BY_CODE: Object.freeze(BY_CODE), normalize: normalize, extract: extract, label: label });
+  // Display only: details, search and filters retain complete source locations.
+  // Count places rather than states: two California offices still count as two.
+  function cardLocation(value) {
+    var original = clean(value);
+    if (!original) return original;
+    var text = original.replace(/\([^)]*\)/g, ' ').trim();
+    if (/\b(?:multiple|various)\s+locations\b|^Any\s+.+\s+Station\s+Location$/i.test(text)) return 'Multiple locations';
+    var regions = namePattern + '|District\\s+of\\s+Columbia|DC|' + Object.keys(BY_CODE).join('|');
+    var suffix = new RegExp('([^,;|]+),\\s*(' + regions + ')(?=\\s*(?:,| - |\\d{5}(?:-\\d{4})?\\b|$))', 'gi');
+    var prefix = new RegExp('^(' + regions + ')[\\s,-]+([A-Za-z].*)$', 'i');
+    var country = /^(?:US|USA|United States(?: of America)?|Canada)$/i;
+    var note = /\b(?:not (?:listed|specified)|exact city|hybrid|on[ -]?site|in[ -]person|office|schedule|hours|days|time zones?|restrictions|hub based)\b/i;
+    // Known city-only labels and common aliases. Unrecognized free text stays
+    // untouched; building names and timezone/attendance notes are not cities.
+    var cities = {
+      'nyc':['new york','NY'], 'new york':['new york','NY'], 'new york city':['new york','NY'],
+      'la':['los angeles','CA'], 'los angeles':['los angeles','CA'],
+      'sf':['san francisco','CA'], 'san francisco':['san francisco','CA'], 'san jose':['san jose','CA'],
+      'atlanta':['atlanta','GA'], 'chicago':['chicago','IL'], 'boston':['boston','MA']
+    };
+    var places = Object.create(null);
+    function add(city, region) {
+      city = city.trim().toLowerCase().replace(/\b(st|ft)\./g, '$1');
+      var code = normalize(region) || (/^(?:dc|district\s+of\s+columbia)$/i.test(region) ? 'DC' : region);
+      if (city === 'ny' && code === 'NY') city = 'new york'; // NY, New York / New York, NY
+      if (Object.prototype.hasOwnProperty.call(cities, city) && (!code || code === cities[city][1])) {
+        code = cities[city][1]; city = cities[city][0];
+      }
+      places[city + '|' + code] = true;
+    }
+    text.split(/\s*(?:;|\/|\||\s+or\s+|\s+and\s+|\s+&\s+)\s*/).forEach(function (part) {
+      part = part.trim();
+      // A semicolon before a street address or attendance note is not a new city.
+      if (!part || /^\d/.test(part) || country.test(part) || note.test(part)) return;
+      if (/^(?:(?:US|USA|United States)\s+)?Remote(?:\s*,?\s*(?:US|USA|United States))?$/i.test(part)) {
+        add('Remote', ''); return;
+      }
+      var cityList = part.toLowerCase().split(',').map(function (city) { return city.trim(); });
+      if (cityList.length !== 2 && cityList.every(function (city) { return Object.prototype.hasOwnProperty.call(cities, city); })) {
+        cityList.forEach(function (city) { add(city, ''); }); return;
+      }
+      var match, found = false;
+      suffix.lastIndex = 0;
+      while ((match = suffix.exec(part))) {
+        if (!country.test(match[1].trim())) { add(match[1], match[2]); found = true; }
+      }
+      if (found) return;
+      match = part.match(prefix);
+      if (match) { add(match[2], match[1]); return; }
+    });
+    return Object.keys(places).length > 1 ? 'Multiple locations' : original;
+  }
+  return Object.freeze({ STATES: Object.freeze(STATES), BY_CODE: Object.freeze(BY_CODE), normalize: normalize, extract: extract, label: label, cardLocation: cardLocation });
 });

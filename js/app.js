@@ -1742,7 +1742,8 @@
         var noteState = self.state.openNotes[id]; // undefined | 'open' | 'closing' | 'done'
         var isOpening = (noteState === 'open' || noteState === 'closing');
 
-        var metaTop = j.internship ? internshipLocation(j) : [j.loc, j.style, (j.exp && j.exp !== 'See posting' ? j.exp : null)].filter(Boolean).join('  ·  ');
+        var cardLoc = window.SUStates ? window.SUStates.cardLocation(j.loc) : j.loc;
+        var metaTop = j.internship ? internshipLocation(j) : [cardLoc, j.style, (j.exp && j.exp !== 'See posting' ? j.exp : null)].filter(Boolean).join('  ·  ');
 
         var noteStyle = '--rot:' + rot + 'deg; cursor:pointer; position:relative; background:' + bg +
           '; color:' + ink + '; border-radius:3px; padding:30px 24px 22px; box-sizing:border-box; display:flex; ' +

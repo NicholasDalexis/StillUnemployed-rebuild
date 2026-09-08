@@ -1,21 +1,21 @@
 {
-  "version": "2.4.0",
+  "version": "2.3.9",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-08T05:11:33.207962+00:00",
+  "reviewedAt": "2026-09-08T04:30:35.648725+00:00",
   "reviewer": "Codex/Astra root, independent release and catalog reviewers",
-  "sourceDigest": "25abd80f908e693b44e267017f7d2127e22b6c8a4a2abf19ec2d40ccdedfc9a8",
+  "sourceDigest": "0a532fe5ab4ce92ba603314b98f8b03ab29389b5f32af3c85c246b207aac0c06",
   "sourceFileCount": 148,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Presentation only: main job card fronts and generated share images compact multiple locations. Full public employer geography remains in raw records, details, search, state filters and share metadata. No new storage, collection, provider, auth, analytics, policy or audio behavior.",
+  "scope": "2.3.9 measures generated share-image text to avoid premature mid-word truncation and adds the existing orange brand star as favicon.ico. No account, collection, provider, policy, application behavior or audio changes.",
   "checks": {
-    "fullSuite": "721/721 tests pass, zero failures/cancellations/skips.",
-    "locations": "162 actual labels from 489 listings; 34 compacted. Independent 24-case synthetic probe and 32 focused tests pass after address-note, alias and ZIP corrections.",
-    "renderedUI": "24 real Microsoft card/detail cases: all eight themes at 320,390,1440px. Raw city search, CA/WA/NY state filters, same-state Green Dot and internship smoke pass; no overflow or browser errors.",
-    "boundaries": "No new I/O or personal data processing. Privacy and Terms unchanged and reviewed for this presentation scope. Existing operational open items retained.",
-    "hosted": "Pending exact 2.4.0 preview deployment and hosted acceptance."
+    "fullSuite": "718/718 tests pass; zero failures, cancellations or skips.",
+    "shareText": "Actual WMG full-title regression fails against2.3.8. Five renderer tests pass including all eight themes, exact-width edges, long company/role/location, grapheme preservation, empty inputs and native canvas memory guard.",
+    "favicon": "Valid64px ICO with embedded PNG frame; existing publication allowlist and fingerprint include the asset.",
+    "renderedUI": "Earlier72 theme/page/width cases and16 lower Tracker cases remain applicable; no active browser JS/CSS changes in2.3.8 or2.3.9.",
+    "hosted": "2.3.8 core hosted/browser checks passed but showed long-title truncation and optional favicon404. Final2.3.9 hosted acceptance remains required."
   },
-  "baselineReview": "docs/privacy-reviews/2.3.9.json",
+  "baselineReview": "docs/privacy-reviews/2.3.8.json",
   "openItems": [
     "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
     "Function-scoped Firebase and Netlify configuration and actual owner UID",

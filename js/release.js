@@ -1,7 +1,7 @@
 /* Generated from releases.json by scripts/version.mjs. */
 (function () {
   'use strict';
-  var version = "2.3.9";
+  var version = "2.4.0";
   function render() {
     document.querySelectorAll('[data-su-version]').forEach(function (link) {
       link.textContent = 'Version ' + version;

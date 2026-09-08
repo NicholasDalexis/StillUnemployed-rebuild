@@ -93,7 +93,8 @@ test('the real renderer retains fitting full titles and bounds long copy without
           assert.equal(role.text,wmg.role,'the complete WMG title fits; never cut Partnerships');
           assert.equal(location.text,'New York, NY  ·  In-person  ·  3+ yrs');
         }else{
-          for(const line of [company,role,location])assert.match(line.text,/…$/,'omitted copy must be marked');
+          for(const line of [company,role])assert.match(line.text,/…$/,'omitted copy must be marked');
+          assert.equal(location.text,'Multiple locations  ·  Hybrid  ·  3+ yrs','share cards use the same compact location label as the board');
         }
         assert.equal(drawn.find(r=>r.y===294).text,job.pay,'employer pay remains exact');
         const footer=drawn.find(r=>r.y===470);

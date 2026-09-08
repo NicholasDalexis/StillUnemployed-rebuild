@@ -10,6 +10,7 @@ import { mkdirSync, writeFileSync, rmSync, existsSync, readFileSync } from 'node
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import SUJobIdentity from '../js/job-identity.js';
+import SUStates from '../js/us-states.js';
 import { setImmediate as yieldToEventLoop } from 'node:timers/promises';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -297,7 +298,7 @@ function drawCard(job, themeKey, cv) {
   ctx.fillText(fitCanvasText(ctx, job.role, textWidth), px, y + 156);
   if (job.pay) { ctx.font = `800 66px ${F_BODY}`; ctx.fillStyle = P.ink; ctx.fillText(String(job.pay), px, y + 262); }
   ctx.font = `30px ${F_BODY}`; ctx.fillStyle = hexToRgba(P.ink, 0.85);
-  ctx.fillText(fitCanvasText(ctx, [job.loc, job.style, job.exp].filter(Boolean).join('  ·  '), textWidth), px, y + 350);
+  ctx.fillText(fitCanvasText(ctx, [SUStates.cardLocation(job.loc), job.style, job.exp].filter(Boolean).join('  ·  '), textWidth), px, y + 350);
 
   // Draw the footer star rather than relying on a host font's symbol coverage.
   // Netlify's Linux fonts may render a missing-glyph box for the Unicode star.

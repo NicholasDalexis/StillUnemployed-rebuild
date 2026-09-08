@@ -1,7 +1,22 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.3.9",
+  "currentVersion": "2.4.0",
   "releases": [
+    {
+      "version": "2.4.0",
+      "date": "2026-09-08",
+      "title": "Compact multi-location job cards",
+      "changes": [
+        "Main job card fronts and generated share images use Multiple locations for listings with more than one location; complete source geography remains in job details, search and state filters.",
+        "Verified all 162 current location labels, 34 affected listings, same-state offices, DC, remote alternatives, address notes, city aliases and ZIP codes."
+      ],
+      "public": {
+        "title": "A little more room on every job card",
+        "changes": [
+          "Jobs with several locations now say Multiple locations. Open the job for the full list of cities."
+        ]
+      }
+    },
     {
       "version": "2.3.9",
       "date": "2026-09-08",
@@ -369,7 +384,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "0a532fe5ab4ce92ba603314b98f8b03ab29389b5f32af3c85c246b207aac0c06",
+    "digest": "25abd80f908e693b44e267017f7d2127e22b6c8a4a2abf19ec2d40ccdedfc9a8",
     "fileCount": 148
   }
 }
