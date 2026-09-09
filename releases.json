@@ -1,7 +1,16 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.4.6",
+  "currentVersion": "2.4.7",
   "releases": [
+    {
+      "version": "2.4.7",
+      "date": "2026-09-08",
+      "title": "Keep owner restoration available after Undo expires",
+      "changes": [
+        "Add owner-only Reported jobs to Board menu, using the existing authenticated private read and guarded restore action. Keep only removed posting fields in memory, preserve stable retry IDs and global revision conflicts, and retain keyboard navigation.",
+        "Includes the accepted 2.4.6 compact header, second-card drawings, pointer-focus correction and preview moderation. Native recovery tests cover 320, 390 and 1440px; no new server powers, storage recipients or retention. Production unchanged."
+      ]
+    },
     {
       "version": "2.4.6",
       "date": "2026-09-08",
@@ -490,7 +499,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "736b6142a6e76a14075d123bd068de6b4faa2a5236649eb3fb20ac67a272bf4b",
+    "digest": "0cd8b7f8f5c8e4e9fcbfddfc2a7dd377694bec7d20eebf2bea4d3a23a0cf5586",
     "fileCount": 158
   }
 }

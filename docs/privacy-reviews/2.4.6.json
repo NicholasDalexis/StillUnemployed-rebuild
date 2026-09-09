@@ -1,19 +1,18 @@
 {
-  "version": "2.4.7",
+  "version": "2.4.6",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-09T01:00:22.526486+00:00",
+  "reviewedAt": "2026-09-09T00:31:20.283323+00:00",
   "reviewer": "Codex/Astra root, independent release and catalog reviewers",
-  "sourceDigest": "0cd8b7f8f5c8e4e9fcbfddfc2a7dd377694bec7d20eebf2bea4d3a23a0cf5586",
+  "sourceDigest": "736b6142a6e76a14075d123bd068de6b4faa2a5236649eb3fb20ac67a272bf4b",
   "sourceFileCount": 158,
-  "privacyChanged": false,
-  "termsChanged": false,
+  "privacyChanged": true,
+  "termsChanged": true,
   "scope": "Compact board header and pointer-focus correction; authenticated owner-only preview moderation with reversible durable Netlify Blobs records, fresh Google verification, public unlisting index and share-page/runtime enforcement. Local preview loopback restriction and targeted uuid dependency correction.",
   "checks": {
-    "implementation": "814/814 final full tests;34focused and independent54tests; native320/390/1440 recovery panel keyboard/retry/focus/layout pass. All seven configured website stages pass:488jobs,4128sharepages/images,4146HTML. All27provider/runtime inputs identical tovalidated2.4.6; seven Functions and Edge packaging/cold-load acceptance carries forward. Hosted2.4.7 restoration pending.",
+    "implementation": "807/807 full tests; unchanged browser acceptance from2.4.5; actual provider seven-function and Edge packaging plus emitted cold imports pass. Website rebuild and hosted owner acceptance pending.",
     "boundaries": "Personal No longer open remains separate. QA analytics suppression preserved. Preview and production stores separate; production reporting disabled. Saved and Tracker records preserved.",
     "disclosures": "Privacy, Terms and About reviewed and corrected for record fields, Netlify hosting storage, reversible owner unlisting and operational retention.",
-    "packagingPolicy": "Reviewed Privacy and Terms against2.4.6 packaging-only extraction and method declaration fix. No behavior/data-use wording change needed beyond existing2.4.5 policy updates.",
-    "recoveryPolicy": "Independent2.4.7 review: owner recovery reads existing posting/action records and invokes existing restore. Only removed posting id/link/company/role/revision projected into memory; no private browser persistence, new recipient, retention or collection category. Existing policies cover restoration and operational retention."
+    "packagingPolicy": "Reviewed Privacy and Terms against2.4.6 packaging-only extraction and method declaration fix. No behavior/data-use wording change needed beyond existing2.4.5 policy updates."
   },
   "baselineReview": "docs/privacy-reviews/2.4.2.json",
   "openItems": [
@@ -31,8 +30,7 @@
     "Search Console domain property Not verified; Bing has no existing IAB session",
     "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive",
     "2.4.3 dated resolution: the inherited six moderate dependency advisories are resolved by uuid11.1.1 override; current npm audit reports zero.",
-    "2.4.3 dated partial resolution: authoritative owner moderation is implemented for preview; real hosted owner acknowledgment and store write/readback remain to verify. Production activation is still separate.",
-    "2.4.7 dated partial resolution: ready2.4.6 authenticated owner report acknowledgedrevision1, public index/share removal verified. Persistent owner recovery now implemented; final hosted restore and independent restoration readback remain pending."
+    "2.4.3 dated partial resolution: authoritative owner moderation is implemented for preview; real hosted owner acknowledgment and store write/readback remain to verify. Production activation is still separate."
   ],
   "policySummary": "Engineering privacy and terms review with wording changes for preview moderation. Not legal certification. Prior open operational items preserved with dated resolutions."
 }

@@ -1594,7 +1594,7 @@
     // interleaved advice/signup cards (both cadences), that waste measured ~1 SECOND per click
     // on localhost (Nic: "it used to be really smooth"). So: overlay-only patches re-render
     // overlays only. Anything else (filters, search, theme, jobs) still does the full render.
-    OVERLAY_KEYS: { detailOpen: 1, detailLink: 1, feedbackOpen: 1, feedbackCo: 1, feedbackLink: 1,
+    OVERLAY_KEYS: { reportedOpen:1, detailOpen: 1, detailLink: 1, feedbackOpen: 1, feedbackCo: 1, feedbackLink: 1,
                     adviceOpen: 1, signupOpen: 1, lookOpen: 1, aboutOpen: 1, modalOpen: 1 },
     clearFeedbackRedirect: function () {
       try {
@@ -1641,6 +1641,7 @@
     setState: function (patch) {
       if (patch.feedbackOpen === false || (patch.feedbackLink && patch.feedbackLink !== this.state.feedbackLink)) this.clearFeedbackRedirect();
       if(patch.feedbackOpen === true && !this.state.feedbackOpen) { this._feedbackError=''; uxEvent('feedback_open'); }
+      if(patch.reportedOpen===false)this._reportedPanel=null;
       Object.assign(this.state, patch);
       var overlayOnly = Object.keys(patch).length > 0;
       for (var k in patch) { if (!this.OVERLAY_KEYS[k]) { overlayOnly = false; break; } }
@@ -2063,7 +2064,7 @@
 
       out += '<span class="su-results-count su-sr-only" aria-live="polite">' + (this._loading ? '' : esc(showingLabel)) + '</span><div class="su-board-utilities">' +
         '<details id="su-board-menu" class="su-board-menu"><summary id="su-board-menu-trigger">Board menu <svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>' +
-          '<div class="su-board-menu-sheet">' + (window.SUDiscovery && window.SUDiscovery.toolsHTML ? window.SUDiscovery.toolsHTML(esc) : '') +
+          '<div class="su-board-menu-sheet">' + (moderationOwner() ? '<button type="button" data-act="openReportedJobs">Reported jobs</button>' : '') + (window.SUDiscovery && window.SUDiscovery.toolsHTML ? window.SUDiscovery.toolsHTML(esc) : '') +
             '<a href="./suggest.html">Suggest jobs</a><button type="button" data-act="openWelcome">What’s new</button><button type="button" data-act="openModal">About Nic</button>' +
           '</div></details></div></div>';
       if(chipsHtml) out += '<div class="su-active-filters">' + chipsHtml + '</div>';
@@ -2177,11 +2178,12 @@
 
     renderOverlays: function () {
       var self=this;
+      if(this._reportedPanel && this._reportedPanel.owner!==moderationOwner()){this._reportedPanel=null;this.state.reportedOpen=false;}
       if(this.state.detailOpen&&!this.catalogJobs().some(function(job){return jobHasLink(job,self.state.detailLink);})){this.state.detailOpen=false;this.state.detailLink=null;}
       var root = document.getElementById('overlay-root');
       var previousDialog = root.querySelector('[role="dialog"]');
       var previousFocus = focusIntent(document.activeElement);
-      var dialogKey = this.state.detailOpen ? 'detail' : this.state.adviceOpen ? 'advice' : this.state.signupOpen ? 'signup' : this.state.feedbackOpen ? 'feedback' : this.state.lookOpen ? 'look' : this.state.modalOpen ? 'founder' : window.SUDiscovery&&window.SUDiscovery.preferencesOpen() ? 'preferences' : '';
+      var dialogKey = this.state.reportedOpen ? 'reported' : this.state.detailOpen ? 'detail' : this.state.adviceOpen ? 'advice' : this.state.signupOpen ? 'signup' : this.state.feedbackOpen ? 'feedback' : this.state.lookOpen ? 'look' : this.state.modalOpen ? 'founder' : window.SUDiscovery&&window.SUDiscovery.preferencesOpen() ? 'preferences' : '';
       if (dialogKey && window.SUBoardControls) window.SUBoardControls.dismiss();
       if (dialogKey && _voteClose) _voteClose();
       if (!previousDialog && dialogKey) this._dialogReturn = previousFocus;
@@ -2198,7 +2200,11 @@
       var contentIdentity = ['detail','advice','signup'].indexOf(dialogKey) >= 0 ? JSON.stringify([dialogKey,this.state.detailLink,this.state.adviceOpen,this.state.signupOpen,!!this._recipeHidden,this.state.look,this.state.detailOpen ? this.catalogJobs().find(function(job){return jobHasLink(job,self.state.detailLink);}) : null]) : null;
       if (previousDialog && contentIdentity && this._contentIdentity === contentIdentity) return;
       this._contentIdentity = contentIdentity;
+      var reportedIdentity=dialogKey==='reported'?JSON.stringify(this._reportedPanel):null;
+      if(previousDialog&&dialogKey==='reported'&&previousKey==='reported'&&reportedIdentity===this._reportedIdentity)return;
+      this._reportedIdentity=reportedIdentity;
       var out = '';
+      if(dialogKey==='reported')out+=this.reportedJobsHTML();
 
       if (dialogKey === 'preferences') out += '<div class="su-preferences-overlay su-discovery" data-act="closePreferences" style="z-index:215">' + window.SUDiscovery.modalHTML(esc) + '</div>';
 
@@ -2455,13 +2461,50 @@
       document.body.classList[dialog ? 'add' : 'remove']('su-dialog-open');
       if (dialog) {
         dialog.setAttribute('role', 'dialog'); dialog.setAttribute('aria-modal', 'true'); dialog.tabIndex = -1;
-        dialog.setAttribute('aria-label', { detail:'Job details', advice:'Job hunt advice', signup:'Newsletter signup', feedback:'Application feedback', look:'Choose a theme', founder:'About Nic', preferences:'Your preferences' }[dialogKey] || 'Details');
+        dialog.setAttribute('aria-label', { detail:'Job details', advice:'Job hunt advice', signup:'Newsletter signup', feedback:'Application feedback', look:'Choose a theme', founder:'About Nic', preferences:'Your preferences', reported:'Reported jobs' }[dialogKey] || 'Details');
         if (previousKey === dialogKey && previousFocus && previousFocus.act && previousFocus.act !== 'stop') restoreIntent(previousFocus);
         if (!dialog.contains(document.activeElement)) dialog.focus({ preventScroll:true });
       } else if (previousDialog) { restoreIntent(this._dialogReturn); this._dialogReturn = null; }
       if (!dialog && window.SUWelcome) window.SUWelcome.maybeShow();
     },
 
+    reportedJobsHTML: function(){
+      var panel=this._reportedPanel;if(!panel)return '';
+      var button='font:inherit;color:#2A2118;background:#F6E24B;border:1px solid #79694D;border-radius:3px;min-height:44px;padding:8px 12px;cursor:pointer;';
+      var html='<div data-act="closeReportedJobs" style="position:fixed;inset:0;z-index:215;background:rgba(44,33,24,.58);display:flex;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;">'+
+        '<div data-act="stop" style="margin:auto;width:560px;max-width:100%;box-sizing:border-box;background:#FCFAF3;color:#2A2118;box-shadow:0 20px 70px rgba(44,33,24,.35);padding:20px;border-radius:5px;font:16px/1.5 Archivo,sans-serif;overflow-wrap:anywhere;">'+
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;"><h2 style="font:28px/1.2 var(--su-hand,Indie Flower),cursive;margin:0;">Reported jobs</h2><button type="button" data-act="closeReportedJobs" aria-label="Close reported jobs" style="'+button+'">Close</button></div>'+
+        '<p style="margin:12px 0;">Review reported roles. Clearing a report lets available roles return to the board.</p>'+
+        '<p role="status" style="margin:12px 0;">'+esc(panel.error||panel.message||(panel.loading?'Loading reported jobs…':''))+'</p>';
+      if(panel.data&&!panel.loading){
+        if(!panel.data.records.length)html+='<p>No reported jobs to restore.</p>';
+        panel.data.records.forEach(function(row){html+='<section style="padding:16px 0;border-top:1px solid #C7BAA0;"><strong>'+esc(row.co||'Company not listed')+'</strong><div>'+esc(row.role||'Role not listed')+'</div><button type="button" data-act="restoreReportedJob" data-val="'+esc(row.id)+'"'+(panel.busy||panel.stale||panel.data.scope!=='preview'?' disabled':'')+' style="'+button+'margin-top:10px;">'+(panel.busy===row.id?'Restoring…':'Restore to board')+'</button></section>';});
+      }
+      html+='<button type="button" data-act="refreshReportedJobs"'+(panel.loading||panel.busy?' disabled':'')+' style="'+button+'margin-top:12px;">'+(panel.loading?'Loading…':'Refresh list')+'</button></div></div>';
+      return html;
+    },
+    openReportedJobs: function(){
+      var owner=moderationOwner();if(!owner||!window.SUJobModeration?.admin)return;
+      if(window.SUDiscovery&&window.SUDiscovery.closePreferences)window.SUDiscovery.closePreferences();
+      this._reportedPanel={owner:owner,data:null,loading:false,error:'',message:'',busy:null,attempts:{}};
+      this.setState({reportedOpen:true,detailOpen:false,feedbackOpen:false,adviceOpen:null,signupOpen:null,lookOpen:false,modalOpen:false});this._dialogReturn=focusIntent(document.getElementById('su-board-menu-trigger'));this.loadReportedJobs();
+    },
+    closeReportedJobs: function(){this.setState({reportedOpen:false});},
+    loadReportedJobs: function(){
+      var self=this,panel=this._reportedPanel;if(!panel||panel.owner!==moderationOwner()||panel.loading||panel.busy)return;
+      panel.loading=true;panel.error='';this.renderOverlays();
+      function current(){return self.state.reportedOpen&&self._reportedPanel===panel&&panel.owner===moderationOwner();}
+      window.SUJobModeration.admin({current:current}).then(function(data){if(!current())return;panel.loading=false;panel.stale=false;panel.data=data;self.renderOverlays();}).catch(function(e){if(!current())return;panel.loading=false;panel.error=e.message;self.renderOverlays();});
+    },
+    restoreReportedJob: function(id){
+      var self=this,panel=this._reportedPanel;if(!panel||panel.owner!==moderationOwner()||panel.loading||panel.busy||panel.stale||panel.data?.scope!=='preview')return;
+      var row=panel.data.records.find(function(row){return row.id===id;});if(!row)return;
+      var attempt=panel.attempts[id];if(!attempt){try{attempt={id:window.crypto.randomUUID(),revision:panel.data.revision};panel.attempts[id]=attempt;}catch(_){panel.error='Could not prepare restore. Please retry.';this.renderOverlays();return;}}
+      var ownedFocus=document.activeElement?.getAttribute('data-val')===id;
+      panel.busy=id;panel.error='';panel.message='';this.renderOverlays();
+      function current(){return self.state.reportedOpen&&self._reportedPanel===panel&&panel.owner===moderationOwner();}
+      window.SUJobModeration.mutate('restore',row.link,{requestId:attempt.id,expectedRevision:attempt.revision,current:current}).then(function(result){if(!current())return;panel.busy=null;delete panel.attempts[id];panel.data.revision=result.revision;panel.data.records=panel.data.records.filter(function(item){return item.id!==id;});panel.message='Report cleared.';self.renderOverlays();var close=document.querySelector('#overlay-root [data-act="closeReportedJobs"][aria-label]');if(ownedFocus&&close&&document.activeElement?.getAttribute('data-act')==='stop')close.focus({preventScroll:true});}).catch(function(e){if(!current())return;panel.busy=null;panel.error=e.message;if(e.status===409){delete panel.attempts[id];panel.stale=true;}self.renderOverlays();if(ownedFocus&&document.activeElement?.getAttribute('data-act')==='stop'){var next=document.querySelector('#overlay-root [data-act="'+(panel.stale?'refreshReportedJobs':'restoreReportedJob')+'"]'+(panel.stale?'':'[data-val="'+id+'"]'));if(next)next.focus({preventScroll:true});}});
+    },
     reportJob: function () {
       var self=this,owner=moderationOwner(),link=this.state.feedbackLink;
       if(!owner||this._reportBusy||!safeUrl(link)||!window.SUJobModeration)return;
@@ -2523,7 +2566,7 @@
             if(self._dialogKey==='feedback')uxEvent('feedback_dismiss');
             e.preventDefault();
             if (self._dialogKey === 'preferences' && window.SUDiscovery) { window.SUDiscovery.closePreferences(); return; }
-            self.setState({ detailOpen:false, feedbackOpen:false, adviceOpen:null, signupOpen:null, lookOpen:false, modalOpen:false });
+            self.setState({ detailOpen:false, feedbackOpen:false, adviceOpen:null, signupOpen:null, lookOpen:false, modalOpen:false, reportedOpen:false });
           } else if (self.state.openPanel) self.setState({ openPanel:null });
           return;
         }
@@ -2566,6 +2609,10 @@
           case 'closePreferences': if(window.SUDiscovery)window.SUDiscovery.closePreferences();break;
           case 'closeFeedback': uxEvent('feedback_dismiss'); self.setState({ feedbackOpen: false }); break;
           case 'adminReportJob': self.reportJob(); break;
+          case 'openReportedJobs': self.openReportedJobs(); break;
+          case 'closeReportedJobs': self.closeReportedJobs(); break;
+          case 'refreshReportedJobs': self.loadReportedJobs(); break;
+          case 'restoreReportedJob': self.restoreReportedJob(el.getAttribute('data-val')); break;
           case 'markApplied': {
             // also drop the application into the on-device Tracker (tracker.html)
             var tj = null;
