@@ -1,20 +1,20 @@
 {
-  "version": "2.4.9",
+  "version": "2.4.8",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-09T03:49:48.491Z",
+  "reviewedAt": "2026-09-09T03:15:35.004258+00:00",
   "reviewer": "Codex root with independent release reviewer",
-  "sourceDigest": "e271022134f6f8930425fd4835133060161477110d7a94dfe93d2d1cdbd2051b",
+  "sourceDigest": "6657f00b639b9e3c60bf671781f3689365f4d68b58b7ca5ba6253e79e95771d7",
   "sourceFileCount": 158,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Removal of decorative tape from the four outer Latest Update cards only. No navigation, acknowledgment storage, authentication, data collection, provider, consent or retention changes.",
+  "scope": "Latest Update decorative arrow placement and removal of Click here. No changes to navigation, acknowledgment storage, authentication, collection, providers, consent or retention.",
   "checks": {
     "implementation": "814/814 final full tests;34focused and independent54tests; native320/390/1440 recovery panel keyboard/retry/focus/layout pass. All seven configured website stages pass:488jobs,4128sharepages/images,4146HTML. All27provider/runtime inputs identical tovalidated2.4.6; seven Functions and Edge packaging/cold-load acceptance carries forward. Hosted2.4.7 restoration pending.",
     "boundaries": "Personal No longer open remains separate. QA analytics suppression preserved. Preview and production stores separate; production reporting disabled. Saved and Tracker records preserved.",
     "disclosures": "Privacy, Terms and About reviewed and corrected for record fields, Netlify hosting storage, reversible owner unlisting and operational retention.",
     "packagingPolicy": "Reviewed Privacy and Terms against2.4.6 packaging-only extraction and method declaration fix. No behavior/data-use wording change needed beyond existing2.4.5 policy updates.",
     "recoveryPolicy": "Independent2.4.7 review: owner recovery reads existing posting/action records and invokes existing restore. Only removed posting id/link/company/role/revision projected into memory; no private browser persistence, new recipient, retention or collection category. Existing policies cover restoration and operational retention.",
-    "currentPatch": "Reviewed the two removed decorative CSS rules against the existing Privacy and Terms disclosures. No wording change needed. Miniature theme tape and all existing interactions remain unchanged; independent 320/390/1440 browser check passed."
+    "currentPatch": "Reviewed Privacy and Terms against the two-file cosmetic change. No wording change needed. Existing announcement receipt and actions remain unchanged; independent 24-case browser check passed."
   },
   "baselineReview": "docs/privacy-reviews/2.4.2.json",
   "openItems": [
