@@ -31,24 +31,25 @@
   var considered = incomingTask(location.search, location.hash);
   // Drawn, decorative marks stay consistent across system fonts and devices.
   function arrow(direction) {
+    if (direction === 'swirl-down') return '<svg class="su-launch-arrow su-launch-arrow-swirl-down" viewBox="0 0 36 32" fill="none" aria-hidden="true" focusable="false"><path d="M4 3C27 0 32 14 21 18C10 22 8 9 18 9C28 9 29 22 25 28M19 23L25 28L31 23" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
     var path = direction === 'down' ? 'M10 3C9 8 11 14 10 21M4 15L10 21L16 15' : 'M3 15C11 9 20 9 29 12M22 5L29 12L21 18';
     return '<svg class="su-launch-arrow su-launch-arrow-'+direction+'" viewBox="0 0 '+(direction === 'down' ? '20' : '32')+' 24" fill="none" aria-hidden="true" focusable="false"><path d="'+path+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
   }
   function trackerPreview() {
     var chevron = '<svg class="su-launch-chevron" viewBox="0 0 12 10" fill="none" aria-hidden="true" focusable="false"><path d="M2 3L6 7L10 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
-    return '<div class="su-launch-tracker"><div class="su-launch-tracker-head"><strong>My job tracker</strong></div>'+[
+    return '<div class="su-launch-tracker">'+[
       ['Social Media Manager','Apply','apply'],
       ['Graphic Designer','Interview','interview'],
       ['Photographer','Offer','offer']
     ].map(function (row) {
       return '<div class="su-launch-tracker-row"><span class="su-launch-tracker-role">'+row[0]+'</span><span class="su-launch-tracker-status su-launch-status-'+row[2]+'">'+row[1]+chevron+'</span></div>';
-    }).join('')+'<small>one less spreadsheet</small></div>';
+    }).join('')+'</div>';
   }
   var previews = {
-    advice: '<div class="su-launch-paper"><small>note to self '+arrow('down')+'</small><strong>your job hunt needs<br>days off, too</strong><span class="su-launch-days"><i>S</i><i>M</i><i>T</i><i>W</i><i>T</i><i>F</i><i>S</i></span><em>wait, why friday?</em></div>',
+    advice: '<div class="su-launch-paper"><small>note to self '+arrow('down')+'</small><strong>your job hunt needs<br>days off, too</strong><span class="su-launch-days"><i>S</i><i>M</i><i>T</i><i>W</i><i>T</i><i>F</i><i>S</i></span></div>',
     themes: '<div class="su-launch-swatches"><span class="su-launch-original">Original</span><span class="su-launch-casino">Casino</span><span class="su-launch-beauty">Beauty</span><span class="su-launch-mermaid">Mermaid</span><span class="su-launch-bratt">bratt</span><span class="su-launch-chess">Chess</span></div>',
     sync: trackerPreview(),
-    internships: '<div class="su-launch-internships"><small>a place to start '+arrow('down')+'</small><div class="su-launch-intern-note"><strong>Your next chapter</strong><span>Design Intern</span><b>$25/hour</b><span>New York, NY</span></div><em>internships have a board, too</em></div>'
+    internships: '<div class="su-launch-internships"><small>a place to start '+arrow('down')+'</small><div class="su-launch-intern-note"><strong>Your next chapter</strong><span>Design Intern</span><b>$25/hour</b><span>New York, NY</span></div></div>'
   };
   var features = {
     advice: { label: 'Advice along the way', short: 'Advice notes', tag: 'A little perspective', text: 'A useful pause between applications. Open a note for a job-hunt tip while you browse. Want more? Each note connects to The Job Hunt Recipe, our optional newsletter.' },
@@ -100,19 +101,30 @@
     dialog.close();
     if (acknowledge) welcomeToast();
   }
-  function welcomeToast() {
+  function restoreBoardFocus() {
+    var target = returnFocus && returnFocus.isConnected && returnFocus.getClientRects().length && !/^(BODY|HTML)$/.test(returnFocus.tagName) ? returnFocus : (doc.querySelector('#su-board-menu-trigger') || doc.querySelector('[data-act="openWelcome"]'));
+    if (target) target.focus({ preventScroll:true });
+  }
+  function dismissToast(restoreFocus) {
+    var hadFocus = toast && doc.activeElement && doc.activeElement.closest && doc.activeElement.closest('.su-launch-toast') === toast;
     if (toastTimer) global.clearTimeout(toastTimer);
+    toastTimer = null;
     if (toast) toast.remove();
+    toast = null;
+    if (restoreFocus && hadFocus) restoreBoardFocus();
+  }
+  function welcomeToast() {
+    dismissToast(false);
     toast = doc.createElement('div');toast.className = 'su-launch-toast';
-    toast.innerHTML = '<span class="su-launch-toast-announcement" role="status">Welcome to version 2</span><span aria-hidden="true">Welcome to </span><button type="button" aria-label="version 2, open Latest Update">version 2</button>';
+    toast.innerHTML = '<span class="su-launch-toast-announcement" role="status">Welcome to version 2</span><span aria-hidden="true">Welcome to </span><button type="button" data-launch-toast-open aria-label="version 2, open Latest Update">version 2</button><button type="button" class="su-launch-toast-close" data-launch-toast-dismiss aria-label="Dismiss welcome message">×</button>';
     // The status message announces the whole sentence once; the visible button
     // supplies the underlined final words without stealing keyboard focus.
     toast.addEventListener('click', function (event) {
-      if (!event.target.closest('button')) return;
-      if (open()) { global.clearTimeout(toastTimer);toast.remove();toast = null; }
+      if (event.target.closest('[data-launch-toast-dismiss]')) { dismissToast(true);return; }
+      if (event.target.closest('[data-launch-toast-open]') && open()) dismissToast(false);
     });
     doc.body.appendChild(toast);
-    toastTimer = global.setTimeout(function () { if (toast) toast.remove();toast = null;toastTimer = null; }, 5000);
+    toastTimer = global.setTimeout(function () { dismissToast(true); }, 5000);
   }
   function themePreview() {
     var app = global.SUApp, palette = app && app.THEMES && (app.THEMES[app.state.look] || app.THEMES.original);
@@ -131,7 +143,7 @@
     dialog = doc.createElement('dialog');
     dialog.id = 'su-launch'; dialog.className = 'su-launch';
     dialog.setAttribute('aria-labelledby','su-launch-title');
-    dialog.innerHTML = '<header class="su-launch-header"><div class="su-launch-overview-title"><h2 id="su-launch-title" tabindex="-1" autofocus>Latest Update</h2></div><button type="button" class="su-launch-back" data-launch-back hidden>'+arrow('left')+' go back</button></header><div class="su-launch-scroll"><p class="su-launch-intro">pick a note to see what’s new '+arrow('down')+'</p><div class="su-launch-stage"></div></div><footer class="su-launch-footer"><small class="su-launch-version" hidden></small><button type="button" class="su-launch-primary" data-launch-close>Let’s find a role '+arrow('right')+'</button></footer>';
+    dialog.innerHTML = '<header class="su-launch-header"><div class="su-launch-overview-title"><h2 id="su-launch-title" tabindex="-1" autofocus>Latest Update</h2></div><button type="button" class="su-launch-back" data-launch-back hidden>'+arrow('left')+' go back</button></header><div class="su-launch-scroll"><p class="su-launch-intro">pick a note to see what’s new '+arrow('swirl-down')+'</p><div class="su-launch-stage"></div></div><footer class="su-launch-footer"><small class="su-launch-version" hidden></small><button type="button" class="su-launch-primary" data-launch-close>Let’s find a role '+arrow('right')+'</button></footer>';
     doc.body.appendChild(dialog);
     dialog.addEventListener('click', function (event) {
       var feature = event.target.closest('[data-launch-feature]');
@@ -151,8 +163,7 @@
     dialog.addEventListener('close', function () {
       doc.body.style.overflow = bodyOverflow;
       if (releaseLock) { releaseLock();releaseLock = null; }
-      var target = returnFocus && returnFocus.isConnected && returnFocus.getClientRects().length && !/^(BODY|HTML)$/.test(returnFocus.tagName) ? returnFocus : (doc.querySelector('#su-board-menu-trigger') || doc.querySelector('[data-act="openWelcome"]'));
-      if (target) target.focus({ preventScroll:true });
+      restoreBoardFocus();
     });
   }
   function open(isAutomatic) {

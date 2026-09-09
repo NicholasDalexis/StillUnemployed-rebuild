@@ -66,12 +66,32 @@ test('release dates follow Eastern time across UTC midnight', async () => {
   assert.equal(easternDate(new Date('2026-09-06T05:00:00Z')), '2026-09-06');
 });
 
-test('history is readable without JavaScript and release notes cannot inject markup', async () => {
+test('Version 2 overview is readable without JavaScript and never renders release-note markup', async () => {
   const { renderHistory } = await versionTool;
   const data = initial();data.releases[0].public.title = '<img src=x onerror=alert(1)>';data.releases[0].public.changes = ['<script>alert("x")</script>'];
-  const html = renderHistory(data);
-  assert.match(html, /<h1>Version history<\/h1>/);assert.match(html, /id="version-2"/);assert.match(html, /<time datetime="2026-09-05">September 5, 2026<\/time>/);
-  assert(html.includes('&lt;img src=x onerror=alert(1)&gt;'));assert(!html.includes('<script>'));assert(!html.includes('<img src=x'));
+  const before = JSON.stringify(data), html = renderHistory(data);
+  assert.match(html, /<h1>Version 2<\/h1>/);assert.match(html, /<main id="version-2">/);
+  assert.match(html, /Current board version 2<\/p>/);
+  assert.doesNotMatch(html, /<script|<img|onerror|alert\(|<time|Version history|latest two updates/);
+  assert.equal(JSON.stringify(data), before);
+  assert.match(html, /href="\/css\/brand\.css"/);
+  assert.match(html, /grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(html, /@media\(max-width:600px\)/);
+});
+
+test('overview has all eight durable features and derives only its current label and anchor from each release', async () => {
+  const { renderHistory } = await versionTool;
+  const titles = ['Advice notes','More themes','Internships','Job tracker','Google sign-in','Your preferences','Show hidden jobs','Suggest Jobs'];
+  for (const version of ['2.5.1','2.5.9','2.6.0']) {
+    const data = initial();data.currentVersion = version;data.releases[0].version = version;
+    const html = renderHistory(data);
+    assert.deepEqual([...html.matchAll(/<h2 id="feature-\d+">([^<]+)<\/h2>/g)].map(match => match[1]), titles);
+    assert.equal((html.match(/<article /g) || []).length, 8);
+    assert(html.includes('Current board version ' + version + '</p>'));
+    assert(html.includes('<main id="version-' + version.replace(/\./g, '-') + '">'), 'version links land at the overview heading');
+    assert.doesNotMatch(html, /Clearer navigation|The new board|localStorage|sessionStorage|fetch\(|setTimeout/);
+    for (const href of ['/index.html','/jobs.html','/style-guide.html','/privacy.html','/terms.html']) assert(html.includes('href="' + href + '"'));
+  }
 });
 
 test('static and newly rendered board links share immutable version data and a root history route', async () => {
@@ -91,7 +111,7 @@ test('static and newly rendered board links share immutable version data and a r
   for (const link of [homepage, founder, footer]) {
     assert.equal(link.textContent, 'Version 2.1.0');
     assert.equal(link.attributes.href, '/versions.html#version-2-1-0');
-    assert.equal(link.attributes['aria-label'], 'Version 2.1.0. View version history');
+    assert.equal(link.attributes['aria-label'], 'Version 2.1.0. Explore Version 2 features');
     for (const page of ['http://localhost:8000/', 'http://localhost:8000/jobs/casino/']) {
       assert.equal(new URL(link.attributes.href, page).href, 'http://localhost:8000/versions.html#version-2-1-0');
     }
@@ -195,7 +215,7 @@ test('the CLI records approved 2.5.0 and keeps subsequent check and refresh idem
 test('a bump refreshes every marked static page without creating a fingerprint self-reference', async () => {
   const { applyRelease } = await versionTool, fixture = releaseFixture(), { dir, put } = fixture;
   try {
-    const html = '<a class="version-link" data-su-version="" href="./versions.html#version-2" aria-label="Version 2. View version history">Version 2</a>' +
+    const html = '<a class="version-link" data-su-version="" href="./versions.html#version-2" aria-label="Version 2. Explore Version 2 features">Version 2</a>' +
       '<a href="./privacy.html">Privacy</a><script src="/js/release.js?v=2" defer></script>';
     for (const page of ['jobs.html', 'tracker.html', 'about.htm']) put(page, html);
     const sealed = applyRelease(dir, { seal:true });
@@ -205,7 +225,7 @@ test('a bump refreshes every marked static page without creating a fingerprint s
     for (const page of ['index.html', 'jobs.html', 'tracker.html', 'about.htm']) {
       const result = fs.readFileSync(path.join(dir, page), 'utf8');
       assert.match(result, /data-su-version[^>]*href="\/versions\.html#version-2-1-0"[^>]*>Version 2\.1\.0<\/a>/);
-      assert.match(result, /aria-label="Version 2\.1\.0\. View version history"/);
+      assert.match(result, /aria-label="Version 2\.1\.0\. Explore Version 2 features"/);
       assert.match(result, /js\/release\.js\?v=2\.1\.0/);
       assert(result.includes(page === 'index.html' ? '<a href="./terms.html">Terms</a>' : '<a href="./privacy.html">Privacy</a>'));
     }
@@ -295,8 +315,10 @@ test('public history is an explicit two-release projection that never falls back
   assert.deepEqual(projected.releases.map(r=>r.version),['2.3.3','2.3.1']);
   assert.equal(projected.currentVersion,'2.3.4');
   assert.doesNotMatch(JSON.stringify(projected)+history,/INTERNAL|Visible 2\.3\.0|Noticeable change 2\.3\.0/);
-  assert.equal((history.match(/<article /g)||[]).length,2);
-  assert.match(history,/id="version-2-3-4">Current board: Version 2\.3\.4/,'backend-only current release keeps version navigation meaningful');
+  assert.equal((history.match(/<article /g)||[]).length,8);
+  assert.match(history,/<main id="version-2-3-4">/);
+  assert.match(history,/Current board version 2\.3\.4/,'every current release keeps version navigation meaningful');
+  assert.doesNotMatch(history,/Visible 2\.3|Noticeable change 2\.3/,'viewer patch copy is also omitted from the feature overview');
   assert.doesNotMatch(history,/<span class="current">/,'older viewer update is not mislabeled Current');
   assert.equal(JSON.stringify(data),original,'projection never trims the private ledger');
   projected.releases[0].changes.push('local modification');assert.equal(JSON.stringify(data),original);
@@ -322,7 +344,7 @@ test('the CLI accepts separate private and public copy without exposing full his
     const full=JSON.parse(fs.readFileSync(path.join(dir,'releases.json'),'utf8'));
     assert.equal(full.releases[0].changes[0],'PRIVATE_ONLY_FIXTURE');
     const html=fs.readFileSync(path.join(dir,'versions.html'),'utf8');
-    assert.match(html,/Easier to browse/);assert.match(html,/Find your next role faster/);assert.doesNotMatch(html,/PRIVATE_ONLY_FIXTURE|Internal operations/);
+    assert.match(html,/<h1>Version 2<\/h1>/);assert.match(html,/Current board version 2\.1\.0/);assert.doesNotMatch(html,/PRIVATE_ONLY_FIXTURE|Internal operations|Easier to browse|Find your next role faster/);
     assert.equal(applyRelease(dir,{check:true}).version,'2.1.0');
   } finally {fixture.clean();}
 });

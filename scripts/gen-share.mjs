@@ -1,11 +1,12 @@
 // Pre-generate a static share page + Post-it OG image per active job, PER THEME.
 // Output: /j/<theme>/<slug>.html (Open Graph stub -> redirects to the board)
 //         /j/og/<theme>/<slug>.png (the Post-it card, themed to match the board look)
-// Themes rendered: original, poker (Casino), girly — the 3 live "Change Look?" looks.
+// Internships use /j/internships/<theme>/<slug>.html and /j/og/internships/<theme>/<slug>.png.
+// All eight themes use their flagship paper, independently of the actual pay.
 // The shared link the app hands out already carries the viewer's current theme, so the
-// iMessage/preview thumbnail matches the exact card they were looking at (color + pay tier).
-// Run: node scripts/gen-share.mjs [localCsvPath]
-// Cost model: pure static files on Netlify (no serverless functions, no per-share cost).
+// iMessage/preview thumbnail retains the selected theme and the specific role.
+// Run: node scripts/gen-share.mjs (both live catalogs); [localCsvPath] tests Jobs only.
+// Artwork is generated at build time; existing availability endpoints gate served links.
 import { mkdirSync, writeFileSync, rmSync, existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
@@ -13,6 +14,7 @@ import JobSource from '../netlify/functions/lib/job-source.cjs';
 const {parseCSV,rowsToJobs,shareEntries,loadJobs}=JobSource;
 export {parseCSV,rowsToJobs,shareEntries,loadJobs};
 import SUStates from '../js/us-states.js';
+import {loadInternshipShares} from './lib/internship-share.mjs';
 import { setImmediate as yieldToEventLoop } from 'node:timers/promises';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -223,10 +225,15 @@ function drawCard(job, themeKey, cv) {
   const textWidth = w - 128;
   ctx.textBaseline = 'top';
   ctx.fillStyle = P.ink;
+  if(job.internship){ctx.font=`600 23px ${F_BODY}`;ctx.fillText(job.applicationStatus==='upcoming'?'INTERNSHIP · UPCOMING':'INTERNSHIP',px,y+25);}
   ctx.font = `900 66px ${F_BLACK}`; ctx.fillText(fitCanvasText(ctx, job.co, textWidth), px, y + 66);
   ctx.font = `600 36px ${F_BODY}`; ctx.fillStyle = hexToRgba(P.ink, 0.92);
   ctx.fillText(fitCanvasText(ctx, job.role, textWidth), px, y + 156);
-  if (job.pay) { ctx.font = `800 66px ${F_BODY}`; ctx.fillStyle = P.ink; ctx.fillText(String(job.pay), px, y + 262); }
+  if (job.pay) {
+    ctx.font = `800 66px ${F_BODY}`; ctx.fillStyle = P.ink;
+    if(job.internship)for(let size=64;size>=30&&ctx.measureText(String(job.pay)).width>textWidth;size-=2)ctx.font=`800 ${size}px ${F_BODY}`;
+    ctx.fillText(job.internship?fitCanvasText(ctx,job.pay,textWidth):String(job.pay), px, y + 262);
+  }
   ctx.font = `30px ${F_BODY}`; ctx.fillStyle = hexToRgba(P.ink, 0.85);
   ctx.fillText(fitCanvasText(ctx, [SUStates.cardLocation(job.loc), job.style, job.exp].filter(Boolean).join('  ·  '), textWidth), px, y + 350);
 
@@ -246,7 +253,7 @@ function drawCard(job, themeKey, cv) {
   const sw = 29.41; // Preserve existing footer spacing without host font metrics.
   ctx.font = `46px ${F_HAND}`; ctx.fillText('stillunemployed.com', px + sw + 14, by);
   ctx.font = `30px ${F_HAND}`; ctx.fillStyle = hexToRgba(P.ink, 0.72);
-  ctx.fillText("roles I'd actually apply to", px, by + 58);
+  ctx.fillText(job.internship?'internships worth exploring':"roles I'd actually apply to", px, by + 58);
 
   ctx.restore();
   return cv.toBuffer('image/png');
@@ -266,9 +273,10 @@ export async function createCardRenderer() {
 }
 
 export function stub(job, slug, themeKey, site = SITE) {
-  const url = `/jobs.html?job=${encodeURIComponent(b64(job.link))}&theme=${encodeURIComponent(themeKey)}`;
-  const img = `${site}/j/og/${themeKey}/${slug}.png`;
-  const title = `Job at ${job.co || 'a great company'}`;
+  const lane=job.internship?'internships/':'';
+  const url = `/${job.internship?'internships':'jobs'}.html?job=${encodeURIComponent(b64(job.link))}&theme=${encodeURIComponent(themeKey)}`;
+  const img = `${site}/j/og/${lane}${themeKey}/${slug}.png`;
+  const title = job.internship ? `${job.role || 'Internship'} at ${job.co || 'a great company'}` : `Job at ${job.co || 'a great company'}`;
   const desc = [job.pay, job.loc].filter(Boolean).join(' · ') + " — thought you'd want to see this one.";
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <title>${esc(title)} — StillUnemployed.com</title>
@@ -279,36 +287,34 @@ export function stub(job, slug, themeKey, site = SITE) {
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:image" content="${img}">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta property="og:url" content="${site}/j/${themeKey}/${slug}.html">
+<meta property="og:url" content="${site}/j/${lane}${themeKey}/${slug}.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(desc)}">
 <meta name="twitter:image" content="${img}">
 <meta http-equiv="refresh" content="0; url=${esc(url)}">
 <script>location.replace(${JSON.stringify(url)});</script>
-</head><body style="font-family:sans-serif;padding:40px;color:#2C2118;">Taking you to the job on StillUnemployed.com…</body></html>`;
+</head><body style="font-family:sans-serif;padding:40px;color:#2C2118;">Taking you to the ${job.internship?'internship':'job'} on StillUnemployed.com…</body></html>`;
 }
 
-async function main() {
-  checkThemeDrift();
-  // Validate the entire feed before replacing output. A failed deployment leaves
-  // the previous successful site intact; it must not silently publish missing shares.
-  const jobs = await loadJobs(process.argv[2]);
-  const renderCard = jobs.length ? await createCardRenderer() : null;
-
+export async function writeShares(jobs, internships, {out=process.env.SHARE_OUT || join(ROOT,'j'),site=SITE}={}) {
+  const rows=jobs.concat(internships);
+  const renderCard = rows.length ? await createCardRenderer() : null;
   // Output root: defaults to <repo>/j; SHARE_OUT lets a local test render elsewhere.
-  const OUT = process.env.SHARE_OUT || join(ROOT, 'j');
+  const OUT = out;
   const outHtmlRoot = OUT, outImgRoot = join(OUT, 'og');
   if (existsSync(outHtmlRoot)) rmSync(outHtmlRoot, { recursive: true, force: true });
   for (const th of THEME_KEYS) { mkdirSync(join(outHtmlRoot, th), { recursive: true }); mkdirSync(join(outImgRoot, th), { recursive: true }); }
+  if(internships.length)for(const th of THEME_KEYS){mkdirSync(join(outHtmlRoot,'internships',th),{recursive:true});mkdirSync(join(outImgRoot,'internships',th),{recursive:true});}
 
   let n = 0;
-  for (const job of jobs) {
+  for (const job of rows) {
+    const lane=job.internship?'internships/':'';
     for (const th of THEME_KEYS) {
       const image = renderCard(job, th);
       for (const { slug } of shareEntries(job)) {
-        writeFileSync(join(outImgRoot, th, slug + '.png'), image);
-        writeFileSync(join(outHtmlRoot, th, slug + '.html'), stub(job, slug, th));
+        writeFileSync(join(outImgRoot, lane, th, slug + '.png'), image);
+        writeFileSync(join(outHtmlRoot, lane, th, slug + '.html'), stub(job, slug, th,site));
       }
     }
     n++;
@@ -316,8 +322,22 @@ async function main() {
     // Rendering remains strictly sequential, with at most one canvas in flight.
     await yieldToEventLoop();
   }
-  const aliases = jobs.reduce((sum, job) => sum + shareEntries(job).length, 0);
-  console.log('generated', n, 'jobs x', THEME_KEYS.length, 'themes;', aliases * THEME_KEYS.length, 'share pages + images including URL aliases into /j');
+  const aliases = rows.reduce((sum, job) => sum + shareEntries(job).length, 0);
+  return {jobs:jobs.length,internships:internships.length,roles:n,themes:THEME_KEYS.length,pages:aliases*THEME_KEYS.length};
+}
+
+async function main() {
+  checkThemeDrift();
+  const result=await buildShares({csvPath:process.argv[2],snapshot:process.argv[2]?undefined:JSON.parse(readFileSync(join(ROOT,'internships-data.json'),'utf8'))});
+  console.log('generated',result.jobs,'jobs +',result.internships,'internships x',result.themes,'themes;',result.pages,'share pages + images including URL aliases into /j');
+}
+
+export async function buildShares({csvPath,snapshot,fetchImpl=fetch,now=Date.now,out,site}={}){
+  // Validate both sources before replacing output. A failed check must leave
+  // the previous share artifact intact, not publish a partial internship feed.
+  const jobs=await loadJobs(csvPath,fetchImpl);
+  const internships=snapshot===undefined?[]:await loadInternshipShares({snapshot,fetchImpl,now});
+  return writeShares(jobs,internships,{out,site});
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

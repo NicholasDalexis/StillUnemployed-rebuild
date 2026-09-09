@@ -701,9 +701,8 @@
     return (h2 >>> 0).toString(36) + (h1 >>> 0).toString(36);
   }
 
-  // current live theme, mapped to the 3 looks we generate share cards for (archived
-  // looks fall back to original). Keeps the shared link's preview matching the card
-  // the viewer is actually looking at.
+  // Current live theme, mapped to the generated share-card looks. Archived
+  // looks fall back to original. Shared previews use that theme's flagship paper.
   // Which theme's Post-it does a shared job preview as? The theme the sharer is LOOKING at.
   // BUG (fixed 2026-07-12): this used to be `(t === 'poker' || t === 'girly') ? t : 'original'` — a
   // hardcoded allowlist from when there were only 3 themes. Every theme added after that (mermaid,
@@ -724,7 +723,7 @@
     if (!job) return;
     // The query also opens the live card when this job arrived after the last build.
     var token = encodeURIComponent(btoa(unescape(encodeURIComponent(job.link || ''))));
-    var route = job.internship ? '/internships.html' : '/j/' + suShareTheme() + '/' + suSlug(job.link || '') + '.html';
+    var route = '/j/' + (job.internship ? 'internships/' : '') + suShareTheme() + '/' + suSlug(job.link || '') + '.html';
     var deep = job.savedUnavailable ? safeUrl(job.link) : location.origin + route + '?job=' + token + '&theme=' + suShareTheme();
     if(!deep)return;
     // Casual, no link/brand in the TEXT (iMessage auto-linkifies "StillUnemployed.com"
@@ -1794,16 +1793,16 @@
         var personalNote = noteFor[k] || null;
 
         var doodleHtml = '';
-        // The first drawing belongs to the second displayed job; later ordinals stay unique.
+        // Both boards begin with their theme drawing; later ordinals stay unique.
         // Prevents décor from repeating (Nic: brat scribbles must never say the same thing twice).
-        var dIdx = (k === 1) ? 0 : (Math.floor(k / 6) + 1);
-        if (k === 1 || doodleOn) {
-          // Keep the original arrow pose while moving its attachment to card two.
-          if (self.state.look === 'original') doodleHtml = self.doodleEl(k === 1 ? 13 : k);
+        var dIdx = (k === 0) ? 0 : (Math.floor(k / 6) + 1);
+        if (k === 0 || doodleOn) {
+          // Keep the established original arrow pose on the lead card.
+          if (self.state.look === 'original') doodleHtml = self.doodleEl(k === 0 ? 13 : k);
           // Bratt keeps its short phrases between drawings without repeating copy.
           if (bratt && dIdx % 2 === 1) doodleHtml = self.brattPhraseEl(Math.floor(dIdx / 2));
           if (!doodleHtml) doodleHtml = self.themeDoodleEl(self.state.look, bratt ? Math.floor(dIdx / 2) : dIdx);
-          if (!doodleHtml) doodleHtml = cod ? self.codDoodleEl(dIdx) : girly ? self.girlyDoodleEl(dIdx) : poker ? self.pokerDoodleEl(dIdx) : mermaid ? self.mermaidDoodleEl(dIdx) : bratt ? self.brattDoodleEl(dIdx) : noir ? self.noirDoodleEl(dIdx) : beauty ? self.beautyDoodleEl(dIdx) : chess ? self.chessDoodleEl(dIdx) : self.doodleEl(k === 1 ? 13 : k);
+          if (!doodleHtml) doodleHtml = cod ? self.codDoodleEl(dIdx) : girly ? self.girlyDoodleEl(dIdx) : poker ? self.pokerDoodleEl(dIdx) : mermaid ? self.mermaidDoodleEl(dIdx) : bratt ? self.brattDoodleEl(dIdx) : noir ? self.noirDoodleEl(dIdx) : beauty ? self.beautyDoodleEl(dIdx) : chess ? self.chessDoodleEl(dIdx) : self.doodleEl(k === 0 ? 13 : k);
         }
 
         var pinStyle = 'position:absolute; top:-9px; left:50%; transform:translateX(-50%); width:17px; height:17px; ' +
@@ -1811,7 +1810,7 @@
           ' 58%); box-shadow:0 3px 5px rgba(0,0,0,.32); z-index:3;';
 
         // -- build the card HTML (mirrors the template's sc-if branches) --
-        var html = '<div class="note' + (j.internship ? ' su-internship-card' : '') + (k === 0 ? ' note-first' : '') + (k === 1 ? ' note-lead-doodle' : '') + '" data-act="openJob" data-id="' + id + '" data-link="' + esc(j.link) + '" data-co="' + esc(j.co) + '" style="' + noteStyle + '">';
+        var html = '<div class="note' + (j.internship ? ' su-internship-card' : '') + (k === 0 ? ' note-first' : '') + (k === 0 ? ' note-lead-doodle' : '') + '" data-act="openJob" data-id="' + id + '" data-link="' + esc(j.link) + '" data-co="' + esc(j.co) + '" style="' + noteStyle + '">';
 
         // envelope ("open" tab)
         if (showEnvelope) {
@@ -2324,24 +2323,24 @@
           // + the liveness checker are the real guards. Data (Date Posted) stays in the sheet.
           _ageNote = '';
           out += '<div data-act="closeDetail" style="position: fixed; inset: 0; z-index: 214; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
-            '<div data-act="stop" class="' + (dj.internship ? 'su-internship-dialog' : '') + '" style="margin: auto;position: relative; width: 410px; max-width: 100%; box-sizing: border-box; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 32px, rgba(96,130,170,0.20) 32px 33px); background-position: 0 92px; border-radius: 4px; box-shadow: 5px 18px 44px rgba(44,33,24,0.34); transform: rotate(-1deg); padding: 30px 30px 26px 48px;">' +
+            '<div data-act="stop" class="su-detail-dialog ' + (dj.internship ? 'su-internship-dialog' : '') + '" style="margin: auto;position: relative; width: 410px; max-width: 100%; box-sizing: border-box; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 32px, rgba(96,130,170,0.20) 32px 33px); background-position: 0 92px; border-radius: 4px; box-shadow: 5px 18px 44px rgba(44,33,24,0.34); transform: rotate(-1deg); padding: 30px 30px 26px 48px;">' +
               // red left margin line + tape
               '<div style="position: absolute; top: 0; bottom: 0; left: 36px; width: 1.5px; background: rgba(214,80,46,0.4);"></div>' +
               '<div style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(-2.5deg); width: 120px; height: 28px; background: rgba(228,202,128,0.6); border-left: 1px dashed rgba(255,255,255,.5); border-right: 1px dashed rgba(255,255,255,.5); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>' +
               // share + close (corner). Share = bigger circular tap target + a hand-drawn
               // "Share" hint with an up-arrow so people know what the icon does.
-              '<div data-act="detailShare" data-link="' + esc(dj.link) + '" title="Share with a friend" style="position: absolute; top: 9px; right: 46px; width: 32px; height: 32px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #5C4033;">' +
+              '<div class="su-detail-share-button" data-act="detailShare" data-link="' + esc(dj.link) + '" title="Share with a friend" style="position: absolute; top: 9px; right: 46px; width: 32px; height: 32px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #5C4033;">' +
                 '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"></circle><circle cx="6" cy="12" r="2.6"></circle><circle cx="18" cy="19" r="2.6"></circle><path d="M8.6 13.4l6.9 4M15.5 6.6l-6.9 4"></path></svg>' +
               '</div>' +
-              '<div data-act="detailShare" data-link="' + esc(dj.link) + '" style="position: absolute; top: 43px; right: 39px; display: flex; flex-direction: column; align-items: center; cursor: pointer; color: #C2552F;">' +
+              '<div class="su-detail-share-hint" data-act="detailShare" data-link="' + esc(dj.link) + '" style="position: absolute; top: 43px; right: 39px; display: flex; flex-direction: column; align-items: center; cursor: pointer; color: #C2552F;">' +
                 '<svg width="18" height="18" viewBox="0 0 20 20" fill="none" style="overflow: visible;"><path d="M10 18.5 C 8.4 12.5, 11.6 7.5, 10 2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M5.4 6 L10 1.3 L14.6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
                 '<span style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 16px; margin-top: 1px; white-space: nowrap;">Share</span>' +
               '</div>' +
-              '<div data-act="closeDetail" style="position: absolute; top: 11px; right: 13px; width: 27px; height: 27px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
+              '<div class="su-detail-close" data-act="closeDetail" style="position: absolute; top: 11px; right: 13px; width: 27px; height: 27px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
                 '<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.4" stroke-linecap="round"></path></svg>' +
               '</div>' +
               // header
-              '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 24px; color: #2C2118; line-height: 1.12; padding-right: 82px;">' + esc(dj.co) + '</div>' +
+              '<div class="su-detail-company" style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 24px; color: #2C2118; line-height: 1.12; padding-right: 82px;">' + esc(dj.co) + '</div>' +
               '<div class="su-detail-role" style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16px; color: #3A2E20; margin-top: 4px; padding-right: 82px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">' + esc(dj.role) + '</div>' +
               (dj.pay ? '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 20px; color: #2C2118; margin-top: 10px;">' + esc(cardPay(dj)) + '</div>' : '') +
               (dmeta ? '<div style="font-family: \'Archivo\', sans-serif; font-size: 13.5px; color: #6F5E45; margin-top: 5px;">' + esc(dmeta) + '</div>' : '') +

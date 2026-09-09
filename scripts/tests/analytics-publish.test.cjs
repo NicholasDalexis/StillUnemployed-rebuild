@@ -72,7 +72,7 @@ test('releaseprivacycheck rejects changedpolicyorproductsource after a reviewedr
  }finally{fs.rmSync(dir,{recursive:true,force:true});}
 });
 
-test('public JSON and HTML contain only two explicitly approved viewer updates, even with stale history output',async()=>{
+test('public JSON keeps two approved viewer updates while HTML regenerates the feature overview from stale output',async()=>{
  const {prepare}=await import('../prepare-publish.mjs');const f=privateBoundaryFixture();
  try {
   const full={schemaVersion:1,currentVersion:'2.3.4',releases:['2.3.4','2.3.3','2.3.2','2.3.1'].map((version,i)=>({version,date:'2026-09-07',title:'PRIVATE TITLE '+version,changes:['PRIVATE NOTE '+version],...(i!==1?{public:{title:'Public '+version,changes:['Visible '+version]}}:{})}))};
@@ -81,7 +81,7 @@ test('public JSON and HTML contain only two explicitly approved viewer updates, 
   for(const name of ['Reviews/history.html','js/internal/guide.html','assets/archive/history.json','assets/releases-full.json','css/private/guide.css','js/advice-guide.js']){const dest=path.join(f.site,name);fs.mkdirSync(path.dirname(dest),{recursive:true});fs.writeFileSync(dest,'PRIVATE ARCHIVE SENTINEL');}
   const dest=prepare(f.site),data=JSON.parse(fs.readFileSync(path.join(dest,'releases.json'),'utf8')),history=fs.readFileSync(path.join(dest,'versions.html'),'utf8');
   assert.deepEqual(data.releases.map(r=>r.version),['2.3.4','2.3.2']);
-  assert.equal((history.match(/<article /g)||[]).length,2);assert.match(history,/Public 2\.3\.4/);assert.doesNotMatch(history,/2\.3\.1|PRIVATE/);
+  assert.equal((history.match(/<article /g)||[]).length,8);assert.match(history,/<h1>Version 2<\/h1>/);assert.match(history,/Current board version 2\.3\.4/);assert.doesNotMatch(history,/Public 2\.3|Visible 2\.3|2\.3\.1|PRIVATE/);
   assert.doesNotMatch(JSON.stringify(data),/PRIVATE|public/);
   assert.equal(fs.readFileSync(path.join(f.site,'releases.json'),'utf8'),original,'build source keeps every original note');
   for(const name of ['Reviews','js/internal','assets/archive','assets/releases-full.json','css/private','js/advice-guide.js'])assert.equal(fs.existsSync(path.join(dest,name)),false,name);

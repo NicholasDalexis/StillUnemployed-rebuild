@@ -255,8 +255,8 @@ body.su-dialog-open { overflow:hidden; }
 /* Hide the "pay key →" label on mobile (keep the color swatches + numbers) */
 @media (max-width: 560px){ .pay-key-label{ display: none !important; } }
 
-/* The lead drawing is attached to the second displayed job card. */
-.note-lead-doodle .doodle { left: 4px !important; right: auto !important; }
+/* The first card on either board keeps a small drawing clear of the controls. */
+.note-lead-doodle .doodle { top:-28px !important; left:4px !important; right:auto !important; }
 /* Preserve the original arrow pose and its quiet corner position. */
 .note-lead-doodle .original-doodle { top: -32px !important; }
 
@@ -360,3 +360,16 @@ body.su-dialog-open { overflow:hidden; }
 /* A pointer-opened delete dialog keeps safe initial focus without a keyboard ring.
    The first key press removes this marker before normal keyboard handling. */
 .trk-remove-confirm[data-pointer-opening="true"] [data-act="cancelRemoval"]:focus { outline:none !important; }
+
+/* Jobs and internships share one readable paper dialog and visible share hint. */
+.su-detail-dialog { transform:none !important; overflow-wrap:anywhere; }
+.su-detail-dialog .su-detail-company { min-height:64px; padding-right:82px; }
+.su-detail-dialog .su-detail-role { display:block !important; overflow:visible !important; -webkit-line-clamp:unset !important; padding-right:0 !important; margin-top:14px !important; }
+#overlay-root .su-detail-dialog .su-detail-share-button { top:10px !important; right:58px !important; width:44px !important; height:44px !important; }
+#overlay-root .su-detail-dialog .su-detail-share-hint { top:55px !important; right:58px !important; width:44px; min-height:44px; }
+#overlay-root .su-detail-dialog .su-detail-close { top:10px !important; right:10px !important; width:44px !important; height:44px !important; }
+.su-detail-dialog [data-act="detailApply"],.su-detail-dialog [data-act="detailProgram"] { min-height:44px; color:var(--su-orange-text) !important; }
+@media(max-width:700px) {
+  .su-detail-dialog { padding:30px 24px 26px 38px !important; }
+  .su-detail-dialog > div:first-child { left:26px !important; }
+}

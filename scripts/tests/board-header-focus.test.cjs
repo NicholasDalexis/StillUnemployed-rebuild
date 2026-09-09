@@ -5,12 +5,12 @@ function fixture(file, exports, edit=s=>s){const source=fs.readFileSync(file,'ut
 const {board,job}=fixture(path.join(__dirname,'board-qa.test.cjs'),'board,job');
 const {tracker,application}=fixture(path.join(__dirname,'tracker-sync.test.cjs'),'tracker,application',s=>s.replace('getAttribute(key){return this.attrs[key]??null;}','getAttribute(key){return this.attrs[key]??null;} removeAttribute(key){delete this.attrs[key];}'));
 
-test('rendered board keeps result announcements offscreen and moves first artwork onto the second displayed job',()=>{
+test('rendered board keeps result announcements offscreen and keeps artwork on the first displayed job',()=>{
  for(const look of ['original','poker','beauty','girly','mermaid','bratt','noir','chess']){
   const b=board({look});b.init(Array.from({length:8},(_,i)=>job({co:'Employer '+i,link:'https://example.com/job/'+i})));
   const count=b.grid.querySelector('.su-results-count');assert(count.classList.contains('su-sr-only'));assert.equal(count.getAttribute('aria-live'),'polite');assert.equal(count.textContent,'8 jobs');
-  const cards=b.grid.querySelectorAll('.note[data-act="openJob"]');assert.equal(cards[0].querySelector('.doodle'),null);assert(cards[1].querySelector('.doodle'));assert(cards[1].classList.contains('note-lead-doodle'));assert.equal(cards[1].querySelector('.doodle').getAttribute('aria-hidden'),'true');
-  b.app.setState({q:'Employer 7'});assert.equal(b.grid.querySelector('.su-results-count').textContent,'1 job');assert.equal(b.grid.querySelector('.note[data-act="openJob"]').querySelector('.doodle'),null,'one remaining job has no lead drawing');
+  const cards=b.grid.querySelectorAll('.note[data-act="openJob"]');assert(cards[0].querySelector('.doodle'));assert.equal(cards[1].querySelector('.doodle'),null);assert(cards[0].classList.contains('note-lead-doodle'));assert.equal(cards[0].querySelector('.doodle').getAttribute('aria-hidden'),'true');
+  b.app.setState({q:'Employer 7'});assert.equal(b.grid.querySelector('.su-results-count').textContent,'1 job');assert(b.grid.querySelector('.note[data-act="openJob"]').querySelector('.doodle'),'one remaining job keeps its lead drawing');
  }
 });
 

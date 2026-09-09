@@ -272,7 +272,7 @@ test('sharing an internship returns to the internship feed with the same URL ide
   const row = listing(), b = ui([row], { look:'poker' });
   b.detail(row.link).querySelector('[data-act="detailShare"]').click();
   assert.equal(b.shared.length, 1);const shared = new URL(b.shared[0].url);
-  assert.equal(shared.pathname, '/internships.html');assert.equal(shared.searchParams.get('theme'), 'poker');
+  assert.match(shared.pathname, /^\/j\/internships\/poker\/[a-z0-9]+\.html$/);assert.equal(shared.searchParams.get('theme'), 'poker');
   assert.equal(Buffer.from(shared.searchParams.get('job'), 'base64').toString('utf8'), row.link);
   const next = ui([row], { search:shared.search });
   assert.equal(next.app.state.look, 'poker');next.runTimers(900);
@@ -383,4 +383,21 @@ test('an unavailable history API does not prevent internship theme changes', () 
   assert.doesNotThrow(()=>b.app.setLook('poker'));
   assert.equal(b.app.state.look,'poker');
   assert.equal(b.localStorage.getItem('su_look'),'poker');
+});
+
+
+test('internships retain the first theme drawing and the same visible share hint as Jobs', () => {
+  for (const look of ['original','poker','beauty','girly','mermaid','bratt','noir','chess']) {
+    const row=listing(), b=ui([row], {look});
+    assert(b.cards()[0].classList.contains('note-lead-doodle'));
+    assert(b.cards()[0].querySelector('.doodle'));
+    const dialog=b.detail(row.link);
+    assert(dialog.classList.contains('su-detail-dialog'));
+    assert.equal(dialog.querySelector('.su-detail-share-hint').textContent,'Share');
+    assert(dialog.querySelector('.su-detail-company'));
+    dialog.querySelector('.su-detail-share-hint').click();
+    const url=new URL(b.shared[0].url);assert(url.pathname.startsWith('/j/internships/'+look+'/'));
+    assert.equal(Buffer.from(url.searchParams.get('job'),'base64').toString(),row.link);
+    assert.equal(b.shared[0].files,undefined,'share only the clickable card link');
+  }
 });

@@ -1,20 +1,20 @@
 {
-  "version": "2.5.1",
+  "version": "2.5.0",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-09T04:56:53.351Z",
+  "reviewedAt": "2026-09-09T04:24:09.640Z",
   "reviewer": "Codex root with independent release reviewer",
-  "sourceDigest": "cc6b1ee4e3cfd873979cd0ab7f8231645d9fdcc7c26f2984520d9fd88557aeb2",
-  "sourceFileCount": 159,
-  "privacyChanged": false,
+  "sourceDigest": "9978edc5e4c6eb18d28815a2df74140063c5b95f1525a445e13ab6ee66d0a310",
+  "sourceFileCount": 158,
+  "privacyChanged": true,
   "termsChanged": false,
-  "scope": "Internship public share HTML and PNG generation with fresh moderated catalog gating; shared card readability, first-card artwork, Version 2 overview and dismissible welcome toast. No new provider, account scope, browser marker, analytics event, private-record projection or source writer.",
+  "scope": "First successful guest save can offer existing Google sign-in for cross-device saved jobs. Adds one local shown marker, separate from the existing application reminder. No new provider, account scope, server storage, collection endpoint or sync behavior.",
   "checks": {
     "implementation": "814/814 final full tests;34focused and independent54tests; native320/390/1440 recovery panel keyboard/retry/focus/layout pass. All seven configured website stages pass:488jobs,4128sharepages/images,4146HTML. All27provider/runtime inputs identical tovalidated2.4.6; seven Functions and Edge packaging/cold-load acceptance carries forward. Hosted2.4.7 restoration pending.",
     "boundaries": "Personal No longer open remains separate. QA analytics suppression preserved. Preview and production stores separate; production reporting disabled. Saved and Tracker records preserved.",
     "disclosures": "Privacy, Terms and About reviewed and corrected for record fields, Netlify hosting storage, reversible owner unlisting and operational retention.",
     "packagingPolicy": "Reviewed Privacy and Terms against2.4.6 packaging-only extraction and method declaration fix. No behavior/data-use wording change needed beyond existing2.4.5 policy updates.",
     "recoveryPolicy": "Independent2.4.7 review: owner recovery reads existing posting/action records and invokes existing restore. Only removed posting id/link/company/role/revision projected into memory; no private browser persistence, new recipient, retention or collection category. Existing policies cover restoration and operational retention.",
-    "currentPatch": "830/830 tests passed. Real browser:20 Jobs/Internships cases, all eight themes,320/390/1440. Native share payload and clipboard intercepted; no Messages delivery claimed. Independent generator/Edge review passed26 tests including served HTML+PNG and unavailable/retired/error GET+HEAD checks. Privacy sections2,4,5,6 and Terms sections2–4 compared to implementation: existing public-listing, Netlify hosting, optional sharing, source pay-unit and preview moderation boundaries unchanged; no wording change required. Full build and hosted acceptance are recorded separately in the release receipt."
+    "currentPatch": "Independent source review and 18 focused reminder tests passed. Privacy paragraph83 now describes both one-time browser markers, their local-only contents, cadence and clearing. Terms reviewed; no wording change needed because existing optional preview account and sync behavior is unchanged. UI tests distinguish actual guest auth readiness from simulated signed-in/cancel states; no real cross-device sync claim."
   },
   "baselineReview": "docs/privacy-reviews/2.4.2.json",
   "openItems": [
@@ -33,8 +33,7 @@
     "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive",
     "2.4.3 dated resolution: the inherited six moderate dependency advisories are resolved by uuid11.1.1 override; current npm audit reports zero.",
     "2.4.3 dated partial resolution: authoritative owner moderation is implemented for preview; real hosted owner acknowledgment and store write/readback remain to verify. Production activation is still separate.",
-    "2.4.7 dated partial resolution: ready2.4.6 authenticated owner report acknowledgedrevision1, public index/share removal verified. Persistent owner recovery now implemented; final hosted restore and independent restoration readback remain pending.",
-    "2026-09-09 2.5.1 dated resolution from maintenance owner: Jobs checker v2026-09-09.3 completed seven bounded successful executions, including six time-driven continuations,24 tests and nine native/publicly verified retirements.302 Review and78 Unknown rows remained. This is separate maintenance evidence, not a website-code change; older timeout note above is historical."
+    "2.4.7 dated partial resolution: ready2.4.6 authenticated owner report acknowledgedrevision1, public index/share removal verified. Persistent owner recovery now implemented; final hosted restore and independent restoration readback remain pending."
   ],
   "policySummary": "Engineering privacy and terms review with wording changes for preview moderation. Not legal certification. Prior open operational items preserved with dated resolutions."
 }

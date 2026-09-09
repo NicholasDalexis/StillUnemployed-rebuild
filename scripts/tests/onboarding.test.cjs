@@ -284,6 +284,31 @@ test('underlined version 2 reopens the same overview without scrolling and retai
   w.dialog.dispatch('cancel');assert.equal(w.dialog.open, true);w.click('.su-launch-primary');assert.equal(w.dialog.open, false);assert.equal(w.window.scrollY, 940);
 });
 
+test('toast X dismisses immediately without reopening or changing acknowledgment and cancels its timer', async () => {
+  const w = welcome();await w.auto();w.click('.su-launch-primary');w.window.scrollY = 640;
+  const toast = w.document.querySelector('.su-launch-toast'), close = toast.querySelector('[data-launch-toast-dismiss]');
+  assert.equal(close.getAttribute('aria-label'), 'Dismiss welcome message');
+  assert.equal(close.textContent, '×');assert.equal(toast.querySelectorAll('button').length, 2);
+  close.focus();toast.dispatch('click', { target:close });
+  assert.equal(toast.isConnected, false);assert.equal(w.dialog.open, false);assert.equal(w.showCalls, 1);
+  assert.equal(w.timerCount, 0);assert.equal(w.local.getItem(policy.key), '1');
+  assert.equal(w.document.activeElement, w.opener);assert.equal(w.opener.lastFocusOptions.preventScroll, true);
+  assert.equal(w.window.scrollY, 640);await w.advance(6000);assert.equal(w.showCalls, 1);
+});
+
+test('toast expiry restores only focus it owns and does not remove a later toast', async () => {
+  const w = welcome();await w.auto();w.click('.su-launch-primary');
+  const first = w.document.querySelector('.su-launch-toast');first.querySelector('[data-launch-toast-dismiss]').focus();
+  await w.advance(5000);assert.equal(w.document.activeElement, w.opener);assert.equal(w.timerCount, 0);
+  w.window.SUWelcome.open();w.click('.su-launch-primary');
+  const second = w.document.querySelector('.su-launch-toast'), elsewhere = w.document.body.appendChild(w.document.createElement('button'));
+  elsewhere.focus();await w.advance(5000);assert.equal(second.isConnected, false);assert.equal(w.document.activeElement, elsewhere);
+  w.window.SUWelcome.open();w.click('.su-launch-primary');
+  const third = w.document.querySelector('.su-launch-toast');third.dispatch('click', { target:third.querySelector('[data-launch-toast-dismiss]') });
+  w.window.SUWelcome.open();w.click('.su-launch-primary');const fourth = w.document.querySelector('.su-launch-toast');
+  await w.advance(4999);assert(fourth.isConnected);await w.advance(1);assert(!fourth.isConnected);
+});
+
 test('repeated acknowledgments replace the old toast and restart its full five seconds', async () => {
   const w = welcome();w.window.SUWelcome.open();w.click('.su-launch-primary');
   await w.advance(3000);const old = w.document.querySelector('.su-launch-toast');
@@ -411,7 +436,10 @@ test('overview keeps four notes with decorative title arrows and no competing pr
   assert.equal(cards[2].querySelector('.su-launch-card-label').textContent, 'Internships');
   assert.equal(w.dialog.querySelectorAll('a').length, 0);
   assert.equal(w.dialog.querySelectorAll('button').filter(el => el.getClientRects().length).length, 5);
-  assert.doesNotMatch(w.dialog.textContent, /Suggest Jobs|Portfolio Graded|Version history|Internships are here/);
+  assert.doesNotMatch(w.dialog.textContent, /Suggest Jobs|Portfolio Graded|Version history|Internships are here|My job tracker|wait, why friday|internships have a board|one less spreadsheet/);
+  assert.equal(w.dialog.querySelector('.su-launch-intro').querySelector('.su-launch-arrow-swirl-down').getAttribute('aria-hidden'), 'true');
+  assert.equal(cards[0].querySelector('.su-launch-paper').querySelector('.su-launch-arrow-down').getAttribute('aria-hidden'), 'true');
+  assert.equal(cards[2].querySelector('.su-launch-internships').querySelector('.su-launch-arrow-down').getAttribute('aria-hidden'), 'true');
   const titleArrow = cards[1].querySelector('.su-launch-card-label').querySelector('svg');w.dialog.dispatch('click', { target:titleArrow });
   assert.equal(w.dialog.querySelector('#su-launch-detail-title').textContent, 'Make it feel like you');
 });

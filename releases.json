@@ -1,7 +1,17 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.5.0",
+  "currentVersion": "2.5.1",
   "releases": [
+    {
+      "version": "2.5.1",
+      "date": "2026-09-09",
+      "title": "Internship sharing and Version 2 overview",
+      "changes": [
+        "Give internships specific themed share pages and images with fresh availability checks, and share the readable Jobs detail layout.",
+        "Restore first-card artwork on both boards and refine the Latest Update notes and dismissible welcome toast.",
+        "Present eight major Version 2 features with the exact current version while preserving full private release history."
+      ]
+    },
     {
       "version": "2.5.0",
       "date": "2026-09-09",
@@ -524,7 +534,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "9978edc5e4c6eb18d28815a2df74140063c5b95f1525a445e13ab6ee66d0a310",
-    "fileCount": 158
+    "digest": "cc6b1ee4e3cfd873979cd0ab7f8231645d9fdcc7c26f2984520d9fd88557aeb2",
+    "fileCount": 159
   }
 }

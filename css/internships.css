@@ -3,15 +3,4 @@
 .su-internship-pay { display:block; font:800 24px/1.3 var(--su-body); overflow-wrap:anywhere; }
 .su-internship-card .applylink2:hover { color:inherit !important; }
 .su-internship-counts { margin:8px 0 0; font:18px/1.5 var(--su-hand); }
-.su-internship-dialog { transform:none !important; }
 .su-internship-duties { font-family:var(--su-body); }
-.su-internship-dialog [data-act="detailApply"],.su-internship-dialog [data-act="detailProgram"] { min-height:44px; color:var(--su-orange-text) !important; }
-#overlay-root .su-internship-dialog [data-act="closeDetail"],#overlay-root .su-internship-dialog [data-act="detailShare"] { min-width:44px; min-height:44px; }
-.su-internship-dialog [data-act="detailShare"] { right:60px !important; }
-.su-internship-dialog [data-act="detailShare"] + [data-act="detailShare"] { display:none !important; }
-.su-internship-dialog { overflow-wrap:anywhere; }
-.su-internship-dialog .su-detail-role { display:block !important; overflow:visible !important; -webkit-line-clamp:unset !important; padding-right:0 !important; }
-@media(max-width:700px) {
-  .su-internship-dialog { padding:28px 20px 24px 30px !important; }
-  .su-internship-dialog > div:first-child { left:18px !important; }
-}

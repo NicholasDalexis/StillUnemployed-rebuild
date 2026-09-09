@@ -84,6 +84,11 @@
 # Newly sourced jobs may not have generated share pages yet. Existing files win;
 # otherwise the board reads the share query and opens the current live listing.
 [[redirects]]
+  from = "/j/internships/*"
+  to = "/internships.html"
+  status = 200
+
+[[redirects]]
   from = "/j/*"
   to = "/jobs.html"
   status = 200

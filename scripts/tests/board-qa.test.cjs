@@ -311,11 +311,11 @@ test('Original preserves its pose table and cadence with the requested coffee-br
  assert.equal(cards.length,72);assert.equal(b.grid.querySelectorAll('[data-act="apply"]').length,72);
  assert.equal(b.grid.querySelector('[data-theme-motif]'),null,'Original never substitutes the three shared motifs');
  const positions=cards.flatMap((card,index)=>card.querySelector('.doodle')?[index]:[]);
- assert.deepEqual(positions,[1,4,10,16,22,28,34,40,46,52,58,64,70],'decorations follow displayed job positions despite interleaved advice cards');
+ assert.deepEqual(positions,[0,4,10,16,22,28,34,40,46,52,58,64,70],'decorations follow displayed job positions despite interleaved advice cards');
  assert.equal(b.grid.querySelectorAll('.doodle').length,positions.length);
  for(const index of positions){
   const doodles=cards[index].querySelectorAll('.doodle');assert.equal(doodles.length,1);
-  const doodle=doodles[0],pose=b.app.POSES[(index===1?13:index)%16],svg=doodle.querySelector('svg');
+  const doodle=doodles[0],pose=b.app.POSES[(index===0?13:index)%16],svg=doodle.querySelector('svg');
   assert.equal(doodle.getAttribute('class'),'doodle original-doodle');assert.equal(doodle.getAttribute('aria-hidden'),'true');
   assert.equal(doodle.style.position,'absolute');assert.equal(doodle.style.pointerEvents,'none');assert.equal(doodle.style.zIndex,'4');
   for(const edge of ['top','left','right','bottom'])assert.equal(doodle.style[edge],pose.pos[edge],'job '+index+' keeps its '+edge+' placement');

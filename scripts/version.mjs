@@ -161,7 +161,7 @@ export function renderReleaseScript(data) {
     document.querySelectorAll('[data-su-version]').forEach(function (link) {
       link.textContent = 'Version ' + version;
       link.setAttribute('href', '/versions.html#version-' + version.replace(/\\./g, '-'));
-      link.setAttribute('aria-label', 'Version ' + version + '. View version history');
+      link.setAttribute('aria-label', 'Version ' + version + '. Explore Version 2 features');
     });
   }
   // The board calls render after replacing its markup. No observer is needed.
@@ -173,44 +173,52 @@ export function renderReleaseScript(data) {
 }
 
 export function renderHistory(data) {
-  const visible = publicReleaseData(data);
-  const cards = visible.releases.map(release => {
-    const date = new Intl.DateTimeFormat('en-US', { timeZone:'UTC', month:'long', day:'numeric', year:'numeric' }).format(new Date(release.date + 'T12:00:00Z'));
-    return `    <article id="${anchor(release.version)}" aria-labelledby="${anchor(release.version)}-title">
-      <div class="release-meta"><h2 id="${anchor(release.version)}-title">${label(release.version)}</h2>${release.version === data.currentVersion ? '<span class="current">Current</span>' : ''}</div>
-      <time datetime="${release.date}">${date}</time>
-      <h3>${esc(release.title)}</h3>
-      <ul>${release.changes.map(note => '<li>' + esc(note) + '</li>').join('')}</ul>
-    </article>`;
-  }).join('\n');
+  validateRelease(data);
+  // This is a durable feature overview, not a patch feed. Full release notes
+  // remain in build-only metadata; publicReleaseData keeps its separate contract.
+  const features = [
+    ['Advice notes', 'A little help between applications. Open a note for practical job-hunt advice.'],
+    ['More themes', 'Make the board feel like you. Pick a look, from the original notebook to Casino, Mermaid and more.'],
+    ['Internships', 'A place for your first step. Browse internships and see the pay, timing and requirements.'],
+    ['Job tracker', 'Applications, interviews, offers. Keep your progress and notes in one place.'],
+    ['Google sign-in', 'Keep your saved jobs and tracker together on your phone or computer.'],
+    ['Your preferences', 'Tell the board what you want to explore. Your answers help sort roles without ruling you out.'],
+    ['Show hidden jobs', 'Changed your mind? Use the Board menu to see roles you dismissed and bring them back.'],
+    ['Suggest Jobs', 'Know a role worth sharing? Send it through Suggest Jobs for review.']
+  ];
+  const cards = features.map(([title, description], index) => `    <article aria-labelledby="feature-${index + 1}">
+      <h2 id="feature-${index + 1}">${esc(title)}</h2>
+      <p>${esc(description)}</p>
+    </article>`).join('\n');
+  const arrow = '<svg class="drawn-arrow" viewBox="0 0 48 20" aria-hidden="true" focusable="false"><path d="M3 12c12-3 25-3 40-2M35 3l9 7-10 7"/></svg>';
   return `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Version history | StillUnemployed.com</title>
-  <meta name="description" content="What's changed on StillUnemployed.com, one release at a time.">
+  <title>Version 2 | StillUnemployed.com</title>
+  <meta name="description" content="Explore Version 2: advice notes, themes, internships, your job tracker and more ways to make the board yours.">
+  <link rel="stylesheet" href="/css/brand.css">
   <style>
-    @font-face{font-family:SUHand;src:url('./assets/b4cc05cd-2602-48c7-8b9b-2db92103375a.woff2') format('woff2');font-display:swap}
-    *{box-sizing:border-box}body{margin:0;background:#FAF7EF;color:#2C2118;font-family:system-ui,-apple-system,sans-serif;line-height:1.6}
-    main{max-width:760px;margin:auto;padding:24px 22px 72px}nav{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:28px}
-    a{color:#B23A1E;text-underline-offset:4px}nav a{display:inline-flex;align-items:center;min-height:44px;font-size:15px}nav a:first-child{color:#2C2118;font-weight:750}
-    h1,h2,h3,p{margin:0}h1{font:700 clamp(34px,7vw,48px)/1.2 SUHand,cursive}.intro{margin:8px 0 30px;color:#6F5E45;font-size:16px}
-    article{position:relative;padding:24px 22px 26px 30px;margin:24px 0;border:1px solid #E4D7BF;border-left:3px solid #DFA28F;border-radius:3px;background:#FFFDF7;box-shadow:2px 4px 10px #2c21180b;scroll-margin-top:20px}
-    .release-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}h2{font:700 30px/1.3 SUHand,cursive}.current{font-size:12px;color:#624F35;border:1px solid #D8C6A4;border-radius:12px;padding:1px 8px}
-    time{display:block;font-size:13px;color:#6F5E45;margin:2px 0 18px}h3{font-size:17px;line-height:1.4}ul{padding-left:20px;margin:12px 0 0}li{margin:7px 0;font-size:15px}
-    footer{display:flex;gap:20px;flex-wrap:wrap;margin-top:34px;font-size:13px}footer a{display:inline-flex;align-items:center;min-height:44px}
-    a:focus-visible{outline:3px solid #C2552F;outline-offset:4px;border-radius:2px}@media(max-width:400px){main{padding-left:16px;padding-right:16px}article{padding:20px 18px 22px 23px}}
+    *{box-sizing:border-box}body{margin:0;background:var(--su-bg);color:var(--su-ink);font:400 16px/1.6 var(--su-body)}
+    main{max-width:880px;margin:auto;padding:24px 24px 64px;scroll-margin-top:24px}nav{display:flex;justify-content:space-between;gap:12px 20px;flex-wrap:wrap;margin-bottom:28px}
+    a{color:var(--su-orange-text);text-underline-offset:4px}nav a{display:inline-flex;align-items:center;gap:8px;min-height:44px;font:400 22px/1.25 var(--su-hand)}nav a:first-child{color:var(--su-ink)}
+    h1,h2,p{margin:0}h1{display:inline-block;font:400 clamp(40px,8vw,56px)/1.15 var(--su-hand);text-decoration:underline;text-decoration-color:var(--su-yellow);text-decoration-thickness:6px;text-underline-offset:5px}.intro{max-width:54ch;margin-top:16px}.current-version{margin:12px 0 28px;color:var(--su-muted);font-size:14px}
+    .features{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}article{min-width:0;padding:22px 24px 24px;border-left:2px solid var(--su-orange);background:var(--su-paper);box-shadow:var(--su-note-shadow);overflow-wrap:anywhere}h2{font:400 29px/1.25 var(--su-hand);margin-bottom:10px}article p{line-height:1.6}
+    .drawn-arrow{width:36px;height:20px;flex:none;fill:none;stroke:var(--su-orange);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}footer{display:flex;gap:8px 24px;flex-wrap:wrap;margin-top:32px;font-size:14px}footer a{display:inline-flex;align-items:center;gap:8px;min-height:44px}
+    a:focus-visible{outline:3px solid var(--su-orange);outline-offset:4px;border-radius:2px}@media(max-width:600px){main{padding:20px 16px 48px}.features{grid-template-columns:minmax(0,1fr);gap:16px}article{padding:20px}.current-version{margin-bottom:24px}}
   </style>
 </head>
 <body>
-  <main>
-    <nav aria-label="Site navigation"><a href="./index.html">StillUnemployed.com</a><a href="./jobs.html">Just jobs →</a></nav>
-    <h1>Version history</h1>
-    <p class="intro">The latest two updates you’ll notice on the board.</p>
-${visible.releases.some(release => release.version === data.currentVersion) ? '' : '    <p id="' + anchor(data.currentVersion) + '">Current board: ' + label(data.currentVersion) + '</p>'}
+  <main id="${anchor(data.currentVersion)}">
+    <nav aria-label="Site navigation"><a href="/index.html">StillUnemployed.com</a><a href="/jobs.html">Just jobs ${arrow}</a></nav>
+    <h1>Version 2</h1>
+    <p class="intro">More ways to find a role and keep your job hunt together.</p>
+    <p class="current-version">Current board version ${esc(data.currentVersion)}</p>
+    <section class="features" aria-label="Version 2 features">
 ${cards}
-    <footer><a href="./style-guide.html">For designers: check out our style guide →</a><a href="./privacy.html">Privacy</a><a href="./terms.html">Terms</a><a href="./index.html">Home</a></footer>
+    </section>
+    <footer><a href="/style-guide.html">For designers: check out our style guide ${arrow}</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/index.html">Home</a></footer>
   </main>
 </body>
 </html>
@@ -220,7 +228,7 @@ ${cards}
 export function refreshVersionLinks(html, version) {
   return html.replace(/(<a\b[^>]*\bdata-su-version(?=\s|=|>)(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+))?[^>]*>)[^<]*(<\/a>)/g, (_match, open, close) => {
     const attributes = open.slice(0, -1).replace(/\s+(?:href|aria-label)\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '');
-    return attributes + ' href="/versions.html#' + anchor(version) + '" aria-label="' + esc(label(version) + '. View version history') + '">' + label(version) + close;
+    return attributes + ' href="/versions.html#' + anchor(version) + '" aria-label="' + esc(label(version) + '. Explore Version 2 features') + '">' + label(version) + close;
   })
     .replace(/(js\/release\.js\?v=)[^"'\s>]+/g, (_match, prefix) => prefix + version);
 }
