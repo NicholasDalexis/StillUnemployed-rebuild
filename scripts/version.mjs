@@ -5,7 +5,8 @@
 // Record one completed release: --bump --note "Full internal change"
 // Add viewer copy explicitly: --public-title "What is new" --public-note "Visible change"
 // With no public copy, a release stays out of the two-entry public history.
-// Patches carry after 9 without changing the major. A bump to 2.5.0 needs Nic's format decision.
+// Nic confirmed the three-part format at 2.5.0 on 2026-09-09.
+// Patches carry after 9 without automatically changing the major.
 import { readFileSync, writeFileSync, existsSync, renameSync, readdirSync, lstatSync } from 'node:fs';
 import { dirname, join, resolve, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -127,9 +128,6 @@ export function bumpRelease(data, { notes, title = 'Small improvements', date = 
   if (publicNotes.length && (typeof publicTitle !== 'string' || !publicTitle.trim())) throw new Error('--public-note needs --public-title');
   if (publicTitle !== undefined && !publicNotes.length) throw new Error('--public-title needs at least one --public-note');
   const version = nextVersion(data.currentVersion);
-  // Keep this gate out of nextVersion: existing 2.4.9 history must still validate,
-  // render and pass --check while the next release waits for the owner's decision.
-  if (version === '2.5.0') throw new Error('Automatic bump stopped before Version 2.5.0. Ask Nic whether to keep the three-part format (2.5.0) or switch to four parts (2.5.0.0). Record his decision and update the version rule before continuing.');
   const release = { version, date, title, changes:notes.map(note => note.trim()) };
   if (publicNotes.length) release.public = { title:publicTitle.trim(), changes:publicNotes.map(note => note.trim()) };
   return validateRelease({ ...data, currentVersion:version, releases:[release, ...data.releases] });

@@ -561,7 +561,7 @@
     if(!showTracker)return;
     var identity=runtime.owner();
     setTimeout(function () {
-      if (identity !== runtime.owner() || document.getElementById('su-tracker-nudge') || document.getElementById('su-saved-nudge')) return;
+      if (identity !== runtime.owner() || document.getElementById('su-tracker-nudge') || document.getElementById('su-saved-nudge') || document.getElementById('su-signin-reminder')) return;
       var wrap=document.createElement('div');wrap.id='su-tracker-nudge';wrap.className='su-tracker-nudge';
       wrap.innerHTML='<a href="tracker.html"><span>Check applied jobs</span> <svg width="24" height="14" viewBox="0 0 28 14" fill="none" aria-hidden="true"><path d="M1 7 Q12 1 25 7 M19 2 L26 7 L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="su-tracker-sticky">Tracker</span></a><button type="button" aria-label="Dismiss tracker reminder">×</button>';
       var timer;

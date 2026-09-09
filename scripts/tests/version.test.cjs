@@ -25,20 +25,27 @@ test('invalid or ambiguous release numbers are rejected', async () => {
   for (const version of ['', '2.1', '2.1.10', '2.01.1', '-2.1.1', 'Version 2', '2.1.1-beta', '2.5.0.0', null, 2]) assert.throws(() => nextVersion(version));
 });
 
-test('the automatic 2.5.0 release waits for Nic while 2.4.9 remains valid and renderable', async () => {
+test('the approved three-part sequence carries through 2.5.0 without changing earlier history or the major', async () => {
   const { nextVersion, bumpRelease, validateRelease, renderHistory, renderReleaseScript } = await versionTool;
   const atVersion = version => ({ ...initial(), currentVersion:version, releases:[{ ...initial().releases[0], version }] });
   assert.equal(bumpRelease(atVersion('2.3.9'), { notes:['A completed change.'] }).currentVersion, '2.4.0');
-  const boundary = bumpRelease(atVersion('2.4.8'), { notes:['The last change before the decision.'] });
+  const boundary = bumpRelease(atVersion('2.4.8'), { notes:['A completed change.'] });
   assert.equal(boundary.currentVersion, '2.4.9');
   assert.doesNotThrow(() => validateRelease(boundary));
   assert.match(renderHistory(boundary), /id="version-2-4-9"/);
   assert.match(renderReleaseScript(boundary), /var version = "2\.4\.9"/);
-  assert.equal(nextVersion('2.4.9'), '2.5.0', 'calculating a candidate does not authorize its release');
+  assert.equal(nextVersion('2.4.9'), '2.5.0');
   const before = JSON.stringify(boundary);
-  assert.throws(() => bumpRelease(boundary, { notes:['This release needs a decision.'] }), /stopped before Version 2\.5\.0\. Ask Nic.*three-part.*2\.5\.0.*four parts.*2\.5\.0\.0/);
-  assert.equal(JSON.stringify(boundary), before, 'a rejected bump leaves history unchanged');
-  assert.equal(bumpRelease(atVersion('3.4.9'), { notes:['A change in an explicitly chosen major.'] }).currentVersion, '3.5.0', 'the decision gate is specific to 2.5.0');
+  const approved = bumpRelease(boundary, { notes:['Continue the approved three-part sequence.'] });
+  assert.equal(approved.currentVersion, '2.5.0');
+  assert.deepEqual(approved.releases.slice(1), boundary.releases);
+  assert.equal(JSON.stringify(boundary), before, 'bumping does not mutate earlier release data');
+  assert.doesNotThrow(() => validateRelease(approved));
+  assert.match(renderHistory(approved), /id="version-2-5-0"/);
+  assert.match(renderReleaseScript(approved), /var version = "2\.5\.0"/);
+  for (const [current, next] of [['2.5.0','2.5.1'], ['2.5.9','2.6.0'], ['2.9.9','2.10.0'], ['2.99.9','2.100.0'], ['3.4.9','3.5.0']]) {
+    assert.equal(bumpRelease(atVersion(current), { notes:['A completed change.'] }).currentVersion, next);
+  }
 });
 
 test('one deliberate bump prepends notes and preserves every earlier history entry', async () => {
@@ -153,31 +160,35 @@ function releaseFixture() {
   return { dir, put, clean:() => fs.rmSync(dir, { recursive:true, force:true }) };
 }
 
-test('the CLI stops at 2.5.0 before writing any files and leaves 2.4.9 check and refresh usable', async () => {
+test('the CLI records approved 2.5.0 and keeps subsequent check and refresh idempotent', async () => {
   const { applyRelease } = await versionTool, fixture = releaseFixture(), { dir, put } = fixture;
   try {
     put('scripts/version.mjs', fs.readFileSync(path.join(root, 'scripts/version.mjs')));
     applyRelease(dir, { seal:true });
     const metadata = JSON.parse(fs.readFileSync(path.join(dir, 'releases.json'), 'utf8'));
     metadata.currentVersion = '2.4.8';
-    metadata.releases.unshift({ version:'2.4.8', date:'2026-09-06', title:'Boundary fixture', changes:['Ready for the last ordinary bump.'] });
+    metadata.releases.unshift({ version:'2.4.8', date:'2026-09-06', title:'Rollover fixture', changes:['Ready for an ordinary bump.'] });
     put('releases.json', JSON.stringify(metadata, null, 2) + '\n');
     applyRelease(dir);
     const run = args => spawnSync(process.execPath, [fs.realpathSync(path.join(dir, 'scripts/version.mjs')), ...args], { encoding:'utf8' });
-    const permitted = run(['--bump', '--note', 'The last ordinary release.']);
+    const permitted = run(['--bump', '--note', 'An ordinary release.']);
     assert.equal(permitted.status, 0, permitted.stderr);
     assert.equal(JSON.parse(fs.readFileSync(path.join(dir, 'releases.json'), 'utf8')).currentVersion, '2.4.9');
     const snapshot = () => Object.fromEntries(fs.readdirSync(dir, { recursive:true }).sort().filter(name => fs.statSync(path.join(dir, name)).isFile()).map(name => [name, fs.readFileSync(path.join(dir, name)).toString('base64')]));
-    const before = snapshot(), stopped = run(['--bump', '--note', 'Waiting for the format decision.']);
-    assert.equal(stopped.status, 1);
-    assert.equal(stopped.stdout, '', 'the CLI must not report a completed release');
-    assert.match(stopped.stderr, /Automatic bump stopped before Version 2\.5\.0/);
-    assert.match(stopped.stderr, /Ask Nic.*three-part format \(2\.5\.0\).*four parts \(2\.5\.0\.0\)/);
-    assert.deepEqual(snapshot(), before, 'metadata, source links, generated output and temporary files stay untouched');
+    const previous = JSON.parse(fs.readFileSync(path.join(dir, 'releases.json'), 'utf8'));
+    const approved = run(['--bump', '--note', 'Continue the approved three-part sequence.']);
+    assert.equal(approved.status, 0, approved.stderr);
+    assert.match(approved.stdout, /Version 2\.5\.0 updated/);
+    const current = JSON.parse(fs.readFileSync(path.join(dir, 'releases.json'), 'utf8'));
+    assert.equal(current.currentVersion, '2.5.0');
+    assert.deepEqual(current.releases.slice(1), previous.releases);
+    assert.match(fs.readFileSync(path.join(dir, 'index.html'), 'utf8'), /data-su-version[^>]*>Version 2\.5\.0<\/a>/);
+    assert.match(fs.readFileSync(path.join(dir, 'js/release.js'), 'utf8'), /var version = "2\.5\.0"/);
+    const before = snapshot();
     for (const mode of ['--check', '--refresh']) {
-      const result = run([mode]);assert.equal(result.status, 0, result.stderr);assert.match(result.stdout, /Version 2\.4\.9/);
+      const result = run([mode]);assert.equal(result.status, 0, result.stderr);assert.match(result.stdout, /Version 2\.5\.0/);
     }
-    assert.deepEqual(snapshot(), before, 'checking and refreshing the released boundary do not consume the decision');
+    assert.deepEqual(snapshot(), before, 'checking and refreshing do not create another release or change generated files');
   } finally { fixture.clean(); }
 });
 

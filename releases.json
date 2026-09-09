@@ -1,7 +1,16 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.4.9",
+  "currentVersion": "2.5.0",
   "releases": [
+    {
+      "version": "2.5.0",
+      "date": "2026-09-09",
+      "title": "Keep saved jobs across devices",
+      "changes": [
+        "Added a one-time Google sign-in reminder after a successful new guest bookmark, using the existing application reminder design and a separate browser receipt. It yields safely around other notes, does not stack with the first Saved shortcut, and keeps the existing three-application reminder and later Saved shortcut cadence.",
+        "Updated the privacy disclosure for the new reminder marker and confirmed Nic’s three-part numbering choice for 2.5.0 and future patch carries."
+      ]
+    },
     {
       "version": "2.4.9",
       "date": "2026-09-08",
@@ -515,7 +524,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "e271022134f6f8930425fd4835133060161477110d7a94dfe93d2d1cdbd2051b",
+    "digest": "9978edc5e4c6eb18d28815a2df74140063c5b95f1525a445e13ab6ee66d0a310",
     "fileCount": 158
   }
 }
