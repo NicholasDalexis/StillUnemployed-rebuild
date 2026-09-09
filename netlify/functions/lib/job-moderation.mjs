@@ -2,6 +2,7 @@ import {getStore} from '@netlify/blobs';
 import Core from './job-moderation-core.cjs';
 import {verifyOwner} from './job-moderation-auth.mjs';
 import Discovery from './job-discovery.cjs';
+import JobSource from './job-source.cjs';
 import InternshipStatus from './internship-status.cjs';
 import Identity from '../../../js/job-identity.js';
 import snapshot from '../../../internships-data.json' with {type:'json'};
@@ -14,7 +15,7 @@ export async function currentCatalog(link){
   if(source.jobs.some(job=>Identity.keys(job.link).some(key=>keys.includes(key))))return source;
   const now=Date.now(),approved=InternshipStatus.approvedSnapshot(snapshot,now);
   const live=InternshipStatus.suppress(approved,await InternshipStatus.fetchStatuses(fetch,now),now);
-  const {shareEntries}=await import('../../../scripts/gen-share.mjs');
+  const {shareEntries}=JobSource;
   return {jobs:live.jobs.map(job=>({...job,identity:Identity.keys(job.link)[0],aliases:shareEntries(job).map(entry=>entry.slug),co:job.co||job.company,role:job.role||job.title})),checkedAt:Date.now()};
 }
 export function createService({openStore=storeFor,authenticate=verifyOwner,getCatalog=currentCatalog,now=Date.now}={}){

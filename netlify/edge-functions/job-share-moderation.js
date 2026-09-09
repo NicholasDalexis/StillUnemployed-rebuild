@@ -5,7 +5,7 @@ const MAX_BYTES=4194304;
 function page(status,title,message){
   return new Response('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+title+' | StillUnemployed</title><style>body{margin:0;background:#efe6d2;color:#292116;font:18px/1.6 system-ui,sans-serif}main{max-width:36rem;margin:12vh auto;padding:2rem;background:#fbf9f0}a{color:#9c3820}</style><main><h1>'+title+'</h1><p>'+message+'</p><a href="/jobs.html">Back to the job board</a></main></html>',{status,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','CDN-Cache-Control':'no-store','Netlify-CDN-Cache-Control':'no-store','X-Robots-Tag':'noindex, nofollow','X-Content-Type-Options':'nosniff'}});
 }
-export async function shareGate(request,context,fetchImpl=fetch){
+async function evaluateShare(request,context,fetchImpl=fetch){
   const url=new URL(request.url);
   let path;try{path=decodeURIComponent(url.pathname);}catch{return page(404,'This link is unavailable','Browse the board for current roles.');}
   if(path.startsWith('/j/og/'))return context.next();
@@ -36,5 +36,12 @@ export async function shareGate(request,context,fetchImpl=fetch){
   }catch{return page(503,'We could not check this role','Please try again in a moment.');}
   finally{clearTimeout(timer);controller.abort();}
 }
+// Netlify's Edge method enum does not accept HEAD. Match all methods and
+// enforce GET/HEAD here so HEAD still receives the same availability gate.
+export async function shareGate(request,context,fetchImpl=fetch){
+  if(!['GET','HEAD'].includes(request.method))return new Response(null,{status:405,headers:{Allow:'GET, HEAD','Cache-Control':'no-store'}});
+  const response=await evaluateShare(request,context,fetchImpl);
+  return request.method==='HEAD'?new Response(null,{status:response.status,statusText:response.statusText,headers:response.headers}):response;
+}
 export default shareGate;
-export const config={path:'/j/*',method:['GET','HEAD'],onError:'fail'};
+export const config={path:'/j/*',onError:'fail'};

@@ -58,3 +58,20 @@ test('internship endpoint cannot return stale catalog if either authority is una
   const denied=await handler(new Request(url,{method:'POST'}),{});assert.equal(denied.status,405);assert.equal(calls,0);
   const res=await handler(new Request(url),{});assert.equal(res.status,503);assert.doesNotMatch(await res.text(),/private internal|example.com/);
 });
+
+test('all-method Edge manifest still gates HEAD and rejects mutations before any fetch or static content',async()=>{
+  const {shareGate,config}=await gate();assert.equal(config.method,undefined);let next=0,reads=0;
+  const context={site,next:async()=>{next++;return new Response('open employer details');}};
+  const fetch=async()=>{reads++;return json(index(['1rc6eq5t9w8p3']));};
+  const removed=await shareGate(new Request(request.url,{method:'HEAD'}),context,fetch);
+  assert.equal(removed.status,410);assert.equal(await removed.text(),'');assert.equal(next,0);assert.equal(reads,1);
+  const unknown=await shareGate(new Request(request.url,{method:'HEAD'}),context,async()=>new Response('',{status:503}));
+  assert.equal(unknown.status,503);assert.equal(await unknown.text(),'');assert.equal(next,0);
+  const open=await shareGate(new Request(request.url,{method:'HEAD'}),context,async()=>json(index()));
+  assert.equal(open.status,200);assert.equal(await open.text(),'');assert.equal(next,1);assert.equal(open.headers.get('Cache-Control'),'no-store');
+  for(const method of ['POST','PUT','DELETE','OPTIONS']){
+    const denied=await shareGate(new Request(request.url,{method}),context,fetch);
+    assert.equal(denied.status,405);assert.equal(denied.headers.get('Allow'),'GET, HEAD');
+  }
+  assert.equal(reads,1);assert.equal(next,1);
+});

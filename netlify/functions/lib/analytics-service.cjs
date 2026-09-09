@@ -3,11 +3,11 @@ const crypto=require('node:crypto');
 const Core=require('./analytics-core.cjs');
 const P=require('../../../js/personalization.js');
 const bundled=require('../../../jobs-data.json');
+const {loadJobs}=require('./job-source.cjs');
 const DAY=86400000;
 let jobsCache=null,jobsCacheAt=0;
 async function liveCatalog(){
   if(jobsCache&&Date.now()-jobsCacheAt<300000)return jobsCache;
-  const {loadJobs}=await import('../../../scripts/gen-share.mjs');
   try{const jobs=await loadJobs(null,(url)=>fetch(url,{signal:AbortSignal.timeout(5000)}));const internships=require('../../../js/internships.js').jobs(require('../../../internships-data.json'));jobsCache=Core.catalog(jobs.concat(internships));jobsCacheAt=Date.now();return jobsCache;}catch{if(jobsCache&&Date.now()-jobsCacheAt<3600000)return jobsCache;throw error(503,'Job catalog temporarily unavailable');}
 }
 function error(status,message){return Object.assign(new Error(message),{status});}

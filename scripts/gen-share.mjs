@@ -9,13 +9,13 @@
 import { mkdirSync, writeFileSync, rmSync, existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
-import SUJobIdentity from '../js/job-identity.js';
+import JobSource from '../netlify/functions/lib/job-source.cjs';
+const {parseCSV,rowsToJobs,shareEntries,loadJobs}=JobSource;
+export {parseCSV,rowsToJobs,shareEntries,loadJobs};
 import SUStates from '../js/us-states.js';
 import { setImmediate as yieldToEventLoop } from 'node:timers/promises';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const SHEET = '1DRfkDn_OIVlnx06xFaNpNbusXl49jvM26oJsl-qq2nU';
-const CSV = `https://docs.google.com/spreadsheets/d/${SHEET}/gviz/tq?tqx=out:csv&headers=1&gid=2134483974&_=${Date.now()}`;
 // Production must use the canonical custom domain, even when Netlify also sets
 // DEPLOY_PRIME_URL to the main branch subdomain. Keep gen-theme-pages in agreement.
 export function siteOrigin(env = process.env) {
@@ -141,78 +141,8 @@ function hexToRgba(hex, a) {
   return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
 }
 
-// deterministic short slug from the apply link — MUST match app.js suSlug()
-function slugOf(str) {
-  let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
-  for (let i = 0; i < str.length; i++) { const c = str.charCodeAt(i); h1 = Math.imul(h1 ^ c, 2654435761); h2 = Math.imul(h2 ^ c, 1597334677); }
-  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-  return (h2 >>> 0).toString(36) + (h1 >>> 0).toString(36);
-}
 const b64 = (s) => Buffer.from(unescape(encodeURIComponent(s)), 'binary').toString('base64');
 const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
-export function parseCSV(text) {
-  const rows = []; let row = [], field = '', inQ = false, closed = false;
-  text = String(text).replace(/^\uFEFF/, '');
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (inQ) {
-      if (c === '"') {
-        if (text[i + 1] === '"') { field += '"'; i++; }
-        else { inQ = false; closed = true; }
-      } else field += c;
-    } else if (c === ',') { row.push(field); field = ''; closed = false; }
-    else if (c === '\n' || c === '\r') {
-      if (c === '\r' && text[i + 1] === '\n') i++;
-      row.push(field); rows.push(row); row = []; field = ''; closed = false;
-    } else if (c === '"') {
-      if (field || closed) throw new Error('Malformed jobs CSV: unexpected quote');
-      inQ = true;
-    } else {
-      if (closed) throw new Error('Malformed jobs CSV: text after closing quote');
-      field += c;
-    }
-  }
-  if (inQ) throw new Error('Malformed jobs CSV: unterminated quoted field');
-  if (field.length || row.length || closed) { row.push(field); rows.push(row); }
-  return rows;
-}
-
-export function rowsToJobs(rows) {
-  if (!rows.length) throw new Error('Jobs CSV has no header');
-  const head = rows[0].map(s => s.trim().toLowerCase());
-  for (const name of ['company', 'job title', 'link', 'salary', 'active/dead']) {
-    if (head.indexOf(name) < 0 || head.indexOf(name) !== head.lastIndexOf(name)) {
-      throw new Error('Jobs CSV requires one ' + name + ' column');
-    }
-  }
-  const jobs = [];
-  for (let i = 1; i < rows.length; i++) {
-    const cells = rows[i];
-    if (cells.every(s => !s.trim())) continue;
-    if (cells.length !== head.length) throw new Error('Malformed jobs CSV: column count on row ' + (i + 1));
-    const get = name => (cells[head.indexOf(name)] || '').trim();
-    const co = get('company'), role = get('job title'), link = get('link'), pay = get('salary');
-    const act = get('active/dead').toLowerCase();
-    if (!co || !role || act.includes('dead') || act === 'inactive' || act === 'no') continue;
-    try { const url = new URL(link); if (!/^https?:\/\//i.test(link) || !/^https?:$/.test(url.protocol) || !url.hostname || url.username || url.password) continue; }
-    catch (e) { continue; }
-    if (!/\d/.test(pay)) continue;
-    if (/\/\s*(?:h|hr|hour)\b|\bper\s*hour\b|\bhourly\b/i.test(pay)) {
-      const rates = (pay.replace(/,/g, '').match(/\d+(?:\.\d+)?/g) || []).map(Number);
-      if (!rates.length || Math.max(...rates) < 25) continue;
-    }
-    jobs.push({ co, role, link, pay, ind: get('category'), loc: get('location'), style: get('type'), exp: get('years of experience') });
-  }
-  return SUJobIdentity.groupJobs(jobs).map(group => ({ ...group.job, _aliases: group.aliases }));
-}
-
-// Keep every previously shareable raw-URL hash. Alias pages use the same
-// representative listing, so a saved old share still reaches the visible card.
-export function shareEntries(job) {
-  return [...new Set(job._aliases || [job.link])].map(link => ({ link, slug: slugOf(link) }));
-}
 
 function roundRect(ctx, x, y, w, h, r) {
   ctx.beginPath();
@@ -357,17 +287,6 @@ export function stub(job, slug, themeKey, site = SITE) {
 <meta http-equiv="refresh" content="0; url=${esc(url)}">
 <script>location.replace(${JSON.stringify(url)});</script>
 </head><body style="font-family:sans-serif;padding:40px;color:#2C2118;">Taking you to the job on StillUnemployed.com…</body></html>`;
-}
-
-export async function loadJobs(csvPath, fetcher = fetch) {
-  let text;
-  if (csvPath) text = readFileSync(csvPath, 'utf8');
-  else {
-    const response = await fetcher(CSV, { signal: AbortSignal.timeout(30000) });
-    if (!response.ok) throw new Error('Jobs CSV request failed: HTTP ' + response.status);
-    text = await response.text();
-  }
-  return rowsToJobs(parseCSV(text));
 }
 
 async function main() {

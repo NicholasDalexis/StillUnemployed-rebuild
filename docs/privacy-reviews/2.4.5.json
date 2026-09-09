@@ -1,18 +1,17 @@
 {
-  "version": "2.4.6",
+  "version": "2.4.5",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-09T00:31:20.283323+00:00",
+  "reviewedAt": "2026-09-09T00:06:55.767992+00:00",
   "reviewer": "Codex/Astra root, independent release and catalog reviewers",
-  "sourceDigest": "736b6142a6e76a14075d123bd068de6b4faa2a5236649eb3fb20ac67a272bf4b",
-  "sourceFileCount": 158,
+  "sourceDigest": "51a4d38d24c2ca7d8208172b13674093d3f257d9874d77f1c5e2ec9a2efd78b7",
+  "sourceFileCount": 157,
   "privacyChanged": true,
   "termsChanged": true,
   "scope": "Compact board header and pointer-focus correction; authenticated owner-only preview moderation with reversible durable Netlify Blobs records, fresh Google verification, public unlisting index and share-page/runtime enforcement. Local preview loopback restriction and targeted uuid dependency correction.",
   "checks": {
-    "implementation": "807/807 full tests; unchanged browser acceptance from2.4.5; actual provider seven-function and Edge packaging plus emitted cold imports pass. Website rebuild and hosted owner acceptance pending.",
+    "implementation": "803/803 full suite passed on final product source; native combined report/retry/Undo/error/expiry cases passed; 72 layout pages and16 moderation theme/width states reviewed. Final release build and hosted acceptance pending.",
     "boundaries": "Personal No longer open remains separate. QA analytics suppression preserved. Preview and production stores separate; production reporting disabled. Saved and Tracker records preserved.",
-    "disclosures": "Privacy, Terms and About reviewed and corrected for record fields, Netlify hosting storage, reversible owner unlisting and operational retention.",
-    "packagingPolicy": "Reviewed Privacy and Terms against2.4.6 packaging-only extraction and method declaration fix. No behavior/data-use wording change needed beyond existing2.4.5 policy updates."
+    "disclosures": "Privacy, Terms and About reviewed and corrected for record fields, Netlify hosting storage, reversible owner unlisting and operational retention."
   },
   "baselineReview": "docs/privacy-reviews/2.4.2.json",
   "openItems": [

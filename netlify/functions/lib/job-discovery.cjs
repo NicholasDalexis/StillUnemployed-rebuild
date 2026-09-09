@@ -10,12 +10,10 @@ const HEADERS=Object.freeze({'Content-Type':'text/html; charset=utf-8','Cache-Co
 const unavailable=()=>new Error('Job source unavailable');
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const esc=value=>String(value||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-let parser;
+const {parseCSV,rowsToJobs,shareEntries}=require('./job-source.cjs');
 
 async function catalogFromCSV(csv,limits=LIMITS){
   if(typeof csv!=='string'||Buffer.byteLength(csv)>limits.bytes||/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(csv))throw unavailable();
-  parser ||= import('../../../scripts/gen-share.mjs');
-  const {parseCSV,rowsToJobs,shareEntries}=await parser;
   const rows=parseCSV(csv);
   if(!rows.length||rows.length>limits.rows+1||rows[0].length!==EXPECTED.length||rows[0].some((value,index)=>value.trim().toLowerCase()!==EXPECTED[index]))throw unavailable();
   const all=[];
