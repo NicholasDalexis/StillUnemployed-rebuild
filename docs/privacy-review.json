@@ -1,20 +1,21 @@
 {
-  "version": "2.5.1",
+  "version": "2.5.2",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-09T04:56:53.351Z",
+  "reviewedAt": "2026-09-09T05:42:26.477Z",
   "reviewer": "Codex root with independent release reviewer",
-  "sourceDigest": "cc6b1ee4e3cfd873979cd0ab7f8231645d9fdcc7c26f2984520d9fd88557aeb2",
+  "sourceDigest": "0afc4e8fd5554c49628ea9915879ac34bc22dfa5090aec6fac317952a63ad90e",
   "sourceFileCount": 159,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Internship public share HTML and PNG generation with fresh moderated catalog gating; shared card readability, first-card artwork, Version 2 overview and dismissible welcome toast. No new provider, account scope, browser marker, analytics event, private-record projection or source writer.",
+  "scope": "Production promotion of reviewed 2.5.1, plus exact default-production-host redirects to canonical stillunemployed.com. No account, analytics, owner-moderation activation, new provider or data field.",
   "checks": {
     "implementation": "814/814 final full tests;34focused and independent54tests; native320/390/1440 recovery panel keyboard/retry/focus/layout pass. All seven configured website stages pass:488jobs,4128sharepages/images,4146HTML. All27provider/runtime inputs identical tovalidated2.4.6; seven Functions and Edge packaging/cold-load acceptance carries forward. Hosted2.4.7 restoration pending.",
     "boundaries": "Personal No longer open remains separate. QA analytics suppression preserved. Preview and production stores separate; production reporting disabled. Saved and Tracker records preserved.",
     "disclosures": "Privacy, Terms and About reviewed and corrected for record fields, Netlify hosting storage, reversible owner unlisting and operational retention.",
     "packagingPolicy": "Reviewed Privacy and Terms against2.4.6 packaging-only extraction and method declaration fix. No behavior/data-use wording change needed beyond existing2.4.5 policy updates.",
     "recoveryPolicy": "Independent2.4.7 review: owner recovery reads existing posting/action records and invokes existing restore. Only removed posting id/link/company/role/revision projected into memory; no private browser persistence, new recipient, retention or collection category. Existing policies cover restoration and operational retention.",
-    "currentPatch": "830/830 tests passed. Real browser:20 Jobs/Internships cases, all eight themes,320/390/1440. Native share payload and clipboard intercepted; no Messages delivery claimed. Independent generator/Edge review passed26 tests including served HTML+PNG and unavailable/retired/error GET+HEAD checks. Privacy sections2,4,5,6 and Terms sections2–4 compared to implementation: existing public-listing, Netlify hosting, optional sharing, source pay-unit and preview moderation boundaries unchanged; no wording change required. Full build and hosted acceptance are recorded separately in the release receipt."
+    "currentPatch": "830/830 tests passed. Real browser:20 Jobs/Internships cases, all eight themes,320/390/1440. Native share payload and clipboard intercepted; no Messages delivery claimed. Independent generator/Edge review passed26 tests including served HTML+PNG and unavailable/retired/error GET+HEAD checks. Privacy sections2,4,5,6 and Terms sections2–4 compared to implementation: existing public-listing, Netlify hosting, optional sharing, source pay-unit and preview moderation boundaries unchanged; no wording change required. Full build and hosted acceptance are recorded separately in the release receipt.",
+    "productionLaunch": "Independent production-host privacy/security review: canonical domain retains on-device Saved/Tracker and disabled Google sign-in, cloud sync and owner mutations. Default Netlify alias redirected to canonical domain to prevent inconsistent account initialization. Existing disclosures match enabled services; no wording change needed. Final production build/readback recorded separately."
   },
   "baselineReview": "docs/privacy-reviews/2.4.2.json",
   "openItems": [

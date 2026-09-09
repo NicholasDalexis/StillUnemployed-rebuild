@@ -58,6 +58,20 @@
 #
 # MUST come before the /jobs/* rule — Netlify applies redirects in file order and `force = true`
 # means this wins even though /__/auth/* is not a real file on disk.
+# Keep the default production alias on the same account/privacy boundary as
+# the custom domain. Exact hosts leave branch previews and localhost alone.
+[[redirects]]
+  from = "https://stillunemployed.netlify.app/*"
+  to = "https://stillunemployed.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://stillunemployed.netlify.app/*"
+  to = "https://stillunemployed.com/:splat"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/__/auth/*"
   to = "https://stillunemployed-17de9.firebaseapp.com/__/auth/:splat"

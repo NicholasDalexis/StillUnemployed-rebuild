@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.5.1",
+  "currentVersion": "2.5.2",
   "releases": [
+    {
+      "version": "2.5.2",
+      "date": "2026-09-09",
+      "title": "Production launch of reviewed Version 2 board",
+      "changes": [
+        "Promote reviewed 2.5.1 features to production. Redirect the default Netlify production address to the canonical domain so the existing account/privacy boundary is consistent. Google account sync and owner report writes remain staged on preview."
+      ]
+    },
     {
       "version": "2.5.1",
       "date": "2026-09-09",
@@ -534,7 +542,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "cc6b1ee4e3cfd873979cd0ab7f8231645d9fdcc7c26f2984520d9fd88557aeb2",
+    "digest": "0afc4e8fd5554c49628ea9915879ac34bc22dfa5090aec6fac317952a63ad90e",
     "fileCount": 159
   }
 }
