@@ -45,10 +45,10 @@
     }).join('')+'<small>one less spreadsheet</small></div>';
   }
   var previews = {
-    advice: '<div class="su-launch-paper"><small>note to self '+arrow('down')+'</small><strong>your job hunt needs<br>days off, too</strong><span class="su-launch-days"><i>S</i><i>M</i><i>T</i><i>W</i><i>T</i><i>F</i><i>S</i></span><em>wait, why friday? '+arrow('right')+'</em></div>',
+    advice: '<div class="su-launch-paper"><small>note to self '+arrow('down')+'</small><strong>your job hunt needs<br>days off, too</strong><span class="su-launch-days"><i>S</i><i>M</i><i>T</i><i>W</i><i>T</i><i>F</i><i>S</i></span><em>wait, why friday?</em></div>',
     themes: '<div class="su-launch-swatches"><span class="su-launch-original">Original</span><span class="su-launch-casino">Casino</span><span class="su-launch-beauty">Beauty</span><span class="su-launch-mermaid">Mermaid</span><span class="su-launch-bratt">bratt</span><span class="su-launch-chess">Chess</span></div>',
     sync: trackerPreview(),
-    internships: '<div class="su-launch-internships"><small>a place to start '+arrow('down')+'</small><div class="su-launch-intern-note"><strong>Your next chapter</strong><span>Design Intern</span><b>$25/hour</b><span>New York, NY</span></div><em>internships have a board, too '+arrow('right')+'</em></div>'
+    internships: '<div class="su-launch-internships"><small>a place to start '+arrow('down')+'</small><div class="su-launch-intern-note"><strong>Your next chapter</strong><span>Design Intern</span><b>$25/hour</b><span>New York, NY</span></div><em>internships have a board, too</em></div>'
   };
   var features = {
     advice: { label: 'Advice along the way', short: 'Advice notes', tag: 'A little perspective', text: 'A useful pause between applications. Open a note for a job-hunt tip while you browse. Want more? Each note connects to The Job Hunt Recipe, our optional newsletter.' },
@@ -59,7 +59,7 @@
   function preview(key) { return '<div class="su-launch-preview" aria-hidden="true">' + previews[key] + '</div>'; }
   function overview() {
     return '<div class="su-launch-grid">' + ['advice','themes','internships','sync'].map(function (key) {
-      return '<button type="button" class="su-launch-card" data-launch-feature="'+key+'" aria-label="'+features[key].short+'. Learn more">'+preview(key)+'<span class="su-launch-card-label">'+features[key].short+'</span><span class="su-launch-card-hint">Click here</span></button>';
+      return '<button type="button" class="su-launch-card" data-launch-feature="'+key+'" aria-label="'+features[key].short+'. Learn more">'+preview(key)+'<span class="su-launch-card-label">'+features[key].short+arrow('right')+'</span></button>';
     }).join('') + '</div>';
   }
   function setDetail(detail) {

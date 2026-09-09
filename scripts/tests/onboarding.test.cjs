@@ -397,13 +397,14 @@ test('native dialog API failure does not freeze scrolling or write an acknowledg
   }
 });
 
-test('overview keeps four notes in the new order, each with Click here, no label arrows or competing footer links', () => {
+test('overview keeps four notes with decorative title arrows and no competing preview arrows or footer links', () => {
   const w = welcome();w.window.SUWelcome.open();
   const cards = w.dialog.querySelectorAll('[data-launch-feature]');
   assert.deepEqual(cards.map(card => card.getAttribute('data-launch-feature')), ['advice', 'themes', 'internships', 'sync']);
   for (const card of cards) {
-    assert.equal(card.querySelector('.su-launch-card-label').querySelector('svg'), null);
-    assert.equal(card.querySelector('.su-launch-card-hint').textContent, 'Click here');
+    assert.equal(card.querySelector('.su-launch-card-label').querySelector('svg').getAttribute('aria-hidden'), 'true');
+    assert.equal(card.querySelector('.su-launch-card-hint'), null);
+    assert.equal(card.querySelector('.su-launch-preview').querySelector('.su-launch-arrow-right'), null);
     assert.equal(card.querySelector('.su-launch-preview').getAttribute('aria-hidden'), 'true');
     assert.equal(card.querySelector('button'), null);
   }
@@ -411,7 +412,7 @@ test('overview keeps four notes in the new order, each with Click here, no label
   assert.equal(w.dialog.querySelectorAll('a').length, 0);
   assert.equal(w.dialog.querySelectorAll('button').filter(el => el.getClientRects().length).length, 5);
   assert.doesNotMatch(w.dialog.textContent, /Suggest Jobs|Portfolio Graded|Version history|Internships are here/);
-  const hint = cards[1].querySelector('.su-launch-card-hint');w.dialog.dispatch('click', { target:hint });
+  const titleArrow = cards[1].querySelector('.su-launch-card-label').querySelector('svg');w.dialog.dispatch('click', { target:titleArrow });
   assert.equal(w.dialog.querySelector('#su-launch-detail-title').textContent, 'Make it feel like you');
 });
 

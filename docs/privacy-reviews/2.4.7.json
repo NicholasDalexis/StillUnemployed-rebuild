@@ -1,20 +1,19 @@
 {
-  "version": "2.4.8",
+  "version": "2.4.7",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-09T03:15:35.004258+00:00",
-  "reviewer": "Codex root with independent release reviewer",
-  "sourceDigest": "6657f00b639b9e3c60bf671781f3689365f4d68b58b7ca5ba6253e79e95771d7",
+  "reviewedAt": "2026-09-09T01:00:22.526486+00:00",
+  "reviewer": "Codex/Astra root, independent release and catalog reviewers",
+  "sourceDigest": "0cd8b7f8f5c8e4e9fcbfddfc2a7dd377694bec7d20eebf2bea4d3a23a0cf5586",
   "sourceFileCount": 158,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Latest Update decorative arrow placement and removal of Click here. No changes to navigation, acknowledgment storage, authentication, collection, providers, consent or retention.",
+  "scope": "Compact board header and pointer-focus correction; authenticated owner-only preview moderation with reversible durable Netlify Blobs records, fresh Google verification, public unlisting index and share-page/runtime enforcement. Local preview loopback restriction and targeted uuid dependency correction.",
   "checks": {
     "implementation": "814/814 final full tests;34focused and independent54tests; native320/390/1440 recovery panel keyboard/retry/focus/layout pass. All seven configured website stages pass:488jobs,4128sharepages/images,4146HTML. All27provider/runtime inputs identical tovalidated2.4.6; seven Functions and Edge packaging/cold-load acceptance carries forward. Hosted2.4.7 restoration pending.",
     "boundaries": "Personal No longer open remains separate. QA analytics suppression preserved. Preview and production stores separate; production reporting disabled. Saved and Tracker records preserved.",
     "disclosures": "Privacy, Terms and About reviewed and corrected for record fields, Netlify hosting storage, reversible owner unlisting and operational retention.",
     "packagingPolicy": "Reviewed Privacy and Terms against2.4.6 packaging-only extraction and method declaration fix. No behavior/data-use wording change needed beyond existing2.4.5 policy updates.",
-    "recoveryPolicy": "Independent2.4.7 review: owner recovery reads existing posting/action records and invokes existing restore. Only removed posting id/link/company/role/revision projected into memory; no private browser persistence, new recipient, retention or collection category. Existing policies cover restoration and operational retention.",
-    "currentPatch": "Reviewed Privacy and Terms against the two-file cosmetic change. No wording change needed. Existing announcement receipt and actions remain unchanged; independent 24-case browser check passed."
+    "recoveryPolicy": "Independent2.4.7 review: owner recovery reads existing posting/action records and invokes existing restore. Only removed posting id/link/company/role/revision projected into memory; no private browser persistence, new recipient, retention or collection category. Existing policies cover restoration and operational retention."
   },
   "baselineReview": "docs/privacy-reviews/2.4.2.json",
   "openItems": [
