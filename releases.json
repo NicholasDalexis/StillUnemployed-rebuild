@@ -1,7 +1,56 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.4.2",
+  "currentVersion": "2.4.5",
   "releases": [
+    {
+      "version": "2.4.5",
+      "date": "2026-09-08",
+      "title": "Finish owner reporting and compact board QA",
+      "changes": [
+        "Final keyboard browser check caught native disabled-button blur during Undo. Preserve action focus ownership and return focus on success or retry without taking later user focus.",
+        "Includes compact header, second-card art, pointer-focus correction, server-authorized preview unlisting, policy updates, dependency and local-launcher fixes from the undeployed2.4.3/2.4.4 candidate checkpoints.803 tests pass; bounded native keyboard/click/retry/expiry and all-theme checks completed."
+      ],
+      "public": {
+        "title": "A little more room for the roles",
+        "changes": [
+          "A compact board header brings roles closer, with the drawings still along for the hunt.",
+          "Clearer mobile dialogs and a more reliable way to keep listings current."
+        ]
+      }
+    },
+    {
+      "version": "2.4.4",
+      "date": "2026-09-08",
+      "title": "Preserve keyboard access to report undo",
+      "changes": [
+        "Final candidate review found Reported could expire while Undo held keyboard focus. Pause expiry inside the note and resume five seconds after focus leaves; retain ordinary five-second timing.",
+        "Includes the compact header, second-card illustration, reversible owner reporting and privacy/security corrections prepared in 2.4.3. Earlier 2.4.3 seal remained local and was never deployed."
+      ],
+      "public": {
+        "title": "A little more room for the roles",
+        "changes": [
+          "The board starts closer to the controls, with the drawings still along for the hunt.",
+          "Clearer mobile dialogs and a more reliable way to keep listings current."
+        ]
+      }
+    },
+    {
+      "version": "2.4.3",
+      "date": "2026-09-08",
+      "title": "Compact board and owner reporting",
+      "changes": [
+        "Remove visible result counts, align the board menu with the pay legend and move the first drawing to the second displayed card.",
+        "Add authenticated reversible preview-only owner reporting with durable acknowledgments and active-listing checks.",
+        "Preserve keyboard focus while removing automatic pointer-focus outlines; restrict local preview to loopback and update privacy disclosures."
+      ],
+      "public": {
+        "title": "A little more room for the roles",
+        "changes": [
+          "A more compact board header brings the first roles closer.",
+          "Small improvements to mobile dialogs and listing availability."
+        ]
+      }
+    },
     {
       "version": "2.4.2",
       "date": "2026-09-08",
@@ -419,7 +468,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "a139974b8ef5a920b4ceea5103f7f22fba348e9d1baf0509f3c30e0755641ad0",
-    "fileCount": 149
+    "digest": "51a4d38d24c2ca7d8208172b13674093d3f257d9874d77f1c5e2ec9a2efd78b7",
+    "fileCount": 157
   }
 }

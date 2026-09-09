@@ -31,6 +31,14 @@ function specimens() {
   return bands.map(({ tier, pay }) => job({ co:'Example ' + tier, pay, pick:false, link:'https://example.com/salary/' + tier }));
 }
 
+function assertActiveRoute(apply, link, internships=false) {
+  assert.equal(apply.getAttribute('data-link'),link,'normal activation retains the source identity');
+  const target=new URL(apply.getAttribute('href'),'https://preview--stillunemployed.netlify.app');
+  assert.equal(target.origin,'https://preview--stillunemployed.netlify.app','alternate activation remains on the moderated board');
+  assert.equal(target.pathname,internships?'/internships.html':'/jobs.html');
+  assert.equal(Buffer.from(target.searchParams.get('job'),'base64').toString('utf8'),link);
+}
+
 function renderedCard(b, link) {
   const card = b.grid.querySelectorAll('.note[data-link]').find(node => node.getAttribute('data-link') === link);
   assert(card, 'rendered card for ' + link);
@@ -38,7 +46,7 @@ function renderedCard(b, link) {
   const stamp = card.querySelectorAll('div').find(node => /^Human[- ]verified$/i.test(node.textContent.trim()));
   assert(apply, 'the card retains its real Apply action');
   assert(stamp, 'the card retains its verification stamp');
-  assert.equal(apply.getAttribute('href'), link);
+  assertActiveRoute(apply,link);
   return { card, background:card.style.background, ink:card.style.color, apply:apply.style.color, stamp:stamp.style.color };
 }
 
@@ -124,7 +132,7 @@ for (const internships of [false,true]) for (const look of looks) {
       assert(card, 'the source listing renders a real card');
       const apply = card.querySelector('a[data-act="apply"]');
       assert(apply, 'the actual Apply action renders');
-      assert.equal(apply.getAttribute('href'), listing.link);
+      assertActiveRoute(apply,listing.link,internships);
       papers.add(card.style.background);
       const stops = resolve(card.style.background).match(/#[a-f0-9]{6}\b/gi);
       assert(stops && stops.length >= 2, 'the rendered paper resolves to gradient stops');

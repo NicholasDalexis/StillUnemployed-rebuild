@@ -87,6 +87,8 @@ function board({search='',saved={},tracker=[],look='original',response,fetchErro
  document.body=new Element('body');document.head=new Element('head');document.activeElement=document.body;
  const grid=document.body.appendChild(new Element('div',{id:'board'})),overlay=document.body.appendChild(new Element('div',{id:'overlay-root'}));
  const window={SUStates:require('../../js/us-states.js'),SUJobIdentity:identityAvailable?identity:undefined,SUThemeArt:artAvailable?themeArt:undefined,innerWidth:390,innerHeight:844,addEventListener(k,f){(windowEvents[k]??=[]).push(f);},matchMedia(){return{matches:true};},open(...args){opened.push(args);},suTrack(...args){tracking.push(args);}};
+ // Other feature tests use a ready moderation transport; dedicated tests exercise the real module and failure paths.
+ window.SUJobModeration={refresh:async()=>({status:'ready',revision:0,removed:[]}),filter:jobs=>jobs,blocked:()=>false,watch:()=>()=>{},subscribe:()=>()=>{},navigate:link=>{window.open(link,'_blank','noopener');return Promise.resolve(true);}};
  if(analyticsAvailable)window.SUAnalytics={choices:()=>({analytics:data.get('su_consent_v3')==='granted',personalization:data.get('su_personalization_v1')==='granted'}),registerJobs(){},job(){},generation:()=>0,profile:()=>({})};
  const location={origin:'https://preview--stillunemployed.netlify.app',hostname:'preview--stillunemployed.netlify.app',pathname:'/jobs.html',search,hash:''};
  const history={replaceState(_state,_title,value){const url=new URL(value,location.origin);location.pathname=url.pathname;location.search=url.search;location.hash=url.hash;}};
@@ -180,9 +182,9 @@ test('share URLs carry an encoded recoverable job link and the selected visual t
  const b=board({look:'poker'});const link='https://example.com/~nic?title=Design%20%26%20Brand';b.helpers.suShareJob(job({link}));const url=new URL(b.shared[0].url);
  assert.equal(url.origin,'https://preview--stillunemployed.netlify.app');assert.match(url.pathname,/^\/j\/poker\/[^/]+\.html$/);assert.equal(url.searchParams.get('theme'),'poker');assert.equal(Buffer.from(url.searchParams.get('job'),'base64').toString('utf8'),link);assert(url.search.includes('%2B'),'base64 plus is URL-encoded');
 });
-test('the final Apply control is native and opens the posting from the accessible dialog',()=>{
+test('the final Apply control is native and opens the posting from the accessible dialog',async()=>{
  const b=board();b.init();b.grid.querySelector('[data-act="apply"]').click();const apply=b.overlay.querySelector('[data-act="detailApply"]');assert.equal(apply.tagName,'BUTTON');assert.equal(apply.getAttribute('type'),'button');
- assert(b.overlay.querySelector('[role="dialog"]'));assert.equal(b.grid.inert,true);apply.click();assert.equal(b.opened.length,1);assert.equal(b.opened[0][0],'https://example.com/job');assert.equal(b.opened[0][2],'noopener');assert.equal(b.app.state.feedbackOpen,true);
+ assert(b.overlay.querySelector('[role="dialog"]'));assert.equal(b.grid.inert,true);apply.click();await tick();assert.equal(b.opened.length,1);assert.equal(b.opened[0][0],'https://example.com/job');assert.equal(b.opened[0][2],'noopener');assert.equal(b.app.state.feedbackOpen,true);
  b.fire('keydown',b.document.activeElement,{key:'Escape'});assert.equal(b.overlay.querySelector('[role="dialog"]'),null);assert.equal(b.grid.inert,false);
 });
 
@@ -272,7 +274,7 @@ test('the seven alternate themes render their shared drawings as noninteractive 
   assert.deepEqual([...new Set(motifs.map(el=>el.getAttribute('data-theme-motif')))].sort(),art.icons.map(icon=>icon.id).sort(),look+' uses every shared icon');
   for(const motif of motifs){
    assert(motif.closest('.note[data-act="openJob"]'),look+' motif belongs to a job card');
-   const first=!!motif.closest('.note-first'),size=first?'48':'64';
+   const first=!!motif.closest('.note-lead-doodle'),size=first?'48':'64';
    assert.equal(motif.style.width,size+'px');assert.equal(motif.style.height,size+'px');
    assert.equal(motif.style.top,first?'-40px':'-54px');
    assert.equal(motif.getAttribute('aria-hidden'),'true');
@@ -309,11 +311,11 @@ test('Original preserves its pose table and cadence with the requested coffee-br
  assert.equal(cards.length,72);assert.equal(b.grid.querySelectorAll('[data-act="apply"]').length,72);
  assert.equal(b.grid.querySelector('[data-theme-motif]'),null,'Original never substitutes the three shared motifs');
  const positions=cards.flatMap((card,index)=>card.querySelector('.doodle')?[index]:[]);
- assert.deepEqual(positions,[0,4,10,16,22,28,34,40,46,52,58,64,70],'decorations follow displayed job positions despite interleaved advice cards');
+ assert.deepEqual(positions,[1,4,10,16,22,28,34,40,46,52,58,64,70],'decorations follow displayed job positions despite interleaved advice cards');
  assert.equal(b.grid.querySelectorAll('.doodle').length,positions.length);
  for(const index of positions){
   const doodles=cards[index].querySelectorAll('.doodle');assert.equal(doodles.length,1);
-  const doodle=doodles[0],pose=b.app.POSES[(index===0?13:index)%16],svg=doodle.querySelector('svg');
+  const doodle=doodles[0],pose=b.app.POSES[(index===1?13:index)%16],svg=doodle.querySelector('svg');
   assert.equal(doodle.getAttribute('class'),'doodle original-doodle');assert.equal(doodle.getAttribute('aria-hidden'),'true');
   assert.equal(doodle.style.position,'absolute');assert.equal(doodle.style.pointerEvents,'none');assert.equal(doodle.style.zIndex,'4');
   for(const edge of ['top','left','right','bottom'])assert.equal(doodle.style[edge],pose.pos[edge],'job '+index+' keeps its '+edge+' placement');

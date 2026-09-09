@@ -147,4 +147,4 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
-  included_files = ["jobs-data.json", "internships-data.json", "js/internships.js", "js/job-identity.js", "js/personalization.js", "scripts/gen-share.mjs"]
+  included_files = ["jobs-data.json", "internships-data.json", "js/internships.js", "js/job-identity.js", "js/personalization.js", "scripts/gen-share.mjs", "__/firebase/init.json", "netlify/functions/lib/internship-display.json"]

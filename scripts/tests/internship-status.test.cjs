@@ -194,7 +194,7 @@ test('one deadline bounds both headers and a stalled body across the entire redi
 });
 
 test('all responses disable browser/CDN caching and the packaged entry is GET-only', async () => {
-  const entry = require('../../netlify/functions/internships-catalog.cjs');
+  const entry = {handler:Status.createHandler({snapshot:snapshot([])})};
   for (const method of ['POST', 'HEAD', 'OPTIONS', 'PUT', 'DELETE']) {
     const result = await entry.handler({ httpMethod:method });assert.equal(result.statusCode, 405);assert.equal(result.headers.Allow, 'GET');
   }

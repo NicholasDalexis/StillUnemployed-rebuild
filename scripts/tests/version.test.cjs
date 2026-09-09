@@ -220,6 +220,8 @@ test('public source and asset edits, additions and removals reject check until a
       () => fs.unlinkSync(path.join(dir, 'assets/logo.svg')),
       () => put('netlify.toml', '[build]\npublish="."\ncommand="node scripts/build.mjs"\n'),
       () => put('scripts/build.mjs', 'console.log("build");'),
+      () => put('netlify/functions/owner.mts', 'export default async () => new Response("owner");'),
+      () => put('netlify/functions/helper.cts', 'module.exports = {owner:true};'),
       () => put('package.json', '{"version":"1.0.0","dependencies":{"example":"1.0.0"}}')
     ];
     for (const [index, change] of changes.entries()) {

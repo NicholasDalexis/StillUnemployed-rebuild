@@ -22,11 +22,12 @@ function homeFeed(fetcher = async () => { throw new Error('offline'); }, identit
   const featured = { innerHTML: 'old jobs', textContent: '', children: [], appendChild(child) { this.children.push(child); } };
   const sandbox = {
     URL, fetch: fetcher, console: { warn() {} }, setInterval() {},
-    window: { SUJobIdentity: identityAvailable ? identity : undefined, addEventListener() {} },
+    // Feed-data tests use a ready availability dependency; dedicated moderation tests cover failures and recovery.
+    window: { SUJobIdentity: identityAvailable ? identity : undefined, SUJobModeration:{refresh:async()=>({status:'ready',revision:0}),filter:jobs=>jobs}, addEventListener() {} },
     document: {
       readyState: 'loading', addEventListener() {},
       querySelector(selector) { return selector === '#nh-total' ? total : selector === '#nh-featured' ? featured : null; },
-      createElement() { return { setAttribute() {}, textContent: '' }; }
+      createElement() { return { style:{},setAttribute() {},addEventListener() {},textContent:'' }; }
     }
   };
   // Expose the real closure's feed functions inside the test VM; never boot UI or contact a service.
@@ -129,7 +130,7 @@ test('homepage outage clears old cards and shows unavailable without fetching st
   assert.equal(calls.length, 1);
   assert.equal(home.featured.innerHTML, '');
   assert.equal(home.total.textContent, '…');
-  assert.match(home.featured.children[0].textContent, /Could not load the latest roles/);
+  assert.match(home.featured.children[0].textContent, /Could not check current job availability/);
 });
 
 test('home and share loaders collapse confirmed aliases after eligibility, retaining every old share hash', async () => {
@@ -160,5 +161,5 @@ test('homepage missing identity dependency clears stale content instead of rende
   const home = homeFeed(async url => { calls.push(url); return { ok: true, text: async () => text }; }, false);
   assert.throws(() => home.rowsToJobs(home.parseCSV(text)), /identity check unavailable/);
   await home.load();assert.equal(calls.length, 1);assert.equal(home.total.textContent, '…');assert.equal(home.featured.innerHTML, '');
-  assert.match(home.featured.children[0].textContent, /Could not load the latest roles/);
+  assert.match(home.featured.children[0].textContent, /Could not check current job availability/);
 });

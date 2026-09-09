@@ -39,7 +39,7 @@
     </div>
 
     <h1>Privacy Policy</h1>
-    <p class="eff">Effective date: September 7, 2026</p>
+    <p class="eff">Effective date: September 8, 2026</p>
     <p class="intro"><strong>StillUnemployed.com</strong> is operated by <strong>Elevate Media Technologies LLC</strong>. This notice explains the information we handle, why we use it and your choices. Optional analytics and personalized recommendations are separate from signing in.</p>
     <h2>1. The short version</h2>
     <p>You can browse, search, save jobs and use the tracker without an account. Where Google sign-in is enabled, it is optional and synchronizes saved jobs, your tracker and requested board preferences through Firebase. Sign-in is currently enabled on previews; production keeps those features on your device. Usage analytics and signed-in personalized recommendations are optional and can be chosen separately in <strong>Privacy &amp; recommendations</strong>.</p>
@@ -52,7 +52,8 @@
       <li><strong>Returning-board suggestions.</strong> The returning-board suggestions feature is paused. We do not show its new-job note or write new visit-feature records while it is paused. Existing account records may include a visit counter, last-visit time, a bounded snapshot of public listing identifiers and the day a note was offered. These retained account feature records are separate from optional usage analytics, which can still measure returning visits when enabled.</li>
       <li><strong>Optional recommendations.</strong> With personalization enabled and an account signed in, we store interests inferred from jobs you explore, save, open to apply for or report applying to. We weight distinct jobs and recent actions and consider broad career fields and role specialties. Higher pay does not receive an ordering preference. Filters and Recently added take priority. We do not use your Google profile or account security signals to infer career interests or sensitive characteristics. These recommendations do not assess employment eligibility.</li>
       <li><strong>Timing.</strong> With analytics enabled, we estimate active time on our pages and observed time away after opening a job link. We cap an away interval at 15 minutes and mark that cap. We cannot see another website's contents or activity, know which tab you used, or confirm that you applied. No observed return means an unknown interval. A visible popup is not evidence of time spent applying. Browser restrictions and interrupted sessions can prevent measurement.</li>
-      <li><strong>Job suggestions and availability reports.</strong> Suggest Jobs collects a public job link, optional note and random retry identifier into a private Netlify Forms inbox for review and spam filtering. Reporting that a job is no longer available sends the public posting details for review. These user-requested operations do not require optional analytics. Do not include personal information in suggestions.</li>
+      <li><strong>Job suggestions and availability reports.</strong> Suggest Jobs collects a public job link, optional note and random retry identifier into a private Netlify Forms inbox for review and spam filtering. An ordinary visitor's unavailable-job report hides the listing from their own view. On the live board, the public posting details can also be sent for review. These user-requested operations do not require optional analytics. Do not include personal information in suggestions.</li>
+      <li><strong>Listing moderation.</strong> On enabled previews, an authorized owner can unlist a job across that preview and later restore it. We verify the owner's Google sign-in and keep a private moderation record containing public posting information, the owner role, action, reason, time, revision and retry identifier. We do not store the sign-in token, Google account response, account email or personal notes in that record. Moderation works independently of optional analytics and does not delete your saved copies or Tracker records. Preview moderation records are separate from production.</li>
       <li><strong>Technical information.</strong> Hosting and backend providers process IP addresses, request times and other technical data needed to deliver and secure the service. The optional analytics collector uses a keyed identifier for short-lived abuse limits; it does not store raw IP addresses in event records.</li>
       <li><strong>Newsletter.</strong> An optional embedded Beehiiv form sends your email directly to Beehiiv for the newsletter. The email is not sent to the analytics collector. You can unsubscribe from any newsletter. <a href="https://www.beehiiv.com/privacy" target="_blank" rel="noopener noreferrer">Beehiiv privacy policy</a>.</li>
     </ul>
@@ -70,7 +71,7 @@
     <h2>4. How we share information</h2>
     <p>We do <strong>not sell</strong> your information. We share information only with:</p>
     <ul>
-      <li><strong>Service providers.</strong> Netlify hosts the site, server functions and private suggestions inbox. Google provides Sheets and Apps Script for listings and requested availability reports, plus Firebase Authentication and Cloud Firestore for enabled accounts, sync, optional analytics and recommendations. Beehiiv handles optional newsletter subscriptions. This version uses first-party measurement and does not load Google Analytics tags.</li>
+      <li><strong>Service providers.</strong> Netlify hosts the site, server functions, private suggestions inbox and private moderation records in Netlify Blobs. Google provides Sheets and Apps Script for listings and requested availability reports, plus Firebase Authentication and Cloud Firestore for enabled accounts, sync, optional analytics and recommendations. Google sign-in also verifies access to owner moderation. Beehiiv handles optional newsletter subscriptions. This version uses first-party measurement and does not load Google Analytics tags.</li>
       <li><strong>Legal and safety</strong> reasons, if required by law or to protect the rights, safety, or property of Elevate Media Technologies LLC, our users, or the public.</li>
       <li><strong>Business transfers</strong>, in connection with a merger, acquisition, or sale of assets.</li>
     </ul>
@@ -90,6 +91,7 @@
 
     <h2>7. Data retention</h2>
     <p>We keep job suggestions and review records while needed for review, duplicate detection and abuse prevention, and remove them when they are no longer needed for those purposes. Submitting a link does not publish your note or add a job to the Board.</p>
+    <p>We keep moderation decisions and their history while needed to apply listing changes, review corrections and prevent misuse. These operational records are separate from the 90-day optional analytics history. They are reviewed for removal when no longer needed; they do not have an automatic 90-day expiry.</p>
     <p>Optional reports and recommendations use at most 90 days of activity. Server records are scheduled for deletion after that period; processing failures can delay removal. Expired activity is excluded from reports and recommendations even if deletion is delayed. Account, tracker and requested board-feature records remain until you remove them or request account deletion. Historical returning-board snapshots retain at most 2,000 public listing identifiers and are not updated while that feature is paused; they are not a complete browsing history. Written preferences do not enter optional analytics reports. Historical records collected under an earlier policy and provider backups can require separate removal. Contact us to request access or deletion.</p>
 
     <h2>8. Security</h2>
@@ -118,6 +120,6 @@
       <a href="./jobs.html">Back to the board</a>
     </div>
   </div>
-<script type="module" src="js/auth.js?v=237"></script>
+<script type="module" src="js/auth.js?v=243"></script>
 </body>
 </html>

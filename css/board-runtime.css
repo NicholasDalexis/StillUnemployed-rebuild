@@ -16,7 +16,7 @@
 
 .su-feed-status[hidden]{display:none}
 
-/* Secondary actions live with the count, leaving the search and theme controls clear. */
+/* Secondary actions live beside the legend, leaving search and theme controls clear. */
 .su-board-meta{display:flex;align-items:center;justify-content:space-between;gap:8px 24px;flex-wrap:wrap;margin-top:16px}
 .su-pay-key{display:flex;align-items:center;flex-wrap:wrap;gap:8px 20px}
 .su-board-utilities{display:flex;align-items:center;justify-content:flex-end;gap:12px 24px;margin-left:auto;font:18px/1.4 var(--su-hand,'Indie Flower',cursive)}
@@ -38,13 +38,12 @@
 .su-pay-source p{margin:0 0 8px;color:var(--su-ink,#2A2118)}
 @media(max-width:700px){.su-board-meta{gap:10px;margin-top:12px}.su-pay-key{gap:8px 12px}.su-board-utilities{width:100%;justify-content:space-between;gap:12px;font-size:17px}.su-board-menu-sheet{width:240px}.su-internship-summary{display:none}}
 
-/* Count and Board menu share a row; the illustration has its own space below. */
-.su-board-meta{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 20px}
-.su-pay-key,.su-internship-summary{grid-column:1 / -1}
-.su-results-count{grid-column:1;justify-self:start;font:18px/1.4 var(--su-hand,'Indie Flower',cursive);text-align:left}
-.su-board-utilities{grid-column:2;justify-self:end;justify-content:flex-end;width:auto;margin:0}
+/* Keep the legend and Board menu together, without a visible count row. */
+.su-board-meta{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 20px}
+.su-pay-key,.su-internship-summary{grid-column:1;grid-row:1}
+.su-board-utilities{grid-column:2;grid-row:1;justify-self:end;justify-content:flex-end;width:auto;margin:0}
+.su-results-count.su-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 @media(max-width:700px){
   .su-board-meta{column-gap:12px}
-  .su-results-count{font-size:17px}
   .su-board-utilities{justify-content:flex-end;width:auto}
 }

@@ -173,14 +173,14 @@ test('missing duties do not invent work, and a fourth source duty never displace
   assert(!updated.textContent.includes('Unexpected fourth task.'));assert(!updated.textContent.includes(row.eligibility));
 });
 
-test('compact cards preserve accepting versus program actions with one quiet result count', () => {
+test('compact cards preserve accepting versus program actions with an offscreen result announcement', () => {
   const rows=[listing(),upcoming(),upcoming({link:'https://example.com/program/stale',applicationsOpenISO:day(-1)})],b=ui(rows);
   assert.deepEqual(rows.map(row=>I.applicationState(row)),['accepting','upcoming','needs_recheck']);
   const labels=rows.map(row=>b.card(row.link).querySelector('.applylink2').textContent);
   assert.match(labels[0],/Apply Now/);assert.match(labels[1],/View program/);assert.match(labels[2],/View program/);
   for(const row of rows)assert.equal(b.card(row.link).querySelector('.su-internship-status'),null);
   const count=b.grid.querySelector('.su-results-count');assert(count);
-  assert.equal(count.textContent,'3 internships');
+  assert.equal(count.textContent,'3 internships');assert(count.classList.contains('su-sr-only'));assert.equal(count.getAttribute('aria-live'),'polite');
   assert.equal(b.grid.querySelector('.su-internship-counts'),null);
   assert.doesNotMatch(count.textContent,/status being checked/i);
 });
@@ -233,10 +233,10 @@ test('View program for upcoming or recheck listings never opens application feed
   }
 });
 
-test('accepting Apply Now opens feedback, but only an explicit I applied confirmation creates a tracker record', () => {
+test('accepting Apply Now opens feedback, but only an explicit I applied confirmation creates a tracker record', async () => {
   const row = listing(), b = ui([row]), detail = b.detail(row.link);
   const apply = detail.querySelector('[data-act="detailApply"]');assert(apply);assert.match(apply.textContent, /Apply Now/);
-  apply.click();assert.equal(b.opened[0][0], row.link);assert.equal(b.app.state.feedbackOpen, true);
+  apply.click();await new Promise(resolve=>setImmediate(resolve));assert.equal(b.opened[0][0], row.link);assert.equal(b.app.state.feedbackOpen, true);
   assert.deepEqual(JSON.parse(b.localStorage.getItem('su_tracker')), []);
   assert.equal(b.events.filter(event => event.name === 'apply_click').length, 1);
   b.overlay.querySelector('[data-act="markApplied"]').click();
@@ -252,7 +252,7 @@ test('a previously rendered Apply control cannot submit application feedback aft
   assert.deepEqual(JSON.parse(b.localStorage.getItem('su_tracker')), []);
 });
 
-test('internship Saved and Tracker retain existing raw URL identities across canonical employer aliases', () => {
+test('internship Saved and Tracker retain existing raw URL identities across canonical employer aliases', async () => {
   const primary = 'https://boards.greenhouse.io/example/jobs/12345';
   const alias = 'https://job-boards.greenhouse.io/example/jobs/12345';
   const oldTracker = { id:'existing-internship', company:'Example Studio', role:'Design Intern', link:alias, status:'Interview', notes:'Existing private note' };
@@ -263,7 +263,7 @@ test('internship Saved and Tracker retain existing raw URL identities across can
   assert.deepEqual(JSON.parse(b.localStorage.getItem('su_saved_jobs')), {}, 'unsaving removes the equivalent stored alias');
   b.card(primary).querySelector('[data-act="toggleSave"]').click();
   assert.deepEqual(JSON.parse(b.localStorage.getItem('su_saved_jobs')), { [primary]:true });
-  b.detail(primary).querySelector('[data-act="detailApply"]').click();
+  b.detail(primary).querySelector('[data-act="detailApply"]').click();await new Promise(resolve=>setImmediate(resolve));
   b.overlay.querySelector('[data-act="markApplied"]').click();
   assert.deepEqual(JSON.parse(b.localStorage.getItem('su_tracker')), [oldTracker], 'confirmation does not duplicate or overwrite an existing equivalent tracker record');
 });

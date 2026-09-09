@@ -633,6 +633,36 @@
     } catch (e) {}
   }
 
+  function moderationOwner() {
+    var auth=window.SUAuth,store=window.SUStore;
+    return auth&&auth.qaAdmin&&auth.qaAdmin()&&auth.accountCurrent&&auth.accountCurrent()&&store&&store.owner ? store.owner() : null;
+  }
+  function clearReportedToast() { clearTimeout(App._reportToastTimer);if(App._reportToast){App._reportToast.remove();App._reportToast=null;} }
+  function reportedToast(result, owner) {
+    clearReportedToast();
+    var toast=document.createElement('div');toast.className='su-feedback-toast su-admin-report-toast';
+    toast.style.cssText='background:#B62619;color:#FFF5ED;display:flex;align-items:center;gap:12px;flex-wrap:wrap;max-width:calc(100vw - 32px);box-sizing:border-box;';
+    var label=document.createElement('span');label.setAttribute('role','status');label.textContent='Reported';toast.appendChild(label);
+    var undo=document.createElement('button');undo.type='button';undo.textContent='Undo';undo.style.cssText='font:inherit;color:inherit;background:transparent;border:0;text-decoration:underline;min-height:44px;cursor:pointer;';toast.appendChild(undo);
+    var dismiss=document.createElement('button');dismiss.type='button';dismiss.textContent='×';dismiss.setAttribute('aria-label','Dismiss report confirmation');dismiss.style.cssText=undo.style.cssText;dismiss.addEventListener('click',clearReportedToast);toast.appendChild(dismiss);
+    var holdExpiry=false;
+    function expire(outside){clearTimeout(App._reportToastTimer);if(holdExpiry||(!outside&&toast.contains(document.activeElement)))return;App._reportToastTimer=setTimeout(function(){if(App._reportToast===toast)clearReportedToast();},5000);}
+    toast.addEventListener('focusin',function(){clearTimeout(App._reportToastTimer);});
+    toast.addEventListener('focusout',function(e){if(!toast.contains(e.relatedTarget))expire(true);});
+    var requestId=null;
+    undo.addEventListener('click',function(){
+      if(owner!==moderationOwner()){clearReportedToast();return;}
+      if(undo.disabled)return;var ownedFocus=document.activeElement===undo;
+      function restoreActionFocus(target){if(ownedFocus&&(document.activeElement===document.body||document.activeElement===undo))target.focus({preventScroll:true});}
+      holdExpiry=true;clearTimeout(App._reportToastTimer);undo.disabled=true;label.textContent='Restoring…';
+      try{if(!requestId)requestId=window.crypto.randomUUID();}catch(_){undo.disabled=false;label.textContent='Could not prepare Undo. Please retry.';restoreActionFocus(undo);return;}
+      window.SUJobModeration.mutate('restore',result.link,{requestId:requestId,expectedRevision:result.revision,current:function(){return owner===moderationOwner()&&App._reportToast===toast;}}).then(function(){
+        if(owner!==moderationOwner()||App._reportToast!==toast)return;label.textContent='Restored to the board';restoreActionFocus(dismiss);undo.remove();holdExpiry=false;expire();
+      }).catch(function(e){if(owner===moderationOwner()&&App._reportToast===toast){label.textContent=e.message;undo.disabled=false;restoreActionFocus(undo);}});
+    });
+    document.body.appendChild(toast);App._reportToast=toast;App._reportToastOwner=owner;expire();
+  }
+
   // ---- Share: draw the job as a Post-it PNG (canvas, no library), hand the blob to a callback ----
   function suMakePng(job, cb) {
     try {
@@ -1763,16 +1793,16 @@
         var personalNote = noteFor[k] || null;
 
         var doodleHtml = '';
-        // dIdx = a UNIQUE, ascending ordinal per doodle on screen (top card = 0, then 1,2,3…).
+        // The first drawing belongs to the second displayed job; later ordinals stay unique.
         // Prevents décor from repeating (Nic: brat scribbles must never say the same thing twice).
-        var dIdx = (k === 0) ? 0 : (Math.floor(k / 6) + 1);
-        if (k === 0 || doodleOn) {
-          // Original retains the full earlier set, including its first-card arrow pose.
-          if (self.state.look === 'original') doodleHtml = self.doodleEl(k === 0 ? 13 : k);
+        var dIdx = (k === 1) ? 0 : (Math.floor(k / 6) + 1);
+        if (k === 1 || doodleOn) {
+          // Keep the original arrow pose while moving its attachment to card two.
+          if (self.state.look === 'original') doodleHtml = self.doodleEl(k === 1 ? 13 : k);
           // Bratt keeps its short phrases between drawings without repeating copy.
           if (bratt && dIdx % 2 === 1) doodleHtml = self.brattPhraseEl(Math.floor(dIdx / 2));
           if (!doodleHtml) doodleHtml = self.themeDoodleEl(self.state.look, bratt ? Math.floor(dIdx / 2) : dIdx);
-          if (!doodleHtml) doodleHtml = cod ? self.codDoodleEl(dIdx) : girly ? self.girlyDoodleEl(dIdx) : poker ? self.pokerDoodleEl(dIdx) : mermaid ? self.mermaidDoodleEl(dIdx) : bratt ? self.brattDoodleEl(dIdx) : noir ? self.noirDoodleEl(dIdx) : beauty ? self.beautyDoodleEl(dIdx) : chess ? self.chessDoodleEl(dIdx) : self.doodleEl(k === 0 ? 13 : k);
+          if (!doodleHtml) doodleHtml = cod ? self.codDoodleEl(dIdx) : girly ? self.girlyDoodleEl(dIdx) : poker ? self.pokerDoodleEl(dIdx) : mermaid ? self.mermaidDoodleEl(dIdx) : bratt ? self.brattDoodleEl(dIdx) : noir ? self.noirDoodleEl(dIdx) : beauty ? self.beautyDoodleEl(dIdx) : chess ? self.chessDoodleEl(dIdx) : self.doodleEl(k === 1 ? 13 : k);
         }
 
         var pinStyle = 'position:absolute; top:-9px; left:50%; transform:translateX(-50%); width:17px; height:17px; ' +
@@ -1780,7 +1810,7 @@
           ' 58%); box-shadow:0 3px 5px rgba(0,0,0,.32); z-index:3;';
 
         // -- build the card HTML (mirrors the template's sc-if branches) --
-        var html = '<div class="note' + (j.internship ? ' su-internship-card' : '') + (k === 0 ? ' note-first' : '') + '" data-act="openJob" data-id="' + id + '" data-link="' + esc(j.link) + '" data-co="' + esc(j.co) + '" style="' + noteStyle + '">';
+        var html = '<div class="note' + (j.internship ? ' su-internship-card' : '') + (k === 0 ? ' note-first' : '') + (k === 1 ? ' note-lead-doodle' : '') + '" data-act="openJob" data-id="' + id + '" data-link="' + esc(j.link) + '" data-co="' + esc(j.co) + '" style="' + noteStyle + '">';
 
         // envelope ("open" tab)
         if (showEnvelope) {
@@ -1852,7 +1882,7 @@
             '</div>';
           }
         }
-        html += '<a class="applylink2" href="' + esc(j.link) + '" target="_blank" rel="noopener" data-act="apply" data-co="' + esc(j.co) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 15.5px; color: ' + applyColor + '; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-left: auto;">' + (j.savedUnavailable ? 'View saved listing' : j.internship && !internshipCanApply(j) ? 'View program' : 'Apply Now') + '<svg class="doodle-arrow" width="28" height="14" viewBox="0 0 28 14" fill="none" style="overflow: visible; margin-left: 2px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>';
+        html += '<a class="applylink2" href="' + esc(j.savedUnavailable ? j.link : (j.internship ? '/internships.html' : '/jobs.html')+'?job='+encodeURIComponent(btoa(unescape(encodeURIComponent(j.link))))+'&theme='+suShareTheme()) + '" target="_blank" rel="noopener" data-act="apply" data-link="' + esc(j.link) + '" data-co="' + esc(j.co) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 15.5px; color: ' + applyColor + '; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-left: auto;">' + (j.savedUnavailable ? 'View saved listing' : j.internship && !internshipCanApply(j) ? 'View program' : 'Apply Now') + '<svg class="doodle-arrow" width="28" height="14" viewBox="0 0 28 14" fill="none" style="overflow: visible; margin-left: 2px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>';
         html += '</div>';
 
         if(window.SUDiscovery && window.SUDiscovery.hidden(j))html += '<button type="button" class="su-restore" data-discovery="restore" data-key="'+esc(window.SUDiscovery.key(j.link))+'">Hidden · restore to board</button>';
@@ -1929,7 +1959,7 @@
       var showingLabel = this.state.savedOnly ? shown.length + ' saved '+(shown.length===1?'role':'roles') : shown.length + (INTERNSHIPS ? (shown.length === 1 ? ' internship' : ' internships') : (shown.length === 1 ? ' job' : ' jobs'));
       var savedCatalog=this.catalogJobs();
       var missingSaved = savedJobs.filter(function (saved) { return !savedCatalog.some(function (job) { return jobHasLink(job, saved.link); }); }).map(function (job) { return job.link; });
-      var emptyTitle = this._loadError ? 'Jobs could not load right now' : this.state.savedOnly ? (missingSaved.length ? 'Your saved links are below' : 'no saved roles yet') : "We're looking for more jobs RN, check back soon!";
+      var emptyTitle = this._moderationError ? 'Could not check current job availability' : this._loadError ? 'Jobs could not load right now' : this.state.savedOnly ? (missingSaved.length ? 'Your saved links are below' : 'no saved roles yet') : "We're looking for more jobs RN, check back soon!";
       var emptyHint = this._loadError ? 'Your saved jobs and tracker are still here. Try loading the board again.' : this.state.savedOnly ? 'tap the bookmark on any card to pin it here' : 'try clearing a filter, or check back in a few days';
       var isEmpty = !this._loading && shown.length === 0;
 
@@ -2021,7 +2051,7 @@
 
       if(window.SUDiscovery) out += window.SUDiscovery.html(esc);
 
-      // One quiet row: pay context, result count and secondary board actions.
+      // One quiet row: pay context and secondary actions. Results stay announced offscreen.
       out += '<div class="su-board-meta" style="color:'+boardInk+';">';
       if(INTERNSHIPS) out += '<span class="su-internship-summary">Dates and details inside.</span>';
       else out += '<div class="su-pay-key">' +
@@ -2031,7 +2061,7 @@
         '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + P.payHi + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$100K+</span></div>' +
       '</div>';
 
-      out += '<span class="su-results-count" aria-live="polite">' + (this._loading ? '' : esc(showingLabel)) + '</span><div class="su-board-utilities">' +
+      out += '<span class="su-results-count su-sr-only" aria-live="polite">' + (this._loading ? '' : esc(showingLabel)) + '</span><div class="su-board-utilities">' +
         '<details id="su-board-menu" class="su-board-menu"><summary id="su-board-menu-trigger">Board menu <svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>' +
           '<div class="su-board-menu-sheet">' + (window.SUDiscovery && window.SUDiscovery.toolsHTML ? window.SUDiscovery.toolsHTML(esc) : '') +
             '<a href="./suggest.html">Suggest jobs</a><button type="button" data-act="openWelcome">What’s new</button><button type="button" data-act="openModal">About Nic</button>' +
@@ -2159,7 +2189,7 @@
       this._dialogKey = dialogKey;
       // Account activation/sync can refresh the board while this note is open.
       // Preserve its controls and focus when the application question is unchanged.
-      var feedbackIdentity = dialogKey === 'feedback' ? JSON.stringify([this.state.feedbackCo, this.state.feedbackLink]) : null;
+      var feedbackIdentity = dialogKey === 'feedback' ? JSON.stringify([this.state.feedbackCo, this.state.feedbackLink,!!moderationOwner(),!!this._reportBusy]) : null;
       if (previousDialog && previousKey === 'feedback' && dialogKey === 'feedback' && this._feedbackIdentity === feedbackIdentity) { var feedbackError=document.getElementById('su-feedback-error');if(feedbackError) {feedbackError.textContent=this._feedbackError||'';feedbackError.hidden=!this._feedbackError;} return; }
       this._feedbackIdentity = feedbackIdentity;
       var preferenceOwner = dialogKey === 'preferences' ? window.SUDiscovery.dialogOwner() : null;
@@ -2235,6 +2265,7 @@
               '</div>' +
             '</div>' +
             '<div data-act="notFit" style="margin-top: 18px; text-align: center; font-family: \'Indie Flower\', cursive; font-size: 19px; color: #8A7558; cursor: pointer;">job wasn\'t a right fit →</div>' +
+            (moderationOwner() ? '<div style="text-align:center;margin-top:12px;"><button type="button" data-act="adminReportJob"'+(this._reportBusy?' disabled':'')+' style="font:19px/1.4 var(--su-hand,\'Indie Flower\',cursive);min-height:44px;padding:4px 10px;border:0;background:transparent;color:#A63D22;text-decoration:underline;cursor:pointer;">'+(this._reportBusy?'Reporting…':'Report job here')+'</button></div>' : '') +
             '<p id="su-feedback-error" class="su-action-error" role="status"'+(this._feedbackError?'':' hidden')+'>'+esc(this._feedbackError||'')+'</p>' +
           '</div>' +
         '</div>';
@@ -2431,6 +2462,35 @@
       if (!dialog && window.SUWelcome) window.SUWelcome.maybeShow();
     },
 
+    reportJob: function () {
+      var self=this,owner=moderationOwner(),link=this.state.feedbackLink;
+      if(!owner||this._reportBusy||!safeUrl(link)||!window.SUJobModeration)return;
+      var attempt=this._reportAttempt;
+      if(!attempt||attempt.owner!==owner||attempt.link!==link){
+        try{attempt={owner:owner,link:link,id:window.crypto.randomUUID()};}catch(_){this._feedbackError='Could not prepare this report. Please reopen the job.';this.renderOverlays();return;}
+        this._reportAttempt=attempt;
+      }
+      this._reportBusy=true;this._feedbackError='';this.renderOverlays();
+      window.SUJobModeration.mutate('report',link,{requestId:attempt.id,current:function(){return self._reportAttempt===attempt&&owner===moderationOwner();}}).then(function(result){
+        if(self._reportAttempt!==attempt||owner!==moderationOwner())return;
+        self._reportBusy=false;self._reportAttempt=null;if(self.state.feedbackOpen&&sameJobLink(self.state.feedbackLink,link))self.setState({feedbackOpen:false});else self.renderOverlays();reportedToast(result,owner);
+      }).catch(function(e){
+        if(self._reportAttempt!==attempt||owner!==moderationOwner())return;
+        self._reportBusy=false;if(self.state.feedbackOpen&&sameJobLink(self.state.feedbackLink,link)){self._feedbackError=e.message;self.renderOverlays();}else{self.renderOverlays();suToast(e.message);}
+      });
+    },
+
+    openCurrentListing: function (link, company, kind) {
+      var self=this,moderation=window.SUJobModeration;
+      if(this._outgoing)return;
+      if(!moderation){suToast('Could not check current job availability. Please reload and try again.');return;}
+      var intent={link:link};this._outgoing=intent;
+      moderation.navigate(link,{current:function(){return self._outgoing===intent&&self.state.detailOpen&&self.state.detailLink===link;}}).then(function(){
+        if(self._outgoing!==intent)return;
+        if(kind==='apply'){postReport('click',company,link);self.setState({detailOpen:false,feedbackOpen:true,feedbackCo:company,feedbackLink:link});}
+      }).catch(function(e){if(self._outgoing===intent)suToast(e.message);}).finally(function(){if(self._outgoing===intent)self._outgoing=null;});
+    },
+
     closeBoardPanels: function () {
       this.state.openPanel = null;
       document.querySelectorAll('[data-su-panel]').forEach(function (panel) { panel.remove(); });
@@ -2505,6 +2565,7 @@
           case 'closeModal': self.setState({ modalOpen: false }); break;
           case 'closePreferences': if(window.SUDiscovery)window.SUDiscovery.closePreferences();break;
           case 'closeFeedback': uxEvent('feedback_dismiss'); self.setState({ feedbackOpen: false }); break;
+          case 'adminReportJob': self.reportJob(); break;
           case 'markApplied': {
             // also drop the application into the on-device Tracker (tracker.html)
             var tj = null;
@@ -2583,9 +2644,7 @@
             var dl = el.getAttribute('data-link'), dc = el.getAttribute('data-co');
             var applyJob = self.jobs.find(function (job) {return jobHasLink(job,dl);});
             if (!applyJob || (applyJob.internship && !internshipCanApply(applyJob))) {self.renderOverlays();break;}
-            if (dl) window.open(dl, '_blank', 'noopener');
-            postReport('click', dc, dl);
-            self.setState({ detailOpen: false, feedbackOpen: true, feedbackCo: dc, feedbackLink: dl });
+            self.openCurrentListing(dl,dc,'apply');
             break;
           }
           case 'detailArchived': {
@@ -2596,7 +2655,7 @@
           case 'detailProgram': {
             var programLink = el.getAttribute('data-link');
             var program = self.jobs.find(function (job) {return jobHasLink(job,programLink);});
-            if (program && program.internship) window.open(program.link,'_blank','noopener');
+            if (program && program.internship) self.openCurrentListing(program.link,program.co,'program');
             break;
           }
           case 'stop': e.stopPropagation(); break;
@@ -2803,6 +2862,7 @@
     },
 
     updateJobs: function(jobs) {
+      if(!window.SUDiscovery){try{var legacyHidden=JSON.parse(localStorage.getItem('su_reported_links')||'[]');jobs=jobs.filter(function(j){return !legacyHidden.some(function(link){return jobHasLink(j,link);});});}catch(e){}}
       this.jobs=uniqueJobs(jobs);this.setInternshipSurfaces();
       if(window.SUAnalytics)window.SUAnalytics.registerJobs(this.jobs);
       if(window.SUDiscovery && window.SUDiscovery.updateCatalog)window.SUDiscovery.updateCatalog(this.jobs);
@@ -3036,16 +3096,18 @@
     var initial=firstFeed, loadingTimer=initial?setTimeout(loadingNote,600):null;
     if(!initial){App._refreshing=true;var progress=document.getElementById('su-feed-progress');if(progress)progress.hidden=false;uxEvent('feed_refresh');}
     var runtime=window.SUBoardRuntime;
-    feedRequest=(runtime?runtime.request(INTERNSHIPS?'internships':'jobs',loadFeed):loadFeed()).then(function(jobs){
+    feedRequest=Promise.all([runtime?runtime.request(INTERNSHIPS?'internships':'jobs',loadFeed):loadFeed(),window.SUJobModeration?window.SUJobModeration.refresh():Promise.reject(Error('Availability check unavailable'))]).then(function(result){
+      var jobs=result[0];App._moderationCatalog=jobs;App._moderationError=false;
       App._loading=false;App._loadingVisible=false;App._loadError=false;App._refreshing=false;lastFeedCheck=Date.now();
       var restored=initial && !App._feedInteracted ? initialView : null;
       checkViewOwner();
       try{if(window.SUStore&&window.SUStore.captureSaved)window.SUStore.captureSaved(jobs.concat(App._archiveCatalog||[]));}catch(_){App._actionError='Your saved links are safe. Some card details could not be refreshed.';}
-      App.init(jobs);uxEvent('feed_ready');
+      App.init(window.SUJobModeration.filter(jobs));uxEvent('feed_ready');
       if(restored){uxEvent('view_restored');setTimeout(function(){if(runtime.read(INTERNSHIPS?'internships':'jobs')&&window.scrollTo)window.scrollTo(0,restored.y);},0);}
     }).catch(function(){
       App._loading=false;App._loadingVisible=false;App._loadError=true;App._refreshing=false;lastFeedCheck=Date.now();
       checkViewOwner();
+      App._moderationCatalog=null;
       // Unknown availability never revives a static catalog. Filters and account state remain.
       App.init([]);uxEvent('feed_load_error');
     }).finally(function(){if(loadingTimer)clearTimeout(loadingTimer);firstFeed=false;feedRequest=null;});
@@ -3059,8 +3121,21 @@
     App._loading=true;App.internships=INTERNSHIPS;App.state.saved=loadSaved();App.bindEvents();App.render();
     document.addEventListener('pointerdown',function(){App._feedInteracted=true;},{once:true});
     document.addEventListener('input',function(){App._feedInteracted=true;},{once:true});
+    if(window.SUJobModeration){
+      window.SUJobModeration.subscribe(function(index){
+        if(!App._moderationCatalog){if(App._loadError&&(index.status==='ready'||index.status==='local'))refreshFeed();return;}
+        if(index.status==='error'){App._moderationError=true;App._loadError=true;App.updateJobs([]);}
+        else if(App._moderationError){refreshFeed();}
+        else App.updateJobs(window.SUJobModeration.filter(App._moderationCatalog));
+      });
+      App._stopModerationWatch=window.SUJobModeration.watch();
+    }
     refreshFeed();
-    window.addEventListener('su:auth-changed',checkViewOwner);
+    window.addEventListener('su:auth-changed',function(){
+      checkViewOwner();
+      if(App._reportAttempt&&App._reportAttempt.owner!==moderationOwner()){App._reportBusy=false;App._reportAttempt=null;}
+      if(App._reportToastOwner!==moderationOwner())clearReportedToast();App.renderOverlays();
+    });
     window.addEventListener('storage',function(e){if(e.key==='su_sync_owner')checkViewOwner();});
     window.addEventListener('pagehide',function(){if(window.SUBoardRuntime)window.SUBoardRuntime.save(INTERNSHIPS?'internships':'jobs',App.state);});
     function recheck(){if(!firstFeed && !document.hidden && Date.now()-lastFeedCheck>=60000)refreshFeed();}

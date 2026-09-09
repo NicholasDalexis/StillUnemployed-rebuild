@@ -423,7 +423,7 @@
       out += '</div>'; // /.trk-wrap
       if(this.pendingRemoval) {
         var removing=this.rows.find(function(r){return r && r.id===self.pendingRemoval.id;});
-        out+='<dialog id="trk-remove-confirm" class="trk-remove-confirm" aria-modal="true" aria-labelledby="trk-remove-question" aria-describedby="trk-remove-context"><div class="trk-remove-paper"><h2 id="trk-remove-question">Are you sure you want to delete?</h2><p id="trk-remove-context">' + esc(removing.company || '') + (removing.company && removing.role ? ' · ' : '') + esc(removing.role || '') + '</p><div class="trk-remove-actions"><button type="button" data-act="cancelRemoval" data-id="' + esc(removing.id) + '" autofocus>No, keep it</button><button type="button" data-act="confirmRemoval" data-id="' + esc(removing.id) + '" class="trk-remove-yes">Yes, delete</button></div></div></dialog>';
+        out+='<dialog id="trk-remove-confirm" class="trk-remove-confirm" data-pointer-opening="' + !!this.pendingRemoval.pointer + '" aria-modal="true" aria-labelledby="trk-remove-question" aria-describedby="trk-remove-context"><div class="trk-remove-paper"><h2 id="trk-remove-question">Are you sure you want to delete?</h2><p id="trk-remove-context">' + esc(removing.company || '') + (removing.company && removing.role ? ' · ' : '') + esc(removing.role || '') + '</p><div class="trk-remove-actions"><button type="button" data-act="cancelRemoval" data-id="' + esc(removing.id) + '" autofocus>No, keep it</button><button type="button" data-act="confirmRemoval" data-id="' + esc(removing.id) + '" class="trk-remove-yes">Yes, delete</button></div></div></dialog>';
       }
       board.innerHTML = out;
       var confirmation=document.getElementById('trk-remove-confirm');
@@ -482,10 +482,10 @@
       if (again) again.focus();
     },
 
-    delRow: function (id) {
+    delRow: function (id, pointer) {
       if(this.owner!==accountKey()) { this.render(); return; }
       if(this.deleting[id] || !loadRows().some(function(r){return r && r.id===id;})) return;
-      this.pendingRemoval={id:id,owner:this.owner,generation:this.accountGeneration};
+      this.pendingRemoval={id:id,owner:this.owner,generation:this.accountGeneration,pointer:!!pointer};
       this.render();
       this.focusRowAction(id,'cancelRemoval');
     },
@@ -575,7 +575,7 @@
           case 'addRow': self.addRow(); break;
           case 'retrySync': self.retrySave(); break;
           case 'dismissDraft': delete self.noteDrafts[el.getAttribute('data-id')]; self.render(); break;
-          case 'delRow': self.delRow(el.getAttribute('data-id')); break;
+          case 'delRow': self.delRow(el.getAttribute('data-id'), e.detail > 0); break;
           case 'cancelRemoval': self.cancelRemoval(el.getAttribute('data-id')); break;
           case 'confirmRemoval': self.confirmRemoval(el.getAttribute('data-id')); break;
           case 'exportCsv': self.exportCsv(); break;
@@ -620,6 +620,11 @@
 
       // Enter in any form input = add the row
       document.addEventListener('keydown', function (e) {
+        if(self.pendingRemoval && self.pendingRemoval.pointer) {
+          self.pendingRemoval.pointer=false;
+          var pointerDialog=document.getElementById('trk-remove-confirm');
+          if(pointerDialog) pointerDialog.removeAttribute('data-pointer-opening');
+        }
         if(e.key==='Escape' && self.pendingRemoval) { e.preventDefault(); self.cancelRemoval(self.pendingRemoval.id); return; }
         if(e.key==='Tab' && self.pendingRemoval) {
           var confirmation=document.getElementById('trk-remove-confirm');

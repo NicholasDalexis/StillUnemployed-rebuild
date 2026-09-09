@@ -403,10 +403,10 @@
         tier === 'mid' ? 'var(--su-salary-mid-paper)' : 'var(--su-salary-low-paper)';
       var card = document.createElement('a');
       card.className = 'hoverlift';
-      card.href = j.link;
+      card.href = './jobs.html?job=' + encodeURIComponent(btoa(unescape(encodeURIComponent(j.link))));
       card.target = '_blank';
       card.rel = 'noopener noreferrer';
-      card.setAttribute('aria-label', j.role + ' at ' + j.co + ' (opens in a new tab)');
+      card.setAttribute('aria-label', j.role + ' at ' + j.co + ' (opens on the board in a new tab)');
       card.style.cssText = 'flex:1; position:relative; cursor:pointer; background:' + paper + '; color:#2A2118; border-radius:3px; padding:26px 24px 22px; box-sizing:border-box; transform:rotate(' + rot[k % 3] + 'deg); box-shadow:3px 8px 20px rgba(44,33,24,0.2); min-height:184px;';
       card.style.textDecoration = 'none';
       var meta = [j.loc, j.style].filter(Boolean).join('  ·  ');
@@ -430,25 +430,21 @@
     });
   }
 
+  function nhUnavailable(){
+    var total=$('#nh-total'),wrap=$('#nh-featured');if(total)total.textContent='…';if(!wrap)return;
+    wrap.innerHTML='';var message=document.createElement('p');message.setAttribute('role','status');message.textContent='Could not check current job availability. Please try again.';wrap.appendChild(message);
+    var retry=document.createElement('button');retry.type='button';retry.textContent='Try again';retry.style.cssText='font:inherit;min-height:44px;cursor:pointer;';retry.addEventListener('click',nhLoadJobs);wrap.appendChild(retry);
+  }
+  var nhCatalog=null,nhRequest=null;
   function nhLoadJobs() {
-    return fetch(NH_CSV + '&_=' + Date.now(), { cache: 'no-cache' })
+    if(nhRequest)return nhRequest;
+    nhRequest=Promise.all([window.SUJobModeration?window.SUJobModeration.refresh():Promise.reject(new Error('Availability check unavailable')),fetch(NH_CSV + '&_=' + Date.now(), { cache: 'no-cache' })
       .then(function (r) { if (!r.ok) throw new Error('sheet ' + r.status); return r.text(); })
-      .then(function (text) {
-        var jobs = nhRowsToJobs(nhParseCSV(text));
-        nhRenderJobs(jobs);
-      })
+      .then(function(text){return nhRowsToJobs(nhParseCSV(text));})]).then(function(result){nhCatalog=result[1];nhRenderJobs(window.SUJobModeration.filter(nhCatalog));})
       .catch(function (e) {
-        var total = $('#nh-total'), wrap = $('#nh-featured');
-        if (total) total.textContent = '…';
-        if (wrap) {
-          wrap.innerHTML = '';
-          var message = document.createElement('p');
-          message.setAttribute('role', 'status');
-          message.textContent = 'Could not load the latest roles. Please refresh to try again.';
-          wrap.appendChild(message);
-        }
+        nhCatalog=null;nhUnavailable();
         console.warn('[StillUnemployed] featured roles unavailable:', e && e.message);
-      });
+      }).finally(function(){nhRequest=null;});return nhRequest;
   }
 
   /* ======================= responsive stage (from #resp-inject-js) ======================= */
@@ -633,6 +629,10 @@
     wireStat();
     wireModal();
     wireNote();
+    if(window.SUJobModeration){
+      window.SUJobModeration.subscribe(function(index){if(index.status==='error'){nhCatalog=null;nhUnavailable();}else if(nhCatalog)nhRenderJobs(window.SUJobModeration.filter(nhCatalog));else nhLoadJobs();});
+      window.SUJobModeration.watch();
+    }
     nhWire();           // new desktop/tablet hero (no-op if absent)
     wireAnalytics();    // first-party analytics (no-op without js/analytics.js)
     applyHomeTheme();

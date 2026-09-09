@@ -20,7 +20,7 @@ function homepage() {
   const total={textContent:''};
   const featured={children:[],appendChild(card){this.children.push(card);},
     set innerHTML(value){assert.equal(value,'');this.children=[];}};
-  const sandbox={window:{addEventListener(){}},setInterval(){},
+  const sandbox={btoa:s=>Buffer.from(s,'binary').toString('base64'),window:{addEventListener(){}},setInterval(){},
     document:{readyState:'loading',addEventListener(){},
       querySelector(selector){return selector==='#nh-total'?total:selector==='#nh-featured'?featured:null;},
       createElement(tag){
@@ -69,7 +69,7 @@ test('featured homepage cards use salary paper even when every listing is marked
     assert(card.style.cssText.includes('background:var('+papers[i]+');'),jobs[i].co+' salary surface');
     assert.equal(card.slots[1].textContent,jobs[i].co);
     assert.equal(card.slots[3].textContent,jobs[i].pay);
-    assert.equal(card.href,jobs[i].link);
+    const target=new URL(card.href,'https://preview--stillunemployed.netlify.app');assert.equal(target.pathname,'/jobs.html');assert.equal(Buffer.from(target.searchParams.get('job'),'base64').toString('utf8'),jobs[i].link);
     assert.equal(card.tagName,'A');
     assert.equal(card.rel,'noopener noreferrer');
   });

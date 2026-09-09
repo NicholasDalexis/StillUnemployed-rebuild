@@ -19,12 +19,8 @@ echo ""
 ( sleep 1; open "http://localhost:$PORT/jobs.html" ) &
 
 if command -v python3 >/dev/null 2>&1; then
-  python3 -m http.server $PORT
-elif command -v python >/dev/null 2>&1; then
-  python -m SimpleHTTPServer $PORT
-elif command -v npx >/dev/null 2>&1; then
-  npx --yes serve -l $PORT .
+  python3 -m http.server "$PORT" --bind 127.0.0.1
 else
-  echo "  Couldn't find python3 or node. Install Python 3 from https://www.python.org/downloads/ and try again."
+  echo "  Couldn't find Python 3. Install it from https://www.python.org/downloads/ and try again."
   read -n 1 -s -r -p "  Press any key to close."
 fi
