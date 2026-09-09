@@ -1,0 +1,31 @@
+{
+  "version": "2.2.0",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-06T18:30:39.110Z",
+  "reviewer": "Codex/Astra Job sourcing with independent scoped blue-team source review",
+  "sourceDigest": "2d57ba6cc581a9e3f8ef69b0e93b0f0dec96ea8abdba32b54c4872d7cb85458f",
+  "sourceFileCount": 131,
+  "privacyChanged": true,
+  "termsChanged": true,
+  "checks": {
+    "integratedTests": 372,
+    "browser": "45 fixture-backed browser assertions across 320,390,1440; root actual-renderer experience gallery and guide keyboard/overflow checks at320/1440; native in-app Jobs/Internships navigation, first-six and truthful empty view. No real Firebase writes.",
+    "blue": "61 focused checks; docs/private-review/discovery-blue-final-review.md and source receipt bind implementation before generated version artifacts.",
+    "release": "Passed: generated guide parity, source-bound version/privacy gates, full486-job/eight-theme share generation (4120alias pages), seven theme routes, and8366-file allowlisted output with private roots and markers excluded."
+  },
+  "scope": "Optional account-written major/location/role hints, per-account applied/not-fit/unavailable hiding and undo, three-confirmation onboarding, complete-snapshot returning-job suggestions, six-lane initial ordering, separate internship UI/source validation and collector catalog, six illustrated experience notes and sanitized guide. Existing production account host gate is unchanged.",
+  "baselineReview": "docs/privacy-reviews/2.1.9.json",
+  "openItems": [
+    "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
+    "Function-scoped Firebase and Netlify configuration and actual owner UID",
+    "Real authenticated collector, profile and aggregate readback with cross-account/direct-client denials",
+    "Hosted retention, reset and account-deletion execution; legacy logs and backups",
+    "Actual Netlify function packaging/runtime and deployment readback",
+    "Six moderate dependency findings; no high or critical advisories in saved audit",
+    "Actual new discovery-schema Firestore round trip and deployed ownership rules",
+    "Main-board inherited Human verified badges lack audited per-row historical provenance in this change",
+    "Approved internship publication snapshot and source-to-snapshot adapter; golden candidates remain unpublished",
+    "Live report-triage delivery and concurrent-device visit-counter limitations"
+  ],
+  "policySummary": "Written preferences are optional requested account features and can be cleared separately; activity learning requires its own choice and stops on opt-out. No raw answers in analytics or external AI calls. Applications are self-reported, hides are personal, provider/cache/deletion/retention and preview-only auth are disclosed. New internship human badges require retained human review evidence. Not legal certification."
+}

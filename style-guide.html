@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="The colors, type, textures, drawings and paper that make StillUnemployed.com feel like us.">
+  <title>Style guide | StillUnemployed.com</title>
+  <link rel="stylesheet" href="css/brand.css?v=1">
+  <link rel="stylesheet" href="css/advice-cards.css?v=1">
+  <script src="js/release.js?v=2.5.2" defer></script>
+  <link rel="stylesheet" href="css/style-guide.css?v=7">
+  <script src="js/style-guide-themes.js?v=4" defer></script>
+  <script src="js/style-guide.js?v=5" defer></script>
+</head>
+<body>
+  <a class="skip" href="#guide-content">Skip to the guide</a>
+  <div class="guide-canvas" id="guide-canvas"><div class="guide">
+    <header class="masthead">
+      <a class="wordmark" href="/index.html">StillUnemployed.com</a>
+      <nav aria-label="Site navigation"><a href="/index.html">Home</a><a href="/jobs.html">Jobs</a><a data-su-version href="/versions.html#version-2-5-2" aria-label="Version 2.5.2. Explore Version 2 features">Version 2.5.2</a></nav>
+    </header>
+    <main id="guide-content">
+      <div class="intro-row"><div class="guide-intro">
+        <p class="eyebrow" id="theme-eyebrow">The original look</p>
+        <h1>Style guide</h1>
+        <p id="theme-intro">Warm paper, useful notes and a little handwriting. A reference for keeping the board readable and recognizably ours, from a phone to a wide screen.</p>
+      </div><button class="theme-trigger" id="theme-trigger" type="button" aria-haspopup="dialog" aria-controls="guide-theme-dialog" hidden>Change theme <span aria-hidden="true">↓</span></button></div>
+      <p class="sr-only" role="status" id="theme-status" aria-live="polite"></p>
+      <nav class="guide-contents" id="guide-contents" aria-labelledby="contents-title">
+        <h2 id="contents-title">In this guide</h2>
+        <ul><li><a href="#colors-title">Colors</a></li><li><a href="#type-title">Type</a></li><li><a href="#textures-title">Textures</a></li><li><a href="#paper-title">Paper &amp; actions</a></li><li><a href="#advice-title">Advice cards</a></li><li><a href="#icons-title">Drawn details</a></li><li><a href="#salary-title">Salary cards</a></li><li><a href="#layout-title">Layout</a></li><li><a href="#imagery-title">Photos &amp; name</a></li></ul>
+      </nav>
+
+      <section class="section" aria-labelledby="colors-title">
+        <h2 class="section-title" id="colors-title"><span>01</span> Colors with a job to do</h2>
+        <p class="section-intro" id="theme-color-intro">The warmer yellow comes from the original board’s high-salary card. Navigation and primary actions share that paper treatment.</p>
+        <div class="two-up" id="theme-swatches">
+          <figure class="swatch"><div class="swatch-color color-yellow-paper" aria-hidden="true"></div><figcaption><strong>Original yellow paper</strong><code>#F6E85F → #EFDB3D</code><p>Navigation and high-salary cards share the same warm paper family.</p></figcaption></figure>
+          <figure class="swatch"><div class="swatch-color color-ink" aria-hidden="true"></div><figcaption><strong>Original ink</strong><code>#2A2118</code><p>Keep the text readable on its own surface.</p></figcaption></figure>
+        </div>
+        <p class="margin-note" id="theme-color-note">One yellow family. Don’t invent a separate yellow for each button.</p>
+      </section>
+
+      <section class="section" aria-labelledby="type-title">
+        <h2 class="section-title" id="type-title"><span>02</span> Handwritten, then easy to read</h2>
+        <p class="section-intro"><span id="theme-type-intro">Original</span> uses the same type hierarchy as the other board themes. Handwriting invites; Archivo makes roles and salaries easy to compare. The editorial faces below keep their homepage roles. These are the weights actually loaded by the site.</p>
+        <div class="two-up">
+          <article class="sheet"><span class="spec-label">Indie Flower · 400</span><div class="type-hand">Just jobs. A little perspective.</div><p>Navigation, short actions, notebook notes and section labels.</p><p class="annotation">Controls: 18–22px. Short headings: 28–40px. Natural weight 400; there is no separate loaded bold face.</p></article>
+          <article class="sheet"><span class="spec-label">Archivo · 400 / 500 / 600 / 700</span><div class="type-body">Save a role now. Keep the company, salary and next step clear when you return.</div><div class="weight-row"><span style="font-weight:400">400 regular</span><span style="font-weight:500">500 medium</span><span style="font-weight:600">600 semibold</span><span style="font-weight:700">700 bold</span></div><p class="annotation">Body and forms: 16–18px, about 1.5–1.6 line height. Labels: 500–600. Emphasis: 700. Loaded 800/900 weights are available for short numeric or display emphasis.</p></article>
+          <article class="sheet"><span class="spec-label">Archivo Black · 400</span><div class="type-heavy">Find your next thing.</div><p>Company names and short, loud display moments.</p><p class="annotation">The family supplies its heavy shape at weight 400. Use size and spacing for hierarchy, rather than asking the browser to invent a heavier face.</p></article>
+          <article class="sheet"><span class="spec-label">Poppins · existing body copy</span><div class="type-poppins">Remote · Full time<br>Read the posting. Make your next move.</div><p class="annotation">Preserve its scoped board use and the homepage summary at 500. Loaded weights: 300, 400, 500, 600 and 700. This specimen uses 400.</p></article>
+          <article class="sheet"><span class="spec-label">Playfair Display · 700 / 800 / 900</span><div class="type-playfair">Still Unemployed?</div><p class="annotation">The homepage pairs 900 with italic 800. This specimen uses italic 800; normal faces are 700 and 900. Keep the family’s role in editorial display; everyday controls use the interface families above.</p></article>
+          <article class="sheet"><span class="spec-label">Newsreader · 400 / 500</span><div class="type-newsreader">A little room to think.</div><p class="annotation">An existing editorial face. This specimen uses italic 400; only italic 400 and 500 are loaded. Preserve intentional local uses; the default reading face for new interface copy is Archivo.</p></article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="textures-title">
+        <h2 class="section-title" id="textures-title"><span>03</span> Texture, quietly in the background</h2>
+        <p class="section-intro">A little grain, felt or light makes the board feel like a place. Keep the surface gentle enough for the notes to lead.</p>
+        <div class="two-up texture-layout">
+          <figure class="sheet texture-figure"><div class="texture-preview" id="theme-texture-preview" aria-hidden="true"></div><figcaption><h3 id="theme-texture-name">Original paper</h3><p id="theme-texture-description">A warm canvas with a fine, repeated grain.</p></figcaption></figure>
+          <article class="sheet"><h3>A little texture, a lot of room</h3><p id="theme-texture-motion">This texture stays still.</p><p id="theme-texture-usage">Keep the grain behind the notes, with clear paper under job details.</p><p>The texture sets the mood. The paper keeps the words easy to read.</p></article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="paper-title">
+        <h2 class="section-title" id="paper-title"><span>04</span> Useful things on paper</h2>
+        <p class="section-intro">One idea per note. Tape, a small tilt and a soft shadow provide character while text and controls stay clear.</p>
+        <div class="two-up">
+          <article class="sheet"><h3>Sticky actions</h3><div class="demo-actions"><a class="sticky" data-theme-board-link href="/jobs.html">Just jobs <span aria-hidden="true">→</span></a></div><a class="text-link" data-theme-board-link href="/jobs.html">Browse this board →</a><p class="annotation" id="theme-action-note">Primary actions use yellow paper and ink. Both examples lead to this theme’s board.</p></article>
+          <div class="note-demo"><details class="sheet notebook taped"><summary>A note for your next move</summary><p>Keep the useful part close. A note opens where you are, gives you one idea, and lets you get back to the jobs.</p></details><p class="annotation">Tape: <code>rgba(228,205,145,.62)</code><br>Note shadow: <code>3px 6px 13px rgba(44,33,24,.17)</code><br>Keep decorative lines and tape away from essential text.</p></div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="advice-title">
+        <h2 class="section-title" id="advice-title"><span>05</span> A note worth opening</h2>
+        <p class="section-intro">Cream paper, a red margin, a little drawing and one useful thought. Advice notes keep this look in every theme. These two examples open when you tap them.</p>
+        <div class="two-up advice-examples">
+          <details class="su-advice-card">
+            <summary class="su-advice-front"><span class="su-advice-eyebrow">note to self · example</span><span class="su-advice-hook">save the role, then make a plan</span><span class="su-advice-sub">give the next step a place to live</span><span class="su-advice-mark" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none" focusable="false"><path d="M12 5 32 6 31 38 21 31 11 37Z M17 16l4 4 7-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="su-advice-cta"><span class="su-advice-open">what goes in the note? →</span><span class="su-advice-close">close this note ↑</span></span></summary>
+            <div class="su-advice-back"><p>Keep the job link with a short note about what you want to do next. Write down the question you need answered or the piece of work you want to include.</p><p>Check the employer’s posting before you apply.</p></div>
+          </details>
+          <details class="su-advice-card">
+            <summary class="su-advice-front"><span class="su-advice-eyebrow">note to self · example</span><span class="su-advice-hook">give your follow-up a next step</span><span class="su-advice-sub">one clear question is enough</span><span class="su-advice-mark" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none" focusable="false"><path d="M6 12 38 10 37 33 7 35Z M7 13l16 12 14-14 M7 34l11-13 M37 32l-9-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="su-advice-cta"><span class="su-advice-open">build the message →</span><span class="su-advice-close">close this note ↑</span></span></summary>
+            <div class="su-advice-back"><p>Keep the message tied to the conversation:</p><ul><li>Thank the person for their time.</li><li>Mention one specific thing you discussed.</li><li>Ask what happens next.</li></ul><p>Use your own words. A template should help you start.</p></div>
+          </details>
+        </div>
+        <p class="margin-note">One thought per note. The drawing adds personality; the words do the useful part.</p>
+      </section>
+
+      <section class="section" aria-labelledby="icons-title">
+        <h2 class="section-title" id="icons-title"><span>06</span> A few drawn details</h2>
+        <p class="section-intro" id="theme-icons-intro">Small drawings give the notes personality. Keep them separate from the information someone needs to act on.</p>
+        <div class="icon-specimens" id="theme-icon-specimens"></div>
+        <p class="margin-note">Use a small accent at a card edge. Keep names, salaries and actions clear. Drawings never stand in for a button label, salary band or verification stamp.</p>
+      </section>
+
+      <section class="section" aria-labelledby="salary-title">
+        <h2 class="section-title" id="salary-title"><span>07</span> Job-card color means salary</h2>
+        <p class="section-intro">These are illustrative cards, not live listings. On Jobs, paper color adds a second clue to the visible salary. The top of the annual range sets the band. Internships use the same theme papers decoratively, with pay always written out.</p>
+        <div class="two-up">
+          <article class="sample-card salary-low" data-salary-band="low"><span class="spec-label">Example · under $80K</span><h3>Studio North</h3><p class="role">Junior designer</p><p>Remote · Full time</p><p class="salary">$65K-75K</p><div class="card-bottom"><div data-theme-stamp></div><span class="sample-apply" data-theme-apply>Apply Now <span aria-hidden="true">→</span></span></div><p class="card-palette" data-theme-band-value>Light paper · #ECDEC6 → #E0D0B2</p></article>
+          <article class="sample-card salary-mid" data-salary-band="mid"><span class="spec-label">Example · $80–99K</span><h3>Common Ground</h3><p class="role">Content strategist</p><p>New York · Hybrid</p><p class="salary">$80K-95K</p><div class="card-bottom"><div data-theme-stamp></div><span class="sample-apply" data-theme-apply>Apply Now <span aria-hidden="true">→</span></span></div><p class="card-palette" data-theme-band-value>Tan paper · #E0CBA2 → #D3BB8C</p></article>
+          <article class="sample-card salary-high" data-salary-band="high"><span class="spec-label">Example · $100K+</span><h3>Next Chapter</h3><p class="role">Brand designer</p><p>Remote · Full time</p><p class="salary">$90K-110K</p><div class="card-bottom"><div data-theme-stamp></div><span class="sample-apply" data-theme-apply>Apply Now <span aria-hidden="true">→</span></span></div><p class="card-palette" data-theme-band-value>Yellow paper · the upper end reaches $100K.</p></article>
+          <aside class="sheet"><h3>The pay key is a promise.</h3><p>Never recolor a job card to make a row look more balanced. A $90K-110K role belongs in the high band because the range reaches $110K.</p><p id="theme-salary-note">These are the original look’s treatments. Other themes keep the same salary bands.</p><p class="annotation">Navigation color means “take an action.” Card color means salary band. Context and visible labels carry the distinction. The stamp always reads “Human verified”; its icon and treatment follow the theme. These are fictional design examples, not listings. Apply labels here are decorative.</p></aside>
+        </div>
+      </section>
+
+
+
+
+      <section class="section" aria-labelledby="layout-title">
+        <h2 class="section-title" id="layout-title"><span>08</span> Give the page some room</h2>
+        <p class="section-intro"><span id="theme-layout-intro">Original</span> keeps the shared layout. Use a small spacing scale, aligned edges and natural document flow. Let copy wrap and sections grow instead of shrinking an entire desktop composition.</p>
+        <div class="two-up">
+          <article class="sheet"><h3>Desktop</h3><div class="layout-example" aria-label="Desktop illustration: main content beside supporting content"><span>Main content</span><span>Supporting note</span></div><ul class="rules"><li>Center the homepage hero within a 1,500px maximum width.</li><li>Use two columns where the content benefits from sitting together.</li><li>Keep paragraph width comfortable, around 60–70 characters.</li><li>Use 24–48px between sections and 16–24px inside reading surfaces.</li></ul></article>
+          <article class="sheet"><h3>Phone</h3><div class="layout-example layout-phone" aria-label="Phone illustration: main content followed by its supporting note"><span>Main content</span><span>Supporting note</span></div><ul class="rules"><li>Stack related sections in reading order; preserve the important action.</li><li>Keep 16px side space where the viewport allows it.</li><li>Primary touch controls are at least 44 × 44 CSS pixels.</li><li>Let text grow and wrap. Essential controls stay in view.</li></ul></article>
+          <article class="sheet"><h3>The spacing scale</h3><div class="scale" aria-label="Spacing steps in pixels: 4, 8, 12, 16, 24, 32 and 48"><span><i style="--space:4px" aria-hidden="true"></i>4</span><span><i style="--space:8px" aria-hidden="true"></i>8</span><span><i style="--space:12px" aria-hidden="true"></i>12</span><span><i style="--space:16px" aria-hidden="true"></i>16</span><span><i style="--space:24px" aria-hidden="true"></i>24</span><span><i style="--space:32px" aria-hidden="true"></i>32</span><span><i style="--space:48px" aria-hidden="true"></i>48</span></div><p class="annotation">4–8px within tight groups. 12–16px between related controls. 24–48px between bigger ideas.</p></article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="imagery-title">
+        <h2 class="section-title" id="imagery-title"><span>09</span> Keep the name and the people recognizable</h2>
+        <div class="two-up">
+          <article class="sheet"><h3>Photography has a reason.</h3><figure class="guide-photo"><img src="assets/home-founder-nic.jpg" alt="Nic wearing headphones at a SiriusXM microphone" width="1200" height="684" loading="lazy"><figcaption class="annotation">Existing founder photo. Keep the person and the context in the crop.</figcaption></figure><p>Use the site’s approved photos and illustrations where they explain a person, role or story. Keep natural proportions, place captions outside the image and check the crop on a phone.</p><p class="annotation">Do not bake essential words into a picture. Give informative images meaningful alternative text; purely decorative images get empty alternative text.</p></article>
+          <article class="sheet"><h3>The name needs breathing room.</h3><div class="guide-name-example"><span class="wordmark">StillUnemployed.com</span></div><p>Keep the full spelling and the established lettering for its location. This guide uses handwriting; the homepage keeps its serif title and the board keeps its heavy display heading.</p><p>Leave clear space around the name. Do not stretch it, tuck tape across the letters or turn it into a different logo for each theme.</p><p class="annotation">Use the full name in accessible link text. Employer logos and third-party marks identify their owners; they are not decorative theme assets or an endorsement.</p></article>
+        </div>
+      </section>
+    </main>
+    <footer class="guide-footer"><span id="theme-footer">StillUnemployed.com · Original look</span><a href="#guide-contents">Back to contents</a><a href="/index.html">Home</a><a href="/jobs.html">Jobs</a><a href="/versions.html">Version history</a></footer>
+  </div></div>
+  <dialog class="theme-dialog" id="guide-theme-dialog" aria-labelledby="theme-dialog-title" aria-describedby="theme-dialog-note">
+    <div class="theme-dialog-head"><div><h2 id="theme-dialog-title">Choose a look</h2><p id="theme-dialog-note">Same board DNA, a different mood. This changes only the style guide.</p></div><button class="theme-close" id="theme-close" type="button" aria-label="Close theme choices">×</button></div>
+    <div class="theme-options" id="theme-options"></div>
+  </dialog>
+
+
+
+</body>
+</html>

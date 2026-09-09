@@ -1,0 +1,37 @@
+{
+  "version": "2.3.0",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-07T02:38:51.978Z",
+  "reviewer": "Codex/Astra with independent analytics, SEO and account-isolation reviewers",
+  "sourceDigest": "d366d565e2002f8a8f24740a5624e6c910c7e0b9b7e5879ff8a3d8ca9122e54d",
+  "sourceFileCount": 143,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Follow-through on the already disclosed 30-minute account-scoped tab view: clear filters only on a real owner change, prevent stale-owner pagehide writes, preserve same-owner auth and failed-feed retry. Background refresh preserves navigation and inputs until authoritative data resolves. No new collection, destination, permission or retention change.",
+  "checks": {
+    "integratedTests": 541,
+    "analytics": "48 client/service/HTTP/dashboard checks: count-only payload stripping, consent/GPC/withdrawal/owner isolation, synthetic aggregate readback; no live writes.",
+    "recovery": "10 app/runtime tests: write-failure visibility, intended-save retry races, refreshed availability, timeout/dedup and view TTL/ownership.",
+    "sync": "132 independent integrated checks; stale callbacks and token isolation, storage rollback, retained drafts and honest auth results.",
+    "seo": "16 checks,4138 isolated HTML finalizations,7-page sitemap, raw/private paths excluded. Future renderer has no hosted route and was tested with synthetic availability authority only.",
+    "browser": "Native local Jobs to Tracker and back navigates and restores the design search (98 of 486); no Retry save displayed on a healthy empty Tracker. Previous 320px and 1440px layout evidence retained. No authenticated account switch or live collector write.",
+    "viewOwnership": "77 focused account/runtime checks and 6 recovery checks, including refresh-start DOM identity until response settles."
+  },
+  "baselineReview": "docs/privacy-reviews/2.2.9.json",
+  "openItems": [
+    "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
+    "Function-scoped Firebase and Netlify configuration and actual owner UID",
+    "Real authenticated collector, profile and aggregate readback with cross-account/direct-client denials",
+    "Hosted retention, reset and account-deletion execution; legacy logs and backups",
+    "Six moderate dependency findings; no high or critical advisories in saved audit",
+    "Actual new discovery-schema Firestore round trip and deployed ownership rules",
+    "Main-board inherited Human verified badges lack audited per-row historical provenance in this change",
+    "Live report-triage delivery and concurrent-device visit-counter limitations",
+    "Real authenticated Saved/Tracker round trip for admitted internships",
+    "First scheduled internship-maintenance firing; installed and manual production-mode execution verified",
+    "Preview analytics profile/admin503 not configured; actual collector/retention/hosted account evidence unavailable",
+    "Search Console domain property Not verified; Bing has no existing IAB session",
+    "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive"
+  ],
+  "policySummary": "Re-read the relevant account, tab storage, analytics and external-link disclosures. The fix enforces the existing owner-clearing description; no policy text or data flow expansion. Engineering review, not legal certification."
+}

@@ -1,0 +1,35 @@
+{
+  "version": "2.3.9",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-08T04:30:35.648725+00:00",
+  "reviewer": "Codex/Astra root, independent release and catalog reviewers",
+  "sourceDigest": "0a532fe5ab4ce92ba603314b98f8b03ab29389b5f32af3c85c246b207aac0c06",
+  "sourceFileCount": 148,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "2.3.9 measures generated share-image text to avoid premature mid-word truncation and adds the existing orange brand star as favicon.ico. No account, collection, provider, policy, application behavior or audio changes.",
+  "checks": {
+    "fullSuite": "718/718 tests pass; zero failures, cancellations or skips.",
+    "shareText": "Actual WMG full-title regression fails against2.3.8. Five renderer tests pass including all eight themes, exact-width edges, long company/role/location, grapheme preservation, empty inputs and native canvas memory guard.",
+    "favicon": "Valid64px ICO with embedded PNG frame; existing publication allowlist and fingerprint include the asset.",
+    "renderedUI": "Earlier72 theme/page/width cases and16 lower Tracker cases remain applicable; no active browser JS/CSS changes in2.3.8 or2.3.9.",
+    "hosted": "2.3.8 core hosted/browser checks passed but showed long-title truncation and optional favicon404. Final2.3.9 hosted acceptance remains required."
+  },
+  "baselineReview": "docs/privacy-reviews/2.3.8.json",
+  "openItems": [
+    "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
+    "Function-scoped Firebase and Netlify configuration and actual owner UID",
+    "Real authenticated collector, profile and aggregate readback with cross-account/direct-client denials",
+    "Hosted retention, reset and account-deletion execution; legacy logs and backups",
+    "Six moderate dependency findings; no high or critical advisories in saved audit",
+    "Actual new discovery-schema Firestore round trip and deployed ownership rules",
+    "Main-board inherited Human verified badges lack audited per-row historical provenance in this change",
+    "Live report-triage delivery and concurrent-device visit-counter limitations",
+    "Real authenticated Saved/Tracker round trip for admitted internships",
+    "Separate maintenance-owner scope: five internship checks remain unresolved and cursor rotation incomplete; main Jobs evening check timed out. First internship evening scheduled firing is verified in the 2026-09-06 sourcing setup receipt.",
+    "Preview analytics profile/admin503 not configured; actual collector/retention/hosted account evidence unavailable",
+    "Search Console domain property Not verified; Bing has no existing IAB session",
+    "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive"
+  ],
+  "policySummary": "Current Privacy and Terms reviewed against this presentation-only correction; no text change required. Existing operational limits remain open. Engineering review, not legal certification."
+}

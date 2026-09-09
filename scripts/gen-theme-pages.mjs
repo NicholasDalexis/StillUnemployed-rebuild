@@ -10,12 +10,12 @@
  * Netlify serves a matching FILE before applying a (non-forced) redirect, so these win over the
  * /jobs/* rewrite, and any unknown slug still falls through to jobs.html.
  *
- * Each page is a copy of jobs.html with only the og/twitter tags swapped, so it can never drift
- * from the real board. jobs.html's own pre-paint script reads location.pathname and applies the
+ * Each page copies jobs.html, swaps the og/twitter tags and makes navigation root-relative.
+ * jobs.html's own pre-paint script reads location.pathname and applies the
  * theme, so no extra JS is needed here.
  *
- * Deliberately standalone: gen-share.mjs exits early if the Google Sheet is unreachable, and these
- * pages have nothing to do with the sheet. They must never be collateral damage.
+ * Deliberately standalone: these pages do not depend on the sheet. The combined Netlify build
+ * stops if gen-share cannot validate its feed, preserving the previous successful deployment.
  */
 import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -33,10 +33,12 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 // production it rewrote every og:image/og:url to `main--stillunemployed.netlify.app`, so a shared
 // link advertised the netlify.app subdomain instead of the brand (and split the canonical URL).
 // CONTEXT is the only reliable discriminator: it's exactly "production" for the live build.
+// Full writeup: Rasputin/Trial-and-Error/2026-07-12-DEPLOY-PRIME-URL-Is-Not-The-Custom-Domain.md
 const IS_PROD = process.env.CONTEXT === 'production';
 const CANONICAL = process.env.URL || 'https://stillunemployed.com';
 const SITE = IS_PROD ? CANONICAL : (process.env.DEPLOY_PRIME_URL || CANONICAL);
 console.log(`gen-theme-pages: context=${process.env.CONTEXT || 'local'} -> og origin ${SITE}`);
+
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 // slug -> share title. The slug must match jobs.html's SLUG2LOOK pre-paint map.
@@ -50,8 +52,19 @@ const THEMES = {
   chess:    'Chess',
 };
 
-const DESC = 'Opened and checked by a human (me). Every role has a real salary. No AI slop.';
-const board = readFileSync(join(ROOT, 'jobs.html'), 'utf8');
+const DESC = 'Find roles with salary information. Save the ones that fit and keep your applications together.';
+// Netlify's pretty-URL pass resolves relative index.html links against the
+// generated directory, ignoring <base href="/">. Explicit root paths prevent
+// Home from becoming /jobs/<theme>/ and protect every static navigation link.
+// Leave assets, external destinations, query-only links and fragments untouched.
+const board = readFileSync(join(ROOT, 'jobs.html'), 'utf8').replace(
+  /(<a\b[^>]*\bhref\s*=\s*)(["'])([^"']*)\2/gi,
+  (tag, before, quote, href) => {
+    if (!href || /^(?:[a-z][a-z\d+.-]*:|\/|#|\?)/i.test(href)) return tag;
+    const rootLink = new URL(href, 'https://stillunemployed.com/');
+    return before + quote + rootLink.pathname + rootLink.search + rootLink.hash + quote;
+  }
+);
 
 let made = 0;
 for (const [slug, label] of Object.entries(THEMES)) {
@@ -91,7 +104,7 @@ console.log(`gen-theme-pages: wrote ${made}/${Object.keys(THEMES).length} theme 
 // Only ever repoint on a NON-production deploy. On production the source files already carry the
 // canonical https://stillunemployed.com/ and must be left exactly as they are.
 if (!IS_PROD && SITE !== CANONICAL) {
-  for (const f of ['index.html', 'jobs.html']) {
+  for (const f of ['index.html', 'jobs.html', 'tracker.html']) {   // tracker.html added 2026-07-12
     const p = join(ROOT, f);
     const before = readFileSync(p, 'utf8');
     const after = before.replaceAll('https://stillunemployed.com/', `${SITE}/`);

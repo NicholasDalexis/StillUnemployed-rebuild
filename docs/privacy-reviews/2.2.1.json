@@ -1,0 +1,31 @@
+{
+  "version": "2.2.1",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-06T19:11:19.637Z",
+  "reviewer": "Codex/Astra with independent scoped source review",
+  "sourceDigest": "2b71ea41d5c52080fa664e891c41b742315a7412b0a7cff4123733af965c160b",
+  "sourceFileCount": 131,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "checks": {
+    "integratedTests": 382,
+    "browser": "Native in-app browser: signed-out automatic appearance 1/2 then suppressed on third navigation; X dismissal survives reload; manual reopening and primary dismissal; Portfolio Graded detail at 390x844 fits within viewport. Desktop overview and detail reviewed. No real authenticated writes.",
+    "release": "Passed: generated guide parity, source-bound version/privacy gates, full 486-job/eight-theme share generation (4120 alias pages), seven theme routes, and 8367-file allowlisted output. Private roots remain excluded. No deployment.",
+    "independentReview": "40/40 onboarding and version regressions passed; no remaining actionable findings in the frozen Web Locks fix."
+  },
+  "scope": "Browser-local Version 2 welcome receipt, strict two-appearance automatic cap serialized across tabs, internal Portfolio Graded detail with trusted optional external link, white More Themes note, and release numbering checkpoint before 2.5.0.",
+  "baselineReview": "docs/privacy-reviews/2.2.0.json",
+  "openItems": [
+    "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
+    "Function-scoped Firebase and Netlify configuration and actual owner UID",
+    "Real authenticated collector, profile and aggregate readback with cross-account/direct-client denials",
+    "Hosted retention, reset and account-deletion execution; legacy logs and backups",
+    "Actual Netlify function packaging/runtime and deployment readback",
+    "Six moderate dependency findings; no high or critical advisories in saved audit",
+    "Actual new discovery-schema Firestore round trip and deployed ownership rules",
+    "Main-board inherited Human verified badges lack audited per-row historical provenance in this change",
+    "Approved internship publication snapshot and source-to-snapshot adapter; golden candidates remain unpublished",
+    "Live report-triage delivery and concurrent-device visit-counter limitations"
+  ],
+  "policySummary": "Existing browser-welcome disclosure remains accurate: dismissal is independent of Google, no IP identity or new collection, manual What’s new remains available, and clearing browser data resets the choice. Automatic display requires verified shared localStorage and Web Locks; unavailable facilities leave manual entry only. Portfolio preview is illustrative and coming soon. Terms unchanged. This scoped review is not hosted or legal certification."
+}

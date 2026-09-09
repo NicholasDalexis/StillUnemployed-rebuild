@@ -1,0 +1,33 @@
+{
+  "version": "2.2.3",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-06T20:35:58.171Z",
+  "reviewer": "Codex/Astra with independent analytics, blue-team and modal reviews",
+  "sourceDigest": "8199deb45edbc1206c46ec64057c9b1cad05743445ebdcf50b911594a6dc9680",
+  "sourceFileCount": 131,
+  "privacyChanged": true,
+  "termsChanged": false,
+  "checks": {
+    "integratedTests": 397,
+    "modalIntegration": 8,
+    "analyticsTests": 46,
+    "syntheticBrowser": 42,
+    "browser": "Synthetic real-browser 1280/390/320 and short320x480 checks; native desktop fixture inspection and real signed-out job detail blur. No real Google sign-in or account writes.",
+    "release": "Full configured build completed with exit0:486jobs across8themes,4120share/alias pages and images,7theme routes,8367allowlisted publish files. Local only."
+  },
+  "scope": "Preferences dialog, sync-state presentation and four consented action counts.",
+  "baselineReview": "docs/privacy-reviews/2.2.2.json",
+  "openItems": [
+    "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
+    "Function-scoped Firebase and Netlify configuration and actual owner UID",
+    "Real authenticated collector, profile and aggregate readback with cross-account/direct-client denials",
+    "Hosted retention, reset and account-deletion execution; legacy logs and backups",
+    "Actual Netlify function packaging/runtime and deployment readback",
+    "Six moderate dependency findings; no high or critical advisories in saved audit",
+    "Actual new discovery-schema Firestore round trip and deployed ownership rules",
+    "Main-board inherited Human verified badges lack audited per-row historical provenance in this change",
+    "Approved internship publication snapshot and source-to-snapshot adapter; golden candidates remain unpublished",
+    "Live report-triage delivery and concurrent-device visit-counter limitations"
+  ],
+  "policySummary": "Privacy now names preference save/clear/explicit-skip and not-fit action counts and the preferences pop-up. These four events have no extra fields, written answers or job identity; analytics consent and existing exclusions apply. Account feature storage/ownership unchanged. Terms reviewed, no wording change needed. Hosted activation, rules, retention and delivery limits remain open."
+}

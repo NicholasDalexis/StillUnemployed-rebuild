@@ -6,27 +6,35 @@
   <!-- Root base so /jobs/<theme> deep-links resolve assets (css/js) + links from site root -->
   <base href="/">
   <title>StillUnemployed.com — Roles I'd actually apply to</title>
-  <meta name="description" content="Roles here are opened and checked by a human (me). No AI slop, just jobs I'd actually apply to.">
+  <meta name="description" content="Find roles with salary information. Save the ones that fit and keep your applications together.">
   <!-- SHARE PREVIEW (og:image) — the ORIGINAL theme board. Crawlers read raw HTML and do NOT run JS,
        so the theme in the preview can't be swapped client-side. That's why each /jobs/<theme> URL gets
        its OWN generated page with its OWN og:image (see scripts/gen-share.mjs → theme board pages). -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="StillUnemployed.com">
   <meta property="og:title" content="Roles I'd actually apply to">
-  <meta property="og:description" content="Opened and checked by a human (me). Every role has a real salary. No AI slop.">
-  <meta property="og:url" content="https://stillunemployed.com/jobs">
-  <meta property="og:image" content="https://stillunemployed.com/assets/og/original.png">
+  <meta property="og:description" content="Find roles with salary information. Save the ones that fit and keep your applications together.">
+  <meta property="og:url" content="https://preview--stillunemployed.netlify.app/jobs">
+  <meta property="og:image" content="https://preview--stillunemployed.netlify.app/assets/og/original.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Roles I'd actually apply to">
-  <meta name="twitter:description" content="Opened and checked by a human (me). Every role has a real salary. No AI slop.">
-  <meta name="twitter:image" content="https://stillunemployed.com/assets/og/original.png">
+  <meta name="twitter:description" content="Find roles with salary information. Save the ones that fit and keep your applications together.">
+  <meta name="twitter:image" content="https://preview--stillunemployed.netlify.app/assets/og/original.png">
+  <!-- Start the real board fonts early, before stylesheets discover them. -->
+  <link rel="preload" href="assets/6fd8e60f-e8a8-49d7-aa98-177146dd1016.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/b4cc05cd-2602-48c7-8b9b-2db92103375a.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/8f53ac5a-48e8-42aa-b8db-00623bb7313f.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/7f5dc4e2-21af-4cc2-ac7b-95ecb83d5075.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Warm the Beehiiv connection at load: popup email fields are iframes, and a cold TLS handshake was why a popup could open before its field appeared. -->
+  <link rel="preconnect" href="https://subscribe-forms.beehiiv.com">
   <!-- Black Ops One powers the WW2 "Change Look?" theme label (falls back to Archivo Black) -->
   <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=11">
+  <link rel="stylesheet" href="css/brand.css?v=1">
+  <link rel="stylesheet" href="css/styles.css?v=243">
   <!-- Pre-apply the saved "Change Look?" theme before paint to avoid a color flash -->
   <script>
     (function () {
@@ -63,14 +71,29 @@
     })();
   </script>
   <!-- First-party analytics: defer keeps document order, so this runs BEFORE js/app.js -->
-  <script src="js/analytics.js?v=an3" defer></script>
-  <!-- Google Analytics 4 (consent-gated, loads only after Accept) -->
-  <script src="js/ga.js?v=1" defer></script>
+  <script src="js/personalization.js?v=237" defer></script>
+<script src="js/analytics.js?v=235" defer></script>
+  <!-- Compact privacy notice; optional features stay off until chosen. -->
+  <script src="js/job-identity.js?v=2" defer></script>
+  <script src="js/sync-store.js?v=235" defer></script>
+  <script src="js/ga.js?v=235" defer></script>
+  <link rel="stylesheet" href="css/discovery.css?v=235">
+  <link rel="stylesheet" href="css/account.css?v=242">
+  <link rel="stylesheet" href="css/board-runtime.css?v=243">
+  <link rel="stylesheet" href="css/onboarding.css?v=241">
 </head>
 <body>
-  <!-- The board is rendered by js/app.js from jobs-data.json, reproducing the exact
-       markup the original Manus template produced. Edit jobs-data.json to add/remove roles. -->
-  <div data-screen-label="Jobs" class="board" id="board" style="min-height: 100vh; font-family: 'Poppins', system-ui, sans-serif; color: #2C2118; padding-bottom: 90px;"></div>
+  <!-- Current active source rows are checked before cards render. Outages never show a stale catalog. -->
+  <div data-screen-label="Jobs" class="board" id="board" style="min-height: 100vh; font-family: 'Poppins', system-ui, sans-serif; color: #2C2118; padding-bottom: 90px;">
+    <noscript>
+      <section class="su-noscript">
+        <nav aria-label="Main"><a href="/">Home</a><a href="/jobs.html">Jobs</a><a href="/internships.html">Internships</a><a href="/tracker.html">Tracker</a></nav>
+        <h1>Roles I'd actually apply to.</h1>
+        <p>Turn on JavaScript to check current availability, browse listings and save jobs. <a href="/about.html">How this board works</a>.</p>
+      </section>
+    </noscript>
+  </div>
+  <div id="su-runtime-error" class="su-runtime-error" role="alert" hidden><h2>A little snag in the notebook.</h2><p>This part of the page could not load. Refresh to try again.</p><a href="/jobs.html">Refresh the board</a></div>
 
   <!-- Modals / popups get appended here at runtime -->
   <div id="overlay-root"></div>
@@ -87,10 +110,29 @@
   </style>
   <footer class="site-footer">
     <span>&copy; 2026 Elevate Media Technologies LLC</span> &nbsp;&middot;&nbsp;
+    <a href="./index.html">Home</a>
+    <a href="./about.html">How this board works</a>
     <a href="./privacy.html">Privacy Policy</a>
     <a href="./terms.html">Terms of Service</a>
+    <a data-su-version href="/versions.html#version-2-5-2" aria-label="Version 2.5.2. Explore Version 2 features">Version 2.5.2</a>
   </footer>
 
-  <script src="js/app.js?v=app30" defer></script>
+  <script src="js/release.js?v=2.5.2" defer></script>
+  <script src="js/onboarding.js?v=241" defer></script>
+  <script src="js/theme-art.js?v=3" defer></script>
+  <script src="js/advice-content.js?v=2" defer></script>
+  <script src="js/advice-illustrations.js?v=2" defer></script>
+  <script src="js/discovery.js?v=237" defer></script>
+  <script src="js/internships.js?v=235" defer></script>
+  <script src="js/board-runtime.js?v=241" defer></script>
+  <script src="js/saved-reminder.js?v=241" defer></script>
+  <script src="js/signin-reminder.js?v=241" defer></script>
+  <script src="js/us-states.js?v=241" defer></script>
+  <script src="js/pay-display.js?v=241" defer></script>
+  <script src="js/board-controls.js?v=235" defer></script>
+  <script src="js/job-moderation.js" defer></script>
+  <script src="js/app.js?v=243" defer></script>
+  <!-- Google sign-in + cross-device sync. HARD-GATED OFF on stillunemployed.com (see js/auth.js). -->
+  <script type="module" src="js/auth.js?v=243"></script>
 </body>
 </html>

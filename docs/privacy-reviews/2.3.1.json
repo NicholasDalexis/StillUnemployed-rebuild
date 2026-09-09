@@ -1,0 +1,33 @@
+{
+  "version": "2.3.1",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-07T03:50:42.269982+00:00",
+  "reviewer": "Codex/Astra with independent onboarding, policy and release reviewers",
+  "sourceDigest": "bed87045992b8623eddc7b65c7c174631e2d1b1cb679764657f6cfa166c51f67",
+  "sourceFileCount": 143,
+  "privacyChanged": true,
+  "termsChanged": false,
+  "scope": "Rename the release popup to Latest Update, delay automatic entry by 30 seconds from the first eligible board render, and replace its Portfolio Graded teaser with an internal internships overview. Preserve existing browser-local keys, two-appearance cap, dismissal history and manual discovery. The internship CTA acknowledges the popup before native same-tab navigation. No new collection, destination, permission or retention change.",
+  "checks": {
+    "integratedTests": 546,
+    "onboarding": "29 checks: deterministic 30-second deadline, no duplicate timer, manual immediate entry/cancellation, competing overlay/filter/feed deferral, retained legacy receipts, cap and cross-tab locks, focus/Escape/backdrop/close paths, and internal navigation dismissal without preventDefault.",
+    "browser": "Native local manual overview and internship detail inspected. At measured 390px and 320px CSS viewport widths the scroll area has no horizontal overflow; 320px dialog bounds fit the viewport. Back receives focus and Browse internships navigates to the internal section with the dialog closed. Existing IAB 0.8 zoom clips screenshots; geometry was checked directly. No physical-phone or real authenticated round-trip claim."
+  },
+  "baselineReview": "docs/privacy-reviews/2.3.0.json",
+  "openItems": [
+    "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
+    "Function-scoped Firebase and Netlify configuration and actual owner UID",
+    "Real authenticated collector, profile and aggregate readback with cross-account/direct-client denials",
+    "Hosted retention, reset and account-deletion execution; legacy logs and backups",
+    "Six moderate dependency findings; no high or critical advisories in saved audit",
+    "Actual new discovery-schema Firestore round trip and deployed ownership rules",
+    "Main-board inherited Human verified badges lack audited per-row historical provenance in this change",
+    "Live report-triage delivery and concurrent-device visit-counter limitations",
+    "Real authenticated Saved/Tracker round trip for admitted internships",
+    "Separate maintenance-owner scope: five internship checks remain unresolved and cursor rotation incomplete; main Jobs evening check timed out. First internship evening scheduled firing is verified in the 2026-09-06 sourcing setup receipt.",
+    "Preview analytics profile/admin503 not configured; actual collector/retention/hosted account evidence unavailable",
+    "Search Console domain property Not verified; Bing has no existing IAB session",
+    "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive"
+  ],
+  "policySummary": "Privacy wording now names Latest Update and preserves the existing local appearance/dismissal disclosure. Terms and public style-guide popup guidance reviewed; no change required. No new data flow or external link. Engineering review, not legal certification."
+}

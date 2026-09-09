@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="same-origin">
+  <title>Board notebook | StillUnemployed analytics</title>
+  <link rel="stylesheet" href="/css/brand.css?v=1">
+  <link rel="stylesheet" href="/css/account.css?v=242">
+  <link rel="stylesheet" href="/css/analytics-dashboard.css?v=1">
+  <script src="/js/analytics-dashboard.js?v=237" defer></script>
+  <script type="module" src="/js/auth.js?v=243"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to analytics</a>
+  <div class="dashboard-wrap">
+    <header class="dashboard-header">
+      <a class="dashboard-brand" href="/">StillUnemployed.com</a>
+      <nav aria-label="Dashboard navigation"><a href="/jobs">Back to jobs ↗</a><span class="su-account-slot"></span></nav>
+    </header>
+    <main id="main">
+      <div class="dashboard-title">
+        <div><p class="eyebrow">PRIVATE · OWNER ACCESS</p><h1>The board notebook.</h1><p class="intro">What people explore. What brings them back.</p></div>
+        <div class="dashboard-controls"><label for="window-days">Time window <select id="window-days"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option></select></label><button id="refresh" class="paper-button" type="button">Refresh ↻</button></div>
+      </div>
+      <div id="service-state" class="service-state" role="status" aria-live="polite" aria-atomic="true"><strong id="state-title">Checking access…</strong><p id="state-detail">An authorized account is required to view analytics.</p></div>
+      <div id="sample-banner" class="sample-banner" hidden><strong>Sample data. These are invented numbers.</strong><span>For trying the dashboard only.</span><button id="exit-sample" type="button">Return to real data</button></div>
+      <p id="freshness" class="freshness" hidden></p>
+      <section id="dashboard-data" hidden aria-label="Analytics results">
+        <div id="metrics" class="metrics"></div>
+        <div class="dashboard-grid">
+          <section class="paper trend-panel" aria-labelledby="trend-title">
+            <div class="panel-heading"><div><p class="eyebrow">THE DAILY PICTURE</p><h2 id="trend-title">A little momentum.</h2></div><label class="compact-label" for="trend-metric">Show<select id="trend-metric"><option value="visits">Visits</option><option value="job_opens">Job opens</option><option value="apply_clicks">Apply clicks</option></select></label></div>
+            <p id="trend-summary" class="chart-description"></p>
+            <div id="daily-chart" class="daily-chart" aria-hidden="true"></div>
+            <div id="daily-axis" class="daily-axis" aria-hidden="true"></div>
+            <details class="data-details"><summary>View daily numbers</summary><div class="table-scroll"><table><caption>Daily recorded activity (UTC)</caption><thead><tr><th scope="col">Date</th><th scope="col">Visits</th><th scope="col">Job opens</th><th scope="col">Apply clicks</th></tr></thead><tbody id="daily-table"></tbody></table></div></details>
+          </section>
+          <section class="paper funnel-panel" aria-labelledby="funnel-title"><p class="eyebrow">FROM CURIOUS TO APPLIED</p><h2 id="funnel-title">The job journey.</h2><p class="chart-description">Action counts, not a conversion funnel. One person can take several actions.</p><ol id="journey" class="bar-list journey-list"></ol><p class="small-note">“Reported applied” is the visitor’s own confirmation. An Apply click alone does not confirm an application.</p></section>
+          <section class="paper" aria-labelledby="fields-title"><p class="eyebrow">BROAD INTERESTS</p><h2 id="fields-title">Fields they explore.</h2><p class="chart-description">Recorded card opens by career field.</p><ol id="fields" class="bar-list"></ol></section>
+          <section class="paper" aria-labelledby="roles-title"><p class="eyebrow">A CLOSER LOOK</p><h2 id="roles-title">Roles that draw attention.</h2><p class="chart-description">Recorded card opens by role family.</p><ol id="roles" class="bar-list"></ol></section>
+          <section class="paper" aria-labelledby="jobs-title"><p class="eyebrow">THE ACTUAL POSTINGS</p><h2 id="jobs-title">Jobs worth a closer look.</h2><p class="chart-description">Recorded card opens by job. Up to 10 reportable postings.</p><ol id="popular-jobs" class="bar-list"></ol></section>
+          <section class="paper" aria-labelledby="companies-title"><p class="eyebrow">WHO THEY ARE CURIOUS ABOUT</p><h2 id="companies-title">Companies on their radar.</h2><p class="chart-description">Recorded card opens grouped by company. Up to 10 reportable companies.</p><ol id="companies" class="bar-list"></ol></section>
+          <section class="paper" aria-labelledby="themes-title"><p class="eyebrow">MAKE IT YOURS</p><h2 id="themes-title">The looks they select.</h2><p class="chart-description">Theme selections, not unique people or time spent in a theme.</p><ol id="themes" class="bar-list"></ol></section>
+          <section class="paper" aria-labelledby="theme-likes-title"><p class="eyebrow">THEIR FEEDBACK</p><h2 id="theme-likes-title">Themes they like.</h2><p class="chart-description">Recorded “I like this theme” votes in the selected window. Counts are vote events, not unique voters.</p><ol id="theme-likes" class="bar-list"></ol><p class="small-note">Each theme needs at least 5 distinct analytics visitors voting in this direction. Retries of the same event count once.</p></section>
+          <section class="paper" aria-labelledby="theme-dislikes-title"><p class="eyebrow">ROOM TO IMPROVE</p><h2 id="theme-dislikes-title">Themes they dislike.</h2><p class="chart-description">Recorded “I don’t like this theme” votes in the selected window. This is separate from theme selections.</p><ol id="theme-dislikes" class="bar-list"></ol><p class="small-note">Each direction is withheld separately below 5 distinct analytics visitors. Missing groups are not zero votes; no approval rate is inferred.</p></section>
+          <section class="paper timing-panel" aria-labelledby="timing-title"><p class="eyebrow">AFTER AN APPLY CLICK</p><h2 id="timing-title">Time away, with context.</h2><p class="timing-number" id="away-average"></p><p class="chart-description">Mean observed away time for returned visits, limited to 15 minutes per observation.</p><dl id="timing-stats" class="timing-stats"></dl><p class="small-note">This measures our tab becoming hidden and returning. It cannot tell what happened on the employer’s site. Time past the limit and missing returns remain uncertain.</p></section>
+        </div>
+        <section class="paper question-panel" aria-labelledby="questions-title"><div class="question-intro"><p class="eyebrow">ASK THE NOTEBOOK</p><h2 id="questions-title">What are you wondering?</h2><p>Ask about totals, popular fields, roles, jobs, companies, theme votes or time on our legal pages. Answers use the selected window’s aggregates.</p></div><div><div class="question-chips" aria-label="Suggested questions"><button type="button" data-question="Which field is most popular?">Most popular field?</button><button type="button" data-question="How many people use the tracker?">Who uses the tracker?</button><button type="button" data-question="Which theme has the most likes?">Most liked theme?</button></div><form id="question-form"><label for="question">Your question</label><div class="question-entry"><input id="question" name="question" type="text" maxlength="250" autocomplete="off" placeholder="How many people signed up?"><button class="paper-button" type="submit">Ask ↗</button></div></form><p id="question-answer" class="question-answer" role="status" aria-live="polite" aria-atomic="true">Try a suggested question to get started.</p><p class="small-note">Questions stay in this browser. This is a limited aggregate lookup, with no demographic guesses or external AI service.</p></div></section>
+        <section class="paper page-timing-panel" aria-labelledby="page-timing-title"><p class="eyebrow">TIME ON OUR PAGES</p><h2 id="page-timing-title">Where they spend a moment.</h2><p class="chart-description">Mean active time per measured page and session. Includes legal pages when enough visitors have opted in.</p><ol id="page-timing" class="bar-list"></ol><p class="small-note">Active time is measured while this page is visible and the visitor is active. Timing events can repeat within a session; they are not page-view counts or proof someone read the text.</p></section>
+        <section class="paper coverage-panel" aria-labelledby="coverage-title"><p class="eyebrow">READ THE MARGINS</p><h2 id="coverage-title">What these numbers can tell us.</h2><div class="coverage-grid"><div><h3>People who opted in</h3><p>Analytics include consented activity only. Ad blockers, offline sessions and missing events can leave gaps. These are not a count of everyone who visited.</p></div><div><h3>Patterns, not identities</h3><p id="cohort-note"></p><p>Interests describe activity on this board. They do not tell us a person’s age, background or qualifications.</p></div><div><h3>Zeros need context</h3><p>A zero means no recorded activity in this window. It does not prove an event is correctly wired. Unavailable measurements appear as N/A.</p><p id="retention-note"></p></div></div><details><summary>Inspect recorded event types</summary><p class="small-note">Recorded action counts, not unique people or a complete response history. Preference saves can include blank optional answers. These counts contain no typed answers or per-job not-fit details. Missing event types do not prove zero activity.</p><ol id="events" class="bar-list event-list"></ol></details></section>
+      </section>
+      <div class="sample-entry"><p>No live numbers needed to try the layout.</p><button id="load-sample" class="text-button" type="button">Preview sample data</button></div>
+      <noscript><p class="service-state">Enable JavaScript to request private analytics. No analytics data is embedded in this page.</p></noscript>
+    </main>
+    <footer><a href="/privacy">Privacy Policy</a><a href="/terms">Terms of Service</a><span>StillUnemployed · Board notebook</span></footer>
+  </div>
+</body>
+</html>

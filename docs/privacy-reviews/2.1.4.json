@@ -1,0 +1,23 @@
+{
+  "version": "2.1.4",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-06T04:28:33.811Z",
+  "reviewer": "Codex/Astra Job Board",
+  "sourceDigest": "6a7770b545053c747ca04784952770420e6de6d8b57afed4bd34bab603e7500a",
+  "sourceFileCount": 121,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "checks": {
+    "onboardingTests": 16
+  },
+  "scope": "Incremental review from locally reviewed 2.1.3: welcome back-action wording, its script cache key and generated release metadata only. No data-flow, consent, storage, authentication, analytics or backend behavior changes. Privacy and Terms reviewed, no wording change needed.",
+  "baselineReview": "docs/privacy-reviews/2.1.3.json",
+  "openItems": [
+    "Function-scoped Firebase and Netlify configuration and actual owner UID",
+    "Real authenticated collector, profile and aggregate readback with cross-account/direct-client denials",
+    "Hosted retention, reset and account-deletion execution; legacy logs and backups",
+    "Actual Netlify function packaging/runtime and deployment readback",
+    "Six moderate dependency findings; no high or critical advisories in saved audit"
+  ],
+  "policySummary": "Separate optional analytics and recommendations; no typed text in events; truthful observed-away timing; per-signal expiry; private aggregate access; sanctioned public visual guide with private internal files excluded"
+}

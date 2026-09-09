@@ -1,14 +1,37 @@
-# StillUnemployed.com — static site, no build step.
-# Netlify just serves the repo root as-is.
+# StillUnemployed.com: static site with generated share and theme pages.
+# Netlify serves only the explicit dist allowlist after the build succeeds.
 [build]
-  publish = "."
+  publish = "dist"
   # Generate the static per-job share pages + Post-it OG images from the live sheet.
   # gen-share.mjs      = per-JOB share pages + Post-it OG images (/j/**)
   # gen-theme-pages.mjs = per-THEME board pages (/jobs/<theme>/index.html), each with its own
   #                      og:image, so sharing /jobs/casino previews the CASINO board. Crawlers
-  #                      don't run JS, so this cannot be done client-side. Kept separate because
-  #                      gen-share exits early if the Google Sheet is unreachable.
-  command = "node scripts/gen-share.mjs && node scripts/gen-theme-pages.mjs"
+  #                      don't run JS, so this cannot be done client-side. A feed failure stops
+  #                      the build and leaves the previous successful deployment available.
+  # FIX 2026-08-16: this `command` line sat under [build.environment] (a Jul-13 merge mistake),
+  # where Netlify reads it as an env var, NOT a build command — so branch builds silently
+  # skipped page generation. It belongs HERE, in [build]. [[2026-07-14-Netlify-Build-Command-Nested-In-Wrong-Table]]
+  command = "node scripts/gen-style-guide.mjs --check && node scripts/version.mjs --check && node scripts/privacy-review.mjs && node scripts/gen-share.mjs && node scripts/gen-theme-pages.mjs && node scripts/prepare-publish.mjs && node scripts/gen-seo.mjs"
+
+# ── Netlify secrets scanning (2026-07-12) ──────────────────────────────────────────────────────
+# Netlify scans the build output for anything that looks like a credential and FAILS THE DEPLOY if
+# it finds one. It flagged `apiKey` in js/auth.js and blocked two builds. That is the scanner doing
+# exactly its job, and the default should stay ON.
+#
+# These client configuration files are exceptions. A Firebase **web config** (apiKey / authDomain / projectId /
+# appId) is a PUBLIC IDENTIFIER, not a secret — Google's own docs say to ship it in client-side JS.
+# It grants nothing on its own. The actual security for this feature is:
+#   1. Firestore rules  — a user can only read/write `users/{their own uid}`; everything else denied.
+#   2. Authorized domains — only `localhost` + `preview--stillunemployed.netlify.app` can sign in.
+#      stillunemployed.com is deliberately NOT authorized.
+#   3. js/auth.js hard-gates itself off on the production hostname.
+#
+# Both auth.js and __/firebase/init.json contain only the public Firebase web configuration.
+# Scoped to these two paths, so a REAL secret leaking anywhere else in the repo still fails the build.
+# init.json also supplies the same-origin Firebase redirect helper with that public configuration.
+[build.environment]
+  NODE_VERSION = "22"
+  SECRETS_SCAN_OMIT_PATHS = "js/auth.js,__/firebase/init.json"
 
 # Shipped Jun 28 2026: fully disable Netlify post-processing (belt + suspenders
 # to the class-based nav fix, so future quoted inline styles can never break).
@@ -20,6 +43,48 @@
 [build.processing]
   skip_processing = true
 
+# ── FIREBASE AUTH PROXY (2026-07-12) — THIS IS WHAT MAKES SIGN-IN ACTUALLY WORK ────────────────
+# THE BUG IT FIXES: Firebase brokers the auth session through a hidden iframe on
+# stillunemployed-17de9.firebaseapp.com — a DIFFERENT ORIGIN from this site. Chrome now partitions
+# third-party storage, so the session gets written under Firebase's origin and OUR origin cannot
+# read it back. Symptoms Nic hit, all from this one cause:
+#   · signInWithPopup threw a bare `auth/internal-error`
+#   · after a redirect sign-in he WAS signed in with Google, but the site still showed "Sign in"
+#   · saved jobs never synced between his laptop and his phone (no user = no Firestore write)
+#
+# THE FIX (Firebase's own recommendation): proxy the auth handler through OUR domain, so the whole
+# flow is SAME-ORIGIN and nothing is third-party. Then set authDomain to this host (see js/auth.js).
+# Bonus: the Google consent screen then shows OUR domain instead of "stillunemployed-17de9.firebaseapp.com".
+#
+# MUST come before the /jobs/* rule — Netlify applies redirects in file order and `force = true`
+# means this wins even though /__/auth/* is not a real file on disk.
+# Keep the default production alias on the same account/privacy boundary as
+# the custom domain. Exact hosts leave branch previews and localhost alone.
+[[redirects]]
+  from = "https://stillunemployed.netlify.app/*"
+  to = "https://stillunemployed.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://stillunemployed.netlify.app/*"
+  to = "https://stillunemployed.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/__/auth/*"
+  to = "https://stillunemployed-17de9.firebaseapp.com/__/auth/:splat"
+  status = 200
+  force = true
+
+# Stable public informational URL. Existing .html links remain valid and carry
+# the same canonical metadata in the finalized artifact.
+[[redirects]]
+  from = "/about"
+  to = "/about.html"
+  status = 200
+
 # Theme deep-links (added Jul 8 2026): /jobs/casino, /jobs/blackcat, /jobs/girlies, etc.
 # all serve the board (jobs.html) with the URL preserved (status 200 = rewrite, not redirect).
 # The pre-paint script in jobs.html reads the slug and applies that theme before first paint,
@@ -27,6 +92,18 @@
 # relative assets still resolve correctly under the deeper /jobs/* path.
 [[redirects]]
   from = "/jobs/*"
+  to = "/jobs.html"
+  status = 200
+
+# Newly sourced jobs may not have generated share pages yet. Existing files win;
+# otherwise the board reads the share query and opens the current live listing.
+[[redirects]]
+  from = "/j/internships/*"
+  to = "/internships.html"
+  status = 200
+
+[[redirects]]
+  from = "/j/*"
   to = "/jobs.html"
   status = 200
 
@@ -48,7 +125,18 @@
     # all, so it worked perfectly in dev and would have been silently dead in prod — the signup box
     # just... wouldn't be there. Scoped to the exact Beehiiv host, nothing wider.
     # frame-ancestors 'none' still stands: others can't embed US, we can embed Beehiiv. Different rule.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com; connect-src 'self' https://docs.google.com https://script.google.com https://script.googleusercontent.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src https://subscribe-forms.beehiiv.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+    # FIREBASE hosts added 2026-07-12 for Google sign-in (js/auth.js). Learned the hard way from the
+    # Beehiiv iframe: localhost serves NO CSP, so anything CSP blocks works perfectly in dev and is
+    # silently dead once deployed. Adding these before the first preview deploy, not after.
+    #   www.gstatic.com          -> the Firebase SDK modules (script-src)
+    #   identitytoolkit/securetoken/firestore .googleapis.com -> auth + data (connect-src)
+    #   accounts.google.com + the project's firebaseapp.com -> the sign-in popup (frame-src)
+    # NOTE: js/auth.js hard-gates itself OFF on stillunemployed.com, so production never contacts
+    # any of these. Allowing a host the live site never talks to costs nothing; a CSP is a ceiling,
+    # not a floor. The alternative (a second, preview-only CSP) is a second thing to keep in sync,
+    # and this repo has been bitten three times by exactly that.
+    # Firebase Auth uses the Google API loader for its popup/redirect iframe handshake.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com https://lh3.googleusercontent.com; connect-src 'self' https://docs.google.com https://script.google.com https://script.googleusercontent.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://www.gstatic.com; frame-src 'self' https://subscribe-forms.beehiiv.com https://accounts.google.com https://*.firebaseapp.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
 
 # Why fixes kept "not showing" before: the browser/CDN served cached OLD
 # html/css/js, so deploys looked like they did nothing. Force these to
@@ -73,3 +161,9 @@
   for = "/js/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# Optional analytics runtime. Credentials are function-scoped environment values.
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  included_files = ["jobs-data.json", "internships-data.json", "js/internships.js", "js/job-identity.js", "js/personalization.js", "__/firebase/init.json", "netlify/functions/lib/internship-display.json"]

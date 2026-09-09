@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Suggest a job | StillUnemployed.com</title>
+  <meta name="description" content="Found a role worth sharing? Send the employer's job link for review.">
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="/css/brand.css?v=1">
+  <link rel="stylesheet" href="/css/suggest.css?v=2">
+  <script src="/js/personalization.js?v=237" defer></script>
+  <script src="/js/analytics.js?v=235" defer></script>
+  <script src="/js/ga.js?v=235" defer></script>
+  <script src="/js/suggest.js?v=1" defer></script>
+</head>
+<body>
+  <div class="suggest-wrap">
+    <header class="suggest-header">
+      <a class="suggest-brand" href="/">StillUnemployed.com</a>
+      <a class="suggest-back" href="/jobs">Back to jobs <span aria-hidden="true">↗</span></a>
+    </header>
+    <main id="main" class="suggest-paper">
+      <p class="suggest-kicker">a little help goes a long way</p>
+      <h1>Suggest a job.</h1>
+      <p class="suggest-intro">Found a role worth sharing? Send the employer's job link. We'll review it before it appears on the board.</p>
+
+      <form id="suggest-form" name="job-suggestions-v2" method="POST" action="/suggest" data-netlify="true" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="job-suggestions-v2">
+        <input id="suggest-request-id" type="hidden" name="request-id" value="">
+        <p class="suggest-trap" aria-hidden="true">
+          <label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label>
+        </p>
+        <div class="suggest-field">
+          <label for="suggest-url">Employer's job link</label>
+          <p id="suggest-url-help" class="suggest-hint">The public posting on the company's website or hiring platform, rather than a social post.</p>
+          <input id="suggest-url" name="job-url" type="url" inputmode="url" placeholder="https://company.com/careers/job" required maxlength="2048" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="suggest-url-help">
+        </div>
+        <div class="suggest-field">
+          <label for="suggest-context">Anything we should know? <span class="suggest-optional">Optional</span></label>
+          <textarea id="suggest-context" name="context" rows="3" maxlength="500" aria-describedby="suggest-context-help"></textarea>
+          <p id="suggest-context-help" class="suggest-hint">Up to 500 characters. Please leave out personal information.</p>
+        </div>
+        <p class="suggest-privacy">Your link and note go to our private review inbox. No account needed. <a href="/privacy">Privacy</a></p>
+        <button id="suggest-submit" class="suggest-submit" type="submit" disabled>Send for review <span aria-hidden="true">↗</span></button>
+        <p id="suggest-status" class="suggest-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        <noscript><p class="suggest-status">Please enable JavaScript to check and send your link.</p></noscript>
+      </form>
+
+      <section id="suggest-receipt" class="suggest-receipt" hidden aria-labelledby="suggest-receipt-title">
+        <p class="suggest-kicker">thank you for passing it on</p>
+        <h2 id="suggest-receipt-title" tabindex="-1">Your suggestion is pending review.</h2>
+        <p>It hasn't been added to the board yet. A reviewer will check the employer's posting before deciding whether to include it.</p>
+        <div class="suggest-receipt-actions">
+          <a class="suggest-submit" href="/jobs">Back to jobs <span aria-hidden="true">↗</span></a>
+          <button id="suggest-another" class="suggest-text-button" type="button">Suggest another</button>
+        </div>
+      </section>
+
+      <details class="suggest-checks">
+        <summary>How suggestions are checked</summary>
+        <p>A reviewer checks the employer source, disclosed pay, experience requirements and whether applications are open. AI can help flag suspicious or unclear postings. A person makes the publishing decision, and uncertain jobs stay off the board.</p>
+      </details>
+    </main>
+    <footer class="suggest-footer"><a href="/">Home</a><span aria-hidden="true">·</span><a href="/jobs">Jobs</a><span aria-hidden="true">·</span><a href="/privacy">Privacy</a></footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,548 @@
+{
+  "schemaVersion": 1,
+  "currentVersion": "2.5.2",
+  "releases": [
+    {
+      "version": "2.5.2",
+      "date": "2026-09-09",
+      "title": "Production launch of reviewed Version 2 board",
+      "changes": [
+        "Promote reviewed 2.5.1 features to production. Redirect the default Netlify production address to the canonical domain so the existing account/privacy boundary is consistent. Google account sync and owner report writes remain staged on preview."
+      ]
+    },
+    {
+      "version": "2.5.1",
+      "date": "2026-09-09",
+      "title": "Internship sharing and Version 2 overview",
+      "changes": [
+        "Give internships specific themed share pages and images with fresh availability checks, and share the readable Jobs detail layout.",
+        "Restore first-card artwork on both boards and refine the Latest Update notes and dismissible welcome toast.",
+        "Present eight major Version 2 features with the exact current version while preserving full private release history."
+      ]
+    },
+    {
+      "version": "2.5.0",
+      "date": "2026-09-09",
+      "title": "Keep saved jobs across devices",
+      "changes": [
+        "Added a one-time Google sign-in reminder after a successful new guest bookmark, using the existing application reminder design and a separate browser receipt. It yields safely around other notes, does not stack with the first Saved shortcut, and keeps the existing three-application reminder and later Saved shortcut cadence.",
+        "Updated the privacy disclosure for the new reminder marker and confirmed Nic’s three-part numbering choice for 2.5.0 and future patch carries."
+      ]
+    },
+    {
+      "version": "2.4.9",
+      "date": "2026-09-08",
+      "title": "Cleaner Latest Update cards",
+      "changes": [
+        "Removed the decorative brown tape above the four Latest Update cards on desktop and mobile. The miniature theme swatches retain their tape, and the four title arrows and existing announcement behavior are unchanged."
+      ]
+    },
+    {
+      "version": "2.4.8",
+      "date": "2026-09-08",
+      "title": "Clearer Latest Update card links",
+      "changes": [
+        "Replace Click here with a decorative drawn arrow after each Latest Update card title; remove duplicate orange arrows inside the advice and internship previews. Existing announcement receipts, interaction, data flows and four-card order are unchanged."
+      ]
+    },
+    {
+      "version": "2.4.7",
+      "date": "2026-09-08",
+      "title": "Keep owner restoration available after Undo expires",
+      "changes": [
+        "Add owner-only Reported jobs to Board menu, using the existing authenticated private read and guarded restore action. Keep only removed posting fields in memory, preserve stable retry IDs and global revision conflicts, and retain keyboard navigation.",
+        "Includes the accepted 2.4.6 compact header, second-card drawings, pointer-focus correction and preview moderation. Native recovery tests cover 320, 390 and 1440px; no new server powers, storage recipients or retention. Production unchanged."
+      ]
+    },
+    {
+      "version": "2.4.6",
+      "date": "2026-09-08",
+      "title": "Complete preview runtime packaging",
+      "changes": [
+        "Fix the Edge method declaration and separate unchanged source parsing from image generation. All seven Netlify Functions packages and the Edge package validate; all seven emitted handlers cold-load with credentials and network absent.",
+        "807 tests pass. Includes compact board header, second-card drawing, accessible pointer and keyboard dialogs, reversible owner-only preview reporting, privacy disclosures and security corrections. Earlier 2.4.3 and 2.4.4 stayed local; 2.4.5 failed host packaging and was never served."
+      ],
+      "public": {
+        "title": "A little more room for the roles",
+        "changes": [
+          "A compact board header brings roles closer, with the drawings still along for the hunt.",
+          "Clearer mobile dialogs and a more reliable way to keep listings current."
+        ]
+      }
+    },
+    {
+      "version": "2.4.5",
+      "date": "2026-09-08",
+      "title": "Finish owner reporting and compact board QA",
+      "changes": [
+        "Final keyboard browser check caught native disabled-button blur during Undo. Preserve action focus ownership and return focus on success or retry without taking later user focus.",
+        "Includes compact header, second-card art, pointer-focus correction, server-authorized preview unlisting, policy updates, dependency and local-launcher fixes from the undeployed2.4.3/2.4.4 candidate checkpoints.803 tests pass; bounded native keyboard/click/retry/expiry and all-theme checks completed."
+      ],
+      "public": false,
+      "unpublishedPublicDraft": {
+        "title": "A little more room for the roles",
+        "changes": [
+          "A compact board header brings roles closer, with the drawings still along for the hunt.",
+          "Clearer mobile dialogs and a more reliable way to keep listings current."
+        ]
+      },
+      "deploymentStatus": "failed-preview-build"
+    },
+    {
+      "version": "2.4.4",
+      "date": "2026-09-08",
+      "title": "Preserve keyboard access to report undo",
+      "changes": [
+        "Final candidate review found Reported could expire while Undo held keyboard focus. Pause expiry inside the note and resume five seconds after focus leaves; retain ordinary five-second timing.",
+        "Includes the compact header, second-card illustration, reversible owner reporting and privacy/security corrections prepared in 2.4.3. Earlier 2.4.3 seal remained local and was never deployed."
+      ],
+      "public": false,
+      "unpublishedPublicDraft": {
+        "title": "A little more room for the roles",
+        "changes": [
+          "The board starts closer to the controls, with the drawings still along for the hunt.",
+          "Clearer mobile dialogs and a more reliable way to keep listings current."
+        ]
+      },
+      "deploymentStatus": "superseded-local-only"
+    },
+    {
+      "version": "2.4.3",
+      "date": "2026-09-08",
+      "title": "Compact board and owner reporting",
+      "changes": [
+        "Remove visible result counts, align the board menu with the pay legend and move the first drawing to the second displayed card.",
+        "Add authenticated reversible preview-only owner reporting with durable acknowledgments and active-listing checks.",
+        "Preserve keyboard focus while removing automatic pointer-focus outlines; restrict local preview to loopback and update privacy disclosures."
+      ],
+      "public": false,
+      "unpublishedPublicDraft": {
+        "title": "A little more room for the roles",
+        "changes": [
+          "A more compact board header brings the first roles closer.",
+          "Small improvements to mobile dialogs and listing availability."
+        ]
+      },
+      "deploymentStatus": "superseded-local-only"
+    },
+    {
+      "version": "2.4.2",
+      "date": "2026-09-08",
+      "title": "Keep Tracker status messages readable in every theme",
+      "changes": [
+        "Final hosted 2.4.1 review found an inherited Casino Tracker sync-caption contrast defect: dark inherited ink on burgundy. Bind only that status paragraph to existing Tracker theme ink; bump account.css cache references.",
+        "All 744 tests pass. Ten rendered caption checks cover eight themes at390px plusOriginal/Casino1440px, each above4.5:1. No change to status, Saved, auth, storage, analytics, policies, data, sounds or creators. Preview only."
+      ],
+      "public": {
+        "title": "A clearer Tracker message",
+        "changes": [
+          "Tracker save and sync messages now stay readable in every theme, including Casino."
+        ]
+      }
+    },
+    {
+      "version": "2.4.1",
+      "date": "2026-09-08",
+      "title": "Saved reminders and steadier mobile navigation",
+      "changes": [
+        "Add a current-owner device-only Saved shortcut after successful new bookmarks 1,5,10; coordinate with other reminders and preserve saved records.",
+        "Preserve native Tracker selects through status changes and sync echoes; clear suspended previous-account views before showing board or Tracker state.",
+        "Clear Saved-only views on section navigation; put count left and Board menu right with protected illustration spacing; normalize known single-office city/state and trailing hourly plus.",
+        "Latest Update adds current version at footer left and removes only the static heading outline. Privacy discloses bookmark cadence and tab section storage. Sound effects and creator subsections remain deferred; preview only."
+      ],
+      "public": {
+        "title": "A smoother board on your phone",
+        "changes": [
+          "Find saved jobs with a small Saved shortcut after your first bookmark and every fifth one.",
+          "Tracker status changes stay steady, and switching sections opens the full board again.",
+          "Shorter location labels and clearer spacing keep job cards easier to scan.",
+          "Latest Update now shows the current version at the bottom."
+        ]
+      }
+    },
+    {
+      "version": "2.4.0",
+      "date": "2026-09-08",
+      "title": "Compact multi-location job cards",
+      "changes": [
+        "Main job card fronts and generated share images use Multiple locations for listings with more than one location; complete source geography remains in job details, search and state filters.",
+        "Verified all 162 current location labels, 34 affected listings, same-state offices, DC, remote alternatives, address notes, city aliases and ZIP codes."
+      ],
+      "public": {
+        "title": "A little more room on every job card",
+        "changes": [
+          "Jobs with several locations now say Multiple locations. Open the job for the full list of cities."
+        ]
+      }
+    },
+    {
+      "version": "2.3.9",
+      "date": "2026-09-08",
+      "title": "Fit shared job text and provide the browser icon",
+      "changes": [
+        "Measure company, role and location in generated share images; retain fitting text and use an explicit word-boundary ellipsis when needed. Preserve salary, fonts, layout and vector star.",
+        "Provide the existing orange brand star as a browser icon so the automatic favicon request succeeds. No sounds or new collection."
+      ],
+      "public": {
+        "title": "Clearer shared job cards",
+        "changes": [
+          "Shared cards keep complete titles when they fit and make shortened text clear."
+        ]
+      }
+    },
+    {
+      "version": "2.3.8",
+      "date": "2026-09-08",
+      "title": "Hosted theme navigation and share-image correction",
+      "changes": [
+        "Make generated theme-page navigation root-relative so hosted pretty URLs preserve Home and board routes.",
+        "Render share-image footer stars as vector paths to remove dependence on hosting system font coverage; no sounds or new data collection."
+      ],
+      "public": {
+        "title": "A smoother trip around the board",
+        "changes": [
+          "Theme links take you to the right place, and shared job cards keep their star."
+        ]
+      }
+    },
+    {
+      "version": "2.3.7",
+      "date": "2026-09-07",
+      "title": "Clearer sign-in and a calmer first visit",
+      "changes": [
+        "Show a compact, theme-aware Latest Update at the initial board shell, once per deliberate announcement with browser acknowledgment; preserve OAuth return tasks and manual-reopen scroll. Add a five-second version welcome note.",
+        "Label Google sign-in on mobile and offer a one-time reminder after three newly saved guest applications. Preserve verified QA owner exclusions and surface analytics service configuration failures accurately.",
+        "Replace the application nudge with a Tracker sticky note, enlarge mobile bookmarks, compact About Nic, prevent internship stamp overlap and align counts away from doodles.",
+        "Remove salary preference from discovery ordering, preserve ordering after feed refresh, update Privacy and Terms, and correct small-text contrast across board and Tracker surfaces. Sound effects remain deferred outside the website."
+      ],
+      "public": {
+        "title": "A clearer board, from the first visit",
+        "changes": [
+          "Sign-in is easier to find, with a reminder to keep your applications together.",
+          "Larger save buttons, a smaller About note and clearer internship cards make phone browsing easier.",
+          "The latest updates appear before you start browsing and stay available in Board menu.",
+          "Higher pay no longer decides which roles appear first."
+        ]
+      }
+    },
+    {
+      "version": "2.3.6",
+      "date": "2026-09-07",
+      "title": "Keep filter panels above the closed board menu",
+      "changes": [
+        "Fix the closed Board menu stacking layer so its summary cannot cover All Roles or the Filters close button. Add regression coverage for both panels on Jobs and Internships."
+      ],
+      "public": {
+        "title": "Clearer filters",
+        "changes": [
+          "Board menu stays out of the way when you open filters or choose a role."
+        ]
+      }
+    },
+    {
+      "version": "2.3.5",
+      "date": "2026-09-07",
+      "title": "Readable actions across every theme",
+      "changes": [
+        "Apply links on Jobs now share the readable paper-specific ink already used by internships. Hover underlines preserve contrast. Girlies navigation and Tracker status use matching dark ink; filter counts have a darker readable badge."
+      ],
+      "public": {
+        "title": "Clearer actions in every theme",
+        "changes": [
+          "Apply links, navigation and filter counts are easier to read, including on pink and dark themes."
+        ]
+      }
+    },
+    {
+      "version": "2.3.4",
+      "date": "2026-09-07",
+      "title": "Keep your place, with clearer internship cards",
+      "changes": [
+        "Preserve account-owned public saved-card snapshots and backfill existing bookmarks from retained retired Jobs rows. Confirm closure only from exact Dead evidence; missing or cross-board saves stay distinct and never disappear silently.",
+        "Simplify the internship pay filter and labels, use a stable diverse decorative paper cycle, add full-contrast Internship stamps, enlarge bookmarks and remove redundant Pay Details in job popups while retaining raw source data.",
+        "Use one lined help note at a time, remove Tracker help and Google Preferred Sources promotion, move State first, close filters on outside taps, put About Nic in Board menu, open notebook preferences without input focus and remove Clear answers.",
+        "Keep newsletter iframe nodes through background refresh, render the form as it arrives, replace external fallback with inline retry; shrink advice art, randomize appropriate open notes, suppress notes in hidden review, and show themed feedback for five seconds with four-second wider toasts.",
+        "Exclude the verified QA account from measurement and closure reports. Creator Version 3 experiment stays paused and separate; open-note, Portfolio Graded CTA and Lexend mockups remain private review artifacts."
+      ],
+      "public": {
+        "title": "Your saved jobs stay with you",
+        "changes": [
+          "Saved listings keep their card details when they leave the board, with a clear note about availability.",
+          "Internships have shorter pay labels, varied paper colors and their own stamp. Bookmarks are easier to tap.",
+          "Smaller theme previews, clearer menus and quieter notebook popups make browsing easier on your phone."
+        ]
+      }
+    },
+    {
+      "version": "2.3.3",
+      "date": "2026-09-07",
+      "title": "Mobile polish and quieter discovery",
+      "changes": [
+        "Remove feed signup promotions; actual job-detail openings show signup every second time, with a reserved loading state and direct fallback. Every published advice ID has artwork and quieter invitation copy.",
+        "Render the real board before current feed resolves, preload local fonts and remove skeleton placeholders. Preserve typed filters, unavailable-feed recovery and no cached catalog. Remove automatic dialog focus outline and correct inherited body font.",
+        "Use a one-line tracker reminder after the first and every tenth newly stored application. Top-right tracker removal opens a No-default confirmation with keyboard wrapping and account guards; notes grow without an extra toggle and Export is nearly straight.",
+        "Public style guide retains visual brand sections; full prior guide is privately archived. Public HTML and JSON explicitly project two viewer-facing releases while the full ledger remains internal. Privacy describes local cadence counters. Retain Board menu while alternate More placement awaits feedback."
+      ],
+      "public": {
+        "title": "A little less in your way",
+        "changes": [
+          "A smaller tracker reminder, clearer delete confirmation and notes that grow as you type.",
+          "More illustrated advice and fewer newsletter invitations while you browse.",
+          "Smoother page loading, cleaner job popups and a shorter visual style guide."
+        ]
+      }
+    },
+    {
+      "version": "2.3.2",
+      "date": "2026-09-07",
+      "title": "A quieter board, clearer pay",
+      "changes": [
+        "Move preferences, hidden jobs, suggestions and what’s new into one Board menu. Preferences open by request; the returning-job introduction is deferred.",
+        "Simplify Latest Update, redraw the tracker preview, use white internship paper and keep every arrow drawn.",
+        "Use compact whole-number pay labels with exact employer amounts under Pay details, and one list of 50 state names on both boards.",
+        "Show one lined-paper tooltip at a time and keep menu and dialog focus predictable."
+      ],
+      "public": {
+        "title": "A quieter board, clearer pay",
+        "changes": [
+          "Find preferences, hidden jobs, suggestions and what’s new in one Board menu.",
+          "Compare shorter pay labels, open Pay details for the original amounts, and filter by one clear list of 50 states.",
+          "A simpler Latest Update note gives you more room to explore."
+        ]
+      }
+    },
+    {
+      "version": "2.3.1",
+      "date": "2026-09-06",
+      "title": "Latest Update, with room to settle in",
+      "changes": [
+        "The Latest Update popup waits 30 seconds before opening automatically. Existing dismissals are remembered, and What’s new still opens it immediately.",
+        "An Internships card replaces the Portfolio Graded teaser, with a short overview and a direct link to browse internships."
+      ],
+      "public": {
+        "title": "Internships have a place on the board",
+        "changes": [
+          "Browse internships from the Latest Update note.",
+          "The update waits 30 seconds, remembers dismissal, and is always available through What’s new."
+        ]
+      }
+    },
+    {
+      "version": "2.3.0",
+      "date": "2026-09-06",
+      "title": "Keep each account’s place its own",
+      "changes": [
+        "Remember your filters during a short visit and clear them when accounts change. A background refresh keeps navigation in place while current roles are checked."
+      ]
+    },
+    {
+      "version": "2.2.9",
+      "date": "2026-09-06",
+      "title": "A clearer board, with better recovery",
+      "changes": [
+        "Keep filters through short visits, retry loading without losing your place, and get clearer save and sign-in feedback. Find an optional Prefer us on Google link after Apply, plus a new explanation of how the board works."
+      ]
+    },
+    {
+      "version": "2.2.8",
+      "date": "2026-09-06",
+      "title": "Keep your place when changing themes",
+      "changes": [
+        "Changing an internship theme keeps you on Internships when you refresh or share the address."
+      ]
+    },
+    {
+      "version": "2.2.7",
+      "date": "2026-09-06",
+      "title": "A lighter build for the same board",
+      "changes": [
+        "Share-image generation now reuses its drawing canvas so large boards can deploy reliably.",
+        "Includes the compact internship cards, short summaries and varied theme paper from 2.2.6."
+      ]
+    },
+    {
+      "version": "2.2.6",
+      "date": "2026-09-06",
+      "title": "Compact internship cards and clearer summaries",
+      "changes": [
+        "Internship cards show the company, role, exact pay, city and state.",
+        "Short TLDR notes put known program dates and key eligibility in the final bullet.",
+        "Internships use varied theme paper colors, with more of the strongest accent. Job salary bands stay unchanged."
+      ]
+    },
+    {
+      "version": "2.2.5",
+      "date": "2026-09-06",
+      "title": "The first internships are on the board",
+      "changes": [
+        "Browse 46 source-checked internships with exact pay, eligibility and application dates.",
+        "A separate internship inventory keeps unavailable and held listings out of the board while preserving their review records.",
+        "Clearer empty states and program-pay labels, with current internship status checked before hosted listings load."
+      ]
+    },
+    {
+      "version": "2.2.4",
+      "date": "2026-09-06",
+      "title": "Internship pay and eligibility up front",
+      "changes": [
+        "Internship cards keep exact hourly, monthly and program pay, with the full duties and eligibility in a readable note.",
+        "Accepting applications and upcoming programs have separate counts and actions. Announced dates do not automatically open applications.",
+        "Internship sharing stays on the internship board, and keyboard focus stays visible inside job details."
+      ]
+    },
+    {
+      "version": "2.2.3",
+      "date": "2026-09-06",
+      "title": "Preferences without leaving the board",
+      "changes": [
+        "Your preferences now opens as a compact paper pop-up, with a light background blur and clear syncing, saved and retry states.",
+        "Optional analytics count preference save, clear and skip actions and not-a-fit responses without collecting typed answers or job identities for those actions."
+      ]
+    },
+    {
+      "version": "2.2.2",
+      "date": "2026-09-06",
+      "title": "Clearer sign-in and a coffee break",
+      "changes": [
+        "The welcome-back card shows Google with Sign In while signed out, and returns to its close button when signed in.",
+        "Replaced the Original theme’s push-up figure with a coffee-break drawing on the board and in the style guide."
+      ]
+    },
+    {
+      "version": "2.2.1",
+      "date": "2026-09-06",
+      "title": "A welcome that remembers this browser",
+      "changes": [
+        "Dismiss the Version 2 welcome once without signing in; automatic appearances are capped at two, and What’s new remains available.",
+        "Open Portfolio Graded inside the welcome for a tier-list example and a coming-soon link.",
+        "More Themes uses the same white note paper as the other updates.",
+        "Release numbering now pauses before 2.5.0 for a decision on the version format."
+      ]
+    },
+    {
+      "version": "2.2.0",
+      "date": "2026-09-06",
+      "title": "A board that gets to know your interests",
+      "changes": [
+        "Added optional account preferences, personal job hiding and returning-visitor suggestions on enabled previews.",
+        "Opened an internship section with separate review, eligibility and compensation details; its first listings are still being checked.",
+        "Added six illustrated lessons about experience during college and expanded drawings across the advice notes."
+      ]
+    },
+    {
+      "version": "2.1.9",
+      "date": "2026-09-06",
+      "title": "A calmer application routine",
+      "changes": [
+        "Kept Monday clear and moved the calendar cross-out to Friday, alongside Saturday and Sunday.",
+        "Reworded the advice as a suggested routine, with a reminder to apply when ready and respect deadlines."
+      ]
+    },
+    {
+      "version": "2.1.8",
+      "date": "2026-09-06",
+      "title": "The Original stick figures are back",
+      "changes": [
+        "Restored the earlier Original stick figures and matching examples in the style guide.",
+        "Kept the other seven themes and gave the first figure room below the board links."
+      ]
+    },
+    {
+      "version": "2.1.7",
+      "date": "2026-09-06",
+      "title": "Advice notes in the style guide",
+      "changes": [
+        "Open sample advice notes and see how the paper, handwriting and calls to action fit together.",
+        "Find guidance for clear promotional labels, everyday wording, photos and the site name, with contents links for quicker browsing."
+      ]
+    },
+    {
+      "version": "2.1.6",
+      "date": "2026-09-06",
+      "title": "Texture, character and theme feedback",
+      "changes": [
+        "Added texture guides and three matching drawings for every theme, shared with the job board.",
+        "Separated optional theme likes and dislikes from theme selections in the analytics dashboard.",
+        "Made theme feedback easier to dismiss and kept it out of job detail windows."
+      ]
+    },
+    {
+      "version": "2.1.5",
+      "date": "2026-09-06",
+      "title": "Quieter notices and a familiar homepage",
+      "changes": [
+        "Replaced the automatic privacy form with a short notice and optional detailed choices.",
+        "Restored graduation-photo enlargement within the homepage, without a popup.",
+        "Updated the mobile bookmark prompt and made its instructions easier to read."
+      ]
+    },
+    {
+      "version": "2.1.4",
+      "date": "2026-09-06",
+      "title": "A clearer way back",
+      "changes": [
+        "Shortened the welcome detail action to go back."
+      ]
+    },
+    {
+      "version": "2.1.3",
+      "date": "2026-09-06",
+      "title": "Your interests, your choices",
+      "changes": [
+        "Optional personalized ordering follows the career fields and roles you explore, with higher disclosed pay among comparable jobs.",
+        "Separate analytics and recommendation controls, a history reset, and clearer privacy explanations.",
+        "A private owner dashboard summarizes measured activity and answers supported questions."
+      ]
+    },
+    {
+      "version": "2.1.2",
+      "date": "2026-09-05",
+      "title": "Every theme, with a clearer welcome",
+      "changes": [
+        "Explore all eight themes in the style guide, now linked from Version History.",
+        "A roomier Version 2 welcome puts the tracker first and gives each feature one clear way back.",
+        "Optional Google sign-in in the application feedback note keeps your unanswered question through sign-in."
+      ]
+    },
+    {
+      "version": "2.1.1",
+      "date": "2026-09-05",
+      "title": "Back to the notebook",
+      "changes": [
+        "Shared warm yellow, handwritten welcome and suggestion notes, a visual style guide, and a shorter mobile bookmark reminder.",
+        "Featured job cards follow salary bands, with clearer action text."
+      ]
+    },
+    {
+      "version": "2.1.0",
+      "date": "2026-09-05",
+      "title": "Meet Version 2",
+      "changes": [
+        "A welcome on your first Jobs visit introduces advice, themes, Google sync and Tracker, plus a Portfolio Graded preview.",
+        "A tighter homepage, Apply to Jobs beside Nic’s signature, and easier access to Bookmark and Suggest Jobs.",
+        "Version history is available from the founder note, board footer and welcome.",
+        "Six additional verified job URL variants now group into their original postings."
+      ]
+    },
+    {
+      "version": "2",
+      "date": "2026-09-05",
+      "title": "The new board",
+      "changes": [
+        "Saved jobs and applications sync across devices with Google sign-in.",
+        "Clearer navigation and mobile controls.",
+        "One card per recognized job posting, with existing saved links preserved.",
+        "Search and filter across all 14 job categories.",
+        "A roomier desktop homepage, clearer bookmark shortcut and clickable graduation photo.",
+        "Restored founder notes and clearer Sign In and Signed In labels.",
+        "Suggest Jobs sends links to a private review inbox before any publishing decision.",
+        "Version history now lives beside the homepage footer links."
+      ]
+    }
+  ],
+  "sourceFingerprint": {
+    "algorithm": "sha256-public-source-v1",
+    "digest": "0afc4e8fd5554c49628ea9915879ac34bc22dfa5090aec6fac317952a63ad90e",
+    "fileCount": 159
+  }
+}

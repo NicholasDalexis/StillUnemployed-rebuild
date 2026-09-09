@@ -1,0 +1,39 @@
+{
+  "version": "2.4.9",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-09T03:49:48.491Z",
+  "reviewer": "Codex root with independent release reviewer",
+  "sourceDigest": "e271022134f6f8930425fd4835133060161477110d7a94dfe93d2d1cdbd2051b",
+  "sourceFileCount": 158,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Removal of decorative tape from the four outer Latest Update cards only. No navigation, acknowledgment storage, authentication, data collection, provider, consent or retention changes.",
+  "checks": {
+    "implementation": "814/814 final full tests;34focused and independent54tests; native320/390/1440 recovery panel keyboard/retry/focus/layout pass. All seven configured website stages pass:488jobs,4128sharepages/images,4146HTML. All27provider/runtime inputs identical tovalidated2.4.6; seven Functions and Edge packaging/cold-load acceptance carries forward. Hosted2.4.7 restoration pending.",
+    "boundaries": "Personal No longer open remains separate. QA analytics suppression preserved. Preview and production stores separate; production reporting disabled. Saved and Tracker records preserved.",
+    "disclosures": "Privacy, Terms and About reviewed and corrected for record fields, Netlify hosting storage, reversible owner unlisting and operational retention.",
+    "packagingPolicy": "Reviewed Privacy and Terms against2.4.6 packaging-only extraction and method declaration fix. No behavior/data-use wording change needed beyond existing2.4.5 policy updates.",
+    "recoveryPolicy": "Independent2.4.7 review: owner recovery reads existing posting/action records and invokes existing restore. Only removed posting id/link/company/role/revision projected into memory; no private browser persistence, new recipient, retention or collection category. Existing policies cover restoration and operational retention.",
+    "currentPatch": "Reviewed the two removed decorative CSS rules against the existing Privacy and Terms disclosures. No wording change needed. Miniature theme tape and all existing interactions remain unchanged; independent 320/390/1440 browser check passed."
+  },
+  "baselineReview": "docs/privacy-reviews/2.4.2.json",
+  "openItems": [
+    "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
+    "Function-scoped Firebase and Netlify configuration and actual owner UID",
+    "Real authenticated collector, profile and aggregate readback with cross-account/direct-client denials",
+    "Hosted retention, reset and account-deletion execution; legacy logs and backups",
+    "Six moderate dependency findings; no high or critical advisories in saved audit",
+    "Actual new discovery-schema Firestore round trip and deployed ownership rules",
+    "Main-board inherited Human verified badges lack audited per-row historical provenance in this change",
+    "Live report-triage delivery and concurrent-device visit-counter limitations",
+    "Real authenticated Saved/Tracker round trip for admitted internships",
+    "Separate maintenance-owner scope: five internship checks remain unresolved and cursor rotation incomplete; main Jobs evening check timed out. First internship evening scheduled firing is verified in the 2026-09-06 sourcing setup receipt.",
+    "Preview analytics profile/admin503 not configured; actual collector/retention/hosted account evidence unavailable",
+    "Search Console domain property Not verified; Bing has no existing IAB session",
+    "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive",
+    "2.4.3 dated resolution: the inherited six moderate dependency advisories are resolved by uuid11.1.1 override; current npm audit reports zero.",
+    "2.4.3 dated partial resolution: authoritative owner moderation is implemented for preview; real hosted owner acknowledgment and store write/readback remain to verify. Production activation is still separate.",
+    "2.4.7 dated partial resolution: ready2.4.6 authenticated owner report acknowledgedrevision1, public index/share removal verified. Persistent owner recovery now implemented; final hosted restore and independent restoration readback remain pending."
+  ],
+  "policySummary": "Engineering privacy and terms review with wording changes for preview moderation. Not legal certification. Prior open operational items preserved with dated resolutions."
+}

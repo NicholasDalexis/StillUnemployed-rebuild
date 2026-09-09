@@ -1,0 +1,29 @@
+{
+  "version": "2.1.6",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-06T05:07:36.702266+00:00",
+  "reviewer": "Codex/Astra Job Board with independent theme-guide, vote-service and board-behavior reviews",
+  "sourceDigest": "8b73d1e9f03053587f0b2f780be21133c6192979528306baa1c8c53000befa16",
+  "sourceFileCount": 122,
+  "privacyChanged": true,
+  "termsChanged": false,
+  "checks": {
+    "integratedTests": 342,
+    "styleGuideTests": 20,
+    "boardBehaviorTests": 34,
+    "voteClientServerDashboardTests": 37,
+    "syntheticDashboardBrowserChecks": 34,
+    "nativeBrowser": "All eight guide and board theme switches checked at 320px, guide theme textures and icons at 1440px; representative actual desktop card edges reviewed and first drawing reduced to avoid the utility links. Native opted-in theme prompt and like confirmation verified, named buttons above44px. No new runtime errors in the inspected tab. Backend service recording uses synthetic identity and an in-memory store, not hosted collection.",
+    "build": "Catalog/version/privacy gates, 231 jobs across8 themes,2080 share pages/images,7 alternate board pages and allowlisted publish build passed. dist contains shared art and the sanitized guide, excludes private docs/instructions/tests/functions."
+  },
+  "scope": "Local source and UI review. Existing theme_vote fields now validate exact active-theme keys and up/down values, attempt immediate delivery only with analytics consent, and appear as separate owner-only aggregate rows. Each theme/direction is withheld below5 distinct opted-in actors; retries of one event count once. Prompt is off without analytics consent and dismisses on withdrawal, theme change, product modal, outside click or Escape. Privacy explicitly names selections and like/dislike feedback. Terms reviewed, no wording change needed. No new AI service, permissions or billing. Hosted activation/readback and previously listed rollout blockers remain open.",
+  "baselineReview": "docs/privacy-reviews/2.1.5.json",
+  "openItems": [
+    "Function-scoped Firebase and Netlify configuration and actual owner UID",
+    "Real authenticated collector, profile and aggregate readback with cross-account/direct-client denials",
+    "Hosted retention, reset and account-deletion execution; legacy logs and backups",
+    "Actual Netlify function packaging/runtime and deployment readback",
+    "Six moderate dependency findings; no high or critical advisories in saved audit"
+  ],
+  "policySummary": "Separate optional analytics and recommendations; no typed text in events; truthful observed-away timing; per-signal expiry; private aggregate access; sanctioned public visual guide with private internal files excluded"
+}

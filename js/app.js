@@ -21,11 +21,57 @@
   'use strict';
 
   // ---- tiny helpers ---------------------------------------------------------
+  var INTERNSHIPS = /(?:^|\/)internships(?:\.html)?(?:\/|$)/.test(location.pathname);
+  var FEEDBACK_REDIRECT_KEY = 'su_feedback_auth_redirect_v1';
+  var FEEDBACK_REDIRECT_TTL = 10 * 60 * 1000;
   var esc = function (s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   };
+  function internshipState(job) {
+    return window.SUInternships ? window.SUInternships.applicationState(job) : 'needs_recheck';
+  }
+  function internshipPay(job) {
+    return window.SUInternships ? window.SUInternships.payLabel(job) : 'Pay not disclosed';
+  }
+  function cardPay(job) {
+    var original = job.internship ? internshipPay(job) : String(job.pay || '');
+    return window.SUPayDisplay ? window.SUPayDisplay.compact(original, { basis:job.internship ? job.payBasis : 'annual', status:job.internship ? job.payStatus : undefined, internship:!!job.internship }) : original;
+  }
+  // Exact employer pay stays in source data. The TL;DR has one compact pay label.
+  function payDisclosure() { return ''; }
+  function canonicalState(value) {
+    if (!value || value === 'all' || !window.SUStates) return 'all';
+    var exact = window.SUStates.normalize(value), matches = window.SUStates.extract(value, '');
+    return exact || (matches.length === 1 ? matches[0] : 'all');
+  }
+  function isRemoteAnywhere(job) {
+    var loc = String(job.loc || '').toLowerCase();
+    if(window.SUStates && window.SUStates.extract(job.state,job.loc).length)return false;
+    return /remote/.test(loc) && !loc.replace(/remote/g, '').replace(/[^a-z]+/g, ' ').replace(/\b(us|usa|united states|anywhere|nationwide)\b/g, '').trim();
+  }
+  function internshipCanApply(job) {
+    return !!(window.SUInternships && window.SUInternships.canApply(job));
+  }
+  function internshipLocation(job) {
+    return window.SUInternships && window.SUInternships.locationLabel ? window.SUInternships.locationLabel(job) : String(job.loc || '');
+  }
+  function internshipBullets(job) {
+    return window.SUInternships && window.SUInternships.detailBullets ? window.SUInternships.detailBullets(job) : (Array.isArray(job.duties) ? job.duties.slice(0,3) : []);
+  }
+  // Internship paper is decorative: keep a stable 60/25/15 mix for the same
+  // canonical posting, independent of pay, sorting, filtering or active theme.
+  // Full-time job cards continue to use their salary tier below.
+  function internshipSurface(job) {
+    if(window.SUInternships && window.SUInternships.cardSurface)return window.SUInternships.cardSurface(job);
+    var keys = window.SUJobIdentity ? window.SUJobIdentity.keys(job.link) : [];
+    var key = keys[0] || String(job.link || ''), hash = 2166136261;
+    for (var index = 0; index < key.length; index++) hash = Math.imul(hash ^ key.charCodeAt(index), 16777619);
+    hash ^= hash >>> 16; hash = Math.imul(hash, 0x85ebca6b); hash ^= hash >>> 13;
+    var bucket = (hash >>> 0) % 100;
+    return bucket < 60 ? 'high' : bucket < 85 ? 'mid' : 'low';
+  }
   // escape for use inside a single-quoted JS string in an inline handler
   var jsAttr = function (s) {
     return String(s == null ? '' : s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
@@ -40,37 +86,377 @@
   // also triggers Nic's dead-link email, so his own clicks must be suppressed too.
   // Keep the host list in sync with analytics.js PROD_HOSTS.
   function reportExcluded() {
+    if(window.SUAnalytics && window.SUAnalytics.excluded && window.SUAnalytics.excluded()) return true;
     try { if (localStorage.getItem('su_admin') === '1') return true; } catch (e) {}
     var h = location.hostname;
     return (h !== 'stillunemployed.com' && h !== 'www.stillunemployed.com');
   }
-  // Log a "recipe_view" when a popup that carries the capture block is opened (same 1-in-3
-  // hash as the render), so the Reports sheet can compute views vs hides vs signups.
-  function suRecipeView(link, comp) {
+  // Newsletter invitations follow actual popup openings, shared across both boards in this tab.
+  var RECIPE_COPY = [
+    'more notes from my job hunt ↓',
+    'the advice i wish i had before application #1 ↓',
+    'a little job hunt perspective, every week ↓',
+    'what i would do differently if i started over ↓'
+  ];
+  var detailOpens = 0;
+  function beginJobDetail(comp, link) {
+    if (!comp.catalogJobs().some(function(job){return jobHasLink(job,link);})) return;
+    try { detailOpens = Number(sessionStorage.getItem('su_detail_opens')) || 0; } catch (_) {}
+    detailOpens = Math.max(0, detailOpens) + 1;
+    try { sessionStorage.setItem('su_detail_opens', String(detailOpens)); } catch (_) {}
+    comp._detailRecipe = detailOpens % 2 === 0;
+    comp._detailRecipeCopy = RECIPE_COPY[Math.floor((detailOpens - 1) / 2) % RECIPE_COPY.length];
+    suRecipeView(link, comp);
+  }
+
+  // ═══ ADVICE NOTES — the notebook's margin notes (Nic, 2026-07-18) ═══════════════════════════
+  // 15 notes mined from the newsletter issues (the newsletter is the asset factory; the board
+  // restyles its ideas, never its fonts/colors). Rendered as lined-paper post-its BETWEEN job
+  // cards: desktop (3-col) = every 3rd row's middle slot · mobile (1-col) = every ~5th card.
+  // They are NOTES, not jobs: the paper stays cream in EVERY theme and never takes the
+  // salary-band colors (the pay key is a promise — UX rule #5 in Rasputin/Reference/
+  // StillUnemployed-UX-Rules.md). Stats keep their sources, always (rule #7).
+  // g: optional hand-drawn graphic ('week' | 'cycle' | 'stat') — pure SVG/CSS, no image files.
+  // REWRITTEN 2026-07-18 from Nic's card-by-card localhost review. The system:
+  //   FRONT  = hook (5-10 words, shocking / curious / a little controversial — its job is to STOP
+  //            THE SCROLL) + optional graphic + a CTA that CONTINUES the thought (never a generic
+  //            "find out why" unless that IS the continuation).
+  //   BACK   = the payoff in plain words (no jargon — nobody knows what "ATS" is; explain it),
+  //            bullets where a list reads better than prose, and Nic's TRUE story only (he was
+  //            never "ghosted 7 months straight" — he got some replies; don't invent biography).
+  //   FUNNEL = every popup ends with a sell line + email field. NEVER lead with the word
+  //            "newsletter" — people hear "another AI-slop substack." It's "the exact recipe that
+  //            got me my job at Instagram." NO citations on cards — this is his handwritten
+  //            journal, not the newsletter; sources live there. Soften stats so they don't need a
+  //            footnote ("2 out of 5", "most grads").
+  //   cta  = flip prompt on the card front · sell = line above the email field in the popup.
+  //   why  = string, OR { intro, bullets[], outro } when a list earns its keep.
+  var ADVICE_NOTES = [
+    // Round 2 (Nic, 2026-07-18 localhost review #2). New rules baked in:
+    //  · CTAs are NEVER one word ("how" → "find out how").
+    //  · One-line hooks left cards looking unfinished → `sub` (a second handwritten line) and/or
+    //    `d` (a small hand-drawn CORNER DOODLE related to the card — NOT theme decor).
+    //  · Every hook must stand alone for someone who has never seen another card ("1,500" alone
+    //    means nothing → "1,500 job applications").
+    //  · No "callbacks" (sounds like acting), no "data" (too corporate), no "fluff"/"AI slop"
+    //    framing, and "newsletter" never leads.
+    { id: 'no-weekends', g: 'week', hook: 'your job hunt needs days off, too',
+      cta: 'wait, why friday?',
+      why: 'My take: plan your application time for Monday through Thursday, and leave Friday and the weekend for a breather when you can. That is a routine, not a rule about when recruiters read applications. If a good role is open and your application is ready, send it. Don\'t wait for Monday or risk missing a deadline.' },
+    { id: 'board-trap', g: 'cycle', hook: 'the job-board trap',
+      cta: 'how to break the loop',
+      sell: 'the recipe skips the loop entirely ↓',
+      // Nic explicitly rejected the "pick 5 roles" advice (his philosophy is volume on a strong
+      // base resume). The trap ISN'T applying too much — it's that every board is the same
+      // recycled LinkedIn listings. Which conveniently positions THIS board as the way out.
+      why: 'You use LinkedIn. You get bored of LinkedIn. You find a shiny new job board, and it\'s the same jobs reposted. Most boards are mirrors of each other. This board brings salary information, saved roles and your application tracker together.' },
+    { id: 'grad-school', g: 'figures', hook: 'thinking grad school will save you?',
+      cta: 'run the numbers',
+      why: '2 out of 5 master\'s programs leave grads financially worse off than if they\'d just started working. Grad school is a plan, not a hiding spot. Run the numbers before you sign anything.' },
+    { id: 'three-years', g: 'bang', hook: 'you DO have 3+ years of experience',
+      cta: 'count yours',
+      why: 'College counts. Class projects, internships, clubs, freelance: that\'s years of real work. Stop reading "3+ years" as a locked door and start listing yours.' },
+    { id: 'first-come', d: 'medal', hook: 'the first ones to apply get seen first',
+      cta: 'so be first',
+      why: 'Recruiters read applications in the order they arrive, and interview slots fill off the first wave. A day-one application beats a perfect week-two one.' },
+    { id: 'ghosted', d: 'ghost', hook: 'ghosted again? it\'s not you, it\'s them',
+      cta: 'find out why',
+      sell: 'the newsletter I wish someone had sent me at 21 ↓',
+      why: 'Out of my 1,500 applications, most never wrote back at all. Silence is a volume problem on their side, not a verdict on you. Follow up once, then keep moving. Know your worth.' },
+    { id: 'manifesting', d: 'stars', hook: 'manifesting is not a strategy to get a job',
+      cta: 'find out what is',
+      why: 'A vision board never filled out an application. 20 focused minutes tailoring your resume beats an hour of wishing. Do the boring thing daily.' },
+    { id: 'canva-resume', d: 'stamp', hook: 'your Canva resume is getting you rejected...',
+      cta: 'here\'s why',
+      why: 'Most companies run your resume through scanning software before a human ever sees it. Icons, columns, and graphics read as static to the machine, so it rejects you before anyone looks. One column, real text.' },
+    { id: 'wish-list', hook: 'job requirements are a wish list', sub: 'not mandatory',
+      cta: 'you could just...',
+      sell: 'which requirements actually have wiggle room? it\'s in the recipe ↓',
+      why: 'Most recruiters will tell you they\'re not looking for someone who checks every single box. The first number is the floor, and everything after it is negotiable. If you clear the floor, apply.' },
+    { id: 'follow-up', d: 'mail', hook: 'the follow-up nobody sends',
+      cta: 'steal it',
+      why: { intro: 'After every interview I sent 3 lines:',
+             bullets: ['thank you', 'one specific thing we talked about', 'a quick question about next steps'],
+             outro: 'Almost nobody sends it. That\'s exactly why it works.' } },
+    { id: 'show-dont-ask', d: 'megaphone', hook: 'I got my job without applying',
+      cta: 'find out how',
+      why: 'A recruiter found my LinkedIn post about the hunt and my projects. Two weeks later, an offer from Instagram. Post what you build. Show, don\'t ask.' },
+    { id: 'volume-trap', hook: '1,500 job applications taught me one thing',
+      cta: 'the one thing',
+      why: { intro: 'I tried spray-and-pray: one resume, sent everywhere. I tried tailoring every single application. Neither worked. The middle ground did:',
+             bullets: ['20 of every 25 jobs get my base resume', 'the 5 I actually care about get the extra time'],
+             outro: 'Volume where it\'s cheap, effort where it counts.' } },
+    { id: 'not-linkedin', d: 'split', hook: 'stop applying ONLY on LinkedIn',
+      cta: 'where instead',
+      why: 'Everyone you\'re competing with is in the same line. Niche boards and company career pages got me interviews LinkedIn never did. Go where the crowd isn\'t.' },
+    { id: 'cold-referral', d: 'q', hook: 'do cold emails work in 2026?',
+      cta: 'what i sent',
+      why: 'I cold messaged people at my dream companies and kept it to 3 lines: I admire your work, I\'d love your feedback, here\'s my portfolio link. That\'s it. Worst case is silence, and you survive that every week already.' },
+    { id: 'linkedin-dms', d: 'q', hook: 'are LinkedIn DMs even worth it in 2026?',
+      cta: 'the short answer',
+      why: 'Cold DMs to recruiters mostly drown. DMs that reference something specific the person posted, with your work attached, get answered. It\'s not the channel, it\'s the laziness.' },
+    { id: 'resume-layout', d: 'stamp', hook: 'think your resume layout sucks?',
+      cta: 'the layout i used',
+      sell: 'the exact resume that got me my job at Instagram ↓',
+      why: 'One column. Real text, no graphics. Name, then experience with numbers in it, then skills. Boring on purpose: the scanning software reads it clean and the recruiter finds everything in 10 seconds.' },
+    { id: 'major-cage', hook: 'your major is not a cage',
+      cta: 'find out why',
+      why: 'Most grads end up working jobs unrelated to their major, and hiring managers know it. Apply for the role you want, not the one your degree names.' },
+    { id: 'keyword-stuffing', hook: 'what is keyword stuffing?', sub: 'and how it gets you auto-rejected',
+      cta: 'find out why',
+      why: 'Cramming your resume with words copied straight from the job post. The scanning software flags it, and recruiters smell it instantly. Use the job\'s real language where it\'s true about you, and cut the rest.' }
+  ];
+
+  // Shuffle the bank once per page load. The FIRST note a visitor sees must never repeat
+  // back-to-back across refreshes: localStorage su_first_note remembers last load's first
+  // note; if the shuffle re-picks it, swap it away.
+  if(window.SUAdviceContent) ADVICE_NOTES=window.SUAdviceContent.apply(ADVICE_NOTES);
+  var NOTE_ORDER = (function () {
+    var arr = ADVICE_NOTES.slice();
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
     try {
-      if (!link || (comp && comp._recipeHidden)) return;
-      var h = 0, s = String(link);
-      for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 9973;
-      if (h % 3 !== 0) return;
-      // 30+ day cards don't show the block (they carry the age line instead) — don't log a view
-      if (comp && comp.jobs) {
-        for (var j = 0; j < comp.jobs.length; j++) {
-          if (comp.jobs[j].link === link) {
-            var src = comp.jobs[j].posted || comp.jobs[j].added || '';
-            if (src) { var ad = new Date(String(src).trim().slice(0, 10) + 'T00:00:00'); if (!isNaN(ad.getTime()) && Math.floor((Date.now() - ad.getTime()) / 86400000) >= 30) return; }
-            break;
-          }
-        }
+      var last = localStorage.getItem('su_first_note');
+      if (last && arr.length > 1 && arr[0].id === last) {
+        var k = 1 + Math.floor(Math.random() * (arr.length - 1));
+        var tmp = arr[0]; arr[0] = arr[k]; arr[k] = tmp;
       }
-      var variants = ['want the exact advice that got me a job at Instagram? ↓', 'want the recipe I followed to a 6-figure offer? ↓', 'the advice that almost got me a job with the Kardashians ↓', '4 hand-picked jobs + 1 raw story, every Monday. free. ↓'];
-      postReport('recipe_view', variants[(h >> 2) % variants.length], link);
+      localStorage.setItem('su_first_note', arr[0].id);
     } catch (e) {}
+    return arr;
+  })();
+  function adviceAt(n) { return NOTE_ORDER[n % NOTE_ORDER.length]; }
+
+  // Useful advice between roles. Newsletter signup stays inside opened notes.
+  function suFeedSchedule(totalJobs, isMobile) {
+    var map = {}, every = isMobile ? 5 : 8, n = 0;
+    for (var i = every; i < totalJobs; i += every) map[i] = [{ t:'note', n:n++ }];
+    return map;
+  }
+
+  // ── hand-drawn note graphics (inline SVG/CSS only — no image files) ────────────────────────
+  // FOUR types (Nic: "three looks half done"): week · cycle · figures · bang.
+  function adviceGraphicHtml(note, ACC, big) {
+    if(window.SUAdviceArt && window.SUAdviceArt.has(note.id)) return window.SUAdviceArt.html(note.id,big);
+    if (!note.g) return '';
+    var s = big ? 1.12 : 1;
+    if (note.g === 'week') {
+      // Week starts Sunday. Friday, Saturday and Sunday are Nic's suggested days off,
+      // not a claim that those application dates reduce someone's hiring chances.
+      var days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+      var xOn = { 0: 1, 5: 1, 6: 1 };
+      // Round 2: the big X's read too heavy ("expands out the card"). Now a single THIN red
+      // strike line through Sun / Fri / Sat, barely past the box edges. Three slightly different
+      // angles so it doesn't look stamped.
+      var strikes = [
+        '<path d="M-1 22 C 7 16, 16 8, 25 3" />',
+        '<path d="M-1 4 C 8 10, 17 17, 25 23" />',
+        '<path d="M-2 20 C 8 14, 15 9, 26 5" />'
+      ];
+      var xi = 0, cells = '';
+      for (var i = 0; i < 7; i++) {
+        var rot = (i % 2 === 0) ? -2.5 : 2;
+        cells += '<span style="position:relative; flex:1 1 0; max-width:' + Math.round(34 * s) + 'px; height:' + Math.round(34 * s) + 'px; border:1.7px solid rgba(44,33,24,0.55); border-radius:3px; transform:rotate(' + rot + 'deg); display:inline-flex; align-items:center; justify-content:center; font-family:\'Indie Flower\',cursive; font-weight:700; font-size:' + Math.round(16 * s) + 'px; color:#2A2118; background:rgba(255,255,255,0.4);">' + days[i] +
+          (xOn[i] ? '<svg viewBox="0 0 24 26" preserveAspectRatio="none" style="position:absolute; top:-2px; left:-2px; width:calc(100% + 4px); height:calc(100% + 4px); overflow:visible;" fill="none" stroke="#C2552F" stroke-width="1.9" stroke-linecap="round">' + strikes[(xi++) % 3] + '</svg>' : '') +
+        '</span>';
+      }
+      return '<div style="display:flex; gap:6px; margin-top:16px; align-items:center; width:100%;">' + cells + '</div>';
+    }
+    if (note.g === 'cycle') {
+      // Round 2: "apply / wait / repeat" was too vague, and the advice behind it wasn't Nic's.
+      // The REAL trap (his framing): LinkedIn → bored of it → a "new" board → same jobs. Four
+      // stops, 1-2 words each, arrows chasing clockwise. The loop sells why THIS board exists.
+      var w = Math.round(190 * s), h = Math.round(120 * s);
+      return '<div style="position:relative; width:' + w + 'px; height:' + h + 'px; margin:16px auto 4px;">' +
+        '<svg viewBox="0 0 190 120" style="position:absolute; top:0; left:0; width:100%; height:100%; overflow:visible;" fill="none" stroke-linecap="round" stroke-linejoin="round">' +
+          '<path d="M120 20 C 148 28, 158 44, 154 62" stroke="rgba(44,33,24,0.6)" stroke-width="2.4"></path>' +
+          '<path d="M159 50 L154 63 L143 55" stroke="#C2552F" stroke-width="2.4"></path>' +
+          '<path d="M140 92 C 122 102, 72 102, 54 92" stroke="rgba(44,33,24,0.6)" stroke-width="2.4"></path>' +
+          '<path d="M66 99 L53 92 L63 82" stroke="#C2552F" stroke-width="2.4"></path>' +
+          '<path d="M36 62 C 32 44, 42 28, 68 20" stroke="rgba(44,33,24,0.6)" stroke-width="2.4"></path>' +
+          '<path d="M56 24 L69 19 L66 32" stroke="#C2552F" stroke-width="2.4"></path>' +
+        '</svg>' +
+        '<span style="position:absolute; top:-6px; left:50%; transform:translateX(-50%) rotate(-2deg); font-family:\'Indie Flower\',cursive; font-weight:700; font-size:15px; color:#2A2118; white-space:nowrap;">LinkedIn</span>' +
+        '<span style="position:absolute; top:44%; right:-10px; transform:rotate(2deg); font-family:\'Indie Flower\',cursive; font-weight:700; font-size:15px; color:#2A2118; white-space:nowrap;">bored of it</span>' +
+        '<span style="position:absolute; bottom:-6px; left:50%; transform:translateX(-50%) rotate(1.5deg); font-family:\'Indie Flower\',cursive; font-weight:700; font-size:15px; color:#2A2118; white-space:nowrap;">"new" board</span>' +
+        '<span style="position:absolute; top:44%; left:-10px; transform:rotate(-2deg); font-family:\'Indie Flower\',cursive; font-weight:700; font-size:15px; color:#C2552F; white-space:nowrap;">same jobs</span>' +
+      '</div>';
+    }
+    if (note.g === 'figures') {
+      // Round 2: X-ing out the figures read like a kill list. Now the 2 who are worse off are
+      // just drawn in red, slightly slumped. Same message, zero menace.
+      var figInk = '<g stroke="#2A2118" stroke-width="2" fill="none" stroke-linecap="round"><circle cx="10" cy="6" r="4.5"></circle><path d="M10 11 L10 24 M10 14 L3 20 M10 14 L17 20 M10 24 L4 34 M10 24 L16 34"></path></g>';
+      var figRed = '<g stroke="#C2552F" stroke-width="2" fill="none" stroke-linecap="round" transform="rotate(6 10 20)"><circle cx="10" cy="7" r="4.5"></circle><path d="M10 12 L10 25 M10 15 L4 22 M10 15 L16 22 M10 25 L5 35 M10 25 L15 35"></path></g>';
+      var figs = '';
+      for (var f = 0; f < 5; f++) {
+        var frot = (f % 2 === 0) ? -3 : 3;
+        figs += '<span style="position:relative; width:' + Math.round(26 * s) + 'px; height:' + Math.round(46 * s) + 'px; transform:rotate(' + frot + 'deg); flex:none;">' +
+          '<svg viewBox="0 0 20 38" style="width:100%; height:100%; overflow:visible;">' + (f < 2 ? figRed : figInk) + '</svg></span>';
+      }
+      return '<div style="margin-top:14px;">' +
+        '<div style="display:flex; gap:' + Math.round(10 * s) + 'px; align-items:flex-end;">' + figs + '</div>' +
+        '<div style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:' + Math.round(15.5 * s) + 'px; color:#2A2118; margin-top:10px; transform:rotate(-1deg);">2 out of 5 leave worse off</div>' +
+      '</div>';
+    }
+    if (note.g === 'bang') {
+      // three-years: two big hand-drawn exclamation marks (Nic asked for these specifically)
+      return '<div style="display:flex; gap:8px; margin-top:12px; align-items:flex-start;">' +
+        '<svg width="' + Math.round(20 * s) + '" height="' + Math.round(44 * s) + '" viewBox="0 0 20 44" fill="none" stroke="#C2552F" stroke-linecap="round" style="transform:rotate(-5deg); overflow:visible;"><path d="M10 3 C 9 12, 11 20, 10 29" stroke-width="4.4"></path><circle cx="10" cy="39" r="2.6" fill="#C2552F" stroke="none"></circle></svg>' +
+        '<svg width="' + Math.round(20 * s) + '" height="' + Math.round(44 * s) + '" viewBox="0 0 20 44" fill="none" stroke="#C2552F" stroke-linecap="round" style="transform:rotate(4deg); margin-top:3px; overflow:visible;"><path d="M10 3 C 11 12, 9 20, 10 29" stroke-width="4.4"></path><circle cx="10" cy="39" r="2.6" fill="#C2552F" stroke="none"></circle></svg>' +
+      '</div>';
+    }
+    return '';
+  }
+
+  // ── corner doodles (Nic, round 2): one-line hooks left cards looking UNFINISHED, so cards
+  // without a big graphic get a small hand-drawn doodle RELATED to the card. These are NOT theme
+  // decor (decor = the casino chips / seashells that belong to a look); doodles belong to the
+  // note itself and stay ink+red in every theme, like the rest of the paper.
+  function adviceDoodleHtml(note) {
+    if(window.SUAdviceArt && window.SUAdviceArt.has(note.id)) return '';
+    if (!note.d || note.g) return '';
+    var D = '';
+    if (note.d === 'medal') {
+      // a #1 medal — first come, first seen
+      D = '<svg width="52" height="62" viewBox="0 0 40 48" fill="none" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M14 2 L12 16 M26 2 L28 16" stroke="#C2552F" stroke-width="2.4"></path>' +
+        '<path d="M9 2 L19 2 M21 2 L31 2" stroke="#C2552F" stroke-width="2.4"></path>' +
+        '<circle cx="20" cy="30" r="13" stroke="#2A2118" stroke-width="2.2" fill="rgba(255,255,255,0.5)"></circle>' +
+        '<text x="20" y="36" text-anchor="middle" font-family="Indie Flower, cursive" font-weight="700" font-size="15" fill="#2A2118">#1</text></svg>';
+    } else if (note.d === 'stamp') {
+      // a hand-drawn REJECTED stamp
+      D = '<svg width="104" height="42" viewBox="0 0 104 42" fill="none">' +
+        '<rect x="3" y="5" width="98" height="32" rx="5" stroke="#C2552F" stroke-width="2.6" transform="rotate(-4 52 21)" opacity="0.85"></rect>' +
+        '<text x="52" y="27" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="800" font-size="13" letter-spacing="2" fill="#C2552F" transform="rotate(-4 52 21)" opacity="0.85">REJECTED</text></svg>';
+    } else if (note.d === 'ghost') {
+      // a friendly little hand-drawn ghost
+      D = '<svg width="48" height="56" viewBox="0 0 34 40" fill="none" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M5 34 C 4 16, 8 4, 17 4 C 26 4, 30 16, 29 34 C 26 30, 24 30, 22 34 C 20 30, 18 30, 17 34 C 15 30, 13 30, 11 34 C 9 30, 7 30, 5 34 Z" stroke="#2A2118" stroke-width="2.2" fill="rgba(255,255,255,0.55)"></path>' +
+        '<circle cx="13" cy="16" r="1.8" fill="#2A2118"></circle><circle cx="21" cy="16" r="1.8" fill="#2A2118"></circle>' +
+        '<path d="M14 22 C 16 23.5, 18 23.5, 20 22" stroke="#2A2118" stroke-width="1.8"></path></svg>';
+    } else if (note.d === 'mail') {
+      // an envelope with 3 little lines — the 3-line follow-up
+      D = '<svg width="60" height="46" viewBox="0 0 46 34" fill="none" stroke-linecap="round" stroke-linejoin="round">' +
+        '<rect x="2" y="6" width="30" height="22" rx="2.5" stroke="#2A2118" stroke-width="2.2" fill="rgba(255,255,255,0.5)" transform="rotate(-3 17 17)"></rect>' +
+        '<path d="M3 8 L17 19 L31 8" stroke="#2A2118" stroke-width="2" transform="rotate(-3 17 17)"></path>' +
+        '<path d="M37 10 L44 10 M37 16 L44 16 M37 22 L44 22" stroke="#C2552F" stroke-width="2.2"></path></svg>';
+    } else if (note.d === 'megaphone') {
+      // shouting your work into the world
+      D = '<svg width="58" height="46" viewBox="0 0 46 36" fill="none" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M4 15 L4 23 L10 23 L24 30 L24 8 L10 15 Z" stroke="#2A2118" stroke-width="2.2" fill="rgba(255,255,255,0.5)" transform="rotate(-6 14 19)"></path>' +
+        '<path d="M30 12 C 33 15, 33 21, 30 24" stroke="#C2552F" stroke-width="2.2"></path>' +
+        '<path d="M35 8 C 40 13, 40 23, 35 28" stroke="#C2552F" stroke-width="2.2"></path></svg>';
+    } else if (note.d === 'stars') {
+      // manifesting sparkles (that never filled out an application)
+      D = '<svg width="66" height="44" viewBox="0 0 54 36" fill="none" stroke-linecap="round">' +
+        '<path d="M12 6 L12 18 M6 12 L18 12" stroke="#C2552F" stroke-width="2.2" transform="rotate(-8 12 12)"></path>' +
+        '<path d="M34 14 L34 30 M26 22 L42 22" stroke="#2A2118" stroke-width="2.4" transform="rotate(6 34 22)"></path>' +
+        '<path d="M48 4 L48 12 M44 8 L52 8" stroke="#C2552F" stroke-width="2" transform="rotate(-10 48 8)"></path></svg>';
+    } else if (note.d === 'split') {
+      // one crowded road, one open one
+      D = '<svg width="62" height="46" viewBox="0 0 50 38" fill="none" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M25 36 L25 22 C 25 16, 12 14, 10 5" stroke="#2A2118" stroke-width="2.2"></path>' +
+        '<path d="M25 22 C 25 16, 38 14, 40 5" stroke="#C2552F" stroke-width="2.2"></path>' +
+        '<path d="M36 9 L40 4 L44 9" stroke="#C2552F" stroke-width="2.2"></path></svg>';
+    } else if (note.d === 'q') {
+      // a big scribbled question mark for the question cards
+      D = '<svg width="40" height="56" viewBox="0 0 26 42" fill="none" stroke-linecap="round">' +
+        '<path d="M4 10 C 4 4, 12 1, 17 4 C 23 7, 23 14, 17 18 C 14 20, 13 22, 13 27" stroke="#C2552F" stroke-width="3" transform="rotate(5 13 21)"></path>' +
+        '<circle cx="13" cy="36" r="2.4" fill="#C2552F"></circle></svg>';
+    }
+    if (!D) return '';
+    return '<div style="margin-top:14px; transform:rotate(-2deg); opacity:0.92;">' + D + '</div>';
+  }
+
+  // The "why" can be a plain string or { intro, bullets[], outro } — bullets render as a
+  // handwritten-adjacent list (Nic: the follow-up card's "3 lines" must BE 3 lines).
+  function adviceWhyHtml(why) {
+    if (typeof why === 'string') {
+      return '<div style="font-family:\'Poppins\',sans-serif; font-size:14.5px; line-height:1.65; color:#3a3026;">' + esc(why) + '</div>';
+    }
+    var h = '';
+    if (why.intro) h += '<div style="font-family:\'Poppins\',sans-serif; font-size:14.5px; line-height:1.65; color:#3a3026;">' + esc(why.intro) + '</div>';
+    if (why.bullets && why.bullets.length) {
+      h += '<div style="margin:10px 0 0 4px;">';
+      for (var b = 0; b < why.bullets.length; b++) {
+        h += '<div style="display:flex; gap:9px; align-items:baseline; margin-top:7px;">' +
+          '<span style="flex:none; font-family:\'Indie Flower\',cursive; font-weight:700; font-size:16px; color:#C2552F;">•</span>' +
+          '<span style="font-family:\'Poppins\',sans-serif; font-size:14.5px; line-height:1.55; color:#3a3026;">' + esc(why.bullets[b]) + '</span></div>';
+      }
+      h += '</div>';
+    }
+    if (why.outro) h += '<div style="font-family:\'Poppins\',sans-serif; font-size:14.5px; line-height:1.65; color:#3a3026; margin-top:12px;">' + esc(why.outro) + '</div>';
+    return h;
+  }
+
+  // ── advice note card (in the grid) — TL;DR-popup paper, visually NOT a job card ────────────
+  function adviceCardHtml(note, mode, seq, ACC) {
+    var rot = (seq % 2 === 0) ? -1.6 : 1.8;
+    var cls = mode === 'm' ? 'su-ins-m' : 'su-ins-d';
+    return '<div class="note su-advice ' + cls + '" data-act="openAdvice" data-note="' + esc(note.id) + '" data-imp="note_view|' + esc(note.id) + '|' + esc(note.hook) + '" style="--rot:' + rot + 'deg; cursor:pointer; position:relative; background-color:#FCFAF3; background-image:repeating-linear-gradient(180deg, transparent 0 24px, rgba(96,130,170,0.30) 24px 25px); background-position:0 60px; color:#2A2118; border-radius:3px; padding:32px 22px 18px 30px; box-sizing:border-box; display:flex; flex-direction:column; min-height:238px; box-shadow:3px 6px 13px rgba(44,33,24,0.17);">' +
+      '<div style="position:absolute; top:0; bottom:0; left:18px; width:1.5px; background:rgba(214,80,46,0.38);"></div>' +
+      '<div style="position:absolute; top:-11px; left:50%; transform:translateX(-50%) rotate(-2.5deg); width:92px; height:24px; background:rgba(228,202,128,0.6); border-left:1px dashed rgba(255,255,255,.5); border-right:1px dashed rgba(255,255,255,.5); box-shadow:0 1px 2px rgba(0,0,0,.1); z-index:3;"></div>' +
+      '<div style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:15px; color:#8A7558; transform:rotate(-1deg);">note to self ↓</div>' +
+      '<div style="position:relative; display:inline-block; margin-top:6px;">' +
+        '<div style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:24px; line-height:1.22; color:#2A2118;">' + esc(note.hook) + '</div>' +
+        '<svg width="120" height="9" viewBox="0 0 120 9" fill="none" style="position:absolute; left:0; bottom:-4px;"><path d="M2 6 C 40 2, 80 2, 118 5" stroke="' + ACC + '" stroke-width="3.5" stroke-linecap="round"></path></svg>' +
+      '</div>' +
+      (note.sub ? '<div style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:18px; color:#6F5E45; margin-top:9px; transform:rotate(-0.6deg);">' + esc(note.sub) + '</div>' : '') +
+      adviceGraphicHtml(note, ACC, false) +
+      adviceDoodleHtml(note) +
+      '<div style="flex:1; min-height:12px;"></div>' +
+      // The flip CTA continues the thought ("wait, why friday?" · "you could just..."), it doesn't
+      // repeat a generic "find out why" 16 times. Slightly larger than before — it's the click.
+      '<div style="display:flex; justify-content:flex-end;"><span style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:20px; color:#C2552F; display:inline-flex; align-items:center; gap:4px;">' + esc(note.cta || 'find out why') + '<svg class="doodle-arrow" width="28" height="14" viewBox="0 0 28 14" fill="none" style="overflow:visible; margin-left:2px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>' +
+    '</div>';
+  }
+
+  function suRecipeView(link, comp) {
+    if (comp && comp._detailRecipe && !comp._recipeHidden)
+      postReport('recipe_view', comp._detailRecipeCopy, link);
+  }
+
+  var NEWSLETTER_URL = 'https://subscribe-forms.beehiiv.com/af2e314d-125f-431d-a8e0-0020be04d97c';
+  function newsletterHtml(cta) {
+    return '<div class="su-newsletter-frame" aria-busy="true">' +
+      '<div class="su-newsletter-loading" role="status"><span>Loading signup…</span><i aria-hidden="true"></i></div>' +
+      '<iframe data-src="' + NEWSLETTER_URL + '" data-test-id="beehiiv-embed" data-cta="' + esc(cta) + '" title="Newsletter signup" height="50" frameborder="0" scrolling="no" loading="eager"></iframe>' +
+      '<button type="button" class="su-newsletter-retry" hidden>Retry signup</button></div>';
+  }
+  function prepareNewsletters(root) {
+    root.querySelectorAll('.su-newsletter-frame').forEach(function(wrap) {
+      var frame = wrap.querySelector('iframe'), status = wrap.querySelector('[role="status"]'), retry=wrap.querySelector('.su-newsletter-retry');
+      if (!frame || frame.getAttribute('src')) return;
+      var timer;
+      function ready() {
+        clearTimeout(timer); wrap.setAttribute('aria-busy','false');
+        wrap.classList.add('is-loaded'); if(status)status.hidden=true;
+        if(retry)retry.hidden=true;
+      }
+      function load() {
+        clearTimeout(timer); wrap.setAttribute('aria-busy','true');wrap.classList.remove('is-loaded');
+        if(status)status.hidden=false;if(retry)retry.hidden=true;
+        timer=setTimeout(function(){
+          if(!wrap.isConnected)return;
+          wrap.setAttribute('aria-busy','false');if(status)status.hidden=true;
+          if(retry)retry.hidden=false;
+        },8000);
+        frame.src=frame.getAttribute('data-src');
+      }
+      frame.addEventListener('load',ready);
+      if(retry)retry.addEventListener('click',function(e){e.stopPropagation();load();});
+      load();
+    });
   }
 
   // "Tracker (N)" nav badge — digits in Archivo (clearer than Indie Flower), 99+ cap, hidden at 0
+  function uxEvent(name) { if(window.SUAnalytics && typeof window.SUAnalytics.emit === 'function') window.SUAnalytics.emit(name,{}); }
+
   function suTrkBadge() {
     try {
-      var r = JSON.parse(localStorage.getItem('su_tracker') || '[]');
+      var r = window.SUStore && window.SUStore.view ? window.SUStore.view().tracker : JSON.parse(localStorage.getItem('su_tracker') || '[]');
       var n = Array.isArray(r) ? r.length : 0;
       if (!n) return '';
       return ' (<span style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 16px;">' + (n > 99 ? '99+' : n) + '</span>)';
@@ -98,6 +484,10 @@
   }
 
   function postReport(action, co, link) {
+    if(action !== 'gone_report') {
+      if(window.SUAnalytics){if(action==='click')window.SUAnalytics.job('apply_click',link);else if(action==='applied')window.SUAnalytics.job('application_reported',link);}
+      return;
+    }
     if (!REPORT_URL) return;
     if (reportExcluded()) {                    // admin / localhost: log, don't POST (no sheet row, no email)
       try { console.debug('[su] report suppressed (admin/non-prod):', action, co, link); } catch (e) {}
@@ -108,7 +498,7 @@
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: action, company: co || '', link: link || '', page: location.href, cid: suCid() })
+        body: JSON.stringify({ action: action, company: co || '', link: link || '', page: location.pathname })
       });
     } catch (e) { /* fire-and-forget; never block the UI */ }
   }
@@ -155,6 +545,34 @@
       ctx.beginPath(); ctx.moveTo(0, -p.w * 0.78); ctx.lineTo(0, p.w * 0.78); ctx.stroke();
     }
   }
+  // ═══ FIRST "I APPLIED!" ONLY — point them at the Tracker (Nic, 2026-07-12) ═══════════════════
+  // The application is ALREADY being logged to the tracker on every "I applied!" (see trackerLog).
+  // The problem is nobody KNOWS that. So the first time someone taps it, we say so once, with a
+  // post-it they can tap straight through to /tracker.
+  //
+  // The first and every tenth newly saved application gets a small Tracker shortcut.
+  // The separate sign-in reminder is guest-only after the third confirmation.
+  // Both receipts are device-local; identity switches do not borrow another count.
+  function suTrackerNudge() {
+    var runtime=window.SUBoardRuntime;
+    if (!runtime) return;
+    var showTracker=runtime.recordApplication();
+    if(window.SUSigninReminder)window.SUSigninReminder.afterApplication();
+    if(!showTracker)return;
+    var identity=runtime.owner();
+    setTimeout(function () {
+      if (identity !== runtime.owner() || document.getElementById('su-tracker-nudge') || document.getElementById('su-saved-nudge') || document.getElementById('su-signin-reminder')) return;
+      var wrap=document.createElement('div');wrap.id='su-tracker-nudge';wrap.className='su-tracker-nudge';
+      wrap.innerHTML='<a href="tracker.html"><span>Check applied jobs</span> <svg width="24" height="14" viewBox="0 0 28 14" fill="none" aria-hidden="true"><path d="M1 7 Q12 1 25 7 M19 2 L26 7 L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="su-tracker-sticky">Tracker</span></a><button type="button" aria-label="Dismiss tracker reminder">×</button>';
+      var timer;
+      function hide(){clearTimeout(timer);if(wrap.parentNode)wrap.parentNode.removeChild(wrap);window.removeEventListener('su:auth-changed',hide);window.removeEventListener('storage',ownerChanged);}
+      function ownerChanged(){if(identity!==runtime.owner())hide();}
+      wrap.querySelector('button').addEventListener('click',hide);
+      window.addEventListener('su:auth-changed',hide);window.addEventListener('storage',ownerChanged);
+      document.body.appendChild(wrap);timer=setTimeout(hide,9000);
+    },850);
+  }
+
   function suConfetti() {
     try {
       if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -209,13 +627,40 @@
     try {
       var t = document.createElement('div');
       t.textContent = msg;
-      t.style.cssText = 'position:fixed;left:50%;bottom:26px;transform:translateX(-50%) rotate(-1deg);z-index:2147483200;' +
-        "background:#2C2118;color:#F6E24B;font-family:'Indie Flower','Comic Sans MS',cursive;font-size:17px;padding:11px 20px;" +
-        'border-radius:10px;box-shadow:2px 6px 18px rgba(44,33,24,0.35);max-width:88vw;text-align:center;' +
-        'animation:suCcIn .3s cubic-bezier(.2,.9,.3,1.25) both;';
+      t.className = 'su-feedback-toast'; t.setAttribute('role','status');
       document.body.appendChild(t);
-      setTimeout(function () { t.style.transition = 'opacity .4s'; t.style.opacity = '0'; setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 420); }, 2400);
+      setTimeout(function () { t.style.transition = 'opacity .4s'; t.style.opacity = '0'; setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 420); }, 4000);
     } catch (e) {}
+  }
+
+  function moderationOwner() {
+    var auth=window.SUAuth,store=window.SUStore;
+    return auth&&auth.qaAdmin&&auth.qaAdmin()&&auth.accountCurrent&&auth.accountCurrent()&&store&&store.owner ? store.owner() : null;
+  }
+  function clearReportedToast() { clearTimeout(App._reportToastTimer);if(App._reportToast){App._reportToast.remove();App._reportToast=null;} }
+  function reportedToast(result, owner) {
+    clearReportedToast();
+    var toast=document.createElement('div');toast.className='su-feedback-toast su-admin-report-toast';
+    toast.style.cssText='background:#B62619;color:#FFF5ED;display:flex;align-items:center;gap:12px;flex-wrap:wrap;max-width:calc(100vw - 32px);box-sizing:border-box;';
+    var label=document.createElement('span');label.setAttribute('role','status');label.textContent='Reported';toast.appendChild(label);
+    var undo=document.createElement('button');undo.type='button';undo.textContent='Undo';undo.style.cssText='font:inherit;color:inherit;background:transparent;border:0;text-decoration:underline;min-height:44px;cursor:pointer;';toast.appendChild(undo);
+    var dismiss=document.createElement('button');dismiss.type='button';dismiss.textContent='×';dismiss.setAttribute('aria-label','Dismiss report confirmation');dismiss.style.cssText=undo.style.cssText;dismiss.addEventListener('click',clearReportedToast);toast.appendChild(dismiss);
+    var holdExpiry=false;
+    function expire(outside){clearTimeout(App._reportToastTimer);if(holdExpiry||(!outside&&toast.contains(document.activeElement)))return;App._reportToastTimer=setTimeout(function(){if(App._reportToast===toast)clearReportedToast();},5000);}
+    toast.addEventListener('focusin',function(){clearTimeout(App._reportToastTimer);});
+    toast.addEventListener('focusout',function(e){if(!toast.contains(e.relatedTarget))expire(true);});
+    var requestId=null;
+    undo.addEventListener('click',function(){
+      if(owner!==moderationOwner()){clearReportedToast();return;}
+      if(undo.disabled)return;var ownedFocus=document.activeElement===undo;
+      function restoreActionFocus(target){if(ownedFocus&&(document.activeElement===document.body||document.activeElement===undo))target.focus({preventScroll:true});}
+      holdExpiry=true;clearTimeout(App._reportToastTimer);undo.disabled=true;label.textContent='Restoring…';
+      try{if(!requestId)requestId=window.crypto.randomUUID();}catch(_){undo.disabled=false;label.textContent='Could not prepare Undo. Please retry.';restoreActionFocus(undo);return;}
+      window.SUJobModeration.mutate('restore',result.link,{requestId:requestId,expectedRevision:result.revision,current:function(){return owner===moderationOwner()&&App._reportToast===toast;}}).then(function(){
+        if(owner!==moderationOwner()||App._reportToast!==toast)return;label.textContent='Restored to the board';restoreActionFocus(dismiss);undo.remove();holdExpiry=false;expire();
+      }).catch(function(e){if(owner===moderationOwner()&&App._reportToast===toast){label.textContent=e.message;undo.disabled=false;restoreActionFocus(undo);}});
+    });
+    document.body.appendChild(toast);App._reportToast=toast;App._reportToastOwner=owner;expire();
   }
 
   // ---- Share: draw the job as a Post-it PNG (canvas, no library), hand the blob to a callback ----
@@ -256,9 +701,8 @@
     return (h2 >>> 0).toString(36) + (h1 >>> 0).toString(36);
   }
 
-  // current live theme, mapped to the 3 looks we generate share cards for (archived
-  // looks fall back to original). Keeps the shared link's preview matching the card
-  // the viewer is actually looking at.
+  // Current live theme, mapped to the generated share-card looks. Archived
+  // looks fall back to original. Shared previews use that theme's flagship paper.
   // Which theme's Post-it does a shared job preview as? The theme the sharer is LOOKING at.
   // BUG (fixed 2026-07-12): this used to be `(t === 'poker' || t === 'girly') ? t : 'original'` — a
   // hardcoded allowlist from when there were only 3 themes. Every theme added after that (mermaid,
@@ -277,11 +721,15 @@
   // a second, un-clickable image is just noise; the link's own thumbnail does the job. ----
   function suShareJob(job) {
     if (!job) return;
-    var deep = location.origin + '/j/' + suShareTheme() + '/' + suSlug(job.link || '') + '.html';
+    // The query also opens the live card when this job arrived after the last build.
+    var token = encodeURIComponent(btoa(unescape(encodeURIComponent(job.link || ''))));
+    var route = '/j/' + (job.internship ? 'internships/' : '') + suShareTheme() + '/' + suSlug(job.link || '') + '.html';
+    var deep = job.savedUnavailable ? safeUrl(job.link) : location.origin + route + '?job=' + token + '&theme=' + suShareTheme();
+    if(!deep)return;
     // Casual, no link/brand in the TEXT (iMessage auto-linkifies "StillUnemployed.com"
     // into a tappable link that goes to the homepage, not the job — Nic didn't want that).
     // The shared url param below still generates the Post-it thumbnail.
-    var text = 'Saw this role from ' + (job.co || 'a company') + ' and thought about you.';
+    var text = job.savedUnavailable ? 'A listing I saved. Check the employer for current availability.' : 'Saw this role from ' + (job.co || 'a company') + ' and thought about you.';
     var title = (job.co || 'StillUnemployed') + (job.role ? ' — ' + job.role : '');
     try {
       if (navigator.share) { navigator.share({ title: title, text: text, url: deep }).catch(function () {}); return; }
@@ -292,10 +740,9 @@
     } else { window.prompt('Copy this link:', deep); }
   }
 
-  // ---- Theme analytics: dwell time + a "do you like this look?" vote ----
-  // Logs how long each look is used (theme_time) and a 👍/👎 vote (themevote) via
-  // suTrack, so both respect the admin/non-prod exclusion. The vote pops once per
-  // theme per visitor, after they switch to a non-default look and scroll past 10 jobs.
+  // Theme votes use the optional analytics collector. Ask only with analytics
+  // enabled, once per non-default theme, after ten jobs. Legacy theme_time calls
+  // below are intentionally not accepted by the current analytics transport.
   var THEME_T0 = 0, THEME_CUR = '';
   function logThemeTime() {
     if (!THEME_CUR || !THEME_T0) return;
@@ -313,25 +760,33 @@
     });
     window.addEventListener('pagehide', logThemeTime);
   }
-  var _voteArmed = false, _voteLook = '', _voteShown = false, _voteTick = 0;
+  var _voteArmed = false, _voteLook = '', _voteShown = false, _voteTick = 0, _voteClose = null;
+  function canAskThemeVote() {
+    try { return localStorage.getItem('su_admin') !== '1' && !!(window.SUAnalytics && window.SUAnalytics.choices().analytics); } catch (e) { return false; }
+  }
   function armThemeVote(look) {
+    if (_voteClose) _voteClose();
     _voteArmed = false; _voteShown = false;
+    if (!canAskThemeVote()) return;
     if (look === 'original') return;                      // only the fun themes ask
     try { if (localStorage.getItem('su_tv_' + look) === '1') return; } catch (e) {}  // once per theme
     _voteArmed = true; _voteLook = look;
   }
   function onThemeScroll() {
     if (!_voteArmed || _voteShown) return;
+    if (!canAskThemeVote()) { armThemeVote(_voteLook); return; }
+    if (document.querySelector('[aria-modal="true"],dialog[open]')) return;
     var now = Date.now(); if (now - _voteTick < 250) return; _voteTick = now;         // throttle
     var cards = document.querySelectorAll('.note[data-act="openJob"]');
     if (cards.length < 10) return;
     if (cards[9].getBoundingClientRect().bottom < 0) showThemeVote(_voteLook);         // 10 cards scrolled past
   }
   function showThemeVote(look) {
-    if (_voteShown) return;
+    if (_voteShown || !canAskThemeVote()) return;
     _voteShown = true; _voteArmed = false;
     try { localStorage.setItem('su_tv_' + look, '1'); } catch (e) {}
     var box = document.createElement('div');
+    box.id = 'su-theme-vote';
     box.setAttribute('role', 'dialog');
     box.setAttribute('aria-label', 'Theme feedback');
     box.style.cssText = 'position:fixed;left:50%;bottom:20px;transform:translateX(-50%) rotate(-1.2deg);z-index:2147482000;' +
@@ -342,16 +797,24 @@
     var row = document.createElement('div'); row.style.cssText = 'display:flex;gap:12px;';
     var up = document.createElement('button'); up.type = 'button'; up.textContent = '👍';
     var dn = document.createElement('button'); dn.type = 'button'; dn.textContent = '👎';
-    var bstyle = 'cursor:pointer;border:1.5px solid #E4D6B4;background:#F6EFDD;border-radius:10px;font-size:19px;padding:3px 16px;line-height:1;';
+    up.setAttribute('aria-label', 'I like this theme');
+    dn.setAttribute('aria-label', 'I don’t like this theme');
+    var bstyle = 'cursor:pointer;border:1.5px solid #E4D6B4;background:#F6EFDD;border-radius:10px;font-size:19px;padding:8px 16px;min-width:44px;min-height:44px;line-height:1;';
     up.style.cssText = bstyle; dn.style.cssText = bstyle;
-    function close() { if (box.parentNode) box.parentNode.removeChild(box); }
-    up.addEventListener('click', function () {
+    function close() { if (box.parentNode) box.parentNode.removeChild(box); if (_voteClose === close) _voteClose = null; }
+    _voteClose = close;
+    var voted = false;
+    up.addEventListener('click', function (event) {
+      event.stopPropagation();
+      if (voted || !canAskThemeVote()) { close(); return; } voted = true;
       try { if (typeof window.suTrack === 'function') window.suTrack('themevote', look, 'up', ''); } catch (e) {}
       suConfetti();                                       // theme-aware burst
       msg.textContent = 'yay 🎉'; row.style.display = 'none';
       setTimeout(close, 1300);
     });
-    dn.addEventListener('click', function () {
+    dn.addEventListener('click', function (event) {
+      event.stopPropagation();
+      if (voted || !canAskThemeVote()) { close(); return; } voted = true;
       try { if (typeof window.suTrack === 'function') window.suTrack('themevote', look, 'down', ''); } catch (e) {}
       box.innerHTML = '';
       var t = document.createElement('div'); t.style.cssText = 'font-size:15px;max-width:210px;text-align:center;line-height:1.35;';
@@ -364,15 +827,45 @@
     document.body.appendChild(box);
   }
 
+  // Identity is for matching only. Saved/Tracker keep the original URL keys so
+  // existing account records, notes and removal timestamps are never rewritten.
+  function identityKeys(link) {
+    if (!link) return [];
+    var keys = ['raw:' + link];
+    if (window.SUJobIdentity) keys = keys.concat(window.SUJobIdentity.keys(link).map(function (key) { return 'job:' + key; }));
+    return keys;
+  }
+  function linkIndex(links) {
+    var index = new Set();
+    links.forEach(function (link) { identityKeys(link).forEach(function (key) { index.add(key); }); });
+    return index;
+  }
+  function indexHasLink(index, link) { return identityKeys(link).some(function (key) { return index.has(key); }); }
+  function sameJobLink(a, b) { return !!a && !!b && (a === b || !!(window.SUJobIdentity && window.SUJobIdentity.equivalent(a, b))); }
+  function jobHasLink(job, link) { return (job._aliases || [job.link]).some(function (alias) { return sameJobLink(alias, link); }); }
+  function uniqueJobs(jobs) {
+    if (!window.SUJobIdentity) return jobs;
+    return window.SUJobIdentity.groupJobs(jobs).map(function (group) {
+      var aliases = new Set(group.aliases);
+      group.members.forEach(function (job) { (job._aliases || []).forEach(function (link) { aliases.add(link); }); });
+      return Object.assign({}, group.job, { _aliases: Array.from(aliases) });
+    });
+  }
+
   // "I applied" ALSO logs the job into the on-device application Tracker
   // (localStorage key su_tracker, read by tracker.html). Rows dedupe by link so a
   // double-tap never double-logs. Purely additive — the POST above is untouched.
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
   function trackerLog(co, link, role) {
+    if (!window.SUJobIdentity) {
+      suToast('Tracker could not load. Refresh before logging this application.');
+      return false;
+    }
     try {
-      var rows = JSON.parse(localStorage.getItem('su_tracker') || '[]');
+      var rows = window.SUStore && window.SUStore.view ? window.SUStore.view().tracker : JSON.parse(localStorage.getItem('su_tracker') || '[]');
       if (!Array.isArray(rows)) rows = [];
-      if (link && rows.some(function (r) { return r && r.link === link; })) return;
+      trackerLog.added = false;
+      if (link && rows.some(function (r) { return r && sameJobLink(r.link, link); })) return true;
       var d = new Date();
       rows.unshift({
         id: 'su-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
@@ -384,8 +877,10 @@
         status: 'Applied',
         notes: ''
       });
-      localStorage.setItem('su_tracker', JSON.stringify(rows));
-    } catch (e) { /* tracker is a bonus; never block the confirm flow */ }
+      if (window.SUStore) window.SUStore.saveTracker(rows); else localStorage.setItem('su_tracker', JSON.stringify(rows));
+      trackerLog.added = true;
+      return true;
+    } catch (e) { return false; /* Keep the feedback open until the application is actually stored. */ }
   }
 
   // US states (name + 2-letter code) so a state search also surfaces remote-anywhere roles.
@@ -395,6 +890,44 @@
     if (SU_STATES[q]) return true;                          // exact state name or 2-letter code
     if (q.length >= 3) { for (var s in SU_STATES) { if (s.length > 2 && s.indexOf(q) === 0) return true; } }  // prefix like "cali", "penn"
     return false;
+  }
+
+  // Preserve the artwork while exposing the delegated controls to keyboard users.
+  function prepareActions(root) {
+    var labels = { toggleSave:'Save job', detailShare:'Share job', closeDetail:'Close job details',
+      closeLook:'Close themes', closeFeedback:'Close application feedback', closeModal:'Close founder note',
+      closeAdvice:'Close advice', closeSignup:'Close signup', closeNote:'Close note',
+      hideRecipe:'Hide newsletter signup', hideSignupCards:'Hide newsletter signup', openModal:'About Nic' };
+    root.querySelectorAll('[data-act]').forEach(function (el) {
+      var act = el.getAttribute('data-act');
+      if (act === 'stop' || act === 'openJob' || el.classList.contains('su-signup') || el.parentElement === root && /^close/.test(act)) return;
+      if (!el.matches('button,a,input,select,textarea')) {
+        el.setAttribute('role', 'button'); el.setAttribute('tabindex', '0');
+      }
+      if (labels[act]) el.setAttribute('aria-label', labels[act]);
+      if (act === 'toggleSave') {
+        var saved = App.isSaved(el.getAttribute('data-link'));
+        el.setAttribute('aria-pressed', String(saved));
+        el.setAttribute('aria-label', saved ? 'Unsave job' : 'Save job');
+      }
+      if (act === 'toggleSavedOnly') el.setAttribute('aria-pressed', String(!!App.state.savedOnly));
+      if (act === 'toggleCat' || act === 'toggleFilters') el.setAttribute('aria-expanded', String(App.state.openPanel === (act === 'toggleCat' ? 'cat' : 'filters')));
+    });
+    prepareNewsletters(root);
+    if (root.id === 'board' && window.SUBoardControls) window.SUBoardControls.prepare(root);
+  }
+
+  function focusIntent(el) {
+    if (!el || !el.getAttribute) return null;
+    return { el:el, id:el.id, act:el.getAttribute('data-act'), link:el.getAttribute('data-link') || el.getAttribute('href'), value:el.getAttribute('data-val') };
+  }
+  function restoreIntent(intent) {
+    if (!intent) return;
+    var el = intent.el && intent.el.isConnected ? intent.el : intent.id ? document.getElementById(intent.id) : null;
+    if (!el && intent.act) el = Array.from(document.querySelectorAll('[data-act]')).find(function (node) {
+      return node.getAttribute('data-act') === intent.act && (node.getAttribute('data-link') || node.getAttribute('href')) === intent.link && node.getAttribute('data-val') === intent.value;
+    });
+    if (el && el.focus) el.focus({ preventScroll:true });
   }
 
   // =========================================================================
@@ -415,6 +948,8 @@
       savedOnly: false,
       openNotes: {},
       openPanel: null,
+      adviceOpen: null,   // id of the open advice-note popup (null = closed)
+      signupOpen: null,   // hook line of the open signup popup (null = closed) — feed cards open this
       modalOpen: false,
       feedbackOpen: false,
       feedbackCo: '',
@@ -428,15 +963,15 @@
     // ---- "Change Look?" palettes — values copied VERBATIM from MAIN FILE.dc.html ----
     THEMES: {
       cod:      { acc:'#555B38', accInk:'#EDE7CF', cls:'cod',   ink:'#E9E3D2', sub:'#AEB29B', pay:'#AEB29B', show:'#AEB29B', navBg:'#5C6B3A', navInk:'#EDE7CF', hl:'rgba(120,140,75,0.92)', hiCard:'linear-gradient(160deg,#5C6440 0%,#4B5234 100%)', hiInk:'#F1E9D8', hiApply:'#FFFFFF', hiStamp:'#FFFFFF', payHi:'linear-gradient(160deg,#5C6440,#4B5234)' },
-      girly:    { acc:'#E84B9C', accInk:'#FFF3FA', cls:'girly', ink:'#2A0E1E', sub:'#8A2B5E', pay:'#8A2B5E', show:'#8A2B5E', navBg:'#F25CA2', navInk:'#FFFFFF', hl:'rgba(233,59,146,0.92)', hiCard:'linear-gradient(160deg,#FF77BC 0%,#F23E98 100%)', hiInk:'#3A0E26', hiApply:'#3A0E26', hiStamp:'#3A0E26', payHi:'linear-gradient(160deg,#FF77BC,#F23E98)' },
-      original: { acc:'#F2E14B', accInk:'#2A2118', cls:'',      ink:'#2A2118', sub:'#6F5E45', pay:'#9C8367', show:'#3A2A1B', navBg:'#EDE93B', navInk:'#1f1c14', hl:'rgba(238,224,70,0.95)', hiCard:'linear-gradient(160deg,#F6E85F 0%,#EFDB3D 100%)', hiInk:'#2A2118', hiApply:'#D8502E', hiStamp:'#3A2A1B', payHi:'linear-gradient(160deg,#F6E85F,#EFDB3D)' },
+      girly:    { acc:'#E84B9C', accInk:'#3A0E26', cls:'girly', ink:'#2A0E1E', sub:'#8A2B5E', pay:'#8A2B5E', show:'#8A2B5E', navBg:'#F25CA2', navInk:'#3A0E26', hl:'rgba(233,59,146,0.92)', hiCard:'linear-gradient(160deg,#FF77BC 0%,#F23E98 100%)', hiInk:'#3A0E26', hiApply:'#3A0E26', hiStamp:'#3A0E26', payHi:'linear-gradient(160deg,#FF77BC,#F23E98)' },
+      original: { acc:'#F2E14B', accInk:'#2A2118', cls:'',      ink:'#2A2118', sub:'#6F5E45', pay:'#9C8367', show:'#3A2A1B', navBg:'var(--su-yellow-paper)', navInk:'#1f1c14', hl:'rgba(238,224,70,0.95)', hiCard:'var(--su-yellow-paper)', hiInk:'#2A2118', hiApply:'var(--su-orange-on-card)', hiStamp:'#3A2A1B', payHi:'var(--su-yellow-paper)' },
       // poker + mermaid extend the shape with optional card overrides (lowCard/midCard/baseInk/
       // baseApply/baseStamp) and a featured-pick treatment (pickCard/pickInk/pickApply/pickStamp/
       // pickBadge). render() falls back to the original values when a key is absent.
       // Casino (poker): salary tiers by top-of-range — <$80K white, $80-99K green, $100K+ black.
       poker:    { acc:'#D4AF37', accInk:'#2A1810', cls:'poker', ink:'#F2E4C8', sub:'#D9B989', pay:'#D9B989', show:'#D9B989', navBg:'#D4AF37', navInk:'#2A1810', hl:'rgba(31,107,58,0.92)', hiCard:'linear-gradient(160deg,#26262B 0%,#101014 100%)', hiInk:'#E9D9A6', hiApply:'#D4AF37', hiStamp:'#D4AF37', payHi:'linear-gradient(160deg,#26262B,#101014)', lowCard:'linear-gradient(160deg,#FFFFFF 0%,#F1ECDE 100%)', midCard:'linear-gradient(160deg,#1F6B3A 0%,#155229 100%)', midInk:'#EAF6E4', midApply:'#FFD98A', midStamp:'#F2E7C8', baseInk:'#23242C', baseApply:'#C0303A', baseStamp:'#23242C', pickCard:'linear-gradient(160deg,#26262B 0%,#101014 100%)', pickInk:'#E9D9A6', pickApply:'#D4AF37', pickStamp:'#D4AF37', pickBadge:'#D4AF37' },
       mermaid:  { acc:'#FF7E67', accInk:'#4A160D', cls:'mermaid', ink:'#0E4A5C', sub:'#1B6B7D', pay:'#1B6B7D', show:'#1B6B7D', navBg:'#0E4A5C', navInk:'#E9FBFF', hl:'rgba(255,126,103,0.85)', hiCard:'linear-gradient(160deg,#177287 0%,#0E4A5C 100%)', hiInk:'#F2FBFA', hiApply:'#FFC7B8', hiStamp:'#EAF7F4', payHi:'linear-gradient(160deg,#177287,#0E4A5C)', lowCard:'linear-gradient(160deg,#FFFFFF 0%,#EAF6F6 55%,#F5EEF7 100%)', midCard:'linear-gradient(160deg,#FDFEFF 0%,#DFF2F1 55%,#F0E7F4 100%)', baseInk:'#0E4A5C', baseApply:'#D9553C', baseStamp:'#0E4A5C', pickCard:'linear-gradient(160deg,#177287 0%,#0E4A5C 100%)', pickInk:'#F2FBFA', pickApply:'#FFC7B8', pickStamp:'#EAF7F4', pickBadge:'#D9553C' },
-      // "bratt" theme — Charli XCX BRAT album green #8ACE00 (verified). Named double-t to dodge the trademark.
+      // "bratt" is the existing public theme key; preserve its bright lime palette.
       // $100K+ card = brat green with near-black lowercase-energy text; board accents + highlight are the green.
       bratt:    { acc:'#8ACE00', accInk:'#0A1400', cls:'bratt', ink:'#0A0A0A', sub:'#4A6A10', pay:'#4A6A10', show:'#2E4A00', navBg:'#8ACE00', navInk:'#0A1400', hl:'rgba(138,206,0,0.95)', hiCard:'linear-gradient(160deg,#96DB0A 0%,#8ACE00 100%)', hiInk:'#0A1400', hiApply:'#0A1400', hiStamp:'#0A1400', payHi:'linear-gradient(160deg,#96DB0A,#8ACE00)', lowCard:'linear-gradient(160deg,#FFFFFF 0%,#F4FBE4 100%)', midCard:'linear-gradient(160deg,#EAF7C4 0%,#DCEF9E 100%)', baseInk:'#1A2A0A', baseApply:'#3A7A00', baseStamp:'#1A2A0A', pickCard:'linear-gradient(160deg,#96DB0A,#8ACE00)', pickInk:'#0A1400', pickApply:'#0A1400', pickStamp:'#0A1400', pickBadge:'#0A1400' },
       // "Noir" — black luxury (not gothic). Cream board, $100K+ card black with silver letters.
@@ -463,15 +998,23 @@
 
     NOTES: [
       "If I ever needed a job again, this is the first one I'd apply to.",
-      "Read this whole posting twice. It's the real deal, I promise.",
       "This is the kind of role I wish someone had sent me back when I was looking.",
-      "If you apply to one thing this week, make it something on this row.",
-      "Found this at 2am and got genuinely excited for whoever lands it.",
-      "I vouch for this team. Don't make me regret putting them up here.",
-      "Almost didn't post this one. Too good to bury further down."
+      "If you apply to one thing this week, make it something on this row."
     ],
+    INTERNSHIP_NOTES: [
+      "If I was in college, this would be a dream internship.",
+      "This is one of those internships I wish a professor showed me when I was in college."
+    ],
+    shuffledNotes: function () {
+      if(this._openNoteDeck) return this._openNoteDeck;
+      var notes=(INTERNSHIPS ? this.INTERNSHIP_NOTES : this.NOTES).slice(),key='su_last_open_note_'+(INTERNSHIPS?'internships':'jobs'),last;
+      for(var i=notes.length-1;i>0;i--){var at=Math.floor(Math.random()*(i+1)),hold=notes[i];notes[i]=notes[at];notes[at]=hold;}
+      try{last=localStorage.getItem(key);if(notes.length>1&&notes[0]===last)notes.push(notes.shift());localStorage.setItem(key,notes[0]);}catch(_){}
+      this._openNoteDeck=notes;return notes;
+    },
 
-    // Doodle pose table (verbatim from DCLogic). Each pose: width, position, and
+    // Original DCLogic pose table; pose 10 replaces the push-up Nic rejected.
+    // Each pose: width, position, and
     // parts. Part ['c',cx,cy,r] = circle; ['p',d] = path; trailing 1 => accent stroke.
     POSES: [
       { w: 40, pos: { top: '-46px', left: '34%' }, parts: [['c',24,16,7],['p','M24 23 L24 52'],['p','M24 28 L40 18'],['p','M40 6 L40 40',1],['p','M40 6 L55 11 L40 16 Z',1],['p','M24 52 L16 72'],['p','M24 52 L33 68']] },
@@ -484,7 +1027,7 @@
       { w: 42, pos: { top: '-38px', left: '34%' }, parts: [['c',32,14,7],['p','M32 21 L27 46'],['p','M30 28 L16 24'],['p','M30 30 L46 34'],['p','M27 46 L42 56'],['p','M27 46 L14 60 L18 50'],['p','M4 30 l9 0',1],['p','M2 40 l11 0',1]] },
       { w: 34, pos: { left: '-18px', bottom: '24px' }, parts: [['c',26,14,7],['p','M26 21 L26 50'],['p','M26 27 L40 12'],['p','M26 28 L16 38'],['p','M26 50 L18 70'],['p','M26 50 L34 70']] },
       { w: 46, pos: { bottom: '-6px', right: '-18px' }, parts: [['c',24,18,7],['p','M24 24 L31 46'],['p','M24 30 L14 44'],['p','M27 34 L37 46'],['p','M31 46 L23 66'],['p','M31 46 L41 64'],['p','M6 40 h15 v13 h-15 Z',1]] },
-      { w: 50, pos: { top: '-24px', left: '36%' }, parts: [['c',14,30,6],['p','M19 32 L48 40'],['p','M24 36 L21 50'],['p','M40 38 L42 52'],['p','M48 40 L60 35']] },
+      { w: 40, pos: { top: '-44px', left: '36%' }, parts: [['c',24,14,7],['p','M24 21 L24 50'],['p','M24 28 L14 38 L33 38'],['p','M24 28 L34 32'],['p','M24 50 L17 70'],['p','M24 50 L33 70'],['p','M33 29 L46 29 L45 42 L34 42 Z',1],['p','M46 32 C55 30 55 40 46 39',1],['p','M37 24 Q34 20 38 17',1]] },
       { w: 42, pos: { top: '-34px', right: '28%' }, rot: 30, parts: [['c',30,16,7],['p','M30 22 L30 50'],['p','M30 30 L10 30'],['p','M30 30 L50 30'],['p','M30 50 L14 64'],['p','M30 50 L46 64']] },
       { w: 40, pos: { top: '-38px', left: '40%' }, parts: [['c',20,14,6],['p','M20 20 L20 40'],['p','M20 26 L8 34'],['p','M20 26 L32 34'],['p','M20 40 L38 46'],['p','M20 40 L34 40']] },
       { w: 50, pos: { top: '-44px', right: '40px' }, parts: [['c',16,12,6],['p','M16 18 L18 38'],['p','M18 38 L12 56'],['p','M18 38 L24 56'],['p','M17 24 L40 20'],['p','M40 20 L60 10'],['p','M60 10 Q61 34 57 50',1],['p','M54 50 l3 5 l3 -5',1]] },
@@ -726,23 +1269,33 @@
         { label: 'PR & Partnerships', match: 'PR & Partnerships' },
         { label: 'Video & Creative', match: 'Video & Creative' },
         { label: 'Influencer', match: 'Influencer' },
-        { label: 'Creative Tech', match: 'Creative Tech' }
+        { label: 'Creative Tech', match: 'Creative Tech' },
+        { label: 'Fashion Design', match: 'Fashion Design' },
+        { label: 'UX/UI Design', match: 'UX/UI Design' },
+        { label: 'Videography', match: 'Videography' },
+        { label: 'Photography', match: 'Photography' },
+        { label: 'Web Development', match: 'Web Development' },
+        { label: 'Artificial Intelligence', match: 'Artificial Intelligence' }
       ];
     },
 
     payTier: function (pay) {
-      if (!pay) return 'high';
-      var nums = (String(pay).match(/\d+(?:\.\d+)?/g) || []).map(Number);
-      if (!nums.length) return 'high';
+      var text = String(pay || '').replace(/,/g, '');
+      var hourly = /\/\s*(?:h|hr|hour)\b|\bper\s*hour\b|\bhourly\b/i.test(text);
+      var nums = (text.match(/\d+(?:\.\d+)?\s*[kK]?/g) || []).map(function (n) {
+        var value = parseFloat(n);
+        return /k/i.test(n) || (!hourly && value < 1000) ? value * 1000 : value;
+      });
+      if (!nums.length) return 'low';
       var top = Math.max.apply(null, nums);
-      if (top >= 100) return 'high';
-      if (top >= 80) return 'mid';
+      if (top >= 100000) return 'high';
+      if (top >= 80000) return 'mid';
       return 'low';
     },
 
     matchesBase: function (j) {
       if (this.state.theme) {
-        var def = this.themeDefs[this.state.theme];
+        var def = Object.prototype.hasOwnProperty.call(this.themeDefs, this.state.theme) ? this.themeDefs[this.state.theme] : null;
         if (def) {
           var role = (j.role || '').toLowerCase();
           var inCat = def.cats.indexOf(j.ind) !== -1;
@@ -752,7 +1305,7 @@
       }
       var q = this.state.q.trim().toLowerCase();
       if (q) {
-        var hay = (j.co + ' ' + j.role + ' ' + j.loc + ' ' + j.state).toLowerCase();
+        var hay = (j.co + ' ' + j.role + ' ' + j.loc + ' ' + j.state + ' ' + j.ind).toLowerCase();
         if (j.state === 'NY') hay += ' nyc';
         if (hay.indexOf('san francisco') !== -1) hay += ' sf bay area';
         if (hay.indexOf('los angeles') !== -1) hay += ' la';
@@ -768,8 +1321,9 @@
         }
       }
       if (this.state.ws !== 'Any' && j.style !== this.state.ws) return false;
-      if (this.state.st !== 'all' && j.state !== this.state.st && j.state !== 'Remote') return false; // remote roles always show for any selected state
+      if (this.state.st !== 'all' && (!window.SUStates || window.SUStates.extract(j.state, j.loc).indexOf(this.state.st) < 0) && !isRemoteAnywhere(j)) return false;
       if (this.state.pr !== 'Any') {
+        if(INTERNSHIPS)return (j.payStatus==='paid'?'Paid':j.payStatus==='unpaid'?'Unpaid':'Not disclosed')===this.state.pr;
         var t = this.payTier(j.pay);
         var want = this.state.pr === 'Under $80K' ? 'low' : (this.state.pr === '$80–99K' ? 'mid' : 'high');
         if (t !== want) return false;
@@ -777,19 +1331,29 @@
       return true;
     },
 
+    isSaved: function (link) {
+      if (this._savedMap !== this.state.saved) {
+        this._savedMap = this.state.saved;
+        this._savedIndex = linkIndex(Object.keys(this.state.saved).filter(function (key) { return App.state.saved[key]; }));
+      }
+      return indexHasLink(this._savedIndex, link);
+    },
+
     toggleSave: function (key) {
       var saved = Object.assign({}, this.state.saved);
-      if (saved[key]) delete saved[key]; else saved[key] = true;
-      try { localStorage.setItem('su_saved_jobs', JSON.stringify(saved)); } catch (e) {}
-      // analytics (js/analytics.js): log SAVES only, not unsaves — additive no-op without it
-      if (saved[key] && typeof window.suTrack === 'function') {
-        var sj = null;
-        for (var si = 0; si < this.jobs.length; si++) {
-          if (this.jobs[si].link === key) { sj = this.jobs[si]; break; }
-        }
-        window.suTrack('save', sj ? sj.co : '', sj ? sj.role : '', key);
+      var alreadySaved = this.isSaved(key);
+      // An explicit Unsave removes every saved URL alias for this posting. No
+      // background migration occurs merely because a duplicate card is hidden.
+      if (alreadySaved) Object.keys(saved).forEach(function (link) { if (sameJobLink(link, key)) delete saved[link]; });
+      else saved[key] = true;
+      try { if (window.SUStore) window.SUStore.saveSaved(saved,this.catalogJobs().find(function(job){return jobHasLink(job,key);})); else localStorage.setItem('su_saved_jobs', JSON.stringify(saved)); } catch (e) {
+        this._retrySaveLink=key; this._retrySaveDesired=!alreadySaved; this._actionError='Could not save this change. Your previous Saved list is still here.'; this.render(); return false;
       }
-      this.setState({ saved: saved });
+      this._retrySaveLink=null; this._actionError='';
+      if(window.SUAnalytics) window.SUAnalytics.job(alreadySaved?'job_unsave':'job_save',key);
+      this.setState({ saved: loadSaved() });
+      if(!alreadySaved&&this.isSaved(key)&&window.SUSavedReminder)window.SUSavedReminder.afterSave();
+      return true;
     },
 
     // apply a "Change Look?" theme, close the modal, and persist site-wide
@@ -809,12 +1373,37 @@
       try {
         var slug = { poker:'casino', girly:'girlies', mermaid:'mermaid', bratt:'bratt', noir:'blackcat', beauty:'beauty', chess:'chess' }[look];
         var newPath = slug ? ('/jobs/' + slug) : '/jobs';
+        if (INTERNSHIPS) {
+          // Internship links use the existing query-theme bootstrap. Keep the
+          // section, shared listing and other query values intact on refresh.
+          var params = new URLSearchParams(location.search);
+          params.set('theme', look);
+          newPath = location.pathname + '?' + params.toString();
+        }
         if (window.history && history.replaceState) history.replaceState(null, '', newPath + (location.hash || ''));
       } catch (e) {}
       this.setState({ look: look, lookOpen: false });
     },
 
-    // Build the doodle SVG markup (string) for a given pose index, mirroring doodleEl().
+    // Canonical artwork is shared with the guide; palette ink belongs to the
+    // canvas because these small marks sit above the card, away from job text.
+    themeDoodleEl: function (look, idx) {
+      var art = window.SUThemeArt && window.SUThemeArt.themes[look];
+      if (!art || !art.icons.length) return '';
+      var icon = art.icons[idx % art.icons.length];
+      var ink = (this.THEMES[look] || this.THEMES.original).ink;
+      var size = idx === 0 ? 48 : 64, top = idx === 0 ? -40 : -54;
+      var svg = icon.svg.replace('width="64" height="64"', 'width="' + size + '" height="' + size + '"');
+      return '<div class="doodle theme-motif" data-theme-motif="' + icon.id + '" aria-hidden="true" style="position:absolute;top:' + top + 'px;' + (idx % 2 ? 'right:8%;' : 'left:6%;') + 'width:' + size + 'px;height:' + size + 'px;pointer-events:none;z-index:4;color:' + ink + ';transform:rotate(' + (idx % 2 ? 6 : -6) + 'deg)">' + svg + '</div>';
+    },
+    brattPhraseEl: function (idx) {
+      var phrases = ['fresh to the core', 'not rotten', 'brat summer', 'pure brat', '365 energy', 'party girl', 'lime green', 'so brat', 'it girl', 'no filter', 'club ready', 'raw + real', 'brat forever', 'no rules', 'stay brat'];
+      if (idx >= phrases.length) return '';
+      return '<div class="doodle" aria-hidden="true" style="position:absolute;top:-32px;right:7%;pointer-events:none;z-index:4;transform:rotate(5deg);font:400 20px Arial,Helvetica,sans-serif;color:#141414;opacity:.9;white-space:nowrap;letter-spacing:-.5px;filter:blur(.4px)">' + phrases[idx] + '</div>';
+    },
+
+    // Original keeps its established pose table, proportions and placement.
+    // Other themes retain their legacy fallback if the shared artwork cannot load.
     doodleEl: function (idx) {
       var P = this.POSES[((idx % this.POSES.length) + this.POSES.length) % this.POSES.length];
       var h = Math.round(P.w * 90 / 64);
@@ -827,13 +1416,13 @@
       }).join('');
       var svg = '<svg width="' + P.w + '" height="' + h + '" viewBox="0 0 64 90" fill="none" stroke="#2A2118" ' +
         'stroke-width="3" stroke-linecap="round" stroke-linejoin="round" ' +
-        'style="opacity:0.78; overflow:visible;">' + kids + '</svg>';
+        'aria-hidden="true" focusable="false" style="opacity:0.78; overflow:visible;">' + kids + '</svg>';
       var styl = 'position:absolute; pointer-events:none; z-index:4;';
       ['top', 'left', 'right', 'bottom'].forEach(function (k) {
         if (P.pos[k] != null) styl += ' ' + k + ':' + P.pos[k] + ';';
       });
       if (P.rot) styl += ' transform:rotate(' + P.rot + 'deg);';
-      return '<div class="doodle" style="' + styl + '">' + svg + '</div>';
+      return '<div class="doodle original-doodle" aria-hidden="true" style="' + styl + '">' + svg + '</div>';
     },
 
     // WW2 doodle (string port of codDoodleEl): olive ink, supports rect ('r') parts.
@@ -950,37 +1539,133 @@
     },
 
     // ---- the big one: compute everything needed to render (ports renderVals) ----
+    catalogJobs: function () {
+      var current=this.jobs||[], archived=window.SUStore&&window.SUStore.archivedSaved ? window.SUStore.archivedSaved(current,this._closedLinks||[]) : [];
+      archived=archived.map(function(job){return Object.assign({},job,{savedElsewhere:!!job.internship!==!!INTERNSHIPS});});
+      var all=uniqueJobs(current.concat(archived)), self=this;
+      Object.keys(this.state.saved||{}).forEach(function(link){
+        if(!self.state.saved[link]||all.some(function(job){return jobHasLink(job,link);})||!safeUrl(link))return;
+        var host='Saved job';try{host=new URL(link).hostname.replace(/^www\./,'');}catch(_){}
+        all.push({link:link,co:host,role:'Saved listing',loc:'',pay:'',savedUnavailable:true,confirmedClosed:(self._closedLinks||[]).some(function(dead){return sameJobLink(dead,link);})});
+      });
+      return all;
+    },
+    setInternshipSurfaces: function () {
+      if(!INTERNSHIPS||!window.SUInternships||!window.SUInternships.setSurfaceCatalog)return;
+      window.SUInternships.setSurfaceCatalog(this.jobs.slice().sort(function(a,b){return Number(internshipCanApply(b))-Number(internshipCanApply(a))||Number(b.payStatus==='paid')-Number(a.payStatus==='paid');}));
+    },
     computeShown: function () {
       var self = this;
-      var base = this.jobs.filter(function (j) { return self.matchesBase(j); });
+      var base = (this.state.savedOnly ? this.catalogJobs() : this.jobs).filter(function (j) { return self.matchesBase(j) && (self.state.savedOnly || !window.SUDiscovery || window.SUDiscovery.showHidden() || !window.SUDiscovery.hidden(j)); });
       var cat = this.state.cat;
       var shown = base.filter(function (j) { return cat === 'all' || j.ind === cat; });
-      if (this.state.savedOnly) shown = shown.filter(function (j) { return !!self.state.saved[j.link]; });
+      if (this.state.savedOnly) shown = shown.filter(function (j) { return self.isSaved(j.link); });
 
       if (this.state.fr === 'Recently added') {
         // "Recently added" is a SORT, not a filter: show ALL roles, newest (highest sheet row) first
         shown = shown.slice().sort(function (a, b) { return (b._idx || 0) - (a._idx || 0); });
       }
-      // ALWAYS lead with a 100K+ role so the first card carries the signature décor (all sort modes)
-      var hiIdx = shown.findIndex(function (j) { return self.payTier(j.pay) === 'high'; });
-      if (hiIdx > 0) { var moved = shown.splice(hiIdx, 1)[0]; shown.unshift(moved); }
+      else if(!INTERNSHIPS && window.SUPersonalization && window.SUAnalytics) {
+        var profileGeneration=window.SUAnalytics.generation();
+        var catalogChanged=this._orderCatalog!==this.jobs;
+        if(catalogChanged || (this._profileGeneration!==profileGeneration && (!this._feedInteracted || this._profileGeneration===undefined || this._profileGeneration===-1))){
+          var nextOrder=window.SUDiscovery ? window.SUDiscovery.order(this.jobs,window.SUPersonalization,window.SUAnalytics.profile()) : window.SUPersonalization.rank(this.jobs,window.SUAnalytics.profile());
+          if(catalogChanged && this._feedInteracted && this._personalOrder && this._personalOrder.length){
+            // Refresh job objects without moving surviving cards after browsing starts.
+            var previous=this._personalOrder.map(function(job){return job.link;});
+            nextOrder.sort(function(a,b){var ai=previous.indexOf(a.link),bi=previous.indexOf(b.link);return (ai<0?Infinity:ai)-(bi<0?Infinity:bi)||0;});
+          }
+          this._personalOrder=nextOrder;
+          this._orderCatalog=this.jobs;
+          this._profileGeneration=profileGeneration;
+        }
+        var order=this._personalOrder||this.jobs;
+        shown.sort(function(a,b){return order.indexOf(a)-order.indexOf(b);});
+      }
 
+      if(!INTERNSHIPS && this.state.fr!=='Recently added' && window.SUDiscovery && window.SUPersonalization && !window.SUAnalytics){var discoveryOrder=window.SUDiscovery.order(this.jobs,window.SUPersonalization,{});shown.sort(function(a,b){return discoveryOrder.indexOf(a)-discoveryOrder.indexOf(b);});}
+      if(INTERNSHIPS && this.state.fr!=='Recently added')shown.sort(function(a,b){return Number(internshipCanApply(b))-Number(internshipCanApply(a)) || Number(b.payStatus==='paid')-Number(a.payStatus==='paid');});
       return { base: base, shown: shown };
     },
 
+    // Popups live in #overlay-root; the card grid lives in #board. When a state change ONLY
+    // touches popup state, rebuilding the grid is pure waste — and with ~170 jobs plus the
+    // interleaved advice/signup cards (both cadences), that waste measured ~1 SECOND per click
+    // on localhost (Nic: "it used to be really smooth"). So: overlay-only patches re-render
+    // overlays only. Anything else (filters, search, theme, jobs) still does the full render.
+    OVERLAY_KEYS: { reportedOpen:1, detailOpen: 1, detailLink: 1, feedbackOpen: 1, feedbackCo: 1, feedbackLink: 1,
+                    adviceOpen: 1, signupOpen: 1, lookOpen: 1, aboutOpen: 1, modalOpen: 1 },
+    clearFeedbackRedirect: function () {
+      try {
+        var storage = window.sessionStorage;
+        if (!storage) return false;
+        if (storage.getItem(FEEDBACK_REDIRECT_KEY) !== null) storage.removeItem(FEEDBACK_REDIRECT_KEY);
+        return storage.getItem(FEEDBACK_REDIRECT_KEY) === null;
+      } catch (e) { return false; }
+    },
+    // Called only immediately before a Google redirect from the feedback icon.
+    // Tab-local, short-lived and independent of Saved/Tracker/account storage.
+    rememberFeedbackRedirect: function () {
+      if (!this.state.feedbackOpen) return false;
+      var link = this.state.feedbackLink;
+      var job = this.jobs.find(function (j) { return jobHasLink(j, link); });
+      if (!job) return false;
+      var co = String(job.co || '').trim().replace(/\s+/g, ' ');
+      link = safeUrl(job.link);
+      if (!co || co.length > 200 || !link || link.length > 4096) return false;
+      if (!this.clearFeedbackRedirect()) return false;
+      try {
+        var storage = window.sessionStorage;
+        var value = JSON.stringify({ v:1, at:Date.now(), co:co, link:link });
+        storage.setItem(FEEDBACK_REDIRECT_KEY, value);
+        if (storage.getItem(FEEDBACK_REDIRECT_KEY) === value) return true;
+      } catch (e) { /* Stay on the question if a redirect receipt cannot be kept. */ }
+      this.clearFeedbackRedirect();
+      return false;
+    },
+    restoreFeedbackRedirect: function () {
+      try {
+        var raw = window.sessionStorage && window.sessionStorage.getItem(FEEDBACK_REDIRECT_KEY);
+        // Consume before parsing/rendering. Failed removal must not create a loop.
+        if (raw == null || !this.clearFeedbackRedirect()) return;
+        var pending = JSON.parse(raw), age = Date.now() - pending.at;
+        if (pending.v !== 1 || typeof pending.at !== 'number' || !Number.isFinite(age) || age < 0 || age > FEEDBACK_REDIRECT_TTL ||
+            typeof pending.co !== 'string' || !pending.co.trim() || pending.co.length > 200 ||
+            typeof pending.link !== 'string' || pending.link.length > 4096 || !safeUrl(pending.link)) return;
+        this.state.feedbackOpen = true;
+        this.state.feedbackCo = pending.co.trim().replace(/\s+/g, ' ');
+        this.state.feedbackLink = safeUrl(pending.link);
+      } catch (e) { /* Missing or malformed tab storage never blocks the board. */ }
+    },
     setState: function (patch) {
+      if (patch.feedbackOpen === false || (patch.feedbackLink && patch.feedbackLink !== this.state.feedbackLink)) this.clearFeedbackRedirect();
+      if(patch.feedbackOpen === true && !this.state.feedbackOpen) { this._feedbackError=''; uxEvent('feedback_open'); }
+      if(patch.reportedOpen===false)this._reportedPanel=null;
       Object.assign(this.state, patch);
-      this.render();
+      var overlayOnly = Object.keys(patch).length > 0;
+      for (var k in patch) { if (!this.OVERLAY_KEYS[k]) { overlayOnly = false; break; } }
+      if (overlayOnly) this.renderOverlays();
+      else this.render();
     },
 
     // =======================================================================
     // RENDER — rebuilds the whole .board markup, reproducing the template.
     // =======================================================================
     render: function () {
+      try { this.renderBoard(); var error=document.getElementById('su-runtime-error');if(error)error.hidden=true; }
+      catch(e){uxEvent('render_error');var notice=document.getElementById('su-runtime-error');if(notice)notice.hidden=false;}
+    },
+    renderBoard: function () {
       var self = this;
       var board = document.getElementById('board');
       var sc = this.computeShown();
       var base = sc.base, shown = sc.shown;
+      setTimeout(function(){
+        if(!window.IntersectionObserver||!window.SUAnalytics)return;
+        if(self._jobImpressions)self._jobImpressions.disconnect();
+        self._jobImpressions=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting&&entry.intersectionRatio>=0.5)window.SUAnalytics.job('job_impression',entry.target.getAttribute('data-link'));});},{threshold:0.5});
+        document.querySelectorAll('[data-act="openJob"][data-link]').forEach(function(card){self._jobImpressions.observe(card);});
+      },0);
 
       // ---- active "Change Look?" theme (ported from renderVals THEMES) ----
       var look = this.state.look;
@@ -993,7 +1678,7 @@
       var beauty = look === 'beauty';
       var chess = look === 'chess';
       var P = this.THEMES[look] || this.THEMES.original;
-      var ACC = P.acc, ACC_INK = P.accInk;
+      var ACC = P.acc, ACC_INK = this.state.look==='girly' ? '#3A0E26' : P.accInk;
       var boardCls = P.cls, boardInk = P.ink, subInk = P.sub, payKeyInk = P.pay,
           showInk = P.show, navBg = P.navBg, navInk = P.navInk, HLC = P.hl;
 
@@ -1001,6 +1686,8 @@
       board.className = 'board' + (boardCls ? ' ' + boardCls : '');
       board.style.color = boardInk;
       document.body.className = (look === 'original') ? '' : ('theme-' + look);
+      document.body.style.setProperty('--su-action-paper',ACC);
+      document.body.style.setProperty('--su-action-ink',ACC_INK);
 
       // ---- categories panel rows (live counts) ----
       var catRowBase = "display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-radius:4px; font-family:'Indie Flower',cursive; font-size:18px; font-weight:700; cursor:pointer; transition:background .12s;";
@@ -1008,7 +1695,7 @@
         var active = self.state.cat === c.match;
         var count = c.match === 'all' ? base.length : base.filter(function (j) { return j.ind === c.match; }).length;
         var rowStyle = catRowBase + (active ? ('background:' + ACC + '; color:' + ACC_INK + ';') : 'background:transparent; color:#3A2A1B;');
-        var countStyle = "font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;" + (active ? 'color:#6E5C30;' : 'color:#A8916B;');
+        var countStyle = "font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;" + 'color:inherit;';
         return '<div data-act="cat" data-val="' + esc(c.match) + '" style="' + rowStyle + '">' + esc(c.label) +
           '<span style="' + countStyle + '">' + count + '</span></div>';
       }).join('');
@@ -1022,7 +1709,7 @@
       }).join('');
 
       // ---- price pills ----
-      var priceVals = ['Any', 'Under $80K', '$80–99K', '$100K+'];
+      var priceVals = INTERNSHIPS ? ['Any','Paid'] : ['Any', 'Under $80K', '$80–99K', '$100K+'];
       var pricesHtml = priceVals.map(function (p) {
         var active = self.state.pr === p;
         var st = pillBase + (active ? 'background:#2A2118; color:#F4E9C9;' : ('background:' + ACC + '; color:' + ACC_INK + ';'));
@@ -1033,50 +1720,53 @@
       var freshHtml = ['Any', 'Recently added'].map(function (f) {
         var active = self.state.fr === f;
         var st = pillBase + (active ? 'background:#2A2118; color:#F4E9C9;' : ('background:' + ACC + '; color:' + ACC_INK + ';'));
-        return '<div data-act="fr" data-val="' + esc(f) + '" style="' + st + '">' + esc(f) + '</div>';
+        return '<div data-act="fr" data-val="' + esc(f) + '" style="' + st + '">' + esc(f === 'Any' ? 'For you' : f) + '</div>';
       }).join('');
 
       // ---- per-card decoration computation (ported verbatim) ----
       var rots = [-2, 1.6, -1, 2, -1.5, 1.1, -1.8, 1.3, -0.8, 1.7];
       var noteFor = {};
-      if (shown.length >= 6) {
-        var nci = 0;
-        for (var r = 0; r * 3 < shown.length; r++) {
-          if (r % 2 !== 0) continue;
-          var i = r * 3;
-          if (i < shown.length && self.payTier(shown[i].pay) === 'high') { noteFor[i] = self.NOTES[nci % self.NOTES.length]; nci++; }
+      var showingHidden=!!(window.SUDiscovery && window.SUDiscovery.showHidden());
+      if (shown.length >= 3 && !showingHidden && !this.state.savedOnly) {
+        var noteDeck=this.shuffledNotes(),nci=0;
+        for(var r=0;r*3<shown.length;r+=2){var i=r*3;
+          if(i<shown.length && (shown[i].internship || self.payTier(shown[i].pay)==='high'))noteFor[i]=noteDeck[nci++%noteDeck.length];
         }
       }
 
       var cardsHtml = shown.map(function (j, k) {
-        var id = self.jobs.indexOf(j);
+        var id = self.jobs.indexOf(j);if(id<0)id=self.jobs.length+k;
+        // POSITION IN THE LIST AS THE USER SEES IT (Nic, 2026-07-12). The newsletter capture block
+        // used to appear on a HASH of the job link (~1 in 3), which clusters: two adjacent cards
+        // could both have it, then six in a row with none. Nic saw exactly that. Stamping the
+        // DISPLAYED index here makes "every Nth card" mean every Nth card on screen, after
+        // shuffling and filtering, with no clusters and no gaps.
+        j._pos = k;
         var key = j.link;
-        var saved = !!self.state.saved[key];
-        var tier = self.payTier(j.pay);
+        var saved = self.isSaved(key);
+        var tier = j.internship ? internshipSurface(j) : self.payTier(j.pay);
         var rot = rots[k % rots.length];
         // high-pay cards take their ink/bg/apply/stamp from the active theme palette;
         // poker/mermaid also override the sub-$100K cards (white playing card / pearl)
         var ink = (tier === 'high') ? P.hiInk : (tier === 'mid' && P.midInk) ? P.midInk : (P.baseInk || '#3A2A1B');
         var bg = tier === 'low'
-          ? (P.lowCard || 'linear-gradient(160deg,#ECDEC6 0%,#E0D0B2 100%)')
+          ? (P.lowCard || 'var(--su-salary-low-paper)')
           : tier === 'mid'
-          ? (P.midCard || 'linear-gradient(160deg,#E0CBA2 0%,#D3BB8C 100%)')
+          ? (P.midCard || 'var(--su-salary-mid-paper)')
           : P.hiCard;
-        var applyColor = (tier === 'high') ? P.hiApply : (tier === 'mid' && P.midApply) ? P.midApply : (P.baseApply || '#D8502E');
-        var stampColor = (tier === 'high') ? P.hiStamp : (tier === 'mid' && P.midStamp) ? P.midStamp : (P.baseStamp || '#3A2A1B');
-        var gStamp = (tier === 'high') ? '#FFFFFF' : '#C24A78'; // girly heart-stamp color
+        var applyColor = (tier === 'high') ? P.hiApply : (tier === 'mid' && P.midApply) ? P.midApply : (P.baseApply || 'var(--su-orange-on-card)');
+        // These small action labels need the stronger matching ink on paper
+        // variants where the theme's decorative accent has low contrast.
+        if(mermaid || (bratt && tier === 'mid') || (beauty && tier !== 'high'))applyColor=ink;
+        var stampColor = j.internship ? ink : (tier === 'high') ? P.hiStamp : (tier === 'mid' && P.midStamp) ? P.midStamp : (P.baseStamp || '#3A2A1B');
+        var gStamp = j.internship ? ink : (tier === 'high') ? '#FFFFFF' : '#C24A78'; // girly heart-stamp color
         var hasNote = !!noteFor[k];
         var slot = k % 6;
         var pin = !hasNote && slot === 0;
         var tape = !hasNote && slot === 2;
         var doodleOn = !hasNote && slot === 4;
         var pick = !!j.pick;
-        // featured picks get the theme's VIP card when it defines one
-        // (poker = black + gold casino card, mermaid = deep-sea teal + pearl)
-        if (pick && P.pickCard) {
-          bg = P.pickCard; ink = P.pickInk;
-          applyColor = P.pickApply; stampColor = P.pickStamp;
-        }
+        // Featured markers never override the salary surface or its matching ink.
         var pickBadgeColor = P.pickBadge || '#D8502E';
         var pinPalette = ['#3E7BBF', '#C9A23A', '#7A9A4E'];
         var pinColor = pinPalette[k % 3];
@@ -1084,29 +1774,35 @@
         var noteState = self.state.openNotes[id]; // undefined | 'open' | 'closing' | 'done'
         var isOpening = (noteState === 'open' || noteState === 'closing');
 
-        var metaTop = [j.loc, j.style, (j.exp && j.exp !== 'See posting' ? j.exp : null)].filter(Boolean).join('  ·  ');
+        var cardLoc = window.SUStates ? window.SUStates.cardLocation(j.loc) : j.loc;
+        var metaTop = j.internship ? internshipLocation(j) : [cardLoc, j.style, (j.exp && j.exp !== 'See posting' ? j.exp : null)].filter(Boolean).join('  ·  ');
 
         var noteStyle = '--rot:' + rot + 'deg; cursor:pointer; position:relative; background:' + bg +
           '; color:' + ink + '; border-radius:3px; padding:30px 24px 22px; box-sizing:border-box; display:flex; ' +
           'flex-direction:column; min-height:238px;' + (isOpening ? ' position:relative; z-index:60;' : '');
 
-        var bmColor = girly ? (saved ? '#FFFFFF' : 'none') : (saved ? '#D8502E' : 'none');
-        var bmStroke = girly ? '#FFFFFF' : (saved ? '#D8502E' : ink);
+        var bmColor = saved ? ink : 'none';
+        var bmStroke = ink;
 
         var showEnvelope = hasNote && !noteState;
         var noteOpen = hasNote && (noteState === 'open' || noteState === 'closing');
         var noteAnim = noteState === 'closing' ? 'noteFold .3s ease forwards' : 'noteUnfold .34s cubic-bezier(.2,.9,.3,1.25) both';
-        var showVerified = !hasNote || noteState === 'done';
-        var stampClass = (hasNote && noteState === 'done') ? 'stampfade' : '';
+        var showVerified = !j.savedUnavailable && (!hasNote || noteState === 'done');
+        var stampClass = (j.internship ? 'su-internship-stamp ' : '') + ((hasNote && noteState === 'done') ? 'stampfade' : '');
         var noteRot = (k % 2 === 0 ? 4 : -4);
         var personalNote = noteFor[k] || null;
 
         var doodleHtml = '';
-        // dIdx = a UNIQUE, ascending ordinal per doodle on screen (top card = 0, then 1,2,3…).
+        // Both boards begin with their theme drawing; later ordinals stay unique.
         // Prevents décor from repeating (Nic: brat scribbles must never say the same thing twice).
         var dIdx = (k === 0) ? 0 : (Math.floor(k / 6) + 1);
         if (k === 0 || doodleOn) {
-          doodleHtml = cod ? self.codDoodleEl(dIdx) : girly ? self.girlyDoodleEl(dIdx) : poker ? self.pokerDoodleEl(dIdx) : mermaid ? self.mermaidDoodleEl(dIdx) : bratt ? self.brattDoodleEl(dIdx) : noir ? self.noirDoodleEl(dIdx) : beauty ? self.beautyDoodleEl(dIdx) : chess ? self.chessDoodleEl(dIdx) : self.doodleEl(k === 0 ? 13 : k);
+          // Keep the established original arrow pose on the lead card.
+          if (self.state.look === 'original') doodleHtml = self.doodleEl(k === 0 ? 13 : k);
+          // Bratt keeps its short phrases between drawings without repeating copy.
+          if (bratt && dIdx % 2 === 1) doodleHtml = self.brattPhraseEl(Math.floor(dIdx / 2));
+          if (!doodleHtml) doodleHtml = self.themeDoodleEl(self.state.look, bratt ? Math.floor(dIdx / 2) : dIdx);
+          if (!doodleHtml) doodleHtml = cod ? self.codDoodleEl(dIdx) : girly ? self.girlyDoodleEl(dIdx) : poker ? self.pokerDoodleEl(dIdx) : mermaid ? self.mermaidDoodleEl(dIdx) : bratt ? self.brattDoodleEl(dIdx) : noir ? self.noirDoodleEl(dIdx) : beauty ? self.beautyDoodleEl(dIdx) : chess ? self.chessDoodleEl(dIdx) : self.doodleEl(k === 0 ? 13 : k);
         }
 
         var pinStyle = 'position:absolute; top:-9px; left:50%; transform:translateX(-50%); width:17px; height:17px; ' +
@@ -1114,7 +1810,7 @@
           ' 58%); box-shadow:0 3px 5px rgba(0,0,0,.32); z-index:3;';
 
         // -- build the card HTML (mirrors the template's sc-if branches) --
-        var html = '<div class="note' + (k === 0 ? ' note-first' : '') + '" data-act="openJob" data-id="' + id + '" data-link="' + esc(j.link) + '" data-co="' + esc(j.co) + '" style="' + noteStyle + '">';
+        var html = '<div class="note' + (j.internship ? ' su-internship-card' : '') + (k === 0 ? ' note-first' : '') + (k === 0 ? ' note-lead-doodle' : '') + '" data-act="openJob" data-id="' + id + '" data-link="' + esc(j.link) + '" data-co="' + esc(j.co) + '" style="' + noteStyle + '">';
 
         // envelope ("open" tab)
         if (showEnvelope) {
@@ -1157,44 +1853,70 @@
         '</div>';
 
         // company + role
-        html += '<div style="display: flex; align-items: flex-start; gap: 10px; padding-right: 30px;">' +
+        html += '<div style="display: flex; align-items: flex-start; gap: 10px; padding-right: 48px;">' +
             '<div class="card-co" title="' + esc(j.co) + '" style="font-family: \'Archivo Black\', \'Archivo\', sans-serif; font-weight: 900; font-size: 23px; line-height: 1.13; letter-spacing: -0.4px;"><span style="">' + esc(j.co) + '</span></div>' +
           '</div>' +
           '<div class="card-role" title="' + esc(j.role) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16.5px; margin-top: 9px; line-height: 1.3;">' + esc(j.role) + '</div>' +
           '<div style="flex: 1; min-height: 18px;"></div>' +
-          '<div style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.4px;">' + esc(j.pay) + '</div>' +
-          '<div style="font-size: 14.5px; opacity: 0.85; line-height: 1.5; font-family: \'Poppins\', sans-serif; margin-top: 5px;">' + esc(metaTop) + '</div>';
+          '<div style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.4px;">' + (j.internship ? '<span class="su-internship-pay">'+esc(cardPay(j))+'</span>' : esc(cardPay(j))) + '</div>' +
+          '<div class="card-location" style="font-size: 14.5px; opacity: 0.85; line-height: 1.5; font-family: \'Poppins\', sans-serif; margin-top: 5px;">' + esc(metaTop) + '</div>';
 
         // verified stamp + apply link row (per-theme variant, ported verbatim)
         html += '<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 16px; min-height: 24px;">';
+        if(j.savedUnavailable)html += '<span class="su-availability-stamp">'+(j.confirmedClosed?'No longer available':j.savedElsewhere?(j.internship?'Saved internship':'Saved job'):'Off this board')+'</span>';
         if (showVerified) {
           if (!girly) {
             // original = outlined circle-check; WW2 (cod) = starred dashed-circle stamp
             var stampIcon = cod
               ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-dasharray="53 10" stroke-dashoffset="20"></circle><path d="M12 5.2 L13.59 9.82 L18.47 9.9 L14.57 12.83 L16 17.5 L12 14.7 L8 17.5 L9.43 12.83 L5.53 9.9 L10.41 9.82 Z" fill="currentColor"></path></svg>'
               : '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.4"></circle><path d="M8.3 12.2l2.4 2.4 4.9-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
-            html += '<div class="' + stampClass + '" style="display: inline-flex; align-items: center; gap: 5px; border: 1.6px solid; color: ' + stampColor + '; border-radius: 4px; padding: 3px 8px; transform: rotate(-4deg); font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; opacity: 0.72;">' +
+            html += '<div class="' + stampClass + '" style="display: inline-flex; align-items: center; gap: 5px; border: 1.6px solid; color: ' + stampColor + '; border-radius: 4px; padding: 3px 8px; transform: rotate(-4deg); font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; opacity: ' + (j.internship ? '1' : '0.72') + ';">' +
               stampIcon +
-              'Human-verified' +
+              (j.internship ? 'Internship' : 'Human-verified') +
             '</div>';
           } else {
             // girly = pink rounded stamp with a heart on each side
             var heart = '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="flex: none;"><path d="M12 21s-7.5-4.7-10-9.2C.5 8.6 2 5 5.3 5c2 0 3.3 1.2 4.7 3 1.4-1.8 2.7-3 4.7-3C18 5 19.5 8.6 22 11.8 19.5 16.3 12 21 12 21z"></path></svg>';
             html += '<div class="' + stampClass + '" style="display: inline-flex; align-items: center; gap: 6px; border: 2px solid ' + gStamp + '; color: ' + gStamp + '; border-radius: 14px; padding: 3px 11px; transform: rotate(-4deg); font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 12.5px; opacity: 0.95;">' +
-              heart + 'Human Verified' + heart +
+              heart + (j.internship ? 'Internship' : 'Human Verified') + heart +
             '</div>';
           }
         }
-        html += '<a class="applylink2" href="' + esc(j.link) + '" target="_blank" rel="noopener" data-act="apply" data-co="' + esc(j.co) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 15.5px; color: ' + applyColor + '; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-left: auto;">apply<svg class="doodle-arrow" width="28" height="14" viewBox="0 0 28 14" fill="none" style="overflow: visible; margin-left: 2px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>';
+        html += '<a class="applylink2" href="' + esc(j.savedUnavailable ? j.link : (j.internship ? '/internships.html' : '/jobs.html')+'?job='+encodeURIComponent(btoa(unescape(encodeURIComponent(j.link))))+'&theme='+suShareTheme()) + '" target="_blank" rel="noopener" data-act="apply" data-link="' + esc(j.link) + '" data-co="' + esc(j.co) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 15.5px; color: ' + applyColor + '; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-left: auto;">' + (j.savedUnavailable ? 'View saved listing' : j.internship && !internshipCanApply(j) ? 'View program' : 'Apply Now') + '<svg class="doodle-arrow" width="28" height="14" viewBox="0 0 28 14" fill="none" style="overflow: visible; margin-left: 2px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>';
         html += '</div>';
 
+        if(window.SUDiscovery && window.SUDiscovery.hidden(j))html += '<button type="button" class="su-restore" data-discovery="restore" data-key="'+esc(window.SUDiscovery.key(j.link))+'">Hidden · restore to board</button>';
         html += '</div>'; // .note
         return html;
-      }).join('');
+      });
+
+      // ---- interleave advice notes + signup cards into the feed (2026-07-18) ----
+      // Two cadences live in the same DOM: .su-ins-d (desktop: note = every 3rd row's middle
+      // slot, signup = a row-end two rows later) and .su-ins-m (mobile: J J S J J N). CSS
+      // display:none removes the hidden set from the grid flow, so each viewport only ever
+      // sees its own cadence. Saved-only view stays pure jobs (no notes, no signup cards).
+      var feedHtml = '';
+      if (!this.state.savedOnly && !(window.SUDiscovery&&window.SUDiscovery.showHidden()) && shown.length) {
+        var insD = suFeedSchedule(shown.length, false, !this._recipeHidden);
+        var insM = suFeedSchedule(shown.length, true, !this._recipeHidden);
+        var addIns = function (list, mode) {
+          (list || []).forEach(function (it) {
+            feedHtml += adviceCardHtml(adviceAt(it.n), mode, it.n, ACC);
+          });
+        };
+        for (var fi = 0; fi < cardsHtml.length; fi++) {
+          addIns(insD[fi], 'd');
+          addIns(insM[fi], 'm');
+          feedHtml += cardsHtml[fi];
+        }
+      } else {
+        feedHtml = cardsHtml.join('');
+      }
 
       // ---- states list for the <select> ----
-      var states = Array.from(new Set(this.jobs.map(function (j) { return j.state; }))).sort();
-      var savedCount = Object.keys(this.state.saved).filter(function (k) { return self.state.saved[k]; }).length;
+      var states = window.SUStates ? window.SUStates.STATES : [];
+      var savedJobs = uniqueJobs(Object.keys(this.state.saved).filter(function (k) { return self.state.saved[k]; }).map(function (link) { return { link:link }; }));
+      var savedCount = savedJobs.length;
 
       var savedBtnBase = "font-family:'Indie Flower',cursive; font-weight:700; font-size:19px; padding:11px 17px; transform:rotate(3deg); box-shadow:2px 4px 9px rgba(44,33,24,0.2); white-space:nowrap; position:relative; top:8px; flex:none; cursor:pointer; border-radius:2px;";
       var savedBtnStyle = savedBtnBase + (this.state.savedOnly ? 'background:#2A2118; color:#F4E9C9;' : ('background:' + ACC + '; color:' + ACC_INK + ';'));
@@ -1218,31 +1940,33 @@
 
       var filterBadge = filterCount > 0 ? String(filterCount) : '';
       var filterBadgeStyle = filterCount > 0
-        ? 'display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:18px; padding:0 5px; box-sizing:border-box; border-radius:999px; background:#D8502E; color:#fff; font-size:11px; font-weight:700;'
+        ? 'display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:18px; padding:0 5px; box-sizing:border-box; border-radius:999px; background:#A23C20; color:#fff; font-size:11px; font-weight:700;'
         : 'display:none;';
 
       // ---- active chips ----
       var chips = [];
-      if (this.state.theme && this.themeDefs[this.state.theme]) chips.push({ label: this.themeDefs[this.state.theme].label, act: 'chipTheme' });
+      if (this.state.theme && Object.prototype.hasOwnProperty.call(this.themeDefs, this.state.theme)) chips.push({ label: this.themeDefs[this.state.theme].label, act: 'chipTheme' });
       if (this.state.ws !== 'Any') chips.push({ label: this.state.ws, act: 'chipWs' });
       if (this.state.pr !== 'Any') chips.push({ label: this.state.pr, act: 'chipPr' });
       if (this.state.fr !== 'Any') chips.push({ label: this.state.fr, act: 'chipFr' });
-      if (this.state.st !== 'all') chips.push({ label: this.state.st, act: 'chipSt' });
+      if (this.state.st !== 'all') chips.push({ label: window.SUStates ? window.SUStates.label(this.state.st) : this.state.st, act: 'chipSt' });
 
       var chipsHtml = chips.map(function (chip) {
         return '<div data-act="' + chip.act + '" style="display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; cursor: pointer; background: ' + ACC + '; color: ' + ACC_INK + '; font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 16px; transform: rotate(-1.5deg); box-shadow: 1px 2px 5px rgba(44,33,24,0.16);">' + esc(chip.label) +
           '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M6 6l12 12M18 6L6 18" stroke="' + ACC_INK + '" stroke-width="2.6" stroke-linecap="round"></path></svg></div>';
       }).join('');
 
-      var showingLabel = this.state.savedOnly ? ('Showing ' + shown.length + ' saved') : ('Showing ' + shown.length + ' of ' + this.jobs.length);
-      var emptyTitle = this.state.savedOnly ? 'no saved roles yet' : "We're looking for more jobs RN, check back soon!";
-      var emptyHint = this.state.savedOnly ? 'tap the bookmark on any card to pin it here' : 'try clearing a filter, or check back in a few days';
-      var isEmpty = shown.length === 0;
+      var showingLabel = this.state.savedOnly ? shown.length + ' saved '+(shown.length===1?'role':'roles') : shown.length + (INTERNSHIPS ? (shown.length === 1 ? ' internship' : ' internships') : (shown.length === 1 ? ' job' : ' jobs'));
+      var savedCatalog=this.catalogJobs();
+      var missingSaved = savedJobs.filter(function (saved) { return !savedCatalog.some(function (job) { return jobHasLink(job, saved.link); }); }).map(function (job) { return job.link; });
+      var emptyTitle = this._moderationError ? 'Could not check current job availability' : this._loadError ? 'Jobs could not load right now' : this.state.savedOnly ? (missingSaved.length ? 'Your saved links are below' : 'no saved roles yet') : "We're looking for more jobs RN, check back soon!";
+      var emptyHint = this._loadError ? 'Your saved jobs and tracker are still here. Try loading the board again.' : this.state.savedOnly ? 'tap the bookmark on any card to pin it here' : 'try clearing a filter, or check back in a few days';
+      var isEmpty = !this._loading && shown.length === 0;
 
       // ---- state <select> options ----
       var stateOpts = '<option value="all" style="background:#FFFDF5; color:#3A2A1B;"' + (this.state.st === 'all' ? ' selected' : '') + '>all states</option>' +
         states.map(function (s) {
-          return '<option value="' + esc(s) + '" style="background:#FFFDF5; color:#3A2A1B;"' + (self.state.st === s ? ' selected' : '') + '>' + esc(s) + '</option>';
+          return '<option value="' + esc(s.code) + '" style="background:#FFFDF5; color:#3A2A1B;"' + (self.state.st === s.code ? ' selected' : '') + '>' + esc(s.name) + '</option>';
         }).join('');
 
       // =====================================================================
@@ -1250,9 +1974,10 @@
       // =====================================================================
       var out = '';
 
-      // top nav
+      // The desktop nav spans this header to align Google above Saved. Keep the
+      // founder card above its transparent area so pointer clicks reach the card.
       out += '<div style="max-width: 1240px; margin: 0 auto; padding: 26px 40px 0; position: relative; height: 100px; box-sizing: border-box;">' +
-        '<div data-act="openModal" class="aboutcard" style="position: absolute; top: 22px; left: 40px; display: flex; align-items: center; gap: 12px; background: #E7D2A8; border-radius: 16px; padding: 9px 16px 9px 9px; cursor: pointer; box-shadow: 0 6px 18px rgba(44,33,24,0.16);">' +
+        '<div data-act="openModal" class="aboutcard" style="position: absolute; z-index: 1; top: 22px; left: 40px; display: flex; align-items: center; gap: 12px; background: #E7D2A8; border-radius: 16px; padding: 9px 16px 9px 9px; cursor: pointer; box-shadow: 0 6px 18px rgba(44,33,24,0.16);">' +
           '<div style="width: 66px; height: 42px; border-radius: 11px; overflow: hidden; flex: none;">' +
             '<img src="assets/5037150f-ce24-477c-bae7-ef884fbc5849.jpg" alt="Nic" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 16%; transform: scale(1.55); transform-origin: 50% 26%;">' +
           '</div>' +
@@ -1264,12 +1989,13 @@
         '</div>' +
         // the row div carries the theme nav colors as CSS vars so class-styled
         // anchors recolor with the look too
-        '<div style="position: absolute; top: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px; --su-nav-bg: ' + navBg + '; --su-nav-ink: ' + navInk + ';">' +
-          '<a href="./index.html" class="postit" style="--r: -3deg; background: ' + navBg + '; color: ' + navInk + '; font-family: \'Indie Flower\', cursive; font-size: 21px; letter-spacing: 0.01em; padding: 10px 20px; cursor: pointer; text-decoration: none; display: inline-block;">Home</a>' +
+        '<div class="su-main-nav" style="position: absolute; top: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px; --su-nav-bg: ' + navBg + '; --su-nav-ink: ' + navInk + ';">' +
           '<a href="./jobs.html" class="postit" style="--r: 2.5deg; background: ' + navBg + '; color: ' + navInk + '; font-family: \'Indie Flower\', cursive; font-size: 21px; letter-spacing: 0.01em; padding: 10px 20px; cursor: pointer; text-decoration: none; display: inline-block;">Jobs</a>' +
           // Tracker tab removed Jul 3 2026 (Nic) — tracker.html + tracker.js + trackerLog() stay
           // in the repo but unlinked, so there's no UI way to reach it while we rework it.
           '<a href="./tracker.html" class="postit" style="--r: -2deg; background: ' + navBg + '; color: ' + navInk + '; font-family: \'Indie Flower\', cursive; font-size: 21px; letter-spacing: 0.01em; padding: 10px 20px; cursor: pointer; text-decoration: none;">Tracker' + suTrkBadge() + '</a>' +
+          '<a href="./internships.html" class="postit" style="--r:1.5deg; background:' + navBg + '; color:' + navInk + '; font-family:var(--su-hand); font-size:21px; padding:10px 20px; text-decoration:none;">Internships</a>' +
+          '<span class="su-account-slot"></span>' +
         '</div>' +
       '</div>';
 
@@ -1279,7 +2005,7 @@
           '<div style="position: relative;">' +
             '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 22px; color: ' + (girly ? '#D6277E' : '#C2552F') + '; transform: rotate(-2deg); display: inline-block;">★ StillUnemployed.com</div>' +
             '<h1 style="font-family: \'Archivo Black\', \'Archivo\', sans-serif; font-weight: 900; font-size: 66px; line-height: 0.95; letter-spacing: -0.03em; color: ' + boardInk + '; margin: 8px 0 0; max-width: 760px;">Roles I\'d <span style="-webkit-box-decoration-break: clone; box-decoration-break: clone; padding: 0 .12em; background: linear-gradient(98deg, transparent 1.5%, ' + HLC + ' 1.5% 98.5%, transparent 98.5%); background-repeat: no-repeat; background-size: 100% 62%; background-position: 0 80%;">actually</span> apply to.</h1>' +
-            '<div class="board-subtitle" style="font-family: \'Indie Flower\', cursive; font-size: 22px; color: ' + subInk + '; margin-top: 14px; transform: rotate(-0.6deg);">opened &amp; checked by a human (me) · updated weekly →</div>' +
+            '<div class="board-subtitle" style="font-family: \'Indie Flower\', cursive; font-size: 22px; color: ' + subInk + '; margin-top: 14px; transform: rotate(-0.6deg);">Salary up front. Your next move, all in one place.</div>' +
           '</div>' +
           '<div style="display: flex; align-items: flex-start; gap: 12px; flex: none;">' +
             '<div data-act="openLook" class="tab" style="' + changeLookBtnStyle + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M4 7l5-3 6 3 5-3v13l-5 3-6-3-5 3V7z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path><path d="M9 4v13M15 7v13" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path></svg>change theme</div>' +
@@ -1287,6 +2013,7 @@
           '</div>' +
         '</div>';
 
+      if(INTERNSHIPS)out=out.replace(/Roles I&#39;d/g,'Internships').replace(/Roles I\'d/, 'Internships I\'d').replace('Salary up front. Your next move, all in one place.','Internships, co-ops and student opportunities. Eligibility and pay up front.');
       // toolbar
       out += '<div style="position: relative; margin-top: 30px; z-index: 40;">' +
         '<div style="display: flex; align-items: center; gap: 12px; background: #FBF6E9; border: 1.5px solid #E0CFA8; border-radius: 5px; padding: 11px 11px 11px 18px; box-shadow: 2px 4px 11px rgba(44,33,24,0.10); transform: rotate(-0.4deg);">' +
@@ -1298,43 +2025,51 @@
 
       // category panel
       if (this.state.openPanel === 'cat') {
-        out += '<div style="position: absolute; right: 92px; top: calc(100% + 12px); width: 268px; background: #FBF6E9; border: 1.5px dashed #CDB88C; border-radius: 6px; box-shadow: 4px 8px 22px -8px rgba(44,33,24,0.4); padding: 10px; display: flex; flex-direction: column; gap: 2px; transform: rotate(-0.8deg);">' +
-          '<div style="font-family: \'Indie Flower\', cursive; font-size: 16px; color: #A8825F; padding: 2px 6px 6px;">pick a lane ↓</div>' +
+        out += '<div data-su-panel="cat" style="position: absolute; right: 92px; top: calc(100% + 12px); width: 268px; background: #FBF6E9; border: 1.5px dashed #CDB88C; border-radius: 6px; box-shadow: 4px 8px 22px -8px rgba(44,33,24,0.4); padding: 10px; display: flex; flex-direction: column; gap: 2px; transform: rotate(-0.8deg);">' +
+          '<div style="font-family: \'Indie Flower\', cursive; font-size: 16px; color: #6F5E45; padding: 2px 6px 6px;">pick a lane ↓</div>' +
           catRowsHtml +
         '</div>';
       }
 
       // filters panel
       if (this.state.openPanel === 'filters') {
-        out += '<div style="position: absolute; right: 0; top: calc(100% + 12px); width: 320px; background: #FBF6E9; border: 1.5px dashed #CDB88C; border-radius: 6px; box-shadow: 4px 8px 22px -8px rgba(44,33,24,0.4); padding: 18px 18px 20px; transform: rotate(0.6deg);">' +
+        out += '<div data-su-panel="filters" style="position: absolute; right: 0; top: calc(100% + 12px); width: 320px; background: #FBF6E9; border: 1.5px dashed #CDB88C; border-radius: 6px; box-shadow: 4px 8px 22px -8px rgba(44,33,24,0.4); padding: 18px 18px 20px; transform: rotate(0.6deg);">' +
           '<div data-act="toggleFilters" style="position: absolute; top: 12px; right: 12px; width: 26px; height: 26px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.6" stroke-linecap="round"></path></svg></div>' +
-          '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118;">how fresh?</div>' +
+          '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 0;">which state?</div>' +
+          '<select id="su-state" aria-label="State" style="width: 100%; box-sizing: border-box; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #3A2A1B; background: var(--su-yellow-paper); border: 1.5px solid #DAC36A; border-radius: 5px; padding: 9px 12px; cursor: pointer; outline: none; margin-top: 11px;">' + stateOpts + '</select>' +
+          '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top:18px;">how fresh?</div>' +
           '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px;">' + freshHtml + '</div>' +
           '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 18px;">how do you wanna work?</div>' +
           '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px;">' + workStylesHtml + '</div>' +
           '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 18px;">what\'s the pay?</div>' +
           '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px;">' + pricesHtml + '</div>' +
-          '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 18px;">which state?</div>' +
-          '<select id="su-state" style="width: 100%; box-sizing: border-box; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #3A2A1B; background: #F2E14B; border: 1.5px solid #DAC36A; border-radius: 5px; padding: 9px 12px; cursor: pointer; outline: none; margin-top: 11px;">' + stateOpts + '</select>' +
           '<div data-act="clearAll" style="margin-top: 18px; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #B23A1E; cursor: pointer;">↺ reset all filters</div>' +
         '</div>';
       }
 
       out += '</div>'; // /toolbar relative wrap
 
-      // salary color key
-      out += '<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 16px;">' +
+      if(window.SUDiscovery) out += window.SUDiscovery.html(esc);
+
+      // One quiet row: pay context and secondary actions. Results stay announced offscreen.
+      out += '<div class="su-board-meta" style="color:'+boardInk+';">';
+      if(INTERNSHIPS) out += '<span class="su-internship-summary">Dates and details inside.</span>';
+      else out += '<div class="su-pay-key">' +
         '<span class="pay-key-label" style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + payKeyInk + ';">pay key →</span>' +
-        '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.lowCard || 'linear-gradient(160deg,#ECDEC6,#E0D0B2)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">under $80K</span></div>' +
-        '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.midCard || 'linear-gradient(160deg,#E0CBA2,#D3BB8C)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$80–99K</span></div>' +
+        '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.lowCard || 'var(--su-salary-low-paper)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">under $80K</span></div>' +
+        '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.midCard || 'var(--su-salary-mid-paper)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$80–99K</span></div>' +
         '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + P.payHi + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$100K+</span></div>' +
       '</div>';
 
-      // active filter row
-      out += '<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 18px; min-height: 30px;">' +
-        chipsHtml +
-        '<div style="margin-left: auto; font-family: \'Indie Flower\', cursive; font-size: 18px; color: ' + showInk + ';">' + esc(showingLabel) + '</div>' +
-      '</div>';
+      out += '<span class="su-results-count su-sr-only" aria-live="polite">' + (this._loading ? '' : esc(showingLabel)) + '</span><div class="su-board-utilities">' +
+        '<details id="su-board-menu" class="su-board-menu"><summary id="su-board-menu-trigger">Board menu <svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>' +
+          '<div class="su-board-menu-sheet">' + (moderationOwner() ? '<button type="button" data-act="openReportedJobs">Reported jobs</button>' : '') + (window.SUDiscovery && window.SUDiscovery.toolsHTML ? window.SUDiscovery.toolsHTML(esc) : '') +
+            '<a href="./suggest.html">Suggest jobs</a><button type="button" data-act="openWelcome">What’s new</button><button type="button" data-act="openModal">About Nic</button>' +
+          '</div></details></div></div>';
+      if(chipsHtml) out += '<div class="su-active-filters">' + chipsHtml + '</div>';
+
+      out += '<p id="su-feed-progress" class="su-feed-status" role="status"'+(this._refreshing || this._loadingVisible?'':' hidden')+'>Checking the latest roles…</p>';
+      if(this._actionError) out += '<div class="su-action-error" role="status">'+esc(this._actionError)+' <button type="button" data-act="retrySave">Try again</button></div>';
 
       // saved section title
       if (this.state.savedOnly) {
@@ -1345,12 +2080,21 @@
         '</div>';
       }
 
-      // card grid
+      // card grid (jobs + interleaved advice notes / signup cards)
       out += '<div class="job-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(298px, 1fr)); gap: 54px 40px; margin-top: 32px; padding: 12px 8px 0;">' +
-        cardsHtml +
+        feedHtml +
       '</div>';
 
+      if(!this._loadError && !shown.length && this.jobs.length && (this.state.q || this.state.cat!=='all' || this.state.ws!=='Any' || this.state.pr!=='Any' || this.state.st!=='all' || this.state.fr!=='Any' || this.state.savedOnly)) {
+        var emptyKey=JSON.stringify([this.state.q,this.state.cat,this.state.ws,this.state.pr,this.state.st,this.state.fr,this.state.savedOnly]);
+        if(this._emptyKey!==emptyKey) uxEvent('search_empty'); this._emptyKey=emptyKey;
+      } else this._emptyKey=null;
+
       // empty state
+      if(INTERNSHIPS && !this.jobs.length){
+        emptyTitle=this._loadError?'Internships could not load.':this._internshipStatus==='verified'?'No internships listed right now.':'The internship notebook is getting ready.';
+        emptyHint=this._loadError?'Please retry in a moment.':this._internshipStatus==='verified'?'Browse Jobs for more opportunities, or check back for new internships.':'We are checking current student opportunities before adding cards. Browse Jobs while we get this page ready.';
+      }
       if (isEmpty) {
         out += '<div style="display: flex; justify-content: center; padding: 64px 20px 48px;">' +
           '<div style="position: relative; width: 560px; max-width: 100%; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 39px, rgba(96,130,170,0.30) 39px 40.5px); background-position: 0 38px; border-radius: 3px; box-shadow: 4px 12px 30px rgba(44,33,24,0.24); padding: 44px 48px 40px; transform: rotate(-1deg); box-sizing: border-box;">' +
@@ -1365,6 +2109,15 @@
         '</div>';
       }
 
+      if (this._loadError) out += '<p role="status"><button type="button" data-act="retryJobs" class="tab">Try loading jobs again</button></p>';
+      if (!this._loading && this.state.savedOnly && missingSaved.length) {
+        out += '<section class="su-unlisted-saved"><h2>Saved links outside the current board</h2><p>These links stay saved even when their cards are not in the loaded board. Check the employer for availability.</p><ul>';
+        missingSaved.forEach(function (link) {
+          var url = safeUrl(link);
+          out += '<li>' + (url ? '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(url) + '</a>' : '<span>Saved job</span>') + '<button type="button" data-act="toggleSave" data-link="' + esc(link) + '">Remove saved link</button></li>';
+        });
+        out += '</ul></section>';
+      }
       out += '</div>'; // /header+content wrap
 
       // Capture focus intent BEFORE the innerHTML swap. Replacing innerHTML removes the
@@ -1374,7 +2127,10 @@
       var keepSearchFocus = this._searchFocused ||
         (document.activeElement && document.activeElement.id === 'su-search');
 
+      var previousFocus = focusIntent(document.activeElement);
       board.innerHTML = out;
+      prepareActions(board);
+      if (!keepSearchFocus) restoreIntent(previousFocus);
 
       // restore focus + caret to the search input after re-render
       var inp = document.getElementById('su-search');
@@ -1385,23 +2141,83 @@
 
       // ---- overlays (modal + feedback popup) live in #overlay-root ----
       this.renderOverlays();
+
+      // note/signup impressions (once per element key per page load — no scroll spam)
+      this.observeImpressions();
+    },
+
+    // Impression logging for advice notes + signup cards, per the UX rules ("note
+    // impressions, note opens, note→newsletter clicks"). IntersectionObserver at 50%
+    // visibility, each data-imp key fires ONCE per page load (re-renders reuse the same
+    // keys, so filter churn can't double-count). Hidden-cadence duplicates never
+    // intersect, so each note/card counts once no matter the viewport.
+    observeImpressions: function () {
+      if (!('IntersectionObserver' in window)) return;
+      var self = this;
+      this._impFired = this._impFired || {};
+      if (!this._impObs) {
+        this._impObs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (!en.isIntersecting) return;
+            var key = en.target.getAttribute('data-imp') || '';
+            self._impObs.unobserve(en.target);
+            if (!key || self._impFired[key]) return;
+            self._impFired[key] = 1;
+            var p = key.split('|');
+            if (typeof window.suTrack === 'function') window.suTrack(p[0] || '', (p[1] || '').slice(0, 60), (p[2] || '').slice(0, 60), '');
+          });
+        }, { threshold: 0.5 });
+      }
+      var els = document.querySelectorAll('[data-imp]');
+      for (var i = 0; i < els.length; i++) {
+        var k = els[i].getAttribute('data-imp');
+        if (k && !this._impFired[k]) this._impObs.observe(els[i]);
+      }
     },
 
     renderOverlays: function () {
+      var self=this;
+      if(this._reportedPanel && this._reportedPanel.owner!==moderationOwner()){this._reportedPanel=null;this.state.reportedOpen=false;}
+      if(this.state.detailOpen&&!this.catalogJobs().some(function(job){return jobHasLink(job,self.state.detailLink);})){this.state.detailOpen=false;this.state.detailLink=null;}
       var root = document.getElementById('overlay-root');
+      var previousDialog = root.querySelector('[role="dialog"]');
+      var previousFocus = focusIntent(document.activeElement);
+      var dialogKey = this.state.reportedOpen ? 'reported' : this.state.detailOpen ? 'detail' : this.state.adviceOpen ? 'advice' : this.state.signupOpen ? 'signup' : this.state.feedbackOpen ? 'feedback' : this.state.lookOpen ? 'look' : this.state.modalOpen ? 'founder' : window.SUDiscovery&&window.SUDiscovery.preferencesOpen() ? 'preferences' : '';
+      if (dialogKey && window.SUBoardControls) window.SUBoardControls.dismiss();
+      if (dialogKey && _voteClose) _voteClose();
+      if (!previousDialog && dialogKey) this._dialogReturn = previousFocus;
+      var previousKey = this._dialogKey;
+      this._dialogKey = dialogKey;
+      // Account activation/sync can refresh the board while this note is open.
+      // Preserve its controls and focus when the application question is unchanged.
+      var feedbackIdentity = dialogKey === 'feedback' ? JSON.stringify([this.state.feedbackCo, this.state.feedbackLink,!!moderationOwner(),!!this._reportBusy]) : null;
+      if (previousDialog && previousKey === 'feedback' && dialogKey === 'feedback' && this._feedbackIdentity === feedbackIdentity) { var feedbackError=document.getElementById('su-feedback-error');if(feedbackError) {feedbackError.textContent=this._feedbackError||'';feedbackError.hidden=!this._feedbackError;} return; }
+      this._feedbackIdentity = feedbackIdentity;
+      var preferenceOwner = dialogKey === 'preferences' ? window.SUDiscovery.dialogOwner() : null;
+      if (previousDialog && previousKey === 'preferences' && dialogKey === 'preferences' && this._preferenceOwner === preferenceOwner) { window.SUDiscovery.refreshDialog(); return; }
+      this._preferenceOwner = preferenceOwner;
+      var contentIdentity = ['detail','advice','signup'].indexOf(dialogKey) >= 0 ? JSON.stringify([dialogKey,this.state.detailLink,this.state.adviceOpen,this.state.signupOpen,!!this._recipeHidden,this.state.look,this.state.detailOpen ? this.catalogJobs().find(function(job){return jobHasLink(job,self.state.detailLink);}) : null]) : null;
+      if (previousDialog && contentIdentity && this._contentIdentity === contentIdentity) return;
+      this._contentIdentity = contentIdentity;
+      var reportedIdentity=dialogKey==='reported'?JSON.stringify(this._reportedPanel):null;
+      if(previousDialog&&dialogKey==='reported'&&previousKey==='reported'&&reportedIdentity===this._reportedIdentity)return;
+      this._reportedIdentity=reportedIdentity;
       var out = '';
+      if(dialogKey==='reported')out+=this.reportedJobsHTML();
+
+      if (dialogKey === 'preferences') out += '<div class="su-preferences-overlay su-discovery" data-act="closePreferences" style="z-index:215">' + window.SUDiscovery.modalHTML(esc) + '</div>';
 
       // About modal
       if (this.state.modalOpen) {
-        out += '<div data-act="closeModal" style="position: fixed; inset: 0; z-index: 200; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
-          '<div data-act="stop" style="margin: auto;width: 588px; max-width: 100%; background: #FCFAF3; border-radius: 5px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.8deg); font-family: \'Archivo\', sans-serif;">' +
+        out += '<div class="su-founder-overlay" data-act="closeModal" style="position: fixed; inset: 0; z-index: 200; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
+          '<div class="su-founder-note" data-act="stop" style="margin: auto;width: 588px; max-width: 100%; background: #FCFAF3; border-radius: 5px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.8deg); font-family: \'Archivo\', sans-serif;">' +
             '<div style="position: absolute; top: -13px; left: 66px; width: 122px; height: 30px; background: rgba(228,202,128,0.72); transform: rotate(-4deg); box-shadow: 0 2px 5px rgba(44,33,24,0.14); z-index: 5;"></div>' +
             '<div style="position: absolute; top: -12px; right: 62px; width: 122px; height: 30px; background: rgba(228,202,128,0.72); transform: rotate(3.5deg); box-shadow: 0 2px 5px rgba(44,33,24,0.14); z-index: 5;"></div>' +
             '<div data-act="closeModal" style="position: absolute; top: 20px; right: 20px; width: 38px; height: 38px; border-radius: 50%; background: rgba(252,250,243,0.94); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 8; box-shadow: 0 2px 8px rgba(44,33,24,0.2);">' +
               '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.2" stroke-linecap="round"></path></svg>' +
             '</div>' +
-            '<div style="padding: 16px 16px 0;">' +
-              '<div style="position: relative; height: 244px; overflow: hidden; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(44,33,24,0.06);">' +
+            '<div class="su-founder-image-wrap" style="padding: 16px 16px 0;">' +
+              '<div class="su-founder-image" style="position: relative; height: 244px; overflow: hidden; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(44,33,24,0.06);">' +
                 '<img src="assets/home-founder-nic.jpg" alt="Nic, the founder, on SiriusXM" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; filter: saturate(1.04) brightness(1.02);">' +
                 '<div style="position: absolute; bottom: 14px; left: 14px; display: inline-flex; align-items: center; gap: 6px; border: 2.6px solid #FFFFFF; color: #FFFFFF; border-radius: 5px; padding: 5px 10px; font-family: \'Archivo\', sans-serif; font-weight: 900; font-size: 11.5px; letter-spacing: 0.14em; transform: rotate(-3deg); box-shadow: 0 2px 10px rgba(0,0,0,0.28);">' +
                   '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.4"></circle><path d="M8.3 12.2l2.4 2.4 4.9-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
@@ -1409,20 +2225,21 @@
                 '</div>' +
               '</div>' +
             '</div>' +
-            '<div style="padding: 22px 42px 40px;">' +
-              '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 23px; color: #D8502E; transform: rotate(-1.5deg); display: block;">hey stranger,</div>' +
+            '<div class="su-founder-copy" style="padding: 22px 42px 40px;">' +
+              '<div class="su-founder-hello" style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 23px; color: #D8502E; transform: rotate(-1.5deg); display: block;">hey stranger,</div>' +
               '<div style="position: relative; display: block; margin-top: 4px;">' +
-                '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 32px; line-height: 1.06; letter-spacing: -0.02em; color: #2C2118; width: 300px;">Hey, I\'m Nic. I built this.</div>' +
+                '<div class="su-founder-title" style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 32px; line-height: 1.06; letter-spacing: -0.02em; color: #2C2118; width: 300px;">Hey, I\'m Nic. I built this.</div>' +
                 '<svg width="220" height="12" viewBox="0 0 220 12" fill="none" style="position: absolute; left: 4px; bottom: -8px;"><path d="M3 7 C 55 2, 120 2, 217 6" stroke="#F2C231" stroke-width="4" stroke-linecap="round"></path></svg>' +
               '</div>' +
-              '<div style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 18px;">I sent <strong style="font-weight: 800; color: #2C2118;">1,500 applications</strong> and got ghosted more times than I can count. Seven months later, <strong style="font-weight: 800; color: #2C2118;">Instagram</strong> said yes. <strong style="font-weight: 800; color: #2C2118;">StillUnemployed</strong> is the board I wish I\'d had. Roles here are <strong style="font-weight: 800; color: #2C2118;">opened and verified by a human</strong>, and that human is me. No AI slop, just jobs I\'d <strong style="font-weight: 800; color: #2C2118;">actually apply to</strong>.</div>' +
-              '<div style="font-size: 13px; font-weight: 600; color: #6f6253; letter-spacing: 0.01em; margin-top: 18px;">Content Specialist at Instagram · Class of 2025</div>' +
-              '<div style="display: flex; align-items: center; gap: 16px; margin-top: 22px; flex-wrap: wrap;">' +
+              '<div class="su-founder-bio" style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 18px;">I sent <strong style="font-weight: 800; color: #2C2118;">1,500 applications</strong> and got ghosted more times than I can count. Seven months later, <strong style="font-weight: 800; color: #2C2118;">Instagram</strong> said yes. <strong style="font-weight: 800; color: #2C2118;">StillUnemployed</strong> is the board I wish I\'d had. Find roles with salary information, save the ones that fit and keep your applications together.</div>' +
+              '<div class="su-founder-credit" style="font-size: 13px; font-weight: 600; color: #6f6253; letter-spacing: 0.01em; margin-top: 18px;">Content Specialist at Instagram · Class of 2025</div>' +
+              '<div class="su-founder-actions" style="display: flex; align-items: center; gap: 16px; margin-top: 22px; flex-wrap: wrap;">' +
                 '<a href="https://NicholasAlexis.com" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 11px; background: #5C4033; color: #F4EEE2; font-size: 16px; font-weight: 700; padding: 15px 26px; border-radius: 12px; cursor: pointer; box-shadow: 0 10px 24px rgba(44,33,24,0.22); text-decoration: none; transform: rotate(-1deg); font-family: \'Archivo\', sans-serif;">View My Portfolio' +
                   '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#F4EEE2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
                 '</a>' +
                 '<div style="font-family: \'Indie Flower\', cursive; font-size: 22px; color: #6F5E45; transform: rotate(-2deg);">- Nic</div>' +
               '</div>' +
+              '<div class="su-founder-release"><a href="/versions.html" data-su-version>Version history</a><button type="button" data-act="openWelcome">What’s new</button></div>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -1432,13 +2249,14 @@
       if (this.state.feedbackOpen) {
         out += '<div data-act="closeFeedback" style="position: fixed; inset: 0; z-index: 210; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
           '<div data-act="stop" style="margin: auto;width: 460px; max-width: 100%; background: #F4EEE2; border-radius: 8px; padding: 30px 30px 28px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.7deg);">' +
-            '<div data-act="closeFeedback" style="position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%; background: rgba(44,33,24,0.06); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
-              '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.2" stroke-linecap="round"></path></svg>' +
-            '</div>' +
-            '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 27px; color: #2A2118; line-height: 1.1; transform: rotate(-1deg);">welcome back!</div>' +
+            '<div class="su-feedback-header"><div class="su-feedback-heading">welcome back!</div><span class="su-account-slot su-feedback-account">' +
+              '<button type="button" class="su-feedback-close" data-act="closeFeedback" title="Close application feedback" aria-label="Close application feedback">' +
+                '<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path></svg>' +
+              '</button>' +
+            '</span></div>' +
             '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #6F5E45; margin-top: 6px;">how\'d it go with ' + esc(this.state.feedbackCo) + '?</div>' +
             '<div style="display: flex; gap: 14px; margin-top: 22px;">' +
-              '<div data-act="markApplied" class="fbopt" style="flex: 1; cursor: pointer; background: #F2E14B; border-radius: 6px; padding: 22px 14px 18px; text-align: center; transform: rotate(-1.6deg); box-shadow: 2px 4px 9px rgba(44,33,24,0.16);">' +
+              '<div data-act="markApplied" class="fbopt" style="flex: 1; cursor: pointer; background: var(--su-yellow-paper); border-radius: 6px; padding: 22px 14px 18px; text-align: center; transform: rotate(-1.6deg); box-shadow: 2px 4px 9px rgba(44,33,24,0.16);">' +
                 '<div style="width: 40px; height: 40px; border-radius: 50%; background: #2E7D52; display: flex; align-items: center; justify-content: center; margin: 0 auto;">' +
                   '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4 4L19 7" stroke="#F4EEE2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
                 '</div>' +
@@ -1451,7 +2269,9 @@
                 '<div style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 15px; color: #3A2A1B; margin-top: 12px;">No longer open</div>' +
               '</div>' +
             '</div>' +
-            '<div data-act="closeFeedback" style="margin-top: 18px; text-align: center; font-family: \'Indie Flower\', cursive; font-size: 19px; color: #8A7558; cursor: pointer;">job wasn\'t a right fit →</div>' +
+            '<div data-act="notFit" style="margin-top: 18px; text-align: center; font-family: \'Indie Flower\', cursive; font-size: 19px; color: #8A7558; cursor: pointer;">job wasn\'t a right fit →</div>' +
+            (moderationOwner() ? '<div style="text-align:center;margin-top:12px;"><button type="button" data-act="adminReportJob"'+(this._reportBusy?' disabled':'')+' style="font:19px/1.4 var(--su-hand,\'Indie Flower\',cursive);min-height:44px;padding:4px 10px;border:0;background:transparent;color:#A63D22;text-decoration:underline;cursor:pointer;">'+(this._reportBusy?'Reporting…':'Report job here')+'</button></div>' : '') +
+            '<p id="su-feedback-error" class="su-action-error" role="status"'+(this._feedbackError?'':' hidden')+'>'+esc(this._feedbackError||'')+'</p>' +
           '</div>' +
         '</div>';
       }
@@ -1460,12 +2280,14 @@
       if (this.state.detailOpen) {
         var _P = this.THEMES[this.state.look] || this.THEMES.original;
         var dj = null;
-        for (var di = 0; di < this.jobs.length; di++) { if (this.jobs[di].link === this.state.detailLink) { dj = this.jobs[di]; break; } }
+        dj=this.catalogJobs().find(function(job){return jobHasLink(job,App.state.detailLink);});
         if (dj) {
-          var dmeta = [dj.loc, dj.style, dj.exp].filter(Boolean).join(' · ');
+          var dmeta = dj.internship ? internshipLocation(dj) : [dj.loc, dj.style, dj.exp].filter(Boolean).join(' · ');
           var tld = dj.tldr || dj.desc || '';
           var bl = '';
-          if (tld) {
+          if (dj.internship) {
+            bl = internshipBullets(dj).map(function (bullet) {return '<li style="margin: 7px 0;">' + esc(bullet) + '</li>';}).join('');
+          } else if (tld) {
             var raw = String(tld);
             var bp = raw.split(/[\n••]/).map(function (s) { return s.trim().replace(/^[-*]\s*/, ''); }).filter(function (s) { return s.length > 3; });
             if (bp.length < 2) bp = raw.split('. ').map(function (s) { return s.trim(); }).filter(function (s) { return s.length > 3; });
@@ -1473,20 +2295,9 @@
           }
           // popup note-card is always cream, so apply is ALWAYS bright orange (Nic: it must pop)
           var _applyC = '#E8502E';
-          // ── recipe capture config (Nic, 2026-07-11 late) ─────────────────────────────
-          // Shown on ~1 in 3 jobs (deterministic per job, so it doesn't flicker between
-          // renders). Copy rotates through variants (stable per job) so the Reports sheet
-          // can tell us which line earns signups vs ✕s. Hidden = in-memory only, so an
-          // accidental ✕ comes back on reload.
-          var _rHash = 0; try { var _rl = String(dj.link || ''); for (var _ri = 0; _ri < _rl.length; _ri++) _rHash = (_rHash * 31 + _rl.charCodeAt(_ri)) % 9973; } catch (eH) {}
-          var _rShow = (_rHash % 3 === 0) && !this._recipeHidden;
-          var _rVariants = [
-            'want the exact advice that got me a job at Instagram? ↓',
-            'want the recipe I followed to a 6-figure offer? ↓',
-            'the advice that almost got me a job with the Kardashians ↓',
-            '4 hand-picked jobs + 1 raw story, every Monday. free. ↓'
-          ];
-          var _rCopy = _rVariants[(_rHash >> 2) % _rVariants.length];
+          // Keep the same invitation through rerenders of this opening.
+          var _rShow = !dj.savedUnavailable && !!this._detailRecipe && !this._recipeHidden;
+          var _rCopy = this._detailRecipeCopy || RECIPE_COPY[0];
           var _arrow = '<svg width="30" height="15" viewBox="0 0 28 14" fill="none" style="overflow: visible; margin-left: 5px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
           // Age disclaimer (Nic, 2026-07-11). We never retire a role for being old — old roles STAY on the
           // board (a fuller board), and we disclose the age here, in the popup only, never on the card face.
@@ -1512,51 +2323,106 @@
           // + the liveness checker are the real guards. Data (Date Posted) stays in the sheet.
           _ageNote = '';
           out += '<div data-act="closeDetail" style="position: fixed; inset: 0; z-index: 214; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
-            '<div data-act="stop" style="margin: auto;position: relative; width: 410px; max-width: 100%; box-sizing: border-box; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 32px, rgba(96,130,170,0.20) 32px 33px); background-position: 0 92px; border-radius: 4px; box-shadow: 5px 18px 44px rgba(44,33,24,0.34); transform: rotate(-1deg); padding: 30px 30px 26px 48px;">' +
+            '<div data-act="stop" class="su-detail-dialog ' + (dj.internship ? 'su-internship-dialog' : '') + '" style="margin: auto;position: relative; width: 410px; max-width: 100%; box-sizing: border-box; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 32px, rgba(96,130,170,0.20) 32px 33px); background-position: 0 92px; border-radius: 4px; box-shadow: 5px 18px 44px rgba(44,33,24,0.34); transform: rotate(-1deg); padding: 30px 30px 26px 48px;">' +
               // red left margin line + tape
               '<div style="position: absolute; top: 0; bottom: 0; left: 36px; width: 1.5px; background: rgba(214,80,46,0.4);"></div>' +
               '<div style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(-2.5deg); width: 120px; height: 28px; background: rgba(228,202,128,0.6); border-left: 1px dashed rgba(255,255,255,.5); border-right: 1px dashed rgba(255,255,255,.5); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>' +
               // share + close (corner). Share = bigger circular tap target + a hand-drawn
               // "Share" hint with an up-arrow so people know what the icon does.
-              '<div data-act="detailShare" data-link="' + esc(dj.link) + '" title="Share with a friend" style="position: absolute; top: 9px; right: 46px; width: 32px; height: 32px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #5C4033;">' +
+              '<div class="su-detail-share-button" data-act="detailShare" data-link="' + esc(dj.link) + '" title="Share with a friend" style="position: absolute; top: 9px; right: 46px; width: 32px; height: 32px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #5C4033;">' +
                 '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"></circle><circle cx="6" cy="12" r="2.6"></circle><circle cx="18" cy="19" r="2.6"></circle><path d="M8.6 13.4l6.9 4M15.5 6.6l-6.9 4"></path></svg>' +
               '</div>' +
-              '<div data-act="detailShare" data-link="' + esc(dj.link) + '" style="position: absolute; top: 43px; right: 39px; display: flex; flex-direction: column; align-items: center; cursor: pointer; color: #C2552F;">' +
+              '<div class="su-detail-share-hint" data-act="detailShare" data-link="' + esc(dj.link) + '" style="position: absolute; top: 43px; right: 39px; display: flex; flex-direction: column; align-items: center; cursor: pointer; color: #C2552F;">' +
                 '<svg width="18" height="18" viewBox="0 0 20 20" fill="none" style="overflow: visible;"><path d="M10 18.5 C 8.4 12.5, 11.6 7.5, 10 2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M5.4 6 L10 1.3 L14.6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
                 '<span style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 16px; margin-top: 1px; white-space: nowrap;">Share</span>' +
               '</div>' +
-              '<div data-act="closeDetail" style="position: absolute; top: 11px; right: 13px; width: 27px; height: 27px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
+              '<div class="su-detail-close" data-act="closeDetail" style="position: absolute; top: 11px; right: 13px; width: 27px; height: 27px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
                 '<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.4" stroke-linecap="round"></path></svg>' +
               '</div>' +
               // header
-              '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 24px; color: #2C2118; line-height: 1.12; padding-right: 82px;">' + esc(dj.co) + '</div>' +
-              '<div style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16px; color: #3A2E20; margin-top: 4px; padding-right: 82px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">' + esc(dj.role) + '</div>' +
-              (dj.pay ? '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 20px; color: #2C2118; margin-top: 10px;">' + esc(dj.pay) + '</div>' : '') +
+              '<div class="su-detail-company" style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 24px; color: #2C2118; line-height: 1.12; padding-right: 82px;">' + esc(dj.co) + '</div>' +
+              '<div class="su-detail-role" style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16px; color: #3A2E20; margin-top: 4px; padding-right: 82px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">' + esc(dj.role) + '</div>' +
+              (dj.pay ? '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 20px; color: #2C2118; margin-top: 10px;">' + esc(cardPay(dj)) + '</div>' : '') +
               (dmeta ? '<div style="font-family: \'Archivo\', sans-serif; font-size: 13.5px; color: #6F5E45; margin-top: 5px;">' + esc(dmeta) + '</div>' : '') +
+              (dj.savedUnavailable ? '<p class="su-saved-availability">'+(dj.confirmedClosed?'No longer available. You saved this job, so it stays here.':dj.savedElsewhere?'Saved from the '+(dj.internship?'internships':'jobs')+' board. Check the employer for current availability.':'This listing is off the current board. Your saved copy stays here; check the employer for availability.')+'</p>' : '') +
+              payDisclosure(dj) +
               // TL;DR label (handwritten + swoosh)
               '<div style="position: relative; display: inline-block; margin-top: 20px;">' +
                 '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 23px; color: #2C2118;">TL;DR</div>' +
                 '<svg width="74" height="9" viewBox="0 0 74 9" fill="none" style="position: absolute; left: 0; bottom: -5px;"><path d="M2 5 C 22 1, 50 1, 72 4" stroke="#F2C231" stroke-width="3.5" stroke-linecap="round"></path></svg>' +
               '</div>' +
-              (bl ? '<ul style="margin: 12px 0 0; padding-left: 20px; font-size: 14.5px; color: #3a3026; line-height: 1.55;">' + bl + '</ul>'
-                  : '<div style="margin-top: 9px; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #6F5E45; line-height: 1.5;">a quick 3–4 bullet summary is coming to every role. for now, hit apply for the full listing →</div>') +
+              (bl ? '<ul class="' + (dj.internship ? 'su-internship-duties' : '') + '" style="margin: 12px 0 0; padding-left: 20px; font-size: 14.5px; color: #3a3026; line-height: 1.55;">' + bl + '</ul>'
+                  : dj.internship ? '<p class="su-internship-timing">See the employer’s program page for duties.</p>' : '<div style="margin-top: 9px; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #6F5E45; line-height: 1.5;">a quick 3–4 bullet summary is coming to every role. for now, hit apply for the full listing →</div>') +
               // apply (card-style text link + hand-drawn arrow)
               '<div style="margin-top: 22px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">' +
                 (_ageNote
                   ? '<span style="font-family: \'Indie Flower\', cursive; font-size: 16.5px; color: #C2552F; line-height: 1.2; text-align: left; max-width: 60%;">' + _ageNote + '</span>'
                   : '<span></span>') +
-                '<span data-act="detailApply" data-link="' + esc(dj.link) + '" data-co="' + esc(dj.co) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 21px; color: ' + _applyC + '; display: inline-flex; align-items: center; cursor: pointer; flex: none;">apply' + _arrow + '</span>' +
+                '<button type="button" data-act="' + (dj.savedUnavailable ? 'detailArchived' : dj.internship && !internshipCanApply(dj) ? 'detailProgram' : 'detailApply') + '" data-link="' + esc(dj.link) + '" data-co="' + esc(dj.co) + '" style="border:0; background:none; padding:0; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 21px; color: ' + _applyC + '; display: inline-flex; align-items: center; cursor: pointer; flex: none;">' + (dj.savedUnavailable ? 'View original listing' : dj.internship && !internshipCanApply(dj) ? 'View program' : 'Apply Now') + _arrow + '</button>' +
               '</div>' +
               // recipe capture: rotating one-liner + Beehiiv embed. ✕ hides it until reload.
               (!_rShow ? '' :
               '<div style="margin-top: 20px; border-top: 1.5px dashed rgba(44,33,24,0.22); padding-top: 12px; position: relative;">' +
                 '<div data-act="hideRecipe" data-co="' + esc(_rCopy) + '" data-link="' + esc(dj.link) + '" title="hide this" style="position: absolute; top: 5px; right: 0; width: 20px; height: 20px; border-radius: 50%; background: rgba(44,33,24,0.06); display: flex; align-items: center; justify-content: center; cursor: pointer; font-family: \'Archivo\', sans-serif; font-size: 11px; color: #6F5E45;">✕</div>' +
                 '<div style="font-family: \'Indie Flower\', cursive; font-size: 16px; color: #2C2118; line-height: 1.3; padding-right: 26px;">' + esc(_rCopy) + '</div>' +
-                '<iframe src="https://subscribe-forms.beehiiv.com/af2e314d-125f-431d-a8e0-0020be04d97c" data-test-id="beehiiv-embed" height="50" frameborder="0" scrolling="no" style="width: 100%; max-width: 100%; border: 0; border-radius: 4px; background: transparent; margin-top: 9px; display: block; overflow: hidden;"></iframe>' +
+                newsletterHtml('signup:' + _rCopy) +
               '</div>') +
             '</div>' +
           '</div>';
         }
+      }
+
+      // Advice-note popup (2026-07-18) — same lined paper as the TL;DR popup. ONE more line
+      // (the why), then the newsletter funnel with the same Beehiiv embed the job popups use.
+      if (this.state.adviceOpen) {
+        var _an = null;
+        for (var _ai = 0; _ai < ADVICE_NOTES.length; _ai++) { if (ADVICE_NOTES[_ai].id === this.state.adviceOpen) { _an = ADVICE_NOTES[_ai]; break; } }
+        if (_an) {
+          var _accA = (this.THEMES[this.state.look] || this.THEMES.original).acc;
+          out += '<div data-act="closeAdvice" style="position: fixed; inset: 0; z-index: 214; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
+            '<div data-act="stop" style="margin: auto; position: relative; width: 410px; max-width: 100%; box-sizing: border-box; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 32px, rgba(96,130,170,0.20) 32px 33px); background-position: 0 92px; border-radius: 4px; box-shadow: 5px 18px 44px rgba(44,33,24,0.34); transform: rotate(-1deg); padding: 30px 30px 26px 48px;">' +
+              '<div style="position: absolute; top: 0; bottom: 0; left: 36px; width: 1.5px; background: rgba(214,80,46,0.4);"></div>' +
+              '<div style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(-2.5deg); width: 120px; height: 28px; background: rgba(228,202,128,0.6); border-left: 1px dashed rgba(255,255,255,.5); border-right: 1px dashed rgba(255,255,255,.5); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>' +
+              '<div data-act="closeAdvice" style="position: absolute; top: 11px; right: 13px; width: 27px; height: 27px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
+                '<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.4" stroke-linecap="round"></path></svg>' +
+              '</div>' +
+              '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 15px; color: #8A7558; transform: rotate(-1deg);">note to self ↓</div>' +
+              '<div style="position: relative; display: inline-block; margin-top: 8px; padding-right: 26px;">' +
+                '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 27px; line-height: 1.25; color: #2A2118;">' + esc(_an.hook) + '</div>' +
+                '<svg width="140" height="9" viewBox="0 0 140 9" fill="none" style="position: absolute; left: 0; bottom: -4px;"><path d="M2 6 C 45 2, 95 2, 138 5" stroke="' + _accA + '" stroke-width="3.5" stroke-linecap="round"></path></svg>' +
+              '</div>' +
+              (_an.sub ? '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 19px; color: #6F5E45; margin-top: 10px;">' + esc(_an.sub) + '</div>' : '') +
+              // Nic's layout note: the back felt cramped — handwriting into body text into handwriting
+              // with no air. Each section now gets real margin, and the why supports bullets.
+              adviceGraphicHtml(_an, _accA, true) +
+              adviceDoodleHtml(_an) +
+              '<div style="margin-top: 20px;">' + adviceWhyHtml(_an.why) + '</div>' +
+              '<div style="margin-top: 24px; border-top: 1.5px dashed rgba(44,33,24,0.22); padding-top: 16px;">' +
+                '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 17px; color: #2C2118; line-height: 1.4;">' + esc(_an.sell || 'more notes like this in Job Hunt Recipe ↓') + '</div>' +
+                newsletterHtml('note:' + _an.id) +
+                '<div style="font-family: \'Indie Flower\', cursive; font-size: 14.5px; color: #8A7558; margin-top: 8px;">every week · easy unsub&nbsp;&nbsp;- Nic</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }
+      }
+
+      // Signup popup (2026-07-18) — opened by tapping a grid signup card. The ONLY place outside
+      // the job/advice popups where an email field exists; the feed itself never shows one.
+      if (this.state.signupOpen) {
+        out += '<div data-act="closeSignup" style="position: fixed; inset: 0; z-index: 214; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
+          '<div data-act="stop" style="margin: auto; position: relative; width: 400px; max-width: 100%; box-sizing: border-box; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 32px, rgba(96,130,170,0.20) 32px 33px); background-position: 0 80px; border-radius: 4px; box-shadow: 5px 18px 44px rgba(44,33,24,0.34); transform: rotate(-1deg); padding: 30px 30px 26px 48px;">' +
+            '<div style="position: absolute; top: 0; bottom: 0; left: 36px; width: 1.5px; background: rgba(214,80,46,0.4);"></div>' +
+            '<div style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 120px; height: 28px; background: rgba(228,202,128,0.6); border-left: 1px dashed rgba(255,255,255,.5); border-right: 1px dashed rgba(255,255,255,.5); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>' +
+            '<div data-act="closeSignup" style="position: absolute; top: 11px; right: 13px; width: 27px; height: 27px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
+              '<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.4" stroke-linecap="round"></path></svg>' +
+            '</div>' +
+            '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 24px; line-height: 1.3; color: #2A2118; padding-right: 24px;">' + esc(this.state.signupOpen) + '</div>' +
+            '<div style="font-family: \'Poppins\', sans-serif; font-size: 14px; line-height: 1.6; color: #3a3026; margin-top: 14px;">One email a week: the exact steps I used to go from 1,500 applications and silence to a 6-figure offer at Instagram.</div>' +
+            newsletterHtml('signup-popup') +
+            '<div style="font-family: \'Indie Flower\', cursive; font-size: 14.5px; color: #8A7558; margin-top: 8px;">every week · easy unsub&nbsp;&nbsp;- Nic</div>' +
+          '</div>' +
+        '</div>';
       }
 
       // "Change Look?" popup (markup + copy ported verbatim from MAIN FILE)
@@ -1568,115 +2434,155 @@
             '</div>' +
             '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 27px; color: #2A2118; line-height: 1.1; transform: rotate(-1deg);">change the look?</div>' +
             '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #6F5E45; margin-top: 6px;">pick a vibe for the board ↓</div>' +
-            // grid: 3-across on desktop (3+2 scrapbook rows), 2-across on mobile (see styles.css .look-grid)
-            '<div class="look-grid" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 22px;">' +
-              // --- WW2 (ARCHIVED — hidden from picker, theme code kept for future) ---
-              // --- Original ---
-              '<div data-act="pickOriginal" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #F2E14B; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.6deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
-                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 54px; height: 16px; background: rgba(228,202,128,0.55); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
-                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
-                  '<div style="display: inline-flex; align-items: center; gap: 5px; border: 1.8px solid #3A2A1B; color: #3A2A1B; border-radius: 4px; padding: 4px 8px; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; opacity: .72; transform: rotate(-4deg);">' +
-                    '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.4"></circle><path d="M8.3 12.2l2.4 2.4 4.9-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
-                    'Human Verified' +
-                  '</div>' +
-                '</div>' +
-                '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #2A2118; letter-spacing: -0.3px; line-height: 1.05;">Original version</div>' +
-              '</div>' +
-              // --- Casino (poker) ---
-              '<div data-act="pickPoker" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: linear-gradient(160deg,#7E1728 0%,#5A0F1C 100%); border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.8deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
-                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(2.5deg); width: 54px; height: 16px; background: rgba(228,202,128,0.5); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
-                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
-                  '<div style="display: inline-flex; align-items: center; gap: 6px; border: 2.2px solid #D4AF37; color: #D4AF37; border-radius: 4px; padding: 5px 9px; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .12em; opacity: .95; transform: rotate(-7deg);">' +
-                    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="10.4" fill="none" stroke="#D4AF37" stroke-width="1.4"></circle><circle cx="12" cy="12" r="9" fill="none" stroke="#D4AF37" stroke-width="3.6" stroke-dasharray="4.7 4.7"></circle><circle cx="12" cy="12" r="5.1" fill="none" stroke="#D4AF37" stroke-width="1.5"></circle></svg>' +
-                    'Human Verified' +
-                  '</div>' +
-                '</div>' +
-                '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #E9D9A6; letter-spacing: -0.3px; line-height: 1.05;">Casino</div>' +
-              '</div>' +
-              // --- Beauty (lipstick / high-class) — FEATURED (Nic's weekly top 3) ---
-              '<div data-act="pickBeauty" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: linear-gradient(160deg,#F5D3DA 0%,#EAB4C0 100%); border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.4deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.28); box-sizing: border-box;">' +
-                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 54px; height: 16px; background: rgba(243,217,184,0.45); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
-                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
-                  '<div style="display: inline-flex; align-items: center; gap: 5px; border: 2px solid #8A1E33; color: #8A1E33; background: rgba(255,255,255,0.35); border-radius: 14px; padding: 4px 10px; font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 12.5px; opacity: .95; transform: rotate(-5deg);">' +
-                    '💄 Human Verified 💋' +
-                  '</div>' +
-                '</div>' +
-                '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #5A2230; letter-spacing: -0.3px; line-height: 1.05;">Beauty</div>' +
-              '</div>' +
+            '<div class="su-primary-themes">' +
+              '<button type="button" data-act="pickOriginal" class="su-mini-theme su-primary-theme" style="--mini-paper:#F1E544;--mini-ink:#2A2118;"><span>Original</span></button>' +
+              '<button type="button" data-act="pickPoker" class="su-mini-theme su-primary-theme" style="--mini-paper:#6F1222;--mini-ink:#E9D9A6;"><span>Casino</span></button>' +
+              '<button type="button" data-act="pickBeauty" class="su-mini-theme su-primary-theme" style="--mini-paper:#EAB4C0;--mini-ink:#5A2230;"><span>Beauty</span></button>' +
             '</div>' +
-            // Expander — the X (top-right) or clicking outside dismisses, so no "keep as is" needed.
-            '<div id="moreThemesToggle" data-act="moreThemes" style="margin-top: 16px; text-align: center; font-family: \'Indie Flower\', cursive; font-size: 19px; color: #8A7558; cursor: pointer;">we have even more themes ↓</div>' +
-            // The rest of the library, hidden until expanded, shown as smaller cards.
-            '<div id="moreThemesWrap" class="look-grid look-grid-more" style="display: none; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px;">' +
-              // --- For the girlies ---
-              '<div data-act="pickGirly" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #EFAEC4; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(-1.4deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
-                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 54px; height: 16px; background: rgba(228,202,128,0.5); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
-                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
-                  '<div style="display: inline-flex; align-items: center; gap: 5px; border: 2.4px solid #C24A78; color: #C24A78; border-radius: 14px; padding: 4px 10px; font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 13px; opacity: .9; transform: rotate(-7deg);">' +
-                    '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="flex: none;"><path d="M12 21s-7.5-4.7-10-9.2C.5 8.6 2 5 5.3 5c2 0 3.3 1.2 4.7 3 1.4-1.8 2.7-3 4.7-3C18 5 19.5 8.6 22 11.8 19.5 16.3 12 21 12 21z"></path></svg>' +
-                    'Human Verified' +
-                    '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="flex: none;"><path d="M12 21s-7.5-4.7-10-9.2C.5 8.6 2 5 5.3 5c2 0 3.3 1.2 4.7 3 1.4-1.8 2.7-3 4.7-3C18 5 19.5 8.6 22 11.8 19.5 16.3 12 21 12 21z"></path></svg>' +
-                  '</div>' +
-                '</div>' +
-                '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #5A2638; letter-spacing: -0.3px; line-height: 1.05;">For the girlies</div>' +
-              '</div>' +
-              // --- Mermaidcore (re-enabled for Nic to preview) ---
-              '<div data-act="pickMermaid" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #0E4A5C; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(-1.3deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
-                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 54px; height: 16px; background: rgba(228,202,128,0.5); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
-                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
-                  '<div style="display: inline-flex; align-items: center; gap: 6px; border: 2.2px solid #7FE0D0; color: #7FE0D0; border-radius: 14px; padding: 4px 10px; font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 13px; opacity: .95; transform: rotate(-6deg);">' +
-                    '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex: none;"><path d="M12 2c2.5 3 2.5 7 0 10 2.5 3 2.5 7 0 10-2.5-3-2.5-7 0-10-2.5-3-2.5-7 0-10z"></path></svg>' +
-                    'Human Verified' +
-                  '</div>' +
-                '</div>' +
-                '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #E9FBFF; letter-spacing: -0.3px; line-height: 1.05;">Mermaidcore</div>' +
-              '</div>' +
-              // --- bratt (Charli XCX brat green) ---
-              '<div data-act="pickBratt" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #8ACE00; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.5deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.22); box-sizing: border-box;">' +
-                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 54px; height: 16px; background: rgba(228,202,128,0.5); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
-                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
-                  '<div style="display: inline-flex; align-items: center; gap: 5px; border: 2px solid #0A1400; color: #0A1400; border-radius: 4px; padding: 4px 8px; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; opacity: .82; transform: rotate(-4deg);">' +
-                    '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.4"></circle><path d="M8.3 12.2l2.4 2.4 4.9-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
-                    'Human Verified' +
-                  '</div>' +
-                '</div>' +
-                '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 20px; color: #0A1400; letter-spacing: -0.5px; line-height: 1.05; text-transform: lowercase;">bratt</div>' +
-              '</div>' +
-              // --- Noir (black luxury) ---
-              '<div data-act="pickNoir" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background: #141414; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(-1.3deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.28); box-sizing: border-box;">' +
-                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 54px; height: 16px; background: rgba(228,202,128,0.4); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
-                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
-                  '<div style="display: inline-flex; align-items: center; gap: 5px; border: 1.8px solid #C9CDD4; color: #C9CDD4; border-radius: 4px; padding: 4px 8px; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .12em; opacity: .85; transform: rotate(-4deg);">' +
-                    '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.4"></circle><path d="M8.3 12.2l2.4 2.4 4.9-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
-                    'Human Verified' +
-                  '</div>' +
-                '</div>' +
-                '<div style="font-family: \'Archivo Black\', sans-serif; font-size: 18px; color: #DDE0E5; letter-spacing: -0.3px; line-height: 1.05;">Black Cat</div>' +
-              '</div>' +
-              // --- Chess (real checkerboard + king "Human Verified" badge) ---
-              '<div data-act="pickChess" class="fbopt" style="flex: 1 1 150px; cursor: pointer; position: relative; background-color: #F4F2EC; background-image: conic-gradient(#181818 25%, transparent 0 50%, #181818 0 75%, transparent 0); background-size: 36px 36px; border-radius: 4px; padding: 16px 10px 14px; min-height: 162px; display: flex; flex-direction: column; align-items: center; text-align: center; transform: rotate(1.6deg); box-shadow: 2px 5px 11px rgba(44,33,24,0.28); box-sizing: border-box;">' +
-                '<div style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 54px; height: 16px; background: rgba(20,20,20,0.35); box-shadow: 0 1px 2px rgba(0,0,0,.1);"></div>' +
-                '<div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">' +
-                  '<div style="display: inline-flex; align-items: center; gap: 5px; border: 1.8px solid #171717; color: #171717; background: rgba(244,242,236,0.94); border-radius: 4px; padding: 4px 9px; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .12em; transform: rotate(-4deg);">' +
-                    '<span style="font-size: 14px; line-height: 1;">♚</span>' +
-                    'Human Verified' +
-                  '</div>' +
-                '</div>' +
-                '<div style="display:inline-block; background:#171717; color:#F4F4F4; font-family: \'Archivo Black\', sans-serif; font-size: 17px; letter-spacing: -0.3px; line-height: 1.05; padding: 3px 9px; border-radius: 3px;">Chess</div>' +
-              '</div>' +
-            '</div>' +
+            '<div id="moreThemesWrap" class="look-grid look-grid-more su-mini-themes">' +
+              '<button type="button" data-act="pickGirly" class="su-mini-theme" style="--mini-paper:#EFAEC4;--mini-ink:#5A2638;"><span>For the girlies</span></button>' +
+              '<button type="button" data-act="pickMermaid" class="su-mini-theme" style="--mini-paper:#0E4A5C;--mini-ink:#E9FBFF;"><span>Mermaid</span></button>' +
+              '<button type="button" data-act="pickBratt" class="su-mini-theme" style="--mini-paper:#8ACE00;--mini-ink:#172300;"><span>bratt</span></button>' +
+              '<button type="button" data-act="pickNoir" class="su-mini-theme" style="--mini-paper:#171718;--mini-ink:#ECECEE;"><span>Black Cat</span></button>' +
+              '<button type="button" data-act="pickChess" class="su-mini-theme su-mini-chess" style="--mini-paper:#F4F2EC;--mini-ink:#171717;"><span>Chess</span></button>' + '</div>' +
           '</div>' +
         '</div>';
       }
 
       root.innerHTML = out;
+      prepareActions(root);
+      if (window.SURelease) window.SURelease.render();
+      var panels = Array.from(root.children);
+      var top = panels.sort(function (a,b) { return Number(a.style.zIndex) - Number(b.style.zIndex); }).pop();
+      var dialog = top && top.querySelector('[data-act="stop"]');
+      var board = document.getElementById('board');
+      if (board) board.inert = !!dialog;
+      document.body.classList[dialog ? 'add' : 'remove']('su-dialog-open');
+      if (dialog) {
+        dialog.setAttribute('role', 'dialog'); dialog.setAttribute('aria-modal', 'true'); dialog.tabIndex = -1;
+        dialog.setAttribute('aria-label', { detail:'Job details', advice:'Job hunt advice', signup:'Newsletter signup', feedback:'Application feedback', look:'Choose a theme', founder:'About Nic', preferences:'Your preferences', reported:'Reported jobs' }[dialogKey] || 'Details');
+        if (previousKey === dialogKey && previousFocus && previousFocus.act && previousFocus.act !== 'stop') restoreIntent(previousFocus);
+        if (!dialog.contains(document.activeElement)) dialog.focus({ preventScroll:true });
+      } else if (previousDialog) { restoreIntent(this._dialogReturn); this._dialogReturn = null; }
+      if (!dialog && window.SUWelcome) window.SUWelcome.maybeShow();
+    },
+
+    reportedJobsHTML: function(){
+      var panel=this._reportedPanel;if(!panel)return '';
+      var button='font:inherit;color:#2A2118;background:#F6E24B;border:1px solid #79694D;border-radius:3px;min-height:44px;padding:8px 12px;cursor:pointer;';
+      var html='<div data-act="closeReportedJobs" style="position:fixed;inset:0;z-index:215;background:rgba(44,33,24,.58);display:flex;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;">'+
+        '<div data-act="stop" style="margin:auto;width:560px;max-width:100%;box-sizing:border-box;background:#FCFAF3;color:#2A2118;box-shadow:0 20px 70px rgba(44,33,24,.35);padding:20px;border-radius:5px;font:16px/1.5 Archivo,sans-serif;overflow-wrap:anywhere;">'+
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;"><h2 style="font:28px/1.2 var(--su-hand,Indie Flower),cursive;margin:0;">Reported jobs</h2><button type="button" data-act="closeReportedJobs" aria-label="Close reported jobs" style="'+button+'">Close</button></div>'+
+        '<p style="margin:12px 0;">Review reported roles. Clearing a report lets available roles return to the board.</p>'+
+        '<p role="status" style="margin:12px 0;">'+esc(panel.error||panel.message||(panel.loading?'Loading reported jobs…':''))+'</p>';
+      if(panel.data&&!panel.loading){
+        if(!panel.data.records.length)html+='<p>No reported jobs to restore.</p>';
+        panel.data.records.forEach(function(row){html+='<section style="padding:16px 0;border-top:1px solid #C7BAA0;"><strong>'+esc(row.co||'Company not listed')+'</strong><div>'+esc(row.role||'Role not listed')+'</div><button type="button" data-act="restoreReportedJob" data-val="'+esc(row.id)+'"'+(panel.busy||panel.stale||panel.data.scope!=='preview'?' disabled':'')+' style="'+button+'margin-top:10px;">'+(panel.busy===row.id?'Restoring…':'Restore to board')+'</button></section>';});
+      }
+      html+='<button type="button" data-act="refreshReportedJobs"'+(panel.loading||panel.busy?' disabled':'')+' style="'+button+'margin-top:12px;">'+(panel.loading?'Loading…':'Refresh list')+'</button></div></div>';
+      return html;
+    },
+    openReportedJobs: function(){
+      var owner=moderationOwner();if(!owner||!window.SUJobModeration?.admin)return;
+      if(window.SUDiscovery&&window.SUDiscovery.closePreferences)window.SUDiscovery.closePreferences();
+      this._reportedPanel={owner:owner,data:null,loading:false,error:'',message:'',busy:null,attempts:{}};
+      this.setState({reportedOpen:true,detailOpen:false,feedbackOpen:false,adviceOpen:null,signupOpen:null,lookOpen:false,modalOpen:false});this._dialogReturn=focusIntent(document.getElementById('su-board-menu-trigger'));this.loadReportedJobs();
+    },
+    closeReportedJobs: function(){this.setState({reportedOpen:false});},
+    loadReportedJobs: function(){
+      var self=this,panel=this._reportedPanel;if(!panel||panel.owner!==moderationOwner()||panel.loading||panel.busy)return;
+      panel.loading=true;panel.error='';this.renderOverlays();
+      function current(){return self.state.reportedOpen&&self._reportedPanel===panel&&panel.owner===moderationOwner();}
+      window.SUJobModeration.admin({current:current}).then(function(data){if(!current())return;panel.loading=false;panel.stale=false;panel.data=data;self.renderOverlays();}).catch(function(e){if(!current())return;panel.loading=false;panel.error=e.message;self.renderOverlays();});
+    },
+    restoreReportedJob: function(id){
+      var self=this,panel=this._reportedPanel;if(!panel||panel.owner!==moderationOwner()||panel.loading||panel.busy||panel.stale||panel.data?.scope!=='preview')return;
+      var row=panel.data.records.find(function(row){return row.id===id;});if(!row)return;
+      var attempt=panel.attempts[id];if(!attempt){try{attempt={id:window.crypto.randomUUID(),revision:panel.data.revision};panel.attempts[id]=attempt;}catch(_){panel.error='Could not prepare restore. Please retry.';this.renderOverlays();return;}}
+      var ownedFocus=document.activeElement?.getAttribute('data-val')===id;
+      panel.busy=id;panel.error='';panel.message='';this.renderOverlays();
+      function current(){return self.state.reportedOpen&&self._reportedPanel===panel&&panel.owner===moderationOwner();}
+      window.SUJobModeration.mutate('restore',row.link,{requestId:attempt.id,expectedRevision:attempt.revision,current:current}).then(function(result){if(!current())return;panel.busy=null;delete panel.attempts[id];panel.data.revision=result.revision;panel.data.records=panel.data.records.filter(function(item){return item.id!==id;});panel.message='Report cleared.';self.renderOverlays();var close=document.querySelector('#overlay-root [data-act="closeReportedJobs"][aria-label]');if(ownedFocus&&close&&document.activeElement?.getAttribute('data-act')==='stop')close.focus({preventScroll:true});}).catch(function(e){if(!current())return;panel.busy=null;panel.error=e.message;if(e.status===409){delete panel.attempts[id];panel.stale=true;}self.renderOverlays();if(ownedFocus&&document.activeElement?.getAttribute('data-act')==='stop'){var next=document.querySelector('#overlay-root [data-act="'+(panel.stale?'refreshReportedJobs':'restoreReportedJob')+'"]'+(panel.stale?'':'[data-val="'+id+'"]'));if(next)next.focus({preventScroll:true});}});
+    },
+    reportJob: function () {
+      var self=this,owner=moderationOwner(),link=this.state.feedbackLink;
+      if(!owner||this._reportBusy||!safeUrl(link)||!window.SUJobModeration)return;
+      var attempt=this._reportAttempt;
+      if(!attempt||attempt.owner!==owner||attempt.link!==link){
+        try{attempt={owner:owner,link:link,id:window.crypto.randomUUID()};}catch(_){this._feedbackError='Could not prepare this report. Please reopen the job.';this.renderOverlays();return;}
+        this._reportAttempt=attempt;
+      }
+      this._reportBusy=true;this._feedbackError='';this.renderOverlays();
+      window.SUJobModeration.mutate('report',link,{requestId:attempt.id,current:function(){return self._reportAttempt===attempt&&owner===moderationOwner();}}).then(function(result){
+        if(self._reportAttempt!==attempt||owner!==moderationOwner())return;
+        self._reportBusy=false;self._reportAttempt=null;if(self.state.feedbackOpen&&sameJobLink(self.state.feedbackLink,link))self.setState({feedbackOpen:false});else self.renderOverlays();reportedToast(result,owner);
+      }).catch(function(e){
+        if(self._reportAttempt!==attempt||owner!==moderationOwner())return;
+        self._reportBusy=false;if(self.state.feedbackOpen&&sameJobLink(self.state.feedbackLink,link)){self._feedbackError=e.message;self.renderOverlays();}else{self.renderOverlays();suToast(e.message);}
+      });
+    },
+
+    openCurrentListing: function (link, company, kind) {
+      var self=this,moderation=window.SUJobModeration;
+      if(this._outgoing)return;
+      if(!moderation){suToast('Could not check current job availability. Please reload and try again.');return;}
+      var intent={link:link};this._outgoing=intent;
+      moderation.navigate(link,{current:function(){return self._outgoing===intent&&self.state.detailOpen&&self.state.detailLink===link;}}).then(function(){
+        if(self._outgoing!==intent)return;
+        if(kind==='apply'){postReport('click',company,link);self.setState({detailOpen:false,feedbackOpen:true,feedbackCo:company,feedbackLink:link});}
+      }).catch(function(e){if(self._outgoing===intent)suToast(e.message);}).finally(function(){if(self._outgoing===intent)self._outgoing=null;});
+    },
+
+    closeBoardPanels: function () {
+      this.state.openPanel = null;
+      document.querySelectorAll('[data-su-panel]').forEach(function (panel) { panel.remove(); });
+      document.querySelectorAll('[data-act="toggleCat"],[data-act="toggleFilters"]').forEach(function (button) { button.setAttribute('aria-expanded','false'); });
     },
 
     // ---- event wiring (single delegated listener on document) -------------
     bindEvents: function () {
+      if (this._eventsBound) return;
+      this._eventsBound = true;
       var self = this;
 
+      // Tab leaving a cross-origin newsletter frame does not emit a keydown
+      // in this document. Catch the resulting focus move back into the page.
+      document.addEventListener('focusin', function (e) {
+        if (document.querySelector('#su-launch[open]')) return;
+        var dialog = document.querySelector('#overlay-root [role="dialog"]');
+        if (!dialog || dialog.contains(e.target)) return;
+        var first = Array.from(dialog.querySelectorAll('button:not(:disabled),a[href],input,select,textarea,iframe,[tabindex="0"]')).find(function (el) {return el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden';});
+    (first || dialog).focus();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && _voteClose) { _voteClose(); return; }
+        if (document.querySelector('#su-launch[open]')) return;
+        var dialog = document.querySelector('#overlay-root [role="dialog"]');
+        if (e.key === 'Escape') {
+          if(window.SUBoardControls)window.SUBoardControls.dismiss();
+          if (dialog) {
+            if(self._dialogKey==='feedback')uxEvent('feedback_dismiss');
+            e.preventDefault();
+            if (self._dialogKey === 'preferences' && window.SUDiscovery) { window.SUDiscovery.closePreferences(); return; }
+            self.setState({ detailOpen:false, feedbackOpen:false, adviceOpen:null, signupOpen:null, lookOpen:false, modalOpen:false, reportedOpen:false });
+          } else if (self.state.openPanel) self.setState({ openPanel:null });
+          return;
+        }
+        if (e.key === 'Tab' && dialog) {
+          var items = Array.from(dialog.querySelectorAll('button:not(:disabled),a[href],input,select,textarea,iframe,[tabindex="0"]')).filter(function (el) { return el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden'; });
+          var first = items[0], last = items[items.length - 1];
+          if (!first) { e.preventDefault(); dialog.focus(); }
+          else if (e.shiftKey && (document.activeElement === first || document.activeElement === dialog)) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && (document.activeElement === last || document.activeElement === dialog)) { e.preventDefault(); first.focus(); }
+        }
+        var el = e.target.closest && e.target.closest('[role="button"][data-act]');
+        if (el && (e.key === 'Enter' || e.key === ' ') && !el.matches('button,a,input,select,textarea')) { e.preventDefault(); el.click(); }
+      });
+
       document.addEventListener('click', function (e) {
+        if(e.target.closest && e.target.closest('[data-discovery]'))return;
+        if (_voteClose && !e.target.closest('#su-theme-vote')) _voteClose();
         var el = e.target.closest('[data-act]');
         if (!el) return;
         var act = el.getAttribute('data-act');
@@ -1690,22 +2596,45 @@
         }
 
         switch (act) {
+          case 'retryJobs': uxEvent('feed_retry'); refreshFeed(); break;
+          case 'retrySave': if(self._retrySaveLink) { self.state.saved=loadSaved(); if(self.isSaved(self._retrySaveLink)===self._retrySaveDesired) { self._retrySaveLink=null;self._actionError='';self.render(); } else self.toggleSave(self._retrySaveLink); } break;
+          case 'preferredSource': uxEvent('preferred_source_click'); break;
+          case 'openWelcome':
+            self.setState({ modalOpen:false });
+            if (window.SUWelcome) window.SUWelcome.open();
+            break;
           case 'openModal': self.setState({ modalOpen: true }); break;
           case 'closeModal': self.setState({ modalOpen: false }); break;
-          case 'closeFeedback': self.setState({ feedbackOpen: false }); break;
+          case 'closePreferences': if(window.SUDiscovery)window.SUDiscovery.closePreferences();break;
+          case 'closeFeedback': uxEvent('feedback_dismiss'); self.setState({ feedbackOpen: false }); break;
+          case 'adminReportJob': self.reportJob(); break;
+          case 'openReportedJobs': self.openReportedJobs(); break;
+          case 'closeReportedJobs': self.closeReportedJobs(); break;
+          case 'refreshReportedJobs': self.loadReportedJobs(); break;
+          case 'restoreReportedJob': self.restoreReportedJob(el.getAttribute('data-val')); break;
           case 'markApplied': {
-            postReport('applied', self.state.feedbackCo, self.state.feedbackLink);
             // also drop the application into the on-device Tracker (tracker.html)
             var tj = null;
             for (var ti = 0; ti < self.jobs.length; ti++) {
-              if (self.jobs[ti].link === self.state.feedbackLink) { tj = self.jobs[ti]; break; }
+              if (jobHasLink(self.jobs[ti], self.state.feedbackLink)) { tj = self.jobs[ti]; break; }
             }
-            trackerLog(self.state.feedbackCo, self.state.feedbackLink, tj ? tj.role : '');
+            var tracked = trackerLog(self.state.feedbackCo, self.state.feedbackLink, tj ? tj.role : '');
+            if(!tracked) { self._feedbackError='Could not add this to your tracker. Please try I applied again. Your answer is still here.'; self.renderOverlays(); break; }
+            postReport('applied', self.state.feedbackCo, self.state.feedbackLink);
+            if(window.SUDiscovery)window.SUDiscovery.dismiss(self.state.feedbackLink,'applied');
             self.setState({ feedbackOpen: false });
-            suConfetti();   // short celebratory burst; popup closes so they keep browsing
+            self.render();
+            suConfetti();       // short celebratory burst; popup closes so they keep browsing
+            if (tracked && trackerLog.added) suTrackerNudge(); // Only promise a tracker entry when it exists.
             break;
           }
+          case 'notFit': {
+            if(window.SUDiscovery&&window.SUDiscovery.dismiss(self.state.feedbackLink,'not_fit')&&window.SUAnalytics)window.SUAnalytics.emit('feedback_not_fit',{});
+            self.setState({feedbackOpen:false});self.render();break;
+          }
           case 'reportBroken': {
+            uxEvent('feedback_unavailable');
+            self.clearFeedbackRedirect();
             var _bl = self.state.feedbackLink;
             // SPAM GUARD (Nic, 2026-07-11): max 3 reports/min and 10/day per visitor. Over the
             // limit the UI still says thanks (looks registered) but nothing is logged — shadow
@@ -1713,35 +2642,66 @@
             if (suRateOk('br', 3, 60) && suRateOk('brDay', 10, 86400)) {
               postReport('gone_report', self.state.feedbackCo, _bl);
             }
-            // hide instantly for THIS visitor, persisted locally until the agent verdict
-            try {
-              var _rl2 = JSON.parse(localStorage.getItem('su_reported_links') || '[]');
-              if (_rl2.indexOf(_bl) < 0) { _rl2.push(_bl); localStorage.setItem('su_reported_links', JSON.stringify(_rl2)); }
-            } catch (eRB) {}
-            for (var _bi = 0; _bi < self.jobs.length; _bi++) {
-              if (self.jobs[_bi].link === _bl) { self.jobs.splice(_bi, 1); break; }
-            }
-            self.setState({ feedbackOpen: false });
-            suToast('Thanks — pulled it while we double-check.');
+            if(window.SUDiscovery)window.SUDiscovery.dismiss(_bl,'unavailable');
+            else {try{var legacy=JSON.parse(localStorage.getItem('su_reported_links')||'[]');if(legacy.indexOf(_bl)<0)legacy.push(_bl);localStorage.setItem('su_reported_links',JSON.stringify(legacy));}catch(e){}self.jobs=self.jobs.filter(function(j){return !jobHasLink(j,_bl);});}
+            self.state.feedbackOpen = false;
+            self.render();
+            suToast('Hidden from your board. You can restore it with Show hidden jobs.');
             break;
           }
           case 'closeDetail': self.setState({ detailOpen: false }); break;
           case 'hideRecipe':
+            uxEvent('newsletter_dismiss');
             self._recipeHidden = true;   // memory only — an accidental ✕ comes back on reload
             postReport('recipe_hide', el.getAttribute('data-co') || '', el.getAttribute('data-link') || '');
             self.setState({});
             break;
+          case 'hideSignupCards':
+            // ✕ on a grid signup card = hide ALL signup cards until reload (same flag as the
+            // popup capture block, so one dismissal silences every signup surface — UX rule #9)
+            e.stopPropagation();
+            self._recipeHidden = true;
+            if (typeof window.suTrack === 'function') window.suTrack('signup_hide', (el.getAttribute('data-co') || '').slice(0, 60), 'card', '');
+            self.setState({});
+            break;
+          case 'openAdvice': {
+            var _nid = el.getAttribute('data-note') || '';
+            var _no = null;
+            for (var _nj = 0; _nj < ADVICE_NOTES.length; _nj++) { if (ADVICE_NOTES[_nj].id === _nid) { _no = ADVICE_NOTES[_nj]; break; } }
+            if (typeof window.suTrack === 'function') window.suTrack('note_open', _nid, _no ? _no.hook.slice(0, 60) : '', '');
+            self.setState({ adviceOpen: _nid });
+            break;
+          }
+          case 'closeAdvice': self.setState({ adviceOpen: null }); break;
+          case 'openSignup': {
+            var _sl = el.getAttribute('data-line') || 'the exact recipe that got me my job at Instagram';
+            if (typeof window.suTrack === 'function') window.suTrack('signup_open', _sl.slice(0, 60), '', '');
+            self.setState({ signupOpen: _sl });
+            break;
+          }
+          case 'closeSignup': self.setState({ signupOpen: null }); break;
           case 'detailShare': {
             var sl = el.getAttribute('data-link'), sj = null;
-            for (var si = 0; si < self.jobs.length; si++) { if (self.jobs[si].link === sl) { sj = self.jobs[si]; break; } }
+            sj=self.catalogJobs().find(function(job){return jobHasLink(job,sl);});
             suShareJob(sj);
             break;
           }
           case 'detailApply': {
             var dl = el.getAttribute('data-link'), dc = el.getAttribute('data-co');
-            if (dl) window.open(dl, '_blank', 'noopener');
-            postReport('click', dc, dl);
-            self.setState({ detailOpen: false, feedbackOpen: true, feedbackCo: dc, feedbackLink: dl });
+            var applyJob = self.jobs.find(function (job) {return jobHasLink(job,dl);});
+            if (!applyJob || (applyJob.internship && !internshipCanApply(applyJob))) {self.renderOverlays();break;}
+            self.openCurrentListing(dl,dc,'apply');
+            break;
+          }
+          case 'detailArchived': {
+            var archivedLink=safeUrl(el.getAttribute('data-link'));
+            if(archivedLink)window.open(archivedLink,'_blank','noopener');
+            break;
+          }
+          case 'detailProgram': {
+            var programLink = el.getAttribute('data-link');
+            var program = self.jobs.find(function (job) {return jobHasLink(job,programLink);});
+            if (program && program.internship) self.openCurrentListing(program.link,program.co,'program');
             break;
           }
           case 'stop': e.stopPropagation(); break;
@@ -1773,7 +2733,7 @@
           }
           case 'toggleCat': self.setState({ openPanel: self.state.openPanel === 'cat' ? null : 'cat' }); break;
           case 'toggleFilters': self.setState({ openPanel: self.state.openPanel === 'filters' ? null : 'filters' }); break;
-          case 'clearAll': self.setState({ ws: 'Any', st: 'all', pr: 'Any', fr: 'Any', theme: null }); break;
+          case 'clearAll': self.setState({ q: '', cat: 'all', ws: 'Any', st: 'all', pr: 'Any', fr: 'Any', theme: null }); break;
 
           case 'cat': self.setState({ cat: el.getAttribute('data-val'), openPanel: null }); break;
           case 'ws': self.setState({ ws: el.getAttribute('data-val') }); break;
@@ -1815,7 +2775,8 @@
             // now opens the TL;DR detail popup; real navigation happens from detailApply
             e.preventDefault(); e.stopPropagation();
             var _al = el.getAttribute('data-link') || el.getAttribute('href') || '';
-            suRecipeView(_al, self);   // impression log for the capture block (1-in-3 jobs)
+            if(window.SUAnalytics)window.SUAnalytics.job('job_open',_al);
+            beginJobDetail(self, _al);   // impression log for the capture block (1-in-3 jobs)
             self.setState({ detailOpen: true, detailLink: _al });
             break;
           }
@@ -1827,7 +2788,8 @@
             if (ns === 'open' || ns === 'closing') return;
             e.stopPropagation();
             var _dl3 = el.getAttribute('data-link');
-            suRecipeView(_dl3, self);
+            if(window.SUAnalytics)window.SUAnalytics.job('job_open',_dl3);
+            beginJobDetail(self, _dl3);
             self.setState({ detailOpen: true, detailLink: _dl3 });
             break;
           }
@@ -1850,7 +2812,7 @@
             var q = String(self.state.q || '').trim();
             if (!q || q === self._qLast) return;
             self._qLast = q;
-            if (typeof window.suTrack === 'function') window.suTrack('search', 'search', q.slice(0, 60), '');
+            if (typeof window.suTrack === 'function') window.suTrack('search', 'search', '', '');
           }, 1500);
         }
       });
@@ -1859,6 +2821,24 @@
       });
       document.addEventListener('focusout', function (e) {
         if (e.target && e.target.id === 'su-search') self._searchFocused = false;
+      });
+
+      // note→newsletter + signup-card clicks happen INSIDE the Beehiiv iframe, which we can't
+      // listen into. Proxy: when the window blurs and focus just moved to an embed iframe,
+      // that was a click into it. Fires once per iframe key per page load — no spam.
+      window.addEventListener('blur', function () {
+        try {
+          var ae = document.activeElement;
+          if (!ae || ae.tagName !== 'IFRAME') return;
+          var v = ae.getAttribute('data-cta');
+          if (!v) return;
+          self._ctaFired = self._ctaFired || {};
+          if (self._ctaFired[v]) return;
+          self._ctaFired[v] = 1;
+          var ci = v.indexOf(':');
+          var kind = ci < 0 ? v : v.slice(0, ci), val = ci < 0 ? '' : v.slice(ci + 1);
+          if (typeof window.suTrack === 'function') window.suTrack(kind === 'note' ? 'note_cta' : 'signup_cta', val.slice(0, 60), '', '');
+        } catch (e2) {}
       });
 
       // state <select> (delegated change)
@@ -1887,9 +2867,11 @@
           if (_jp) {
             var _wanted = decodeURIComponent(escape(atob(decodeURIComponent(_jp))));
             setTimeout(function () {
+              var sharedJob = self.jobs.find(function (job) { return jobHasLink(job, _wanted); });
+              var targetLink = sharedJob ? sharedJob.link : _wanted;
               var cards = document.querySelectorAll('.note[data-link]');
               for (var ci = 0; ci < cards.length; ci++) {
-                if (cards[ci].getAttribute('data-link') === _wanted) {
+                if (sameJobLink(cards[ci].getAttribute('data-link'), targetLink)) {
                   cards[ci].scrollIntoView({ behavior: 'smooth', block: 'center' });
                   cards[ci].style.outline = '3px solid #D8502E'; cards[ci].style.outlineOffset = '3px';
                   (function (c) { setTimeout(function () { c.style.outline = ''; }, 2800); })(cards[ci]);
@@ -1925,17 +2907,40 @@
         .map(function (x) { return x.j; });
     },
 
+    updateJobs: function(jobs) {
+      if(!window.SUDiscovery){try{var legacyHidden=JSON.parse(localStorage.getItem('su_reported_links')||'[]');jobs=jobs.filter(function(j){return !legacyHidden.some(function(link){return jobHasLink(j,link);});});}catch(e){}}
+      this.jobs=uniqueJobs(jobs);this.setInternshipSurfaces();
+      if(window.SUAnalytics)window.SUAnalytics.registerJobs(this.jobs);
+      if(window.SUDiscovery && window.SUDiscovery.updateCatalog)window.SUDiscovery.updateCatalog(this.jobs);
+      if(this.state.detailOpen && !this.catalogJobs().some(function(j){return jobHasLink(j,App.state.detailLink);}))this.state.detailOpen=false;
+      this.render();
+    },
+
     init: function (jobs) {
-      // "no longer open" reports hide the job INSTANTLY for this visitor (real global hide
-      // happens when the triage agent verifies at the source and marks the sheet).
-      try {
-        var _hid = JSON.parse(localStorage.getItem('su_reported_links') || '[]');
-        if (_hid.length) jobs = jobs.filter(function (j) { return _hid.indexOf(j.link) < 0; });
-      } catch (eRH) {}
-      this.jobs = this.shuffleFresh(jobs);
+      if(this._initialized) { this.updateJobs(jobs); return; }
+      this._initialized=true;
+      if(!window.SUDiscovery){try{var legacyHidden=JSON.parse(localStorage.getItem('su_reported_links')||'[]');jobs=jobs.filter(function(j){return !legacyHidden.some(function(link){return jobHasLink(j,link);});});}catch(e){}}
+      var self = this;
+      window.addEventListener('su:local-change', function () {
+        var trackerTab = document.querySelector('.su-main-nav a[href="./tracker.html"]');
+        if (trackerTab) trackerTab.innerHTML = 'Tracker' + suTrkBadge();
+      });
+      window.addEventListener('su:data-sync', function () { self.state.saved = loadSaved(); self.render(); });
+      window.addEventListener('storage', function (e) { if (e.key === 'su_saved_jobs' || e.key === 'su_tracker' || e.key === 'su_sync_owner') { if(e.key==='su_sync_owner')checkViewOwner();self.state.saved = loadSaved(); self.render(); } });
+      this.state.saved = loadSaved();
+      this.internships = INTERNSHIPS;
+      this.jobs = INTERNSHIPS ? uniqueJobs(jobs) : this.shuffleFresh(uniqueJobs(jobs));
+      this.setInternshipSurfaces();
+      if(window.SUDiscovery)window.SUDiscovery.start(this);
+      if(window.SUAnalytics)window.SUAnalytics.registerJobs(this.jobs);
+      window.addEventListener('su:profile-ready',function(event){if(event.detail&&event.detail.reset){self._personalOrder=null;self._profileGeneration=-1;self._feedInteracted=false;}if(!self._feedInteracted)self.render();});
+      document.addEventListener('pointerdown',function(){self._feedInteracted=true;},{once:true});
+      window.addEventListener('su:auth-changed',function(){checkViewOwner();self.state.saved=loadSaved();self._actionError='';self._retrySaveLink=null;self._profileGeneration=-1;self._feedInteracted=false;self.render();});
+      window.addEventListener('su:consent-changed',function(){armThemeVote(self.state.look);self._profileGeneration=-1;self._feedInteracted=false;self.render();});
       this.bindEvents();
+      this.restoreFeedbackRedirect();
       // analytics: a ?theme= content preset (theme-chip) counts as an applied filter — additive
-      if (this.state.theme && this.themeDefs[this.state.theme] && typeof window.suTrack === 'function') {
+      if (this.state.theme && Object.prototype.hasOwnProperty.call(this.themeDefs, this.state.theme) && typeof window.suTrack === 'function') {
         window.suTrack('filter', 'theme', this.state.theme, '');
       }
       this.render();
@@ -1944,7 +2949,7 @@
 
   // ---- module-scope helpers (used by initial state) ----
   function loadSaved() {
-    try { return JSON.parse(localStorage.getItem('su_saved_jobs') || '{}') || {}; } catch (e) { return {}; }
+    try { return window.SUStore && window.SUStore.view ? window.SUStore.view().saved : JSON.parse(localStorage.getItem('su_saved_jobs') || '{}') || {}; } catch (e) { return {}; }
   }
   function loadLook() {
     try {
@@ -1955,24 +2960,33 @@
   }
 
   // =========================================================================
-  // DATA SOURCE — Nic's Google Sheet (live) with a bundled JSON fallback.
+  // DATA SOURCE: main Sheet and a separate verified internship snapshot.
   //
   // The board reads jobs straight from the Google Sheet, so Nic can add a job,
   // edit one, or flip a job to "Dead" by editing the sheet — no code change and
   // no redeploy. The sheet must be shared "Anyone with the link -> Viewer".
-  // If the sheet can't be reached (offline, not shared yet, Google hiccup) the
-  // board falls back to the bundled jobs-data.json so it never shows up empty.
+  // If the current feed cannot be verified, keep navigation and offer retry.
+  // Never re-publish an old bundled catalog during an availability outage.
   //
   // To point at a different sheet: change SHEET_ID (the long id in the sheet's
   // URL: docs.google.com/spreadsheets/d/<SHEET_ID>/edit).
   // =========================================================================
   var SHEET_ID = '1DRfkDn_OIVlnx06xFaNpNbusXl49jvM26oJsl-qq2nU';
-  var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv&headers=1';
+  var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv&headers=1&gid=2134483974';
 
   // derive the 2-letter state (or "Remote") from a "City, ST" location string
   function deriveState(loc) {
     var s = String(loc || '').trim();
-    if (/remote/i.test(s)) return 'Remote';
+    var codes = s.match(/\b[A-Z]{2}\b/g) || [];
+    for (var c = 0; c < codes.length; c++) {
+      if (SU_STATES[codes[c].toLowerCase()]) return codes[c];
+    }
+    // Only unrestricted US remote roles match every state. Preserve a named region.
+    if (/remote/i.test(s)) {
+      var region = s.replace(/remote/ig, '').replace(/[^a-z]+/ig, ' ')
+        .replace(/\b(us|usa|united states|anywhere|nationwide)\b/ig, '').trim();
+      return region ? s : 'Remote';
+    }
     var last = s.split(',').pop().trim();
     var m = last.match(/\b([A-Z]{2})\b/);
     return m ? m[1] : last;
@@ -1980,30 +2994,42 @@
 
   // minimal CSV parser (handles quoted fields, doubled quotes, CRLF/LF)
   function parseCSV(text) {
-    var rows = [], row = [], field = '', inQ = false, i, c;
+    var rows = [], row = [], field = '', inQ = false, closed = false, i, c;
+    text = String(text).replace(/^\uFEFF/, '');
     for (i = 0; i < text.length; i++) {
       c = text[i];
       if (inQ) {
-        if (c === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else inQ = false; }
+        if (c === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else { inQ = false; closed = true; } }
         else field += c;
       } else {
-        if (c === '"') inQ = true;
-        else if (c === ',') { row.push(field); field = ''; }
-        else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
-        else if (c !== '\r') field += c;
+        if (c === ',') { row.push(field); field = ''; closed = false; }
+        else if (c === '\n' || c === '\r') {
+          if (c === '\r' && text[i + 1] === '\n') i++;
+          row.push(field); rows.push(row); row = []; field = ''; closed = false;
+        } else if (c === '"') {
+          if (field || closed) throw new Error('Malformed jobs CSV: unexpected quote');
+          inQ = true;
+        } else {
+          if (closed) throw new Error('Malformed jobs CSV: text after closing quote');
+          field += c;
+        }
       }
     }
-    if (field.length || row.length) { row.push(field); rows.push(row); }
+    if (inQ) throw new Error('Malformed jobs CSV: unterminated quoted field');
+    if (field.length || row.length || closed) { row.push(field); rows.push(row); }
     return rows;
   }
 
+
   // map sheet rows -> the job objects the board expects; keep only Active rows
   function rowsToJobs(rows) {
-    if (!rows || !rows.length) return [];
-    var COLS = ['Company', 'Job Title', 'Link', 'Location', 'Type', 'Salary', 'Years of Experience', 'Category', 'Description', 'TL;DR', 'Pick', 'Active/Dead'];
+    if (!window.SUJobIdentity) throw new Error('Job identity check unavailable. Refresh to retry.');
+    if (!rows || !rows.length) throw new Error('Jobs CSV has no header');
     var head = rows[0].map(function (h) { return String(h).trim().toLowerCase(); });
-    var hasHeader = head.indexOf('company') !== -1 && head.indexOf('job title') !== -1;
-    function col(name) { return hasHeader ? head.indexOf(name.toLowerCase()) : COLS.indexOf(name); }
+    ['company', 'job title', 'link', 'salary', 'active/dead'].forEach(function (name) {
+      if (head.indexOf(name) < 0 || head.indexOf(name) !== head.lastIndexOf(name)) throw new Error('Jobs CSV requires one ' + name + ' column');
+    });
+    function col(name) { return head.indexOf(name.toLowerCase()); }
     var iCo = col('Company'), iRole = col('Job Title'), iLink = col('Link'),
         iLoc = col('Location'), iType = col('Type'), iPay = col('Salary'),
         iExp = col('Years of Experience'), iCat = col('Category'),
@@ -2012,13 +3038,16 @@
         iAdded = col('Date Added'),   // when WE added it to the board
         iPosted = col('Date Posted'); // when the COMPANY posted the job — drives the age disclaimer (2026-07-11)
     var get = function (cells, k) { return (k >= 0 && cells[k] != null) ? String(cells[k]).trim() : ''; };
-    var jobs = [];
-    for (var r = hasHeader ? 1 : 0; r < rows.length; r++) {
-      var cells = rows[r]; if (!cells) continue;
+    var jobs = [], archived=[], closed=[];
+    for (var r = 1; r < rows.length; r++) {
+      var cells = rows[r];
+      if (cells.every(function (s) { return !s.trim(); })) continue;
+      if (cells.length !== head.length) throw new Error('Malformed jobs CSV: column count on row ' + (r + 1));
       var co = get(cells, iCo), role = get(cells, iRole);
-      if (!co && !role) continue;                                   // skip blank rows
+      if (!co || !role || !safeUrl(get(cells, iLink))) continue; // incomplete or unsafe listing
       var act = get(cells, iAct).toLowerCase();
-      if (act.indexOf('dead') !== -1 || act === 'inactive' || act === 'no') continue; // hide retired jobs
+      var retired=act.indexOf('dead')!==-1||act==='inactive'||act==='no';
+      if(act==='dead')closed.push(safeUrl(get(cells,iLink))); // Only explicit closure is confirmed.
       var _payv = get(cells, iPay);
       // GUARD (Nic's rule: a card must NEVER show without a salary). A blank Salary cell used to render
       // a black "$100K+" card with no number (payTier treats blank as 'high'). Skip blank-salary rows —
@@ -2028,12 +3057,12 @@
       // HOURLY (Upd. 2026-07-11, Nic): 6-month+ CONTRACT roles are now welcome — they pay hourly, and a
       // $40/hr contract at a real company is a good early-career job. So hourly no longer means "hide."
       // Rule: $25/hr+ shows; below that it's retail-tier hourly and stays off the board.
-      if (/\/\s*hr|\bper\s*hour\b|\bhourly\b/i.test(_payv)) {
-        var _rates = (String(_payv).match(/\d+(?:\.\d+)?/g) || []).map(Number);
+      if (/\/\s*(?:h|hr|hour)\b|\bper\s*hour\b|\bhourly\b/i.test(_payv)) {
+        var _rates = (String(_payv).replace(/,/g, '').match(/\d+(?:\.\d+)?/g) || []).map(Number);
         if (!_rates.length || Math.max.apply(null, _rates) < 25) continue;
       }
       var loc = get(cells, iLoc);
-      jobs.push({
+      (retired?archived:jobs).push({
         co: co, role: role, link: safeUrl(get(cells, iLink)), loc: loc, state: deriveState(loc),
         style: get(cells, iType), ind: get(cells, iCat), pay: get(cells, iPay),
         exp: normExp(get(cells, iExp)), desc: get(cells, iDesc), tldr: get(cells, iTldr),
@@ -2042,7 +3071,8 @@
         posted: get(cells, iPosted)   // yyyy-mm-dd — when the COMPANY posted it (from the ATS API)
       });
     }
-    return jobs;
+    App._closedLinks=closed;App._archiveCatalog=uniqueJobs(archived);
+    return uniqueJobs(jobs);
   }
 
   // Security: only let http(s) job links reach the DOM. Blocks a malicious sheet
@@ -2064,35 +3094,123 @@
 
   function safeUrl(u) {
     u = String(u == null ? '' : u).trim();
-    return /^https?:\/\//i.test(u) ? u : '';
+    if (!/^https?:\/\//i.test(u)) return '';
+    try { var parsed = new URL(u); return parsed.hostname && !parsed.username && !parsed.password ? u : ''; } catch (e) { return ''; }
   }
 
-  function showLoadError() {
-    var board = document.getElementById('board');
-    if (board) board.innerHTML = '<div style="max-width:760px;margin:80px auto;padding:0 24px;font-family:\'Indie Flower\',cursive;font-size:24px;color:#B23A1E;">Could not load jobs. If you opened this file directly, serve the folder over http (e.g. <code>python3 -m http.server</code>) so the browser can fetch the data.</div>';
+  var feedRequest=null, lastFeedCheck=0, firstFeed=true, initialView=null;
+  function checkViewOwner(){
+    var runtime=window.SUBoardRuntime;
+    if(!runtime||!runtime.checkOwner||!runtime.checkOwner())return false;
+    clearTimeout(App._renderTimer);App._renderTimer=null;
+    Object.assign(App.state,{q:'',cat:'all',ws:'Any',pr:'Any',st:'all',fr:'Any',savedOnly:false});
+    App._personalOrder=null;App._profileGeneration=-1;App._feedInteracted=false;
+    return true;
   }
-
-  function loadFromJson() {
-    fetch('jobs-data.json', { cache: 'no-cache' })
-      .then(function (r) { if (!r.ok) throw new Error('json ' + r.status); return r.json(); })
-      .then(function (jobs) { App.init(jobs); })
-      .catch(function (err) { console.error(err); showLoadError(); });
+  function restoreView(runtime,initial){
+    checkViewOwner();
+    if(!initial||!runtime||location.search||location.hash)return null;
+    var restored=runtime.read(INTERNSHIPS?'internships':'jobs');
+    if(restored)Object.assign(App.state,restored.state,{st:canonicalState(restored.state.st)});
+    return restored;
   }
-
-  // ---- boot: try the live Google Sheet first, fall back to jobs-data.json ----
-  function boot() {
-    fetch(SHEET_CSV_URL + '&_=' + Date.now(), { cache: 'no-cache' })  // &_=ts busts Google's server-side gviz cache so the board always sees the live sheet
-      .then(function (r) { if (!r.ok) throw new Error('sheet ' + r.status); return r.text(); })
-      .then(function (text) {
-        var jobs = rowsToJobs(parseCSV(text));
-        if (!jobs.length) throw new Error('sheet returned 0 jobs');
-        App.init(jobs);
-      })
-      .catch(function (err) {
-        console.warn('[StillUnemployed] live sheet unavailable, using bundled jobs-data.json:', err && err.message);
-        loadFromJson();
+  function loadFeed(signal) {
+    if(INTERNSHIPS){
+      var localPreview=['localhost','127.0.0.1','[::1]'].includes(location.hostname)||location.protocol==='file:';
+      return fetch(localPreview?'./internships-data.json':'/.netlify/functions/internships-catalog',{cache:'no-store',signal:signal})
+        .then(function(r){if(!r.ok)throw Error('Internship feed unavailable');return r.json();})
+        .then(function(data){
+          if(!window.SUInternships)throw Error('Internship validator unavailable');
+          if(!localPreview)return data;
+          return fetch('./netlify/functions/lib/internship-display.json',{cache:'no-store',signal:signal})
+            .then(function(r){if(!r.ok)throw Error('Local presentation unavailable');return r.json();})
+            .then(function(copy){return Object.assign({},data,{jobs:data.jobs.map(function(job){return window.SUInternships.withPresentation(job,copy[job.link]);})});})
+            .catch(function(){return data;});
+        }).then(function(data){App._internshipStatus=data.status;return window.SUInternships.jobs(data);});
+    }
+    return fetch(SHEET_CSV_URL+'&_='+Date.now(),{cache:'no-cache',signal:signal})
+      .then(function(r){if(!r.ok)throw Error('Jobs feed unavailable');return r.text();})
+      .then(function(text){return rowsToJobs(parseCSV(text));});
+  }
+  function loadingNote(){
+    if(!App._loading)return;
+    App._loadingVisible=true;
+    var status=document.getElementById('su-feed-progress');if(status)status.hidden=false;
+  }
+  function refreshFeed(){
+    if(feedRequest)return feedRequest;
+    var initial=firstFeed, loadingTimer=initial?setTimeout(loadingNote,600):null;
+    if(!initial){App._refreshing=true;var progress=document.getElementById('su-feed-progress');if(progress)progress.hidden=false;uxEvent('feed_refresh');}
+    var runtime=window.SUBoardRuntime;
+    feedRequest=Promise.all([runtime?runtime.request(INTERNSHIPS?'internships':'jobs',loadFeed):loadFeed(),window.SUJobModeration?window.SUJobModeration.refresh():Promise.reject(Error('Availability check unavailable'))]).then(function(result){
+      var jobs=result[0];App._moderationCatalog=jobs;App._moderationError=false;
+      App._loading=false;App._loadingVisible=false;App._loadError=false;App._refreshing=false;lastFeedCheck=Date.now();
+      var restored=initial && !App._feedInteracted ? initialView : null;
+      checkViewOwner();
+      try{if(window.SUStore&&window.SUStore.captureSaved)window.SUStore.captureSaved(jobs.concat(App._archiveCatalog||[]));}catch(_){App._actionError='Your saved links are safe. Some card details could not be refreshed.';}
+      App.init(window.SUJobModeration.filter(jobs));uxEvent('feed_ready');
+      if(restored){uxEvent('view_restored');setTimeout(function(){if(runtime.read(INTERNSHIPS?'internships':'jobs')&&window.scrollTo)window.scrollTo(0,restored.y);},0);}
+    }).catch(function(){
+      App._loading=false;App._loadingVisible=false;App._loadError=true;App._refreshing=false;lastFeedCheck=Date.now();
+      checkViewOwner();
+      App._moderationCatalog=null;
+      // Unknown availability never revives a static catalog. Filters and account state remain.
+      App.init([]);uxEvent('feed_load_error');
+    }).finally(function(){if(loadingTimer)clearTimeout(loadingTimer);firstFeed=false;feedRequest=null;});
+    return feedRequest;
+  }
+  function boot(){
+    // A Google sign-in return resumes its existing question before any introduction.
+    App.restoreFeedbackRedirect();
+    if(window.SUBoardRuntime&&window.SUBoardRuntime.enterSection)window.SUBoardRuntime.enterSection(INTERNSHIPS?'internships':'jobs');
+    initialView=restoreView(window.SUBoardRuntime,true);
+    App._loading=true;App.internships=INTERNSHIPS;App.state.saved=loadSaved();App.bindEvents();App.render();
+    document.addEventListener('pointerdown',function(){App._feedInteracted=true;},{once:true});
+    document.addEventListener('input',function(){App._feedInteracted=true;},{once:true});
+    if(window.SUJobModeration){
+      window.SUJobModeration.subscribe(function(index){
+        if(!App._moderationCatalog){if(App._loadError&&(index.status==='ready'||index.status==='local'))refreshFeed();return;}
+        if(index.status==='error'){App._moderationError=true;App._loadError=true;App.updateJobs([]);}
+        else if(App._moderationError){refreshFeed();}
+        else App.updateJobs(window.SUJobModeration.filter(App._moderationCatalog));
       });
+      App._stopModerationWatch=window.SUJobModeration.watch();
+    }
+    refreshFeed();
+    window.addEventListener('su:auth-changed',function(){
+      checkViewOwner();
+      if(App._reportAttempt&&App._reportAttempt.owner!==moderationOwner()){App._reportBusy=false;App._reportAttempt=null;}
+      if(App._reportToastOwner!==moderationOwner())clearReportedToast();App.renderOverlays();
+    });
+    window.addEventListener('storage',function(e){if(e.key==='su_sync_owner')checkViewOwner();});
+    window.addEventListener('pagehide',function(){if(window.SUBoardRuntime)window.SUBoardRuntime.save(INTERNSHIPS?'internships':'jobs',App.state);});
+    function recheck(){if(!firstFeed && !document.hidden && Date.now()-lastFeedCheck>=60000)refreshFeed();}
+    window.addEventListener('focus',recheck);
+    window.addEventListener('pageshow',function(e){
+      if(!e.persisted)return;
+      var runtime=window.SUBoardRuntime;
+      var ownerChanged=checkViewOwner();
+      var sectionChanged=runtime&&runtime.enterSection&&runtime.enterSection(INTERNSHIPS?'internships':'jobs');
+      if(ownerChanged)App.state.saved=loadSaved();
+      if(ownerChanged||sectionChanged)App.setState({savedOnly:false});
+      recheck();
+    });
+    document.addEventListener('click',function(e){
+      if(e.defaultPrevented||e.button>0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
+      var link=e.target.closest&&e.target.closest('a[href]');
+      if(!link||link.target==='_blank'||link.hasAttribute('download'))return;
+      try{
+        var url=new URL(link.href,location.href);
+        if(url.origin!==location.origin||!/^\/(?:jobs(?:\.html|\/[^/]+)?|internships(?:\.html)?|tracker(?:\.html)?)\/?$/.test(url.pathname))return;
+        App.state.savedOnly=false;
+        if(window.SUBoardRuntime){if(window.SUBoardRuntime.clearSavedViews)window.SUBoardRuntime.clearSavedViews();window.SUBoardRuntime.save(INTERNSHIPS?'internships':'jobs',App.state);}
+      }catch(_){}
+    });
+    document.addEventListener('visibilitychange',recheck);
   }
+
+  // Available to the first-shell welcome before any feed request resolves.
+  window.SUApp = App;
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
@@ -2100,6 +3218,4 @@
     boot();
   }
 
-  // expose for debugging / console checks
-  window.SUApp = App;
 })();

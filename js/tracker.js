@@ -2,11 +2,11 @@
    StillUnemployed.com — Tracker
    The Excel sheet, retired. Every application lives in localStorage under
    su_tracker (JSON array of {id, company, role, link, source, dateApplied,
-   status, notes}) — no backend, no login, nothing ever leaves the browser.
+   status, notes}). Optional Google sign-in also syncs these rows to the account.
 
    Rows arrive two ways:
      - auto-logged by js/app.js when someone taps "I applied!" on the board
-       (source: 'StillUnemployed', deduped by link)
+       (source: 'StillUnemployed', deduped by verified posting identity)
      - added by hand with the form on this page (source: 'Me')
 
    The page follows the same conventions as js/app.js: one big render()
@@ -27,9 +27,9 @@
 
   // ---- "Change Look?" palettes — the slice of app.js THEMES the tracker needs ----
   var LOOKS = {
-    original: { cls: '',        ink: '#2A2118', sub: '#6F5E45', acc: '#F2E14B', accInk: '#2A2118', navBg: '#EDE93B', navInk: '#1f1c14', star: '#C2552F', hl: 'rgba(238,224,70,0.95)' },
+    original: { cls: '',        ink: '#2A2118', sub: '#6F5E45', acc: '#F2E14B', accInk: '#2A2118', navBg: 'var(--su-yellow-paper)', navInk: '#1f1c14', star: '#C2552F', hl: 'rgba(238,224,70,0.95)' },
     cod:      { cls: 'cod',     ink: '#E9E3D2', sub: '#AEB29B', acc: '#555B38', accInk: '#EDE7CF', navBg: '#5C6B3A', navInk: '#EDE7CF', star: '#AEB29B', hl: 'rgba(120,140,75,0.92)' },
-    girly:    { cls: 'girly',   ink: '#2A0E1E', sub: '#8A2B5E', acc: '#E84B9C', accInk: '#FFF3FA', navBg: '#F25CA2', navInk: '#FFFFFF', star: '#D6277E', hl: 'rgba(233,59,146,0.92)' },
+    girly:    { cls: 'girly',   ink: '#2A0E1E', sub: '#8A2B5E', acc: '#E84B9C', accInk: '#3A0E26', navBg: '#F25CA2', navInk: '#3A0E26', star: '#D6277E', hl: 'rgba(233,59,146,0.92)' },
     poker:    { cls: 'poker',   ink: '#F2E4C8', sub: '#D9B989', acc: '#D4AF37', accInk: '#2A1810', navBg: '#D4AF37', navInk: '#2A1810', star: '#D4AF37', hl: 'rgba(31,107,58,0.92)' },
     mermaid:  { cls: 'mermaid', ink: '#0E4A5C', sub: '#1B6B7D', acc: '#FF7E67', accInk: '#4A160D', navBg: '#0E4A5C', navInk: '#E9FBFF', star: '#D9553C', hl: 'rgba(255,126,103,0.85)' },
     // 2026-07-11 late: the 4 newer board themes, ported from app.js THEMES so the tracker
@@ -41,6 +41,15 @@
   };
 
   var STATUSES = ['Applied', 'Interview 1', 'Interview 2', 'Interview 3', 'Interview 4', 'Offer', 'Rejected', 'Ghosted'];
+
+  function drawnArrow(direction) {
+    return '<svg class="trk-arrow trk-arrow-' + direction + '" width="24" height="18" viewBox="0 0 28 20" fill="none" aria-hidden="true" focusable="false"><path d="M2 13c7-7 14-7 23-4M18 3l7 6-8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+  }
+  function sizeNote(note) {
+    if (!note || !note.classList || !note.classList.contains('trk-notes')) return;
+    note.style.height = 'auto';
+    note.style.height = Math.max(note.scrollHeight, 34) + 'px';
+  }
 
   // ── THE OFFER PARTY (Nic, 2026-07-11) ────────────────────────────────────────
   // Selecting "Offer" earns balloons rising up the screen + fireworks popping in the
@@ -143,13 +152,15 @@
   }
   function loadRows() {
     try {
+      if (window.SUStore && window.SUStore.view) return window.SUStore.view().tracker;
       var r = JSON.parse(localStorage.getItem('su_tracker') || '[]');
       return Array.isArray(r) ? r : [];
     } catch (e) { return []; }
   }
   function saveRows(rows) {
-    try { localStorage.setItem('su_tracker', JSON.stringify(rows)); } catch (e) {}
+    if (window.SUStore) window.SUStore.saveTracker(rows); else localStorage.setItem('su_tracker', JSON.stringify(rows));
   }
+  function accountKey() { try { return localStorage.getItem('su_sync_owner') || 'guest'; } catch(e) { return 'guest'; } }
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
   function todayISO() {
     var d = new Date();
@@ -165,14 +176,84 @@
   }
   function csvField(v) {
     v = String(v == null ? '' : v);
+    // Spreadsheet apps can execute formula-like cell text even when it is CSV
+    // quoted. Export it as literal text, including after whitespace or controls.
+    if (/^[\s\x00-\x1f\x7f-\x9f]*[=+@-]/.test(v)) v = "'" + v;
     return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+  }
+  function linkKey(link) {
+    var value = String(link || '').trim();
+    if (!value) return '';
+    if (!/^https?:\/\//i.test(value)) value = 'https://' + value;
+    try { return new URL(value).href; } catch (e) { return value; }
+  }
+
+  function captureFocus(board) {
+    var active = document.activeElement;
+    if (!active || !board.contains(active)) return null;
+    return { id: active.id, row: active.getAttribute('data-id'), act: active.getAttribute('data-act'),
+      tag: active.tagName, start: active.selectionStart, end: active.selectionEnd,
+      direction: active.selectionDirection, scroll: active.scrollTop };
+  }
+  function restoreFocus(board, focus) {
+    if (!focus) return;
+    var target = focus.id ? document.getElementById(focus.id) : null;
+    if (!target && (focus.row || focus.act)) {
+      target = Array.from(board.querySelectorAll('[data-id], [data-act]')).find(function (el) {
+        return el.tagName === focus.tag && el.getAttribute('data-id') === focus.row && el.getAttribute('data-act') === focus.act;
+      });
+    }
+    if (!target && focus.row) target = document.getElementById('trk-add');
+    if (!target) return;
+    target.focus({ preventScroll: true });
+    if (typeof focus.start === 'number' && target.setSelectionRange) {
+      var length = target.value.length;
+      target.setSelectionRange(Math.min(focus.start, length), Math.min(focus.end, length), focus.direction || 'none');
+      target.scrollTop = focus.scroll;
+    }
+  }
+
+  function statusShape(rows) {
+    return JSON.stringify(rows.map(function (row) {
+      return Object.keys(row).sort().filter(function (key) {
+        return key !== 'status' && key !== 'updated';
+      }).map(function (key) { return [key, row[key]]; });
+    }));
   }
 
   var Trk = {
     rows: loadRows(),
     look: loadLook(),
     deleting: {},   // id -> true while the strike-through goodbye plays
-    expanded: {},   // id -> true while the notes field is pinned open (the ▾ arrow)
+    pendingRemoval: null, // explicit Yes/No choice, bound to the current account
+    draft: {},
+    formMessage: '',
+    owner: accountKey(),
+    accountGeneration: 0,
+    noteDrafts: {},
+    localChanged: false,
+    writeError: '',
+    renderedStatusShape: null,
+    renderedStatuses: [],
+    renderedOwner: null,
+    renderedLook: null,
+
+    syncStatus: function () {
+      if(this.writeError)return this.writeError;
+      if(!this.localChanged)return '';
+      var auth=window.SUAuth, state=auth&&auth.syncState?auth.syncState():'';
+      if(auth&&auth.signedIn&&auth.signedIn())return state==='synced'?'Tracker synced to your account.':state==='error'?'Tracker saved on this device. Account sync paused.':'Tracker saved on this device. Syncing…';
+      return 'Tracker saved on this device.';
+    },
+    refreshStatus: function () {
+      var text=document.getElementById('trk-sync-feedback'); if(text)text.textContent=this.syncStatus();
+      var self=this,pending=Object.keys(this.noteDrafts).some(function(id){return self.rows.some(function(r){return r.id===id;});});
+      var retry=document.getElementById('trk-sync-retry'); if(retry)retry.hidden=!(pending || window.SUAuth&&window.SUAuth.syncState&&window.SUAuth.syncState()==='error');
+    },
+    persistRows: function (rows) {
+      try { saveRows(rows); this.rows=loadRows(); this.localChanged=true; this.writeError=''; this.refreshStatus(); return true; }
+      catch(e) { this.writeError='Could not save this change on this device. Please try again.'; this.refreshStatus(); return false; }
+    },
 
     counts: function () {
       var c = { total: this.rows.length, ints: 0, offers: 0, rejected: 0, ghosted: 0 };
@@ -186,9 +267,46 @@
       return c;
     },
 
-    render: function () {
+    refreshStatusControls: function (changedId) {
+      var board=document.getElementById('board');
+      if(this.owner!==accountKey() || this.renderedOwner!==this.owner || this.renderedLook!==this.look ||
+         this.pendingRemoval || Object.keys(this.deleting).length || this.renderedStatusShape!==statusShape(this.rows)) return false;
+      var controls=Array.from(board.querySelectorAll('select.trk-status'));
+      if(controls.length!==this.rows.length || controls.some(function(control,i){return control.getAttribute('data-id')!==this.rows[i].id;},this)) return false;
+      var self=this;
+      controls.forEach(function(control,i){
+        var row=self.rows[i];
+        // Keep the same native select and its focus. Replacing and refocusing it
+        // during change can reopen a mobile picker. An unchanged sync echo must
+        // also leave any not-yet-committed native selection alone.
+        if(control.value!==row.status && (row.id===changedId || row.status!==self.renderedStatuses[i])) control.value=row.status;
+        control.className='trk-status '+statusCls(row.status);
+      });
+      var counts=this.counts();
+      [['total',counts.total],['interviews',counts.ints],['offers',counts.offers]].forEach(function(pair){
+        var node=document.getElementById('trk-count-'+pair[0]);if(node)node.textContent=String(pair[1]);
+      });
+      this.renderedStatuses=this.rows.map(function(row){return row.status;});
+      this.refreshStatus();
+      return true;
+    },
+
+    refreshRows: function () {
+      this.rows=loadRows();
+      if(!this.refreshStatusControls()) this.render();
+    },
+
+    render: function (options) {
       var self = this;
       var board = document.getElementById('board');
+      var focus = captureFocus(board);
+      if(this.owner !== accountKey()) { this.owner=accountKey(); this.accountGeneration++; this.draft={}; this.noteDrafts={}; this.deleting={}; this.pendingRemoval=null; this.formMessage=''; this.writeError=''; this.localChanged=false; this.rows=loadRows(); options={clearDraft:true}; focus=null; }
+      if(this.pendingRemoval && !this.rows.some(function(r){return r && r.id===self.pendingRemoval.id;})) this.pendingRemoval=null;
+      if (options && options.clearDraft) this.draft = {};
+      else ['trk-co', 'trk-role', 'trk-link'].forEach(function (id) {
+        var input = document.getElementById(id);
+        if (input) self.draft[id] = input.value;
+      });
       var P = LOOKS[this.look] || LOOKS.original;
 
       board.className = 'board' + (P.cls ? ' ' + P.cls : '');
@@ -208,20 +326,21 @@
 
       // ---- top nav (same structure as the jobs board: aboutcard + centered post-its) ----
       out += '<div style="max-width: 1240px; margin: 0 auto; padding: 26px 40px 0; position: relative; height: 100px; box-sizing: border-box;">' +
-        '<div data-act="goHome" class="aboutcard" style="position: absolute; top: 22px; left: 40px; display: flex; align-items: center; gap: 12px; background: #E7D2A8; border-radius: 16px; padding: 9px 16px 9px 9px; cursor: pointer; box-shadow: 0 6px 18px rgba(44,33,24,0.16);">' +
-          '<div style="width: 66px; height: 42px; border-radius: 11px; overflow: hidden; flex: none;">' +
+        '<button type="button" data-act="goHome" class="aboutcard" aria-label="Home" style="position: absolute; top: 22px; left: 40px; display: flex; align-items: center; gap: 12px; background: #E7D2A8; border:0; text-align:left; border-radius: 16px; padding: 9px 16px 9px 9px; cursor: pointer; box-shadow: 0 6px 18px rgba(44,33,24,0.16);">' +
+          '<span style="display:block; width: 66px; height: 42px; border-radius: 11px; overflow: hidden; flex: none;">' +
             '<img src="assets/5037150f-ce24-477c-bae7-ef884fbc5849.jpg" alt="Nic" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 16%; transform: scale(1.55); transform-origin: 50% 26%;">' +
-          '</div>' +
-          '<div style="line-height: 1.2;">' +
-            '<div style="font-size: 14px; font-weight: 700; color: #2A2118; font-family: \'Archivo\', sans-serif;">Nic, the founder</div>' +
-            '<div style="font-size: 11px; font-weight: 500; color: #6F5E45; margin-top: 2px; font-family: \'Archivo\', sans-serif;">Currently at Instagram making 6 figures</div>' +
-          '</div>' +
+          '</span>' +
+          '<span style="display:block; line-height: 1.2;">' +
+            '<span style="display:block; font-size: 14px; font-weight: 700; color: #2A2118; font-family: \'Archivo\', sans-serif;">Nic, the founder</span>' +
+            '<span style="display:block; font-size: 11px; font-weight: 500; color: #6F5E45; margin-top: 2px; font-family: \'Archivo\', sans-serif;">Currently at Instagram making 6 figures</span>' +
+          '</span>' +
           '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex: none; margin-left: 2px;"><path d="M9 6l6 6-6 6" stroke="#6F5E45" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
-        '</div>' +
-        '<div style="position: absolute; top: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px;">' +
-          '<a href="./index.html" class="postit trk-nav-a r1">Home</a>' +
+        '</button>' +
+        '<div class="su-main-nav" style="position: absolute; top: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px;">' +
           '<a href="./jobs.html" class="postit trk-nav-a r2">Jobs</a>' +
           '<a href="./tracker.html" class="postit trk-nav-a r3">Tracker' + (this.rows.length ? ' (<span style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 16px;">' + (this.rows.length > 99 ? '99+' : this.rows.length) + '</span>)' : '') + '</a>' +
+          '<a href="./internships.html" class="postit trk-nav-a r1">Internships</a>' +
+          '<span class="su-account-slot"></span>' +
                   '</div>' +
       '</div>';
 
@@ -229,30 +348,37 @@
       out += '<div class="trk-wrap">' +
         '<div class="trk-star">★ StillUnemployed.com</div>' +
         '<h1 class="trk-h1">Your <span class="trk-hlspan">Tracker</span>.</h1>' +
-        '<div class="trk-tag">every job you apply to, one place, no spreadsheet →</div>';
+        '<div class="trk-tag">every job you apply to, one place, no spreadsheet ' + drawnArrow('right') + '</div>';
 
       // ---- summary pills + export ----
       out += '<div class="trk-pills">' +
-        '<div class="trk-pill p1"><b>' + c.total + '</b><span>total applied</span></div>' +
-        '<div class="trk-pill p2"><b>' + c.ints + '</b><span>in interviews</span></div>' +
-        '<div class="trk-pill p3"><b>' + c.offers + '</b><span>offers</span></div>' +
-        '<div class="trk-pill p4"><b>' + c.rejected + '</b><span>rejected</span></div>' +
-        '<div class="trk-pill p5"><b>' + c.ghosted + '</b><span>ghosted</span></div>' +
+        // ONE BAR, THREE NUMBERS (Nic, 2026-07-12). Was five pills: total / interviews / offers /
+        // rejected / ghosted. "Rejected" and "Ghosted" were counters of how badly it's going, shown
+        // to someone who is already living it. Nic cut Ghosted; I cut Rejected with it for the same
+        // reason. The row still adds up (rejections are visible on the rows themselves), it just
+        // doesn't lead with them.
+        '<div class="trk-pill p1"><b id="trk-count-total">' + c.total + '</b><span>applied</span></div>' +
+        '<div class="trk-pill p2"><b id="trk-count-interviews">' + c.ints + '</b><span>interviews</span></div>' +
+        '<div class="trk-pill p3"><b id="trk-count-offers">' + c.offers + '</b><span>offers</span></div>' +
         '<button type="button" data-act="exportCsv" class="trk-export">' +
           '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
           'Export CSV' +
         '</button>' +
       '</div>';
 
+      out += '<p id="trk-sync-feedback" role="status" aria-live="polite">' + esc(this.syncStatus()) + '</p><button type="button" id="trk-sync-retry" data-act="retrySync" class="trk-export" hidden>Retry save</button>';
+      Object.keys(this.noteDrafts).forEach(function(id){if(!self.rows.some(function(r){return r.id===id;}))out+='<aside class="trk-unsaved-note"><p>This application was removed elsewhere. Copy your unsaved note before leaving.</p><textarea readonly aria-label="Unsaved note from a removed application">'+esc(self.noteDrafts[id])+'</textarea><button type="button" data-act="dismissDraft" data-id="'+esc(id)+'">Dismiss note</button></aside>';});
+
       // ---- add-row form ----
       out += '<div class="trk-form">' +
-        '<div class="trk-form-label" style="color: #1A1A1A;">applied somewhere else? log it ↓</div>' +
+        '<div class="trk-form-label" style="color: #1A1A1A;">applied somewhere else? log it ' + drawnArrow('down') + '</div>' +
         '<div class="trk-form-row">' +
-          '<input id="trk-co" class="trk-input" placeholder="company">' +
-          '<input id="trk-role" class="trk-input" placeholder="role / job title">' +
-          '<input id="trk-link" class="trk-input" placeholder="link (optional)">' +
-          '<button type="button" data-act="addRow" class="trk-addbtn">+ add it</button>' +
+          '<input id="trk-co" class="trk-input" aria-label="Company" placeholder="company" value="' + esc(this.draft['trk-co'] || '') + '">' +
+          '<input id="trk-role" class="trk-input" aria-label="Role or job title" placeholder="role / job title" value="' + esc(this.draft['trk-role'] || '') + '">' +
+          '<input id="trk-link" class="trk-input" aria-label="Posting link (optional)" inputmode="url" placeholder="link (optional)" value="' + esc(this.draft['trk-link'] || '') + '">' +
+          '<button id="trk-add" type="button" data-act="addRow" class="trk-addbtn" aria-describedby="trk-form-feedback">+ add it</button>' +
         '</div>' +
+        '<p id="trk-form-feedback" role="status" aria-live="polite" style="margin:8px 0 0;color:#6F5E45;">' + esc(this.formMessage) + '</p>' +
       '</div>';
 
       // ---- rows ----
@@ -268,10 +394,11 @@
         this.rows.forEach(function (r) {
           if (!r) return;
           var del = !!self.deleting[r.id];
+          var confirming = self.pendingRemoval && self.pendingRemoval.id === r.id;
           var lhref = String(r.link || '');
           if (lhref && !/^https?:\/\//i.test(lhref)) lhref = 'https://' + lhref;   // heal old scheme-less rows too
           var linkHtml = lhref
-            ? '<a class="trk-linka" href="' + esc(lhref) + '" target="_blank" rel="noopener">posting ↗</a>'
+            ? '<a class="trk-linka" href="' + esc(lhref) + '" target="_blank" rel="noopener noreferrer">posting ' + drawnArrow('up') + '</a>'
             : '';
           var opts = STATUSES.map(function (s) {
             return '<option value="' + esc(s) + '"' + (r.status === s ? ' selected' : '') + '>' + esc(s) + '</option>';
@@ -283,27 +410,35 @@
               '<div class="trk-src">' + (r.source === 'StillUnemployed' ? '<span style="color: var(--trk-star, #C2552F); font-family: \'Indie Flower\', cursive; font-weight: 700;">★</span> via StillUnemployed.com' : 'added by you') + '</div>' +
             '</div>' +
             '<div class="trk-date" title="date applied">' + esc(fmtDate(r.dateApplied)) + '</div>' +
-            '<select class="trk-status ' + statusCls(r.status) + '" data-id="' + esc(r.id) + '" aria-label="status">' + opts + '</select>' +
-            '<textarea class="trk-notes' + (self.expanded[r.id] ? ' open' : '') + '" data-id="' + esc(r.id) + '" rows="1" placeholder="notes... (recruiter name, next step)">' + esc(r.notes || '') + '</textarea>' +
-            '<div class="trk-noteexp' + (self.expanded[r.id] ? ' open' : '') + '" data-act="toggleNote" data-id="' + esc(r.id) + '" title="' + (self.expanded[r.id] ? 'collapse notes' : 'expand notes') + '">' +
-              '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="transition: transform .18s;' + (self.expanded[r.id] ? ' transform: rotate(180deg);' : '') + '"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
-            '</div>' +
-            '<div class="trk-del" data-act="delRow" data-id="' + esc(r.id) + '" title="remove">' +
-              '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"></path></svg>' +
-            '</div>' +
+            '<select class="trk-status ' + statusCls(r.status) + '" data-id="' + esc(r.id) + '" aria-label="Application status">' + opts + '</select>' +
+            '<textarea class="trk-notes" data-id="' + esc(r.id) + '" rows="1" aria-label="Application notes" placeholder="notes... (recruiter name, next step)">' + esc(Object.prototype.hasOwnProperty.call(self.noteDrafts,r.id)?self.noteDrafts[r.id]:(r.notes || '')) + '</textarea>' +
+            '<button type="button" class="trk-del" data-act="delRow" data-id="' + esc(r.id) + '" aria-label="Remove ' + esc(r.company || r.role || 'application') + ' from tracker" aria-expanded="' + !!confirming + '"' + (confirming ? ' aria-controls="trk-remove-confirm"' : '') + (del ? ' disabled' : '') + '>' +
+              '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"></path></svg>' +
+            '</button>' +
           '</div>';
         });
         out += '</div>';
       }
 
       out += '</div>'; // /.trk-wrap
-      board.innerHTML = out;
-      // size any pinned-open notes to fit their content
-      var opens = board.querySelectorAll('textarea.trk-notes.open');
-      for (var oi = 0; oi < opens.length; oi++) {
-        opens[oi].style.height = 'auto';
-        opens[oi].style.height = Math.max(opens[oi].scrollHeight, 34) + 'px';
+      if(this.pendingRemoval) {
+        var removing=this.rows.find(function(r){return r && r.id===self.pendingRemoval.id;});
+        out+='<dialog id="trk-remove-confirm" class="trk-remove-confirm" data-pointer-opening="' + !!this.pendingRemoval.pointer + '" aria-modal="true" aria-labelledby="trk-remove-question" aria-describedby="trk-remove-context"><div class="trk-remove-paper"><h2 id="trk-remove-question">Are you sure you want to delete?</h2><p id="trk-remove-context">' + esc(removing.company || '') + (removing.company && removing.role ? ' · ' : '') + esc(removing.role || '') + '</p><div class="trk-remove-actions"><button type="button" data-act="cancelRemoval" data-id="' + esc(removing.id) + '" autofocus>No, keep it</button><button type="button" data-act="confirmRemoval" data-id="' + esc(removing.id) + '" class="trk-remove-yes">Yes, delete</button></div></div></dialog>';
       }
+      board.innerHTML = out;
+      var confirmation=document.getElementById('trk-remove-confirm');
+      if(confirmation) confirmation.showModal();
+      // Notes fit their content without an unlabeled expand/collapse control.
+      var opens = board.querySelectorAll('textarea.trk-notes');
+      for (var oi = 0; oi < opens.length; oi++) {
+        sizeNote(opens[oi]);
+      }
+      restoreFocus(board, focus);
+      this.renderedStatusShape=statusShape(this.rows);
+      this.renderedStatuses=this.rows.map(function(row){return row.status;});
+      this.renderedOwner=this.owner;
+      this.renderedLook=this.look;
+      this.refreshStatus();
     },
 
     addRow: function () {
@@ -319,40 +454,93 @@
         if (inp) inp.focus();
         return;
       }
-      this.rows.unshift({
+      // Another tab may have just logged the same posting. Keep its status and
+      // notes intact, and make the duplicate visible instead of losing it on sync.
+      this.rows = loadRows();
+      if (link && !window.SUJobIdentity) {
+        this.formMessage = 'Could not check this job link. Reload and try again.';
+        this.render();
+        return;
+      }
+      if (link && this.rows.some(function (r) { return r && (linkKey(r.link) === linkKey(link) || window.SUJobIdentity.equivalent(linkKey(r.link), linkKey(link))); })) {
+        this.formMessage = 'That posting is already in your tracker. Your existing application is unchanged.';
+        this.render();
+        return;
+      }
+      var nextRows=this.rows.slice();
+      nextRows.unshift({
         id: 'su-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
         company: co, role: role, link: link,
         source: 'Me', dateApplied: todayISO(), status: 'Applied', notes: ''
       });
-      saveRows(this.rows);
+      if(!this.persistRows(nextRows)) { this.formMessage=this.writeError; this.render(); return; }
       // analytics (js/analytics.js): manual add — additive no-op without it
-      if (typeof window.suTrack === 'function') window.suTrack('tracker-add', co, role, '');
-      this.render();
+      if (typeof window.suTrack === 'function') window.suTrack('tracker-add', '', '', '');
+      this.formMessage = '';
+      this.render({ clearDraft: true });
       var again = document.getElementById('trk-co');
       if (again) again.focus();
     },
 
-    // strike it through first, then actually remove — no instant vanish
-    delRow: function (id) {
+    delRow: function (id, pointer) {
+      if(this.owner!==accountKey()) { this.render(); return; }
+      if(this.deleting[id] || !loadRows().some(function(r){return r && r.id===id;})) return;
+      this.pendingRemoval={id:id,owner:this.owner,generation:this.accountGeneration,pointer:!!pointer};
+      this.render();
+      this.focusRowAction(id,'cancelRemoval');
+    },
+
+    focusRowAction: function (id, action) {
+      var board=document.getElementById('board');
+      var target=Array.from(board.querySelectorAll('[data-id], [data-act]')).find(function(el){return el.tagName==='BUTTON' && el.getAttribute('data-id')===id && el.getAttribute('data-act')===action;});
+      if(!target) target=document.getElementById('trk-add');
+      if(target) target.focus({preventScroll:true});
+    },
+
+    cancelRemoval: function (id) {
+      if(!this.pendingRemoval || this.pendingRemoval.id!==id) return;
+      this.pendingRemoval=null;
+      this.render();
+      this.focusRowAction(id,'delRow');
+    },
+
+    // Only an explicit Yes starts the existing strike-through removal.
+    confirmRemoval: function (id) {
       var self = this;
-      if (this.deleting[id]) return;
+      var pending=this.pendingRemoval;
+      if(!pending || pending.id!==id || pending.owner!==accountKey() || pending.generation!==this.accountGeneration) { this.pendingRemoval=null; this.render(); return; }
+      this.pendingRemoval=null;
+      if (this.deleting[id] || !loadRows().some(function(r){return r && r.id===id;})) { this.render(); return; }
+      var owner=accountKey(), generation=this.accountGeneration;
       this.deleting[id] = true;
       this.render();
+      // Keep keyboard focus on a live control while the old card fades away.
+      var next=this.rows.find(function(r){return r && r.id!==id && !self.deleting[r.id];});
+      this.focusRowAction(next && next.id,'delRow');
       setTimeout(function () {
-        self.rows = self.rows.filter(function (r) { return r && r.id !== id; });
+        if(owner!==accountKey() || generation!==self.accountGeneration)return;
+        var remaining=loadRows().filter(function (r) { return r && r.id !== id; });
         delete self.deleting[id];
-        saveRows(self.rows);
+        if(!self.persistRows(remaining)) { self.render(); self.focusRowAction(id,'delRow'); return; }
+        delete self.noteDrafts[id];
+        if(window.SUAnalytics)window.SUAnalytics.emit('tracker_delete',{});
         self.render();
       }, 650);
     },
 
     setField: function (id, field, value) {
-      var changed = false;
-      this.rows.forEach(function (r) {
-        if (r && r.id === id) { r[field] = value; changed = true; }
-      });
-      if (changed) saveRows(this.rows);
-      return changed;
+      var changed=false, next=JSON.parse(JSON.stringify(this.rows));
+      next.forEach(function(r){if(r&&r.id===id&&r[field]!==value){r[field]=value;r.updated=new Date().toISOString();changed=true;}});
+      if(!changed)return false;
+      if(!this.persistRows(next)){if(field==='notes')this.noteDrafts[id]=value;this.refreshStatus();return false;}
+      if(field==='notes'){delete this.noteDrafts[id];if(window.SUAnalytics&&!this._noteMeasured){this._noteMeasured=true;window.SUAnalytics.emit('tracker_note_edit',{});}}
+      this.refreshStatus();return true;
+    },
+
+    retrySave: function () {
+      var self=this;Object.keys(this.noteDrafts).forEach(function(id){self.setField(id,'notes',self.noteDrafts[id]);});
+      if(window.SUAuth&&window.SUAuth.retrySync)window.SUAuth.retrySync();
+      this.refreshStatus();
     },
 
     exportCsv: function () {
@@ -379,19 +567,18 @@
       var self = this;
 
       document.addEventListener('click', function (e) {
+        if(e.target.id==='trk-remove-confirm' && self.pendingRemoval) { self.cancelRemoval(self.pendingRemoval.id); return; }
         var el = e.target.closest('[data-act]');
         if (!el) return;
         switch (el.getAttribute('data-act')) {
           case 'goHome': location.href = './index.html'; break;
           case 'addRow': self.addRow(); break;
-          case 'delRow': self.delRow(el.getAttribute('data-id')); break;
+          case 'retrySync': self.retrySave(); break;
+          case 'dismissDraft': delete self.noteDrafts[el.getAttribute('data-id')]; self.render(); break;
+          case 'delRow': self.delRow(el.getAttribute('data-id'), e.detail > 0); break;
+          case 'cancelRemoval': self.cancelRemoval(el.getAttribute('data-id')); break;
+          case 'confirmRemoval': self.confirmRemoval(el.getAttribute('data-id')); break;
           case 'exportCsv': self.exportCsv(); break;
-          case 'toggleNote': {
-            var nid = el.getAttribute('data-id');
-            self.expanded[nid] = !self.expanded[nid];
-            self.render();
-            break;
-          }
         }
       });
 
@@ -400,44 +587,56 @@
         var t = e.target;
         if (!t) return;
         if (t.classList && t.classList.contains('trk-status')) {
-          // analytics: status change (company + new status) — additive
-          if (typeof window.suTrack === 'function') {
-            var aid = t.getAttribute('data-id'), arow = null;
-            self.rows.forEach(function (r) { if (r && r.id === aid) arow = r; });
-            window.suTrack('tracker-status', arow ? arow.company : '', t.value, '');
-          }
-          self.setField(t.getAttribute('data-id'), 'status', t.value);
-          self.render(); // recolor the select + refresh the summary pills
-          if (t.value === 'Offer') suOfferParty((LOOKS[self.look] || LOOKS.original).acc);   // 🎈🎆
+          if(self.owner!==accountKey() || !document.getElementById('board').contains(t)) { self.refreshRows(); return; }
+          var id=t.getAttribute('data-id'),value=t.value;
+          var saved=self.setField(id, 'status', value);
+          if (saved && typeof window.suTrack === 'function') window.suTrack('tracker-status', '', value, '');
+          if(!self.refreshStatusControls(id)) self.render();
+          if (saved && value === 'Offer') suOfferParty((LOOKS[self.look] || LOOKS.original).acc);   // 🎈🎆
         } else if (t.classList && t.classList.contains('trk-notes')) {
           self.setField(t.getAttribute('data-id'), 'notes', t.value); // no re-render; keep typing flow
         }
       });
 
-      // notes grow VERTICALLY while you type / when focused, collapse to one line on blur
-      // (Nic, 2026-07-11: long notes were bleeding horizontally and unreadable)
-      function noteSize(t, expand) {
-        if (!t || !t.classList || !t.classList.contains('trk-notes')) return;
-        if (expand) { t.style.height = 'auto'; t.style.height = Math.max(t.scrollHeight, 34) + 'px'; }
-        else { t.style.height = ''; }
-      }
+      // Notes stay readable on blur and grow vertically while typing.
       document.addEventListener('input', function (e) {
         var t = e.target;
+        if (t && (t.id === 'trk-co' || t.id === 'trk-role' || t.id === 'trk-link')) {
+          self.draft[t.id] = t.value;
+          self.formMessage = '';
+          var feedback = document.getElementById('trk-form-feedback');
+          if (feedback) feedback.textContent = '';
+        }
         if (t && t.classList && t.classList.contains('trk-notes')) {
           self.setField(t.getAttribute('data-id'), 'notes', t.value);   // save as they type
-          noteSize(t, true);
+          sizeNote(t);
         }
       });
-      document.addEventListener('focusin', function (e) { noteSize(e.target, true); });
-      document.addEventListener('focusout', function (e) {
-        var t = e.target;
-        // pinned-open notes (the ▾ arrow) stay expanded on blur
-        if (t && t.classList && t.classList.contains('trk-notes') && self.expanded[t.getAttribute('data-id')]) return;
-        noteSize(t, false);
-      });
+      document.addEventListener('focusin', function (e) { sizeNote(e.target); });
+
+      document.addEventListener('cancel', function(e) {
+        if(e.target.id==='trk-remove-confirm' && self.pendingRemoval) { e.preventDefault(); self.cancelRemoval(self.pendingRemoval.id); }
+      },true);
 
       // Enter in any form input = add the row
       document.addEventListener('keydown', function (e) {
+        if(self.pendingRemoval && self.pendingRemoval.pointer) {
+          self.pendingRemoval.pointer=false;
+          var pointerDialog=document.getElementById('trk-remove-confirm');
+          if(pointerDialog) pointerDialog.removeAttribute('data-pointer-opening');
+        }
+        if(e.key==='Escape' && self.pendingRemoval) { e.preventDefault(); self.cancelRemoval(self.pendingRemoval.id); return; }
+        if(e.key==='Tab' && self.pendingRemoval) {
+          var confirmation=document.getElementById('trk-remove-confirm');
+          var choices=confirmation ? Array.from(confirmation.querySelectorAll('button:not(:disabled)')) : [];
+          if(choices.length) {
+            e.preventDefault();
+            var current=choices.indexOf(document.activeElement);
+            var next=e.shiftKey ? (current<=0 ? choices.length-1 : current-1) : (current+1)%choices.length;
+            choices[next].focus({preventScroll:true});
+          }
+          return;
+        }
         if (e.key !== 'Enter' || !e.target || !e.target.id) return;
         if (e.target.id === 'trk-co' || e.target.id === 'trk-role' || e.target.id === 'trk-link') {
           e.preventDefault();
@@ -445,9 +644,18 @@
         }
       });
 
+      window.addEventListener('su:sync-status', function () { self.refreshStatus(); });
+      window.addEventListener('su:auth-changed', function () { self.refreshRows(); });
+      window.addEventListener('su:data-sync', function () { self.refreshRows(); });
+      window.addEventListener('pageshow', function (e) { if(e.persisted) self.refreshRows(); });
+      // A narrower viewport wraps notes onto more lines without replacing the field.
+      window.addEventListener('resize', function () {
+        Array.from(document.getElementById('board').querySelectorAll('textarea.trk-notes')).forEach(sizeNote);
+      });
+
       // if the board tab logs an application while this tab is open, pick it up
       window.addEventListener('storage', function (e) {
-        if (e.key === 'su_tracker') { self.rows = loadRows(); self.render(); }
+        if (e.key === 'su_tracker' || e.key === 'su_sync_owner') self.refreshRows();
         if (e.key === 'su_look') { self.look = loadLook(); self.render(); }
       });
     },

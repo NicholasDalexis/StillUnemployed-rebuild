@@ -1,0 +1,36 @@
+{
+  "version": "2.2.8",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-07T01:22:34.963Z",
+  "reviewer": "Codex/Astra with independent internship content and blue-team reviews",
+  "sourceDigest": "5764dc37f4dbf59d4dbfe6fb127ddeb110d2590f2776d595e85985dda4e04b1f",
+  "sourceFileCount": 137,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "checks": {
+    "integratedTests": 485,
+    "browser": "Native local 46-card board; all 8 themes at actual390px width, 238px first-card height and no horizontal overflow. 342px-wide four-bullet detail at390px; at320x480 the surrounding overlay scrolls. Existing IAB80% zoom limits screenshot capture; this is not physical phone testing.",
+    "packaging": "Final Netlify esbuild bundle GET200,46 entries and46 validated presentations,724ms,POST405,no-store; fixed live Sheet status lookup. Runtime receipt /tmp/su226-catalog-package-du7YZo/check-receipt.json.",
+    "publicationBoundary": "Independent actual prepare-publish:8367 files; raw snapshot, server display map and private advice excluded; zero display source keys in static output.",
+    "adviceCanvas": "Native Claude Design Advice Card Review:40 cards,80 initially checked lane controls; root toggled one choice and reloaded to verify persistence, then restored. Six Portfolio Graded and10 internship drafts stay private and held.",
+    "fullBuild": "Final source style/version/privacy checks, actual share generator, theme routes and explicit static publish allowlist all passed.",
+    "shareImageEquivalence": "Independent32 byte-for-byte matches across8 themes; reset after all themes, retained PNG bytes, fallback and separate renderer instances verified.",
+    "shareBuildMemory": "Full actual generator:486jobs x8 themes,3888renders,4120share/alias pages and images; exit0,85.56seconds,224.9MiB peakRSS,zero swaps on macOSNode20.15.1. Full482-test suite including native-memory regression passed on bundledNode22+; hostedNode22 readback pending.",
+    "themeRouting": "60 targeted tests including all eight internship themes, both paths, preserved job query/hash, conflicting saved preference on reload, history failure and unchanged Jobs routes. Independent review passed."
+  },
+  "scope": "Internship theme routing preserves its current section, existing query and fragment. No new endpoint or data collection.",
+  "baselineReview": "docs/privacy-reviews/2.2.7.json",
+  "openItems": [
+    "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
+    "Function-scoped Firebase and Netlify configuration and actual owner UID",
+    "Real authenticated collector, profile and aggregate readback with cross-account/direct-client denials",
+    "Hosted retention, reset and account-deletion execution; legacy logs and backups",
+    "Six moderate dependency findings; no high or critical advisories in saved audit",
+    "Actual new discovery-schema Firestore round trip and deployed ownership rules",
+    "Main-board inherited Human verified badges lack audited per-row historical provenance in this change",
+    "Live report-triage delivery and concurrent-device visit-counter limitations",
+    "Real authenticated Saved/Tracker round trip for admitted internships",
+    "First scheduled internship-maintenance firing; installed and manual production-mode execution verified"
+  ],
+  "policySummary": "Reviewed existing Privacy Policy and Terms for the route-only change. Existing theme preference storage is unchanged; explicit chosen theme is represented in the existing share query. No new collection, sharing recipient, account or consent behavior. No policy wording changes required."
+}

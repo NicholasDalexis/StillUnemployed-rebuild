@@ -1,0 +1,32 @@
+{
+  "version": "2.2.2",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-06T19:38:51.880Z",
+  "reviewer": "Codex/Astra with independent scoped source review",
+  "sourceDigest": "ff0b92aaf7d16796cfc50ee0f4d0099bb007d828978bf8c07f7994a693ce637f",
+  "sourceFileCount": 131,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "checks": {
+    "integratedTests": 382,
+    "focusedTests": 37,
+    "browser": "Native signed-out feedback at1280,390 and320 CSS px: visible Sign In, button at least44px high, no heading overlap or page overflow, Escape dismisses. Native guide shows coffee-break SVG. Real account sign-in not performed; existing real-script mocked-auth regressions verify signed-in X and preserved question/focus.",
+    "independentReview": "Scoped read-only source and Privacy/Terms review: no source regression or disclosure change found. Stale push-up test expectation updated; all382tests pass.",
+    "release": "Passed all configured stages: guide/source/privacy checks,486jobs across8themes,4120share/alias pages and images,7theme routes,8367allowlisted publish files. Local only."
+  },
+  "scope": "Presentation only: visible signed-out Sign In label and responsive header layout in the existing optional feedback action; Original push-up replaced by a static coffee-break SVG shared with the guide.",
+  "baselineReview": "docs/privacy-reviews/2.2.1.json",
+  "openItems": [
+    "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
+    "Function-scoped Firebase and Netlify configuration and actual owner UID",
+    "Real authenticated collector, profile and aggregate readback with cross-account/direct-client denials",
+    "Hosted retention, reset and account-deletion execution; legacy logs and backups",
+    "Actual Netlify function packaging/runtime and deployment readback",
+    "Six moderate dependency findings; no high or critical advisories in saved audit",
+    "Actual new discovery-schema Firestore round trip and deployed ownership rules",
+    "Main-board inherited Human verified badges lack audited per-row historical provenance in this change",
+    "Approved internship publication snapshot and source-to-snapshot adapter; golden candidates remain unpublished",
+    "Live report-triage delivery and concurrent-device visit-counter limitations"
+  ],
+  "policySummary": "Reviewed, no wording change needed. No auth, consent, storage, reporting, account scopes, endpoint or data-flow changes. Existing optional sign-in remains optional; signed-in feedback shows X. Static decorative SVG has no interaction/network behavior. Prior hosted checks and private ad hold remain open."
+}

@@ -1,0 +1,6 @@
+/* Internship paper varies for character, independently of pay. The main Jobs
+   board keeps its salary colors; internship amounts retain their stated unit. */
+.su-internship-pay { display:block; font:800 24px/1.3 var(--su-body); overflow-wrap:anywhere; }
+.su-internship-card .applylink2:hover { color:inherit !important; }
+.su-internship-counts { margin:8px 0 0; font:18px/1.5 var(--su-hand); }
+.su-internship-duties { font-family:var(--su-body); }

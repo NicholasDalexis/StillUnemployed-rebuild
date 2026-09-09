@@ -1,0 +1,34 @@
+{
+  "version": "2.2.4",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-06T21:14:32.198920+00:00",
+  "reviewer": "Codex/Astra with independent projection, UI and browser reviews",
+  "sourceDigest": "cd149c054803a657410aaaf562c0980a2ebeb7895e0dcc3949756e79a1d12f20",
+  "sourceFileCount": 133,
+  "privacyChanged": false,
+  "termsChanged": true,
+  "checks": {
+    "integratedTests": 431,
+    "internshipUI": 15,
+    "internshipContractProjection": 19,
+    "syntheticBrowser": 55,
+    "preferencesBrowserRegression": 42,
+    "browser": "Synthetic real-browser desktop1280,390,320 and short320x480; exact pay, full eligibility, statuses, Saved, share, action/feedback guards and iframe keyboard focus. No real account or cloud writes.",
+    "release": "Full configured local build exit0:486jobs across8themes,4120share/alias pages and images,7theme routes,8368allowlisted publish files. Not deployed."
+  },
+  "scope": "Internship pay/eligibility, timing states, public projection and modal keyboard containment.",
+  "baselineReview": "docs/privacy-reviews/2.2.3.json",
+  "openItems": [
+    "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
+    "Function-scoped Firebase and Netlify configuration and actual owner UID",
+    "Real authenticated collector, profile and aggregate readback with cross-account/direct-client denials",
+    "Hosted retention, reset and account-deletion execution; legacy logs and backups",
+    "Actual Netlify function packaging/runtime and deployment readback",
+    "Six moderate dependency findings; no high or critical advisories in saved audit",
+    "Actual new discovery-schema Firestore round trip and deployed ownership rules",
+    "Main-board inherited Human verified badges lack audited per-row historical provenance in this change",
+    "Approved internship publication snapshot and hosted integration; offline projection tested but golden candidates remain unpublished",
+    "Live report-triage delivery and concurrent-device visit-counter limitations"
+  ],
+  "policySummary": "No new personal collection, analytics event or account authorization. Terms now distinguish upcoming employer announcements from open applications and preserve original pay periods. Private admission evidence never enters the public projection. Calendar state is not an automated source recheck. Hosted activation, publication, account/retention and delivery limits remain open."
+}

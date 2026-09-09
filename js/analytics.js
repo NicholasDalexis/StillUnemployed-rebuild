@@ -1,139 +1,111 @@
-/* =========================================================================
-   StillUnemployed.com — first-party analytics (js/analytics.js)
-
-   Reuses the EXISTING Reports endpoint (the same Google Apps Script that
-   js/app.js's postReport() talks to). The deployed script appends
-   [Date, action, company, role, link, page] from a JSON POST of
-   {action, company, role, link, page} and accepts ANY action string, so no
-   server change is needed.
-
-   Loads BEFORE the page scripts (defer, document order) on index.html,
-   jobs.html and tracker.html. Exposes:
-     - window.SU_REPORT_URL   the endpoint (single source of truth here;
-                              app.js keeps its own copy for postReport)
-     - window.suTrack(action, company, role, link)
-   Plus, on every page load, one 'pv' event.
-
-   Identity: an anonymous random 10-char browser id (localStorage su_id,
-   minted once) + first-touch UTM (localStorage su_utm, "src/med/camp",
-   written only the first time a utm_* param is seen). Both ride along in
-   the `page` field: "<path><search> [id:xxxx] [utm:src/med/camp]".
-
-   PRODUCTION GATE: events only POST from stillunemployed.com /
-   www.stillunemployed.com. Everywhere else (localhost, Netlify previews,
-   file://) they go to console.debug so testing never pollutes the sheet.
-   ========================================================================= */
-(function () {
+/* Consent-aware first-party product measurement. Public metadata only. */
+(function(){
   'use strict';
-
-  // Same Apps Script /exec the board's postReport() uses (see js/app.js).
-  var REPORT_URL = 'https://script.google.com/macros/s/AKfycbx_ct-QHSXxYeE2m7_e8XIsBojGPFP1he0b9-YMad6qVera8i2OAfj8XQb5VncAKGpU/exec';
-  window.SU_REPORT_URL = REPORT_URL;
-
-  // ---- anonymous browser id (localStorage su_id, created once) ----
-  function getId() {
-    try {
-      var id = localStorage.getItem('su_id');
-      if (!id) {
-        id = '';
-        var chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-        for (var i = 0; i < 10; i++) id += chars.charAt(Math.floor(Math.random() * chars.length));
-        localStorage.setItem('su_id', id);
+  var queue=[],pending=[],catalog={},profile={},generation=0,authEpoch=0,flushBusy=false;
+  var visitor=null,session=null,sessionAt=0,seen={},outbound=null,lastActivity=Date.now(),activeAt=Date.now(),activeSeconds=0;
+  var ENDPOINT='/.netlify/functions/analytics-events',PROFILE='/.netlify/functions/analytics-profile';
+  // Count decisions and recoveries without attaching job data or private errors.
+  // Opening Google's selector never confirms that a source was selected there.
+  var COUNT_ONLY_EVENTS=['preference_save','preference_clear','preference_skip','feedback_not_fit',
+    'preferred_source_click','feedback_open','feedback_dismiss','feedback_unavailable',
+    'feed_ready','feed_load_error','feed_retry','feed_refresh','search_empty',
+    'signin_start','signin_cancel','signin_error','signout_complete','signout_error','sync_error','sync_retry','sync_recovered',
+    'preference_open','preference_error','newsletter_dismiss','bookmark_open','view_restored','render_error'];
+  function stored(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function put(k,v){try{if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){}}
+  function choices(){return {analytics:stored('su_consent_v3')==='granted'&&!navigator.globalPrivacyControl,personalization:stored('su_personalization_v1')==='granted'};}
+  function excluded(){return stored('su_admin')==='1'||!!(window.SUAuth&&window.SUAuth.measurementExcluded&&window.SUAuth.measurementExcluded());}
+  function identityReady(){
+    // Module initialization can follow this deferred script. Do not count an
+    // unresolved preview account as anonymous while Firebase is still loading.
+    if(!window.SUAuth&&location.hostname&&!/^(www\.)?stillunemployed\.com$/.test(location.hostname)&&document.querySelector&&document.querySelector('script[src^="js/auth.js"]'))return false;
+    return !window.SUAuth||!window.SUAuth.measurementReady||window.SUAuth.measurementReady();
+  }
+  function signedIn(){return !!(window.SUAuth&&window.SUAuth.signedIn());}
+  function randomId(){if(!window.crypto||!window.crypto.getRandomValues)return null;var a=new Uint8Array(16);window.crypto.getRandomValues(a);return Array.from(a).map(function(x){return x.toString(16).padStart(2,'0');}).join('');}
+  function page(){var p=location.pathname;return /^\/internships/.test(p)?'internships':/^\/(jobs|j\/)/.test(p)?'board':/tracker/.test(p)?'tracker':/privacy/.test(p)?'privacy':/terms/.test(p)?'terms':/suggest/.test(p)?'suggest':p==='/'||/index/.test(p)?'home':'other';}
+  function identifiers(){if(!session){try{var prior=JSON.parse(sessionStorage.getItem('su_analytics_session')||'null');if(prior&&Date.now()-prior.at<1800000){session=prior.id;sessionAt=prior.at;}}catch(e){}}if(!visitor){visitor=stored('su_analytics_visitor')||randomId();if(visitor&&choices().analytics)put('su_analytics_visitor',visitor);}if(!session||Date.now()-sessionAt>1800000){session=randomId();}sessionAt=Date.now();try{sessionStorage.setItem('su_analytics_session',JSON.stringify({id:session,at:sessionAt}));}catch(e){}return !!visitor&&!!session;}
+  function consentEnabled(){var c=choices();return identityReady()&&!excluded()&&(c.analytics||(c.personalization&&signedIn()));}
+  function emit(name,params){
+    var countOnly=COUNT_ONLY_EVENTS.indexOf(name)>=0;
+    if(countOnly&&!choices().analytics)return;
+    if(!consentEnabled()||!identifiers())return;
+    var c=choices();if(!c.analytics && !({job_open:1,job_save:1,apply_click:1,application_reported:1})[name])return;
+    var e={id:randomId(),name:name,page:page(),occurredAt:Date.now()};
+    // Explicit keys only. Never copy strings from DOM labels, forms or URLs.
+    if(!countOnly)['jobId','theme','filter','status','seconds','capped','vote','outboundId'].forEach(function(k){if(params&&params[k]!==undefined)e[k]=params[k];});
+    queue.push(e);if(queue.length>120)queue.shift();
+    if(queue.length>=20)flush();
+  }
+  async function flush(){
+    if(flushBusy||!queue.length||!consentEnabled())return;
+    flushBusy=true;var epoch=authEpoch,batch=queue.splice(0,30),c=choices(),auth=signedIn(),headers={'Content-Type':'application/json'};
+    try{
+      if(auth)headers.Authorization='Bearer '+await window.SUAuth.getToken();
+      if(epoch!==authEpoch||!consentEnabled())return;
+      var response=await fetch(ENDPOINT,{method:'POST',headers:headers,body:JSON.stringify({events:batch,session:session,visitor:visitor,consent:{analytics:c.analytics,personalization:c.personalization&&auth}}),keepalive:true,credentials:'same-origin'});
+      if(!response.ok){
+        if(response.status===429 || response.status>=500)throw new Error('delivery');
+        if(epoch===authEpoch)window.dispatchEvent(new CustomEvent('su:analytics-status',{detail:{state:'discarded',status:response.status}}));
+        return;
       }
-      return id;
-    } catch (e) { return 'na'; }
+      if(epoch===authEpoch)window.dispatchEvent(new CustomEvent('su:analytics-status',{detail:{state:'delivered'}}));
+    }catch(e){if(epoch===authEpoch&&consentEnabled())queue=batch.concat(queue).slice(0,120);}
+    finally{flushBusy=false;}
   }
-
-  // ---- first-touch UTM: store compact "src/med/camp" ONLY if not already set ----
-  function captureUtm() {
-    try {
-      if (localStorage.getItem('su_utm')) return; // first touch wins
-      var p = new URLSearchParams(location.search);
-      var src = p.get('utm_source'), med = p.get('utm_medium'), camp = p.get('utm_campaign');
-      if (!src && !med && !camp) return;
-      localStorage.setItem('su_utm', [src || '', med || '', camp || ''].join('/'));
-    } catch (e) { /* storage blocked; skip */ }
+  function keyFor(link){return window.SUJobIdentity ? window.SUJobIdentity.keys(link)[0]||link : link;}
+  async function registerJobs(jobs){
+    if(!window.crypto||!window.crypto.subtle)return;
+    var next={};
+    await Promise.all(jobs.map(async function(job){var key=keyFor(job.link);var bytes=await window.crypto.subtle.digest('SHA-256',new TextEncoder().encode(key));var id=Array.from(new Uint8Array(bytes)).map(function(n){return n.toString(16).padStart(2,'0');}).join('');next[key]={id:id,job:job};}));
+    catalog=next;pending.splice(0).forEach(function(e){jobEvent(e.name,e.link);});
   }
-  captureUtm();
-
-  function getUtm() {
-    try { return localStorage.getItem('su_utm') || ''; } catch (e) { return ''; }
+  function jobEvent(name,link){
+    if(!consentEnabled())return;
+    var item=catalog[keyFor(link)];if(!item){if(pending.length<30)pending.push({name:name,link:link});return;}
+    if(name==='job_impression'||name==='job_open'){var receipt=name+':'+item.id;if(seen[receipt])return;seen[receipt]=true;}
+    if(name==='apply_click')outbound={jobId:item.id,outboundId:randomId(),clicked:Date.now(),hiddenAt:null,returned:false};
+    emit(name,{jobId:item.id,outboundId:name==='apply_click'?outbound.outboundId:undefined});
+    // No live reorder: loaded profile is frozen for this visit. Actions become
+    // next-visit signals after the server verifies and durably accepts them.
   }
-
-  // ---- admin / self-exclude flag (localStorage su_admin) ----
-  // Nic browses the LIVE site to pull jobs for the newsletter; those visits must
-  // NOT count as analytics. Visit <site>/?admin=<KEY> once to flip this browser
-  // to "don't count me" (persists), and <site>/?admin=off to undo it. When set,
-  // events log to console instead of POSTing — exactly like localhost. The key
-  // isn't a security secret (worst case a visitor excludes only themselves), so
-  // a plain toggle string is fine; change ADMIN_KEY to whatever you like.
-  var ADMIN_KEY = 'su-admin-2026';
-  (function handleAdminToggle() {
-    try {
-      var p = new URLSearchParams(location.search);
-      if (!p.has('admin')) return;
-      var v = p.get('admin');
-      if (v === 'off' || v === '0') {
-        localStorage.removeItem('su_admin');
-        console.debug('[su-analytics] admin exclude OFF — this browser counts in analytics again');
-      } else if (v === ADMIN_KEY) {
-        localStorage.setItem('su_admin', '1');
-        console.debug('[su-analytics] admin exclude ON — this browser will no longer be counted');
-      }
-    } catch (e) { /* storage blocked; skip */ }
-  })();
-  function isAdmin() {
-    try { return localStorage.getItem('su_admin') === '1'; } catch (e) { return false; }
+  async function loadProfile(){
+    var epoch=authEpoch;profile={};
+    if(!identityReady()||!signedIn()||!choices().personalization||excluded())return;
+    try{var token=await window.SUAuth.getToken();var r=await fetch(PROFILE,{headers:{Authorization:'Bearer '+token},credentials:'same-origin',cache:'no-store'});if(!r.ok)throw new Error('profile');var data=await r.json();if(epoch!==authEpoch||!signedIn()||!choices().personalization)return;profile=data.jobs||{};generation++;window.dispatchEvent(new CustomEvent('su:profile-ready',{detail:{generation:generation}}));}catch(e){}
   }
-
-  var PROD_HOSTS = { 'stillunemployed.com': 1, 'www.stillunemployed.com': 1 };
-
-  // window.suTrack(action, company, role, link) — fire-and-forget, never throws
-  window.suTrack = function (action, company, role, link) {
-    var utm = getUtm();
-    var page = location.pathname + location.search +
-      ' [id:' + getId() + ']' + (utm ? ' [utm:' + utm + ']' : '');
-    var body = {
-      action: String(action == null ? '' : action),
-      company: String(company == null ? '' : company),
-      role: String(role == null ? '' : role),
-      link: String(link == null ? '' : link),
-      page: page
-    };
-    if (!PROD_HOSTS[location.hostname] || isAdmin()) {
-      // localhost / previews / admin (Nic sourcing jobs): log, don't POST — keeps
-      // test + owner traffic out of the data.
-      console.debug('[su-analytics]', isAdmin() ? '(admin — not counted)' : '', body);
-      return;
+  function tick(){var now=Date.now();if(identityReady()&&choices().analytics&&!excluded()&&!document.hidden&&now-lastActivity<=60000)activeSeconds+=Math.min(5,(now-activeAt)/1000);activeAt=now;}
+  function flushEngagement(){tick();if(activeSeconds>=1){emit('page_engagement',{seconds:Math.min(900,Math.round(activeSeconds))});activeSeconds=0;}flush();}
+  function visibility(){
+    tick();
+    if(document.hidden){if(outbound&&!outbound.hiddenAt&&Date.now()-outbound.clicked<10000){outbound.hiddenAt=Date.now();emit('outbound_started',{jobId:outbound.jobId,outboundId:outbound.outboundId});}flushEngagement();}
+    else {lastActivity=Date.now();if(outbound&&outbound.hiddenAt){var timing=window.SUPersonalization.away(outbound.hiddenAt,Date.now());emit('outbound_return',Object.assign({jobId:outbound.jobId,outboundId:outbound.outboundId},timing));outbound=null;}}
+  }
+  async function reset(){
+    authEpoch++;queue=[];pending=[];seen={};outbound=null;profile={};generation++;
+    if(signedIn()||visitor||stored('su_analytics_visitor')){var headers={'Content-Type':'application/json'};if(signedIn())headers.Authorization='Bearer '+await window.SUAuth.getToken();var r=await fetch(PROFILE,{method:'DELETE',headers:headers,body:JSON.stringify({visitor:visitor||stored('su_analytics_visitor')}),credentials:'same-origin'});if(!r.ok)throw new Error('Reset could not finish. Please try again.');}
+    put('su_analytics_visitor',null);visitor=null;window.dispatchEvent(new CustomEvent('su:profile-ready',{detail:{generation:generation,reset:true}}));
+  }
+  window.SUAnalytics={emit:emit,job:jobEvent,registerJobs:registerJobs,flush:flush,choices:choices,excluded:excluded,profile:function(){return profile;},generation:function(){return generation;},reset:reset,loadProfile:loadProfile};
+  window.suTrack=function(action,company,role,link){
+    if(action==='cta'){var eventName={newsletter:'newsletter_click',story:'founder_open',carousel:'board_open'}[company];if(eventName)emit(eventName,{});return;}
+    if(action==='themevote'){
+      // Explicit feedback still follows the analytics choice. Send promptly, but
+      // do not claim storage success: offline/disabled services remain possible.
+      if(!choices().analytics||excluded()||['original','girly','poker','mermaid','bratt','noir','beauty','chess'].indexOf(company)<0||['up','down'].indexOf(role)<0)return;
+      emit('theme_vote',{theme:company,vote:role});return flush();
     }
-    try {
-      fetch(REPORT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        keepalive: true, // survives same-tab navigations (CTA clicks etc.)
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(body)
-      });
-    } catch (e) { /* fire-and-forget; never block the UI */ }
+    var maps={save:'job_save','tracker-add':'tracker_add','tracker-export':'tracker_export','tracker-status':'tracker_status',look:'theme_change',filter:'filter_change',search:'search_used',note_open:'advice_open',note_view:'advice_impression',signup_open:'newsletter_open',signup_cta:'newsletter_click',note_cta:'newsletter_click'};
+    if(action==='save'){jobEvent('job_save',link);return;}
+    if(maps[action])emit(maps[action],action==='look'?{theme:company}:action==='filter'?{filter:company}:action==='tracker-status'?{status:role}:{});
   };
-
-  // ---- one 'pv' per page load: pv / <page name> / <current look> / <referrer> ----
-  // PUSH-BLOCKER FIX (2026-07-12): the theme deep-links (/jobs/casino, /jobs/beauty, …) are all the
-  // SAME page — jobs.html, served via the netlify.toml rewrite. This used to match only /jobs.html,
-  // so every themed visit fell through to `return location.pathname` and logged as its own page name.
-  // That shattered the 'board' pageview into 9 separate labels and made board traffic look ~1/9th of
-  // real. The THEME is not lost by collapsing them: it's already a separate dimension via
-  // currentLook() below (jobs.html's inline pre-paint writes su_look from the slug before this runs).
-  // One page, one name; theme stays a dimension. Trailing slash tolerated.
-  function pageName() {
-    var p = String(location.pathname || '').toLowerCase().replace(/\/+$/, '');
-    if (p === '' || /\/index\.html$/.test(p)) return 'home';
-    if (/\/jobs\.html$/.test(p) || p === '/jobs' || /^\/jobs\//.test(p)) return 'board';
-    if (/\/tracker\.html$/.test(p)) return 'tracker';
-    return location.pathname;
-  }
-  function currentLook() {
-    try { return localStorage.getItem('su_look') || 'original'; } catch (e) { return 'original'; }
-  }
-  window.suTrack('pv', pageName(), currentLook(), document.referrer || '');
-})();
+  window.addEventListener('su:auth-changed',function(event){authEpoch++;queue=[];pending=[];seen={};profile={};outbound=null;generation++;activeSeconds=0;activeAt=Date.now();lastActivity=Date.now();if(event.detail&&event.detail.accountChanged){session=null;try{sessionStorage.removeItem('su_analytics_session');}catch(e){}}loadProfile();if(choices().analytics){emit('page_view',{});if(page()==='tracker')emit('tracker_open',{});if(page()==='privacy')emit('privacy_open',{});}});
+  window.addEventListener('su:consent-changed',function(){authEpoch++;queue=[];pending=[];seen={};profile={};outbound=null;generation++;activeSeconds=0;activeAt=Date.now();lastActivity=Date.now();if(!choices().analytics){put('su_analytics_visitor',null);visitor=null;session=null;try{sessionStorage.removeItem('su_analytics_session');}catch(e){}}loadProfile();if(choices().analytics)emit('page_view',{});});
+  window.addEventListener('storage',function(e){if(e.key==='su_consent_v3'||e.key==='su_personalization_v1')window.dispatchEvent(new CustomEvent('su:consent-changed'));});
+  ['pointerdown','keydown','scroll'].forEach(function(name){window.addEventListener(name,function(){lastActivity=Date.now();},{passive:true});});
+  document.addEventListener('visibilitychange',visibility);
+  window.addEventListener('pagehide',function(){if(outbound&&outbound.hiddenAt){emit('outbound_unknown',{jobId:outbound.jobId,outboundId:outbound.outboundId});outbound=null;}flushEngagement();});
+  setInterval(function(){tick();flush();},5000);setInterval(flushEngagement,30000);
+  function start(){emit('page_view',{});if(page()==='privacy')emit('privacy_open',{});if(page()==='tracker')emit('tracker_open',{});if(page()==='suggest')emit('suggest_open',{});loadProfile();}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+}());

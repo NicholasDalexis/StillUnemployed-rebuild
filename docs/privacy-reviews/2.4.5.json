@@ -1,0 +1,35 @@
+{
+  "version": "2.4.5",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-09T00:06:55.767992+00:00",
+  "reviewer": "Codex/Astra root, independent release and catalog reviewers",
+  "sourceDigest": "51a4d38d24c2ca7d8208172b13674093d3f257d9874d77f1c5e2ec9a2efd78b7",
+  "sourceFileCount": 157,
+  "privacyChanged": true,
+  "termsChanged": true,
+  "scope": "Compact board header and pointer-focus correction; authenticated owner-only preview moderation with reversible durable Netlify Blobs records, fresh Google verification, public unlisting index and share-page/runtime enforcement. Local preview loopback restriction and targeted uuid dependency correction.",
+  "checks": {
+    "implementation": "803/803 full suite passed on final product source; native combined report/retry/Undo/error/expiry cases passed; 72 layout pages and16 moderation theme/width states reviewed. Final release build and hosted acceptance pending.",
+    "boundaries": "Personal No longer open remains separate. QA analytics suppression preserved. Preview and production stores separate; production reporting disabled. Saved and Tracker records preserved.",
+    "disclosures": "Privacy, Terms and About reviewed and corrected for record fields, Netlify hosting storage, reversible owner unlisting and operational retention."
+  },
+  "baselineReview": "docs/privacy-reviews/2.4.2.json",
+  "openItems": [
+    "Desktop and phone visual review of the private Portfolio Graded campaign remains pending",
+    "Function-scoped Firebase and Netlify configuration and actual owner UID",
+    "Real authenticated collector, profile and aggregate readback with cross-account/direct-client denials",
+    "Hosted retention, reset and account-deletion execution; legacy logs and backups",
+    "Six moderate dependency findings; no high or critical advisories in saved audit",
+    "Actual new discovery-schema Firestore round trip and deployed ownership rules",
+    "Main-board inherited Human verified badges lack audited per-row historical provenance in this change",
+    "Live report-triage delivery and concurrent-device visit-counter limitations",
+    "Real authenticated Saved/Tracker round trip for admitted internships",
+    "Separate maintenance-owner scope: five internship checks remain unresolved and cursor rotation incomplete; main Jobs evening check timed out. First internship evening scheduled firing is verified in the 2026-09-06 sourcing setup receipt.",
+    "Preview analytics profile/admin503 not configured; actual collector/retention/hosted account evidence unavailable",
+    "Search Console domain property Not verified; Bing has no existing IAB session",
+    "No authoritative global quarantine source: new indexable single-job pages and persistent public catalog cache inactive",
+    "2.4.3 dated resolution: the inherited six moderate dependency advisories are resolved by uuid11.1.1 override; current npm audit reports zero.",
+    "2.4.3 dated partial resolution: authoritative owner moderation is implemented for preview; real hosted owner acknowledgment and store write/readback remain to verify. Production activation is still separate."
+  ],
+  "policySummary": "Engineering privacy and terms review with wording changes for preview moderation. Not legal certification. Prior open operational items preserved with dated resolutions."
+}

@@ -1,0 +1,29 @@
+{
+  "version": "2.1.7",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-06T14:04:20.467Z",
+  "reviewer": "Codex/Astra Job Board with independent copy, guide and publication-boundary review",
+  "sourceDigest": "3b481b903aa15d255b6e6468b891aefb6292818d40df4828d3ac9686f3e24ac4",
+  "sourceFileCount": 123,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "checks": {
+    "integratedTests": 345,
+    "styleGuideTests": 20,
+    "publicationAndVersionTests": 19,
+    "nativeBrowser": "Pending for this increment: the Mac is locked and the browser tool cannot inspect either viewport. Requested unlock; no rendered acceptance is claimed.",
+    "build": "Catalog/version/privacy gates, 231 jobs across 8 themes, 2080 share pages/images, 7 alternate board pages and allowlisted publish build passed. Scan of 2126 public text files found no private campaign marker, six hooks or private preview URL. Private sibling content and symlink exclusion have synthetic regressions.",
+    "privateSource": "Six semantic disclosure cards, all 40 local asset files resolve on disk, 64 ordered theme transitions replay correctly. No gallery tracking or storage code. SVG text advances fit the 300-unit viewBox using the copied font; this is not browser layout verification."
+  },
+  "scope": "Public changes add generic advice-card examples and style-guide wording, imagery and navigation guidance. Native details examples make no requests and collect no form data. No new public event, provider, consent or storage flow. Privacy and Terms reviewed, no wording change needed. Private campaign files are held outside the public repository and output. No campaign activation, model service or deployment.",
+  "baselineReview": "docs/privacy-reviews/2.1.6.json",
+  "openItems": [
+    "Desktop and phone visual review for this increment",
+    "Function-scoped Firebase and Netlify configuration and actual owner UID",
+    "Real authenticated collector, profile and aggregate readback with cross-account/direct-client denials",
+    "Hosted retention, reset and account-deletion execution; legacy logs and backups",
+    "Actual Netlify function packaging/runtime and deployment readback",
+    "Six moderate dependency findings; no high or critical advisories in saved audit"
+  ],
+  "policySummary": "Separate optional analytics and recommendations; no typed text in events; truthful observed-away timing; per-signal expiry; private aggregate access; sanctioned public visual guide with private internal files excluded"
+}
