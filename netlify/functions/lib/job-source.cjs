@@ -1,6 +1,7 @@
 'use strict';
 // Shared source admission and share identities. No rendering, native canvas, or module-time I/O.
 const {readFileSync}=require('node:fs');
+const {senior}=require('../../../js/board-experience.js');
 const SUJobIdentity=require('../../../js/job-identity.js');
 const SHEET = '1DRfkDn_OIVlnx06xFaNpNbusXl49jvM26oJsl-qq2nU';
 const CSV = `https://docs.google.com/spreadsheets/d/${SHEET}/gviz/tq?tqx=out:csv&headers=1&gid=2134483974&_=${Date.now()}`;
@@ -55,7 +56,7 @@ function rowsToJobs(rows) {
     const get = name => (cells[head.indexOf(name)] || '').trim();
     const co = get('company'), role = get('job title'), link = get('link'), pay = get('salary');
     const act = get('active/dead').toLowerCase();
-    if (!co || !role || act.includes('dead') || act === 'inactive' || act === 'no') continue;
+    if (!co || !role || senior(role) || act.includes('dead') || act === 'inactive' || act === 'no') continue;
     try { const url = new URL(link); if (!/^https?:\/\//i.test(link) || !/^https?:$/.test(url.protocol) || !url.hostname || url.username || url.password) continue; }
     catch (e) { continue; }
     if (!/\d/.test(pay)) continue;

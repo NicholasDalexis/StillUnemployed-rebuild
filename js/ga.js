@@ -20,9 +20,9 @@
     if (document.getElementById('su-cc-style')) return;
     var sheet = document.createElement('style'); sheet.id = 'su-cc-style';
     sheet.textContent = [
-      '.su-cc{box-sizing:border-box;background:var(--su-paper,#FCFAF3);color:var(--su-ink,#2A2118);font:14px/1.5 var(--su-body,Archivo,sans-serif)}',
+      '.su-cc{box-sizing:border-box;background:var(--su-paper,#FCFAF3);color:var(--su-ink,#2A2118);font:14px/1.5 var(--su-body,Lexend,sans-serif)}',
       '.su-cc[hidden]{display:none}.su-cc-notice{display:flex;align-items:center;gap:16px;max-width:960px;margin:8px auto;padding:8px 16px;border-bottom:1px solid #c9bfae}',
-      '.su-cc-notice p{flex:1;margin:0;font:18px/1.3 var(--su-hand,"Indie Flower",cursive)}',
+      '.su-cc-notice p{flex:1;margin:0;font:14px/1.4 var(--su-body,Lexend,sans-serif)}',
       '.su-cc-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.su-cc-notice .su-cc-actions{flex:none}',
       '.su-cc button,.su-privacy-settings{min-height:44px;padding:8px 12px;font:18px/1.2 var(--su-hand,"Indie Flower",cursive);color:var(--su-ink,#2A2118);border:0;background:var(--su-yellow-paper,#F2E14B);box-shadow:var(--su-note-shadow,2px 3px 7px #2c21181a);cursor:pointer;border-radius:2px}',
       '.su-cc .su-cc-link,.su-privacy-settings{background:none;box-shadow:none;text-decoration:underline;text-underline-offset:3px;color:var(--su-orange-text,#A63D22)}',
@@ -33,7 +33,7 @@
       '.su-cc-option{margin:16px 0}.su-cc-option label{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:600}.su-cc-option input{width:20px;height:20px;flex:none;accent-color:var(--su-ink,#2A2118)}',
       '.su-cc-option p{margin:0 0 0 30px;color:var(--su-muted,#6F5E45)}.su-cc .su-cc-feedback{flex-basis:100%;margin:8px 0 0}.su-cc-feedback:empty{display:none}',
       '.su-privacy-tools{max-width:960px;margin:8px auto;padding:0 12px;text-align:center}.su-privacy-settings{font-size:16px}',
-      '@media(max-width:700px){.su-cc-notice{display:block;margin:0;padding:10px max(12px,env(safe-area-inset-right)) 8px max(12px,env(safe-area-inset-left))}.su-cc-notice p{font-size:17px}.su-cc-notice .su-cc-actions{margin-top:6px;gap:6px}.su-cc-notice button{font-size:16px;padding:8px 10px}.su-cc-details{margin:12px;padding:16px}.su-cc-details .su-cc-actions{gap:6px}}'
+      '@media(max-width:700px){.su-cc-notice{display:block;margin:0;padding:10px max(12px,env(safe-area-inset-right)) 8px max(12px,env(safe-area-inset-left))}.su-cc-notice p{font-size:14px}.su-cc-notice .su-cc-actions{margin-top:6px;gap:6px}.su-cc-notice button{font-size:16px;padding:8px 10px}.su-cc-details{margin:12px;padding:16px}.su-cc-details .su-cc-actions{gap:6px}}'
     ].join('');
     document.head.appendChild(sheet);
   }
@@ -74,7 +74,7 @@
   function showNotice() {
     notice = document.createElement('section'); notice.className = 'su-cc su-cc-notice'; notice.setAttribute('aria-label', 'Privacy notice');
     var gpc = !!navigator.globalPrivacyControl;
-    notice.innerHTML = '<p>' + (gpc ? 'Your browser keeps analytics off. Want a job feed tailored to your activity when you sign in?' : 'Can we use your activity here to improve the board and tailor your job feed when you sign in?') + ' <a href="/privacy.html">Privacy</a></p><div class="su-cc-actions"><button type="button" class="su-cc-accept">' + (gpc ? 'Allow recommendations' : 'Allow optional') + '</button><button type="button" class="su-cc-decline">No thanks</button><button type="button" class="su-cc-link su-cc-choose">Choose</button></div><p class="su-cc-feedback" role="status"></p>';
+    notice.innerHTML = '<p>' + (gpc ? 'Analytics stay off. Allow job recommendations when signed in?' : 'Help improve the board and tailor your feed when signed in?') + ' <a href="/privacy.html">Privacy</a></p><div class="su-cc-actions"><button type="button" class="su-cc-accept">' + (gpc ? 'Allow recommendations' : 'Allow optional') + '</button><button type="button" class="su-cc-decline">No thanks</button><button type="button" class="su-cc-link su-cc-choose">Choose</button></div><p class="su-cc-feedback" role="status"></p>';
     var feedback = notice.querySelector('[role="status"]');
     notice.querySelector('.su-cc-accept').addEventListener('click', function () { save(!gpc, true, feedback, function () { focusAfterClose(); }); });
     notice.querySelector('.su-cc-decline').addEventListener('click', function () { save(false, false, feedback, function () { focusAfterClose(); }); });

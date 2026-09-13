@@ -7,16 +7,19 @@
   var RETURNING_PICKS_ENABLED=false;
   function clean(value,max){return String(value||'').replace(/[\u0000-\u001f\u007f]/g,' ').trim().slice(0,max);}
   function profile(value){value=value||{};return {major:clean(value.major,100),location:clean(value.location,100),info:clean(value.info,300)};}
-  function fieldBoost(value){var text=(profile(value).major+' '+profile(value).info).toLowerCase(),out={};
+  function studyText(value){return String(value||'').toLowerCase().replace(/[’']/g,'').replace(/[^a-z0-9]+/g,' ').trim();}
+  function studyPhrase(haystack,needle){var phrase=studyText(needle);return (phrase.length>=3||phrase==='ux'||phrase==='ui')&&(' '+studyText(haystack)+' ').indexOf(' '+phrase+' ')>=0;}
+  function fieldBoost(value){var text=studyText(profile(value).major+' '+profile(value).info),out={};
+    function matches(words){return words.some(function(word){return studyPhrase(text,word);});}
     function add(fields){fields.forEach(function(f,i){out[f]=(out[f]||0)+(i?1:3);});}
-    if(/market|business|advertis|communication|public relations|social media/.test(text))add(['Marketing','Creative']);
-    if(/graphic|visual|illustrat|fine art|brand design/.test(text))add(['Creative','Product Design','Creative Technology','Marketing']);
-    if(/\bux\b|\bui\b|product design|interaction|human.computer|psychology/.test(text))add(['Product Design','Creative','Marketing']);
-    if(/photo|journalism/.test(text))add(['Photography','Marketing','Video']);
-    if(/fashion|apparel|textile/.test(text))add(['Fashion Design','Creative','Marketing']);
-    if(/computer|software|web develop|creative tech|information tech/.test(text))add(['Web Development','Creative Technology','Product Design','Artificial Intelligence']);
-    if(/film|video|cinema|animation|audio|music|podcast/.test(text))add(['Video','Creative','Marketing']);
-    if(/english|writing|literature|copy/.test(text))add(['Marketing','Product Design']);
+    if(matches(['marketing','business','business administration','advertising','communication','communications','public relations','mass communication','mass communications','social media','strategic communication','strategic communications']))add(['Marketing','Creative']);
+    if(matches(['graphic design','graphic arts','visual communication','visual communications','visual arts','illustration','fine art','fine arts','brand design','branding','bfa','b f a','design']))add(['Creative','Product Design','Creative Technology','Marketing']);
+    if(matches(['ux','ui','ux design','ui design','product design','interaction design','human computer interaction','hci','psychology','cognitive science']))add(['Product Design','Creative','Marketing']);
+    if(matches(['photo','photography','photojournalism','journalism','digital media']))add(['Photography','Marketing','Video']);
+    if(matches(['fashion','fashion design','apparel','textile','textiles']))add(['Fashion Design','Creative','Marketing']);
+    if(matches(['computer science','computer engineering','software','software engineering','web development','creative technology','creative tech','information technology','information systems','informatics','computing']))add(['Web Development','Creative Technology','Product Design','Artificial Intelligence']);
+    if(matches(['film','film studies','filmmaking','video','cinema','animation','audio','music','podcast','podcasting','media production']))add(['Video','Creative','Marketing']);
+    if(matches(['english','writing','creative writing','literature','copywriting','copy']))add(['Marketing','Product Design']);
     return out;
   }
   function lane(job){var c=job.ind||'',r=String(job.role||'').toLowerCase();
@@ -52,7 +55,7 @@
     function useProfile(){return signed()?profile(data().profile):profile();}
     function order(jobs,P,interest){if(!signed()||!root.SUAnalytics||!root.SUAnalytics.choices||!root.SUAnalytics.choices().personalization)interest={};var prefs=useProfile(),boost=fieldBoost(prefs),major=prefs.major.toLowerCase();
       // A posting can explicitly welcome a major outside the small adjacency dictionary.
-      var directFields={};if(major.length>=3)jobs.forEach(function(j){if(String(j.desc||'').toLowerCase().indexOf(major)>=0)directFields[P.classify(j).field]=true;});
+      var directFields={};if(major.length>=3)jobs.forEach(function(j){if(studyPhrase(j.desc||'',major))directFields[P.classify(j).field]=true;});
       Object.keys(directFields).forEach(function(field){boost[field]=(boost[field]||0)+3;});
       var ranked=P.rank(jobs,interest,{fieldBoost:boost});
       if(first&&!signed())ranked=starter(jobs,P);
@@ -89,11 +92,11 @@
     }
     function html(esc){
       if(!message&&!preferenceResult)return '';
-      return '<section class="su-discovery su-discovery-feedback" aria-label="Board update"><p role="status"><span id="su-preference-status">'+esc(resultText())+'</span>'+(preferenceResult?' <button type="button" id="su-preference-retry" data-discovery="retry"'+(root.SUAuth.syncState&&root.SUAuth.syncState()==='error'?'':' hidden')+'>Retry sync</button>':'')+(undo?' <button type="button" data-discovery="undo">Undo</button>':'')+'</p></section>';
+      return '<section class="su-discovery su-discovery-feedback'+(preferenceResult?'':' su-compact-feedback')+'" aria-label="Board update"><p role="status"><span id="su-preference-status">'+esc(resultText())+'</span>'+(preferenceResult?' <button type="button" id="su-preference-retry" data-discovery="retry"'+(root.SUAuth.syncState&&root.SUAuth.syncState()==='error'?'':' hidden')+'>Retry sync</button>':'')+(undo&&message==='Added to Tracker.'?' <a class="su-tracker-sticky" href="/tracker.html">Tracker →</a>':'')+(undo?' <button type="button" data-discovery="undo">Undo</button>':'')+'</p></section>';
     }
     function clearMessageTimer(){if(messageTimer!==null&&root.clearTimeout)root.clearTimeout(messageTimer);messageTimer=null;}
     function expireMessage(){clearMessageTimer();if(!root.setTimeout)return;var expected=message,owner=account;messageTimer=root.setTimeout(function(){messageTimer=null;if(owner!==account||message!==expected)return;message='';undo=null;var status=root.document.getElementById('su-preference-status'),note=status&&status.closest('.su-discovery-feedback');if(note&&!preferenceResult)note.remove();},5000);}
-    function dismiss(link,reason){preferenceResult='';var k=key(link),previous=data()[k]||null;undo={key:k,previous:previous};var value={link:link,reason:reason,hidden:true,confirmed:reason==='applied'||!!(previous&&previous.confirmed)};if(!write(k,value))return false;message=reason==='applied'?'Application noted. Hidden from your board.':'Job hidden from your board.';expireMessage();return true;}
+    function dismiss(link,reason,options){preferenceResult='';var k=key(link),previous=data()[k]||null;undo={key:k,previous:previous};var value={link:link,reason:reason,hidden:true,confirmed:reason==='applied'||!!(previous&&previous.confirmed)};if(!write(k,value))return false;message=reason==='applied'?'Added to Tracker.':'Hidden from your board.';if(options&&options.quiet){message='';undo=null;clearMessageTimer();}else expireMessage();return true;}
     function updateCatalog(jobs){if(!App)return;var live=new Map((Array.isArray(jobs)?jobs:App.jobs).map(function(j){return [canonical(j.link),j];}));recommendations=recommendations.map(function(j){return live.get(canonical(j.link));}).filter(Boolean);if(!visitReady)rememberVisit();}
     function start(app){App=app;if(started)return;started=true;try{var legacy=JSON.parse(root.localStorage.getItem('su_reported_links')||'[]'),guest=JSON.parse(root.localStorage.getItem('su_discovery_guest')||'{}');legacy.forEach(function(link){if(!guest[key(link)])guest[key(link)]={link:link,reason:'unavailable',hidden:true,confirmed:false};});root.localStorage.setItem('su_discovery_guest',JSON.stringify(guest));}catch(e){}try{first=!root.localStorage.getItem('su_discovery_started');root.localStorage.setItem('su_discovery_started','1');}catch(e){}
       function auth(){clearMessageTimer();account=root.SUStore&&root.SUStore.owner();form=false;draft=null;undo=null;message='';formError='';preferenceResult='';promptDismissed=false;showHidden=false;recommendations=[];recOpen=false;visitReady=false;rememberVisit();render();}
@@ -121,5 +124,5 @@
     }
     return {start:start,updateCatalog:updateCatalog,order:order,html:html,toolsHTML:toolsHTML,hiddenCount:hiddenCount,preferencesOpen:preferencesOpen,modalHTML:modalHTML,refreshDialog:refreshDialog,closePreferences:closePreferences,dialogOwner:function(){return account;},hidden:hidden,showHidden:function(){return showHidden;},dismiss:dismiss,key:key,confirmedCount:count,profile:useProfile};
   }
-  return {profile:profile,fieldBoost:fieldBoost,lane:lane,starter:starter,create:create};
+  return {profile:profile,fieldBoost:fieldBoost,studyPhrase:studyPhrase,lane:lane,starter:starter,create:create};
 });

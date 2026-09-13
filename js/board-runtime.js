@@ -4,7 +4,7 @@
   else root.SUBoardRuntime=factory(root);
 })(typeof window!=='undefined'?window:this,function(root){
   'use strict';
-  var pending={},TTL=30*60*1000, keys=['q','cat','ws','pr','st','fr','savedOnly'];
+  var pending={},TTL=30*60*1000, keys=['q','cat','ws','pr','salaryMin','salaryMax','st','fr','recentSeed','savedOnly'];
   function emit(name){if(root.SUAnalytics&&root.SUAnalytics.emit)root.SUAnalytics.emit(name,{});}
   function request(key,load){
     if(pending[key])return pending[key];
@@ -41,15 +41,31 @@
   var observedOwner=owner();
   function applicationCount(){try{var value=JSON.parse(root.localStorage.getItem('su_tracker_hint_v1')||'null');return value&&value.owner===owner()&&Number.isSafeInteger(value.count)&&value.count>=0?value.count:0;}catch(e){return 0;}}
   function checkOwner(){var next=owner();if(next===observedOwner)return false;observedOwner=next;clear();return true;}
+  // Filters are shared by section, but root's desktop introduction changes the
+  // pixel offset. Never restore /jobs.html's scroll into the homepage or vice versa.
+  function surface(){return root.location&&/^\/(?:index\.html)?$/.test(root.location.pathname)?'home':'board';}
+  function position(value){return Number.isFinite(value)?Math.max(0,Math.min(value,100000)):0;}
+  function validReceipt(value){return value&&value.v===1&&value.owner===owner()&&Number.isFinite(value.at)&&Date.now()-value.at>=0&&Date.now()-value.at<=TTL;}
   function read(section){
     try{var value=JSON.parse(root.sessionStorage.getItem('su_view_'+section)||'null');
-      if(observedOwner!==owner()||!value||value.v!==1||!Number.isFinite(value.at)||value.owner!==owner()||Date.now()-value.at<0||Date.now()-value.at>TTL)return null;
+      if(observedOwner!==owner()||!validReceipt(value))return null;
       var out={};keys.forEach(function(k){var v=value.state[k];if(k==='savedOnly'){if(typeof v==='boolean')out[k]=v;}else if(typeof v==='string'&&v.length<=200)out[k]=v;});
-      return {state:out,y:Number.isFinite(value.y)?Math.max(0,Math.min(value.y,100000)):0};
+      return {state:out,y:value.positions?position(value.positions[surface()]):(surface()==='board'?position(value.y):0)};
     }catch(e){return null;}
   }
   function save(section,state){
-    try{var o=owner();if(o===null||o!==observedOwner)return;var out={};keys.forEach(function(k){out[k]=state[k];});root.sessionStorage.setItem('su_view_'+section,JSON.stringify({v:1,owner:o,at:Date.now(),state:out,y:root.scrollY||0}));}catch(e){}
+    try{
+      var o=owner();if(o===null||o!==observedOwner)return;
+      var out={},positions={},key='su_view_'+section,previous;
+      keys.forEach(function(k){out[k]=state[k];});
+      try{previous=JSON.parse(root.sessionStorage.getItem(key)||'null');}catch(_){}
+      if(validReceipt(previous)){
+        if(previous.positions){['home','board'].forEach(function(name){if(Number.isFinite(previous.positions[name]))positions[name]=position(previous.positions[name]);});}
+        else positions.board=position(previous.y);
+      }
+      positions[surface()]=position(root.scrollY||0);
+      root.sessionStorage.setItem(key,JSON.stringify({v:1,owner:o,at:Date.now(),state:out,y:position(root.scrollY||0),positions:positions}));
+    }catch(e){}
   }
   // Section navigation resets the Saved view, never the saved records. A reload
   // or return from an employer keeps the same section and its normal view receipt.
@@ -58,7 +74,7 @@
       try{
         var key='su_view_'+section,value=JSON.parse(root.sessionStorage.getItem(key)||'null');
         if(value&&value.owner===owner()&&value.state&&value.state.savedOnly){
-          value.state.savedOnly=false;value.y=0;root.sessionStorage.setItem(key,JSON.stringify(value));
+          value.state.savedOnly=false;value.y=0;value.positions={home:0,board:0};root.sessionStorage.setItem(key,JSON.stringify(value));
         }
       }catch(e){}
     });

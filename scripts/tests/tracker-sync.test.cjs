@@ -22,6 +22,7 @@ function tracker(initialRows=[]) {
   constructor(tag,attrs,content='') {
    this.tagName=tag.toUpperCase();this.attrs=attrs;this.id=attrs.id||'';this.className=attrs.class||'';
    this.value=unescape(tag==='textarea'?content:attrs.value||'');this.textContent=unescape(content);
+   if(tag==='select') { const option=content.match(/<option value="([^"]*)" selected>/);if(option)this.value=unescape(option[1]); }
    this.selectionStart=0;this.selectionEnd=0;this.selectionDirection='none';this.scrollTop=0;this.scrollHeight=60;this.style={};
    this.classList={contains:name=>this.className.split(/\s+/).includes(name)};
   }
@@ -47,7 +48,7 @@ function tracker(initialRows=[]) {
    }
   }
  };
- const window={addEventListener(type,fn){(windowEvents[type]??=[]).push(fn);},matchMedia(){return{matches:true};}};
+ const window={crypto:require('node:crypto').webcrypto,addEventListener(type,fn){(windowEvents[type]??=[]).push(fn);},matchMedia(){return{matches:true};}};
  window.SUStore=Sync.create(storage);
  window.SUJobIdentity=require('../../js/job-identity.js');
  class TestURL extends URL {}
@@ -286,4 +287,46 @@ test('a remote removal preserves a failed note as copyable text without resurrec
  assert.equal(t.window.SUStore.view().tracker.length,0);assert.match(t.board.html,/Copy your unsaved note/);assert.match(t.board.html,/Only unsaved copy/);
  assert.equal(t.input('trk-sync-retry').hidden,true);t.app.retrySave();assert.equal(t.window.SUStore.view().tracker.length,0);
  t.emit('click',t.rowControl('BUTTON','existing','dismissDraft'));assert.doesNotMatch(t.board.html,/Only unsaved copy/);
+});
+
+test('recognized source host fills the optional choice and a manual override survives edits and sync',async()=>{
+ const t=tracker();t.input('trk-link').value='https://www.linkedin.com/jobs/view/123';t.emit('input',t.input('trk-link'));
+ assert.equal(t.input('trk-source').value,'LinkedIn');t.input('trk-source').value='Referral';t.emit('change',t.input('trk-source'));
+ t.input('trk-link').value='https://www.indeed.com/viewjob?jk=123';t.emit('input',t.input('trk-link'));assert.equal(t.input('trk-source').value,'Referral');
+ t.receive([application]);assert.equal(t.input('trk-source').value,'Referral');
+ t.input('trk-co').value='Another';t.input('trk-role').value='Writer';t.app.addRow();
+ const row=t.app.rows.find(r=>r.company==='Another');assert.equal(row.source,'Referral');assert.match(await t.exportText(),/Indeed|Referral/);assert.equal(t.input('trk-source').value,'');
+});
+test('source detection respects hostname boundaries and leaves unknown destinations optional',()=>{
+ for(const [link,source] of [['https://linkedin.com.evil.test/job',''],['https://evil-linkedin.com/job',''],['https://linkedin.com@evil.test/job',''],['https://boards.greenhouse.io/example/jobs/123','Company website'],['https://example.com/job','']]) {
+  const t=tracker();t.input('trk-link').value=link;t.emit('input',t.input('trk-link'));assert.equal(t.input('trk-source').value,source,link);
+ }
+});
+test('external report confirms a private review without deleting or changing the tracker row',async()=>{
+ const t=tracker([{...application,source:'LinkedIn'}]),before=t.storage.getItem('su_tracker'),calls=[];
+ t.window.SUAuth={signedIn:()=>true};t.window.SUTrackerReports={report:async(row,options)=>{calls.push({row,options});return {duplicate:false};}};
+ t.app.openReport('existing');assert.match(t.board.html,/cannot remove a job from another website/);assert.match(t.board.html,/Suspicious or inappropriate contact/);
+ t.input('trk-report-reason').value='incorrect';t.emit('change',t.input('trk-report-reason'));await t.app.sendReport('existing');
+ assert.equal(calls[0].options.reason,'incorrect');assert.equal(calls[0].row.source,'LinkedIn');assert.equal(calls[0].row.notes,undefined);
+ assert.match(t.board.html,/Report received/);assert.equal(t.storage.getItem('su_tracker'),before);assert.equal(t.document.activeElement,t.rowControl('BUTTON','existing','closeReport'));
+ t.app.closeReport('existing');assert.equal(t.document.activeElement,t.rowControl('BUTTON','existing','openReport'));
+});
+test('report retries reuse their request and duplicate receipt while same-account sync preserves unsaved fields',async()=>{
+ const t=tracker([application]),calls=[];let attempt=0;t.window.SUAuth={signedIn:()=>true};
+ t.window.SUTrackerReports={report:async(row,options)=>{calls.push(options.requestId);if(!attempt++)throw Error('Receipt could not be confirmed.');return {duplicate:true};}};
+ t.app.openReport('existing');t.input('trk-co').value='Draft';await t.app.sendReport('existing');const id=t.app.reportIntent.requestId;
+ t.receive([{...application,notes:'Updated'}]);assert.equal(t.input('trk-co').value,'Draft');assert.equal(t.app.reportIntent.requestId,id);
+ await t.app.sendReport('existing');assert.deepEqual(calls,[id,id]);assert.match(t.board.html,/already pending review/);
+});
+test('cancellation and account switching suppress a late report acknowledgement',async()=>{
+ for(const cancel of ['close','account']) {
+  const t=tracker([application]);let finish;t.window.SUAuth={signedIn:()=>true};t.window.SUTrackerReports={report:()=>new Promise(resolve=>{finish=resolve;})};
+  t.app.openReport('existing');const pending=t.app.sendReport('existing');
+  if(cancel==='close')t.app.closeReport('existing');else {t.window.SUStore.activate('bob');t.window.SUStore.saveTracker([{...application,company:'Bob'}]);t.storageChange('su_sync_owner');}
+  finish({duplicate:false});await pending;assert.equal(t.app.reportIntent,null);assert.doesNotMatch(t.board.html,/Report received/);
+ }
+});
+test('guest report asks for sign-in and Escape returns focus without creating a report',()=>{
+ const t=tracker([application]);t.app.openReport('existing');assert.match(t.board.html,/Sign in to send a report/);assert.equal(t.rowControl('BUTTON','existing','sendReport'),undefined);
+ t.emit('keydown',t.document.activeElement,{key:'Escape'});assert.equal(t.app.reportIntent,null);assert.equal(t.document.activeElement,t.rowControl('BUTTON','existing','openReport'));
 });

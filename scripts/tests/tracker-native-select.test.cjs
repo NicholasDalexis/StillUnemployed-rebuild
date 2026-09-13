@@ -146,3 +146,10 @@ test('a detached native select cannot persist its queued change after a structur
  assert.equal(t.window.SUStore.view().tracker[0].status,'Interview 1');assert.equal(t.rowControl('SELECT','existing'),current);
  assert.equal(current.value,'Interview 1');
 });
+
+test('an expanded report keeps the native status picker stable through a status choice and sync echo',()=>{
+ const t=tracker([application]);t.app.openReport('existing');
+ const control=t.rowControl('SELECT','existing');control.focus();control.value='Interview 1';t.emit('change',control);
+ assert.equal(t.rowControl('SELECT','existing'),control);assert.equal(control.focusCalls,1);
+ t.fire('su:data-sync');assert.equal(t.rowControl('SELECT','existing'),control);assert.equal(t.app.reportIntent.id,'existing');
+});

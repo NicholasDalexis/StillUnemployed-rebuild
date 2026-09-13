@@ -86,9 +86,9 @@ function board({search='',saved={},tracker=[],look='original',response,fetchErro
  };
  document.body=new Element('body');document.head=new Element('head');document.activeElement=document.body;
  const grid=document.body.appendChild(new Element('div',{id:'board'})),overlay=document.body.appendChild(new Element('div',{id:'overlay-root'}));
- const window={SUStates:require('../../js/us-states.js'),SUJobIdentity:identityAvailable?identity:undefined,SUThemeArt:artAvailable?themeArt:undefined,innerWidth:390,innerHeight:844,addEventListener(k,f){(windowEvents[k]??=[]).push(f);},matchMedia(){return{matches:true};},open(...args){opened.push(args);},suTrack(...args){tracking.push(args);}};
+ const window={crypto:{randomUUID:()=> '11111111-1111-4111-8111-111111111111'},SUStates:require('../../js/us-states.js'),SUJobIdentity:identityAvailable?identity:undefined,SUThemeArt:artAvailable?themeArt:undefined,innerWidth:390,innerHeight:844,addEventListener(k,f){(windowEvents[k]??=[]).push(f);},matchMedia(){return{matches:true};},open(...args){opened.push(args);},suTrack(...args){tracking.push(args);}};
  // Other feature tests use a ready moderation transport; dedicated tests exercise the real module and failure paths.
- window.SUJobModeration={refresh:async()=>({status:'ready',revision:0,removed:[]}),filter:jobs=>jobs,blocked:()=>false,watch:()=>()=>{},subscribe:()=>()=>{},navigate:link=>{window.open(link,'_blank','noopener');return Promise.resolve(true);}};
+ window.SUJobModeration={reportUnavailable:async()=>({globallyHidden:false,status:'queued_check'}),refresh:async()=>({status:'ready',revision:0,removed:[]}),filter:jobs=>jobs,blocked:()=>false,watch:()=>()=>{},subscribe:()=>()=>{},navigate:link=>{window.open(link,'_blank','noopener');return Promise.resolve(true);}};
  if(analyticsAvailable)window.SUAnalytics={choices:()=>({analytics:data.get('su_consent_v3')==='granted',personalization:data.get('su_personalization_v1')==='granted'}),registerJobs(){},job(){},generation:()=>0,profile:()=>({})};
  const location={origin:'https://preview--stillunemployed.netlify.app',hostname:'preview--stillunemployed.netlify.app',pathname:'/jobs.html',search,hash:''};
  const history={replaceState(_state,_title,value){const url=new URL(value,location.origin);location.pathname=url.pathname;location.search=url.search;location.hash=url.hash;}};
@@ -145,9 +145,9 @@ test('feed has advice without promotional signup cards; newsletter follows actua
  b.overlay.querySelector('[data-act="closeDetail"]').click();card.click();
  assert.equal(b.overlay.querySelectorAll('iframe').length,0);
 });
-test('an unavailable-job report removes its card immediately',()=>{
+test('an unavailable-job receipt hides its card personally after confirmation',async()=>{
  const b=board();b.init();b.app.setState({feedbackOpen:true,feedbackCo:'Example',feedbackLink:'https://example.com/job'});const before=b.grid.writes;
- b.overlay.querySelector('[data-act="reportBroken"]').click();assert.equal(b.app.jobs.length,0);assert.equal(b.grid.querySelectorAll('.note[data-link]').length,0);assert.equal(b.grid.writes,before+1);
+ b.overlay.querySelector('[data-act="reportBroken"]').click();assert.equal(b.app.jobs.length,1);await tick();await tick();assert.equal(b.app.computeShown().shown.length,0);assert.equal(b.grid.querySelectorAll('.note[data-link]').length,0);assert(b.grid.writes>before);
 });
 test('a valid feed with zero eligible jobs remains empty without requesting bundled JSON',async()=>{
  const b=board({response:{ok:true,status:200,text:async()=>csv([row({'Active/Dead':'Dead'})])}});await b.boot();
@@ -401,11 +401,11 @@ test('Escape or an outside click dismisses optional theme feedback without recor
  }
 });
 
-test('opening What’s new dismisses theme feedback and still invokes the welcome flow',()=>{
- const b=board({look:'chess',analyticsConsent:true});b.init(themeJobs(12));b.scrollPastCards(12);
- let opened=0;b.window.SUWelcome={open(){opened++;},maybeShow(){}};
- b.grid.querySelector('[data-act="openWelcome"]').click();
- assert.equal(opened,1);assert.equal(voteBox(b),null);assert.deepEqual(votes(b),[]);
+test('version history is quiet and does not open an arrival popup',()=>{
+ const b=board({look:'chess'});b.init(themeJobs(12));
+ assert.equal(b.grid.querySelector('[data-act="openWelcome"]'),null);
+ assert(b.grid.querySelector('a[href="/versions.html"]'));
+ assert.equal(b.overlay.querySelector('[role="dialog"]'),null);
 });
 
 test('withdrawing analytics closes an open prompt and rejects an already queued vote click',()=>{

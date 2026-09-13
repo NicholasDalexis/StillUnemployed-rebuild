@@ -99,8 +99,12 @@
     'what i would do differently if i started over ↓'
   ];
   var detailOpens = 0;
+  function saveControl(saved) {
+    return '<svg aria-hidden="true" width="19" height="23" viewBox="0 0 24 28" fill="'+(saved?'currentColor':'none')+'"><path d="M4 2h16v24l-8-5-8 5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>'+(saved?'Saved':'Save for later')+'</span>';
+  }
   function beginJobDetail(comp, link) {
     if (!comp.catalogJobs().some(function(job){return jobHasLink(job,link);})) return;
+    if(window.SUBoardExperience)window.SUBoardExperience.record(comp.catalogJobs().find(function(job){return jobHasLink(job,link);}), 'viewed');
     try { detailOpens = Number(sessionStorage.getItem('su_detail_opens')) || 0; } catch (_) {}
     detailOpens = Math.max(0, detailOpens) + 1;
     try { sessionStorage.setItem('su_detail_opens', String(detailOpens)); } catch (_) {}
@@ -374,20 +378,20 @@
   // handwritten-adjacent list (Nic: the follow-up card's "3 lines" must BE 3 lines).
   function adviceWhyHtml(why) {
     if (typeof why === 'string') {
-      return '<div style="font-family:\'Poppins\',sans-serif; font-size:14.5px; line-height:1.65; color:#3a3026;">' + esc(why) + '</div>';
+      return '<div style="font-family:var(--su-body); font-size:14.5px; line-height:1.65; color:#3a3026;">' + esc(why) + '</div>';
     }
     var h = '';
-    if (why.intro) h += '<div style="font-family:\'Poppins\',sans-serif; font-size:14.5px; line-height:1.65; color:#3a3026;">' + esc(why.intro) + '</div>';
+    if (why.intro) h += '<div style="font-family:var(--su-body); font-size:14.5px; line-height:1.65; color:#3a3026;">' + esc(why.intro) + '</div>';
     if (why.bullets && why.bullets.length) {
       h += '<div style="margin:10px 0 0 4px;">';
       for (var b = 0; b < why.bullets.length; b++) {
         h += '<div style="display:flex; gap:9px; align-items:baseline; margin-top:7px;">' +
           '<span style="flex:none; font-family:\'Indie Flower\',cursive; font-weight:700; font-size:16px; color:#C2552F;">•</span>' +
-          '<span style="font-family:\'Poppins\',sans-serif; font-size:14.5px; line-height:1.55; color:#3a3026;">' + esc(why.bullets[b]) + '</span></div>';
+          '<span style="font-family:var(--su-body); font-size:14.5px; line-height:1.55; color:#3a3026;">' + esc(why.bullets[b]) + '</span></div>';
       }
       h += '</div>';
     }
-    if (why.outro) h += '<div style="font-family:\'Poppins\',sans-serif; font-size:14.5px; line-height:1.65; color:#3a3026; margin-top:12px;">' + esc(why.outro) + '</div>';
+    if (why.outro) h += '<div style="font-family:var(--su-body); font-size:14.5px; line-height:1.65; color:#3a3026; margin-top:12px;">' + esc(why.outro) + '</div>';
     return h;
   }
 
@@ -459,7 +463,7 @@
       var r = window.SUStore && window.SUStore.view ? window.SUStore.view().tracker : JSON.parse(localStorage.getItem('su_tracker') || '[]');
       var n = Array.isArray(r) ? r.length : 0;
       if (!n) return '';
-      return ' (<span style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 16px;">' + (n > 99 ? '99+' : n) + '</span>)';
+      return ' (<span style="font-family: var(--su-body); font-weight: 800; font-size: 16px;">' + (n > 99 ? '99+' : n) + '</span>)';
     } catch (e) { return ''; }
   }
 
@@ -561,7 +565,7 @@
     if(!showTracker)return;
     var identity=runtime.owner();
     setTimeout(function () {
-      if (identity !== runtime.owner() || document.getElementById('su-tracker-nudge') || document.getElementById('su-saved-nudge') || document.getElementById('su-signin-reminder')) return;
+      if (identity !== runtime.owner() || document.getElementById('su-tracker-nudge') || document.getElementById('su-saved-nudge') || document.getElementById('su-signin-reminder') || document.querySelector('.su-compact-feedback')) return;
       var wrap=document.createElement('div');wrap.id='su-tracker-nudge';wrap.className='su-tracker-nudge';
       wrap.innerHTML='<a href="tracker.html"><span>Check applied jobs</span> <svg width="24" height="14" viewBox="0 0 28 14" fill="none" aria-hidden="true"><path d="M1 7 Q12 1 25 7 M19 2 L26 7 L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="su-tracker-sticky">Tracker</span></a><button type="button" aria-label="Dismiss tracker reminder">×</button>';
       var timer;
@@ -685,7 +689,7 @@
       ctx.font = "700 20px 'Indie Flower', cursive"; ctx.fillStyle = '#B23A1E';
       ctx.fillText('★ stillunemployed.com', 58, H - 96);
       ctx.font = "700 14px 'Indie Flower', cursive"; ctx.fillStyle = '#6F5E45';
-      ctx.fillText('roles I\'d actually apply to', 58, H - 70);
+      ctx.fillText('roles for your next chapter', 58, H - 70);
       ctx.restore();
       cv.toBlob(function (blob) { cb(blob); }, 'image/png');
     } catch (e) { cb(null); }
@@ -942,6 +946,9 @@
       ws: 'Any',
       st: 'all',
       pr: 'Any',
+      salaryMin: '',
+      salaryMax: '',
+      recentSeed: String(Date.now()),
       fr: 'Any',
       theme: new URLSearchParams(location.search).get('theme'),
       saved: loadSaved(),
@@ -1322,6 +1329,7 @@
       }
       if (this.state.ws !== 'Any' && j.style !== this.state.ws) return false;
       if (this.state.st !== 'all' && (!window.SUStates || window.SUStates.extract(j.state, j.loc).indexOf(this.state.st) < 0) && !isRemoteAnywhere(j)) return false;
+      if (!INTERNSHIPS && window.SUBoardExperience && !window.SUBoardExperience.salaryMatches(j.pay, Number(this.state.salaryMin), Number(this.state.salaryMax))) return false;
       if (this.state.pr !== 'Any') {
         if(INTERNSHIPS)return (j.payStatus==='paid'?'Paid':j.payStatus==='unpaid'?'Unpaid':'Not disclosed')===this.state.pr;
         var t = this.payTier(j.pay);
@@ -1351,7 +1359,9 @@
       }
       this._retrySaveLink=null; this._actionError='';
       if(window.SUAnalytics) window.SUAnalytics.job(alreadySaved?'job_unsave':'job_save',key);
+      if(!alreadySaved&&window.SUBoardExperience)window.SUBoardExperience.record(this.catalogJobs().find(function(job){return jobHasLink(job,key);}), 'saved');
       this.setState({ saved: loadSaved() });
+      var detailSave=document.querySelector('[data-act="detailSave"]');if(detailSave){var on=this.isSaved(key);detailSave.setAttribute('aria-pressed',String(on));detailSave.innerHTML=saveControl(on);}
       if(!alreadySaved&&this.isSaved(key)&&window.SUSavedReminder)window.SUSavedReminder.afterSave();
       return true;
     },
@@ -1373,8 +1383,8 @@
       try {
         var slug = { poker:'casino', girly:'girlies', mermaid:'mermaid', bratt:'bratt', noir:'blackcat', beauty:'beauty', chess:'chess' }[look];
         var newPath = slug ? ('/jobs/' + slug) : '/jobs';
-        if (INTERNSHIPS) {
-          // Internship links use the existing query-theme bootstrap. Keep the
+        if (INTERNSHIPS || document.body.classList.contains('su-home-board')) {
+          // Root and internship links use the existing query-theme bootstrap. Keep the
           // section, shared listing and other query values intact on refresh.
           var params = new URLSearchParams(location.search);
           params.set('theme', look);
@@ -1556,14 +1566,19 @@
     },
     computeShown: function () {
       var self = this;
-      var base = (this.state.savedOnly ? this.catalogJobs() : this.jobs).filter(function (j) { return self.matchesBase(j) && (self.state.savedOnly || !window.SUDiscovery || window.SUDiscovery.showHidden() || !window.SUDiscovery.hidden(j)); });
+      var base = (this.state.savedOnly ? this.catalogJobs() : this.jobs).filter(function (j) { return self.matchesBase(j) && (self._unavailableLocal||[]).every(function(link){return !jobHasLink(j,link);}) && (self.state.savedOnly || !window.SUDiscovery || window.SUDiscovery.showHidden() || !window.SUDiscovery.hidden(j)); });
+      var experience=window.SUBoardExperience;
+      this._recentDay='';
+      if(this.state.fr==='Recently added' && experience){
+        this._recentDay=experience.recentDay(this.jobs);
+        base=base.filter(function(j){return experience.addedDay(j.added)===self._recentDay && !!self._recentDay;});
+      }
       var cat = this.state.cat;
       var shown = base.filter(function (j) { return cat === 'all' || j.ind === cat; });
       if (this.state.savedOnly) shown = shown.filter(function (j) { return self.isSaved(j.link); });
 
       if (this.state.fr === 'Recently added') {
-        // "Recently added" is a SORT, not a filter: show ALL roles, newest (highest sheet row) first
-        shown = shown.slice().sort(function (a, b) { return (b._idx || 0) - (a._idx || 0); });
+        if(experience)shown=experience.shuffled(shown,this.state.recentSeed);
       }
       else if(!INTERNSHIPS && window.SUPersonalization && window.SUAnalytics) {
         var profileGeneration=window.SUAnalytics.generation();
@@ -1585,6 +1600,15 @@
 
       if(!INTERNSHIPS && this.state.fr!=='Recently added' && window.SUDiscovery && window.SUPersonalization && !window.SUAnalytics){var discoveryOrder=window.SUDiscovery.order(this.jobs,window.SUPersonalization,{});shown.sort(function(a,b){return discoveryOrder.indexOf(a)-discoveryOrder.indexOf(b);});}
       if(INTERNSHIPS && this.state.fr!=='Recently added')shown.sort(function(a,b){return Number(internshipCanApply(b))-Number(internshipCanApply(a)) || Number(b.payStatus==='paid')-Number(a.payStatus==='paid');});
+      if(experience){
+        // Apply only a snapshot of visit demotions, updated on deliberate filter changes.
+        if(!this._activeDemotions)this._activeDemotions=experience.demotions();
+        if(!this.state.q.trim()&&!this.state.savedOnly){
+          var lower=this._activeDemotions;
+          shown.sort(function(a,b){return Number(lower.indexOf(experience.identity(a.link))>=0)-Number(lower.indexOf(experience.identity(b.link))>=0);});
+        }
+        shown=experience.spaced(shown);
+      }
       return { base: base, shown: shown };
     },
 
@@ -1593,7 +1617,7 @@
     // interleaved advice/signup cards (both cadences), that waste measured ~1 SECOND per click
     // on localhost (Nic: "it used to be really smooth"). So: overlay-only patches re-render
     // overlays only. Anything else (filters, search, theme, jobs) still does the full render.
-    OVERLAY_KEYS: { reportedOpen:1, detailOpen: 1, detailLink: 1, feedbackOpen: 1, feedbackCo: 1, feedbackLink: 1,
+    OVERLAY_KEYS: { recentOpen:1, reportedOpen:1, detailOpen: 1, detailLink: 1, feedbackOpen: 1, feedbackCo: 1, feedbackLink: 1,
                     adviceOpen: 1, signupOpen: 1, lookOpen: 1, aboutOpen: 1, modalOpen: 1 },
     clearFeedbackRedirect: function () {
       try {
@@ -1638,6 +1662,7 @@
       } catch (e) { /* Missing or malformed tab storage never blocks the board. */ }
     },
     setState: function (patch) {
+      if(window.SUBoardExperience && ['q','cat','ws','st','pr','salaryMin','salaryMax','fr','theme'].some(function(key){return Object.prototype.hasOwnProperty.call(patch,key);})){this._activeDemotions=window.SUBoardExperience.demotions();}
       if (patch.feedbackOpen === false || (patch.feedbackLink && patch.feedbackLink !== this.state.feedbackLink)) this.clearFeedbackRedirect();
       if(patch.feedbackOpen === true && !this.state.feedbackOpen) { this._feedbackError=''; uxEvent('feedback_open'); }
       if(patch.reportedOpen===false)this._reportedPanel=null;
@@ -1685,7 +1710,7 @@
       // recolor the board container + page gutter for the active theme
       board.className = 'board' + (boardCls ? ' ' + boardCls : '');
       board.style.color = boardInk;
-      document.body.className = (look === 'original') ? '' : ('theme-' + look);
+      document.body.className = (document.body.classList.contains('su-home-board') ? 'su-home-board ' : '') + ((look === 'original') ? '' : ('theme-' + look));
       document.body.style.setProperty('--su-action-paper',ACC);
       document.body.style.setProperty('--su-action-ink',ACC_INK);
 
@@ -1695,7 +1720,7 @@
         var active = self.state.cat === c.match;
         var count = c.match === 'all' ? base.length : base.filter(function (j) { return j.ind === c.match; }).length;
         var rowStyle = catRowBase + (active ? ('background:' + ACC + '; color:' + ACC_INK + ';') : 'background:transparent; color:#3A2A1B;');
-        var countStyle = "font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;" + 'color:inherit;';
+        var countStyle = "font-family:var(--su-body); font-weight:700; font-size:12px;" + 'color:inherit;';
         return '<div data-act="cat" data-val="' + esc(c.match) + '" style="' + rowStyle + '">' + esc(c.label) +
           '<span style="' + countStyle + '">' + count + '</span></div>';
       }).join('');
@@ -1715,6 +1740,17 @@
         var st = pillBase + (active ? 'background:#2A2118; color:#F4E9C9;' : ('background:' + ACC + '; color:' + ACC_INK + ';'));
         return '<div data-act="pr" data-val="' + esc(p) + '" style="' + st + '">' + esc(p) + '</div>';
       }).join('');
+
+      if(!INTERNSHIPS){
+        var min=Number(this.state.salaryMin)||0,max=Number(this.state.salaryMax)||0;
+        var rangeMax=Math.max(300000,min,max);
+        pricesHtml='<div class="su-salary-range"><p>Annual salary range</p>'+
+          '<div class="su-salary-fields"><label>Minimum <input id="su-salary-min" data-salary="salaryMin" type="number" min="0" step="1000" placeholder="Any" value="'+esc(this.state.salaryMin)+'"></label>'+
+          '<label>Maximum <input id="su-salary-max" data-salary="salaryMax" type="number" min="0" step="1000" placeholder="Any" value="'+esc(this.state.salaryMax)+'"></label></div>'+
+          '<label class="su-salary-slider">Minimum salary<input data-salary="salaryMin" type="range" min="0" max="'+rangeMax+'" step="5000" value="'+min+'" aria-valuetext="'+(min?'$'+min.toLocaleString():'Any minimum')+'"></label>'+
+          '<label class="su-salary-slider">Maximum salary<input data-salary="salaryMax" data-unlimited="'+rangeMax+'" type="range" min="0" max="'+rangeMax+'" step="5000" value="'+(max||rangeMax)+'" aria-valuetext="'+(max?'$'+max.toLocaleString():'Any maximum')+'"></label>'+
+          '<p class="su-salary-help">Includes salaries that overlap your range. Hourly and undisclosed pay stay visible when both limits are Any.</p><button type="button" data-act="chipPr">Any salary</button></div>';
+      }
 
       // ---- freshness pills ("Recently added") ----
       var freshHtml = ['Any', 'Recently added'].map(function (f) {
@@ -1854,12 +1890,12 @@
 
         // company + role
         html += '<div style="display: flex; align-items: flex-start; gap: 10px; padding-right: 48px;">' +
-            '<div class="card-co" title="' + esc(j.co) + '" style="font-family: \'Archivo Black\', \'Archivo\', sans-serif; font-weight: 900; font-size: 23px; line-height: 1.13; letter-spacing: -0.4px;"><span style="">' + esc(j.co) + '</span></div>' +
+            '<div class="card-co" title="' + esc(j.co) + '" style="font-family: \'Archivo Black\', var(--su-body); font-weight: 900; font-size: 23px; line-height: 1.13; letter-spacing: -0.4px;"><span style="">' + esc(j.co) + '</span></div>' +
           '</div>' +
-          '<div class="card-role" title="' + esc(j.role) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16.5px; margin-top: 9px; line-height: 1.3;">' + esc(j.role) + '</div>' +
+          '<div class="card-role" title="' + esc(j.role) + '" style="font-family: var(--su-body); font-weight: 600; font-size: 16.5px; margin-top: 9px; line-height: 1.3;">' + esc(j.role) + '</div>' +
           '<div style="flex: 1; min-height: 18px;"></div>' +
-          '<div style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.4px;">' + (j.internship ? '<span class="su-internship-pay">'+esc(cardPay(j))+'</span>' : esc(cardPay(j))) + '</div>' +
-          '<div class="card-location" style="font-size: 14.5px; opacity: 0.85; line-height: 1.5; font-family: \'Poppins\', sans-serif; margin-top: 5px;">' + esc(metaTop) + '</div>';
+          '<div style="font-family: var(--su-body); font-weight: 800; font-size: 24px; letter-spacing: -0.4px;">' + (j.internship ? '<span class="su-internship-pay">'+esc(cardPay(j))+'</span>' : esc(cardPay(j))) + '</div>' +
+          '<div class="card-location" style="font-size: 14.5px; opacity: 0.85; line-height: 1.5; font-family: var(--su-body); margin-top: 5px;">' + esc(metaTop) + '</div>';
 
         // verified stamp + apply link row (per-theme variant, ported verbatim)
         html += '<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 16px; min-height: 24px;">';
@@ -1870,19 +1906,19 @@
             var stampIcon = cod
               ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-dasharray="53 10" stroke-dashoffset="20"></circle><path d="M12 5.2 L13.59 9.82 L18.47 9.9 L14.57 12.83 L16 17.5 L12 14.7 L8 17.5 L9.43 12.83 L5.53 9.9 L10.41 9.82 Z" fill="currentColor"></path></svg>'
               : '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.4"></circle><path d="M8.3 12.2l2.4 2.4 4.9-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
-            html += '<div class="' + stampClass + '" style="display: inline-flex; align-items: center; gap: 5px; border: 1.6px solid; color: ' + stampColor + '; border-radius: 4px; padding: 3px 8px; transform: rotate(-4deg); font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; opacity: ' + (j.internship ? '1' : '0.72') + ';">' +
+            html += '<div class="' + stampClass + '" style="display: inline-flex; align-items: center; gap: 5px; border: 1.6px solid; color: ' + stampColor + '; border-radius: 4px; padding: 3px 8px; transform: rotate(-4deg); font-family: var(--su-body); font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; opacity: ' + (j.internship ? '1' : '0.72') + ';">' +
               stampIcon +
-              (j.internship ? 'Internship' : 'Human-verified') +
+              (j.internship ? 'Internship' : j.handpicked === true ? 'Handpicked' : 'Our picks') +
             '</div>';
           } else {
             // girly = pink rounded stamp with a heart on each side
             var heart = '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="flex: none;"><path d="M12 21s-7.5-4.7-10-9.2C.5 8.6 2 5 5.3 5c2 0 3.3 1.2 4.7 3 1.4-1.8 2.7-3 4.7-3C18 5 19.5 8.6 22 11.8 19.5 16.3 12 21 12 21z"></path></svg>';
             html += '<div class="' + stampClass + '" style="display: inline-flex; align-items: center; gap: 6px; border: 2px solid ' + gStamp + '; color: ' + gStamp + '; border-radius: 14px; padding: 3px 11px; transform: rotate(-4deg); font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 12.5px; opacity: 0.95;">' +
-              heart + (j.internship ? 'Internship' : 'Human Verified') + heart +
+              heart + (j.internship ? 'Internship' : j.handpicked === true ? 'Handpicked' : 'Our picks') + heart +
             '</div>';
           }
         }
-        html += '<a class="applylink2" href="' + esc(j.savedUnavailable ? j.link : (j.internship ? '/internships.html' : '/jobs.html')+'?job='+encodeURIComponent(btoa(unescape(encodeURIComponent(j.link))))+'&theme='+suShareTheme()) + '" target="_blank" rel="noopener" data-act="apply" data-link="' + esc(j.link) + '" data-co="' + esc(j.co) + '" style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 15.5px; color: ' + applyColor + '; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-left: auto;">' + (j.savedUnavailable ? 'View saved listing' : j.internship && !internshipCanApply(j) ? 'View program' : 'Apply Now') + '<svg class="doodle-arrow" width="28" height="14" viewBox="0 0 28 14" fill="none" style="overflow: visible; margin-left: 2px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>';
+        html += '<a class="applylink2" href="' + esc(j.savedUnavailable ? j.link : (j.internship ? '/internships.html' : '/jobs.html')+'?job='+encodeURIComponent(btoa(unescape(encodeURIComponent(j.link))))+'&theme='+suShareTheme()) + '" target="_blank" rel="noopener" data-act="apply" data-link="' + esc(j.link) + '" data-co="' + esc(j.co) + '" style="font-family: var(--su-body); font-weight: 800; font-size: 15.5px; color: ' + applyColor + '; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-left: auto;">' + (j.savedUnavailable ? 'View saved listing' : j.internship && !internshipCanApply(j) ? 'View program' : 'Apply Now') + '<svg class="doodle-arrow" width="28" height="14" viewBox="0 0 28 14" fill="none" style="overflow: visible; margin-left: 2px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>';
         html += '</div>';
 
         if(window.SUDiscovery && window.SUDiscovery.hidden(j))html += '<button type="button" class="su-restore" data-discovery="restore" data-key="'+esc(window.SUDiscovery.key(j.link))+'">Hidden · restore to board</button>';
@@ -1921,7 +1957,7 @@
       var savedBtnBase = "font-family:'Indie Flower',cursive; font-weight:700; font-size:19px; padding:11px 17px; transform:rotate(3deg); box-shadow:2px 4px 9px rgba(44,33,24,0.2); white-space:nowrap; position:relative; top:8px; flex:none; cursor:pointer; border-radius:2px;";
       var savedBtnStyle = savedBtnBase + (this.state.savedOnly ? 'background:#2A2118; color:#F4E9C9;' : ('background:' + ACC + '; color:' + ACC_INK + ';'));
       // digits render clearer in Archivo than in Indie Flower (Nic, 2026-07-11); cap at 99+
-      var savedNum = '<span style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 16px; letter-spacing: 0;">' + (savedCount > 99 ? '99+' : savedCount) + '</span>';
+      var savedNum = '<span style="font-family: var(--su-body); font-weight: 800; font-size: 16px; letter-spacing: 0;">' + (savedCount > 99 ? '99+' : savedCount) + '</span>';
       var savedLabel = this.state.savedOnly ? ('Saved (' + savedNum + ') ✕') : ('Saved (' + savedNum + ')');
 
       // "Change Look?" toolbar button (base + open/closed colors, ported verbatim)
@@ -1930,7 +1966,7 @@
 
       var curCat = this.catList().find(function (c) { return c.match === self.state.cat; }) || this.catList()[0];
       var catBtnLabel = this.state.cat === 'all' ? 'all roles' : curCat.label;
-      var filterCount = (this.state.ws !== 'Any' ? 1 : 0) + (this.state.st !== 'all' ? 1 : 0) + (this.state.pr !== 'Any' ? 1 : 0) + (this.state.fr !== 'Any' ? 1 : 0);
+      var filterCount = (this.state.ws !== 'Any' ? 1 : 0) + (this.state.st !== 'all' ? 1 : 0) + (this.state.pr !== 'Any' || this.state.salaryMin || this.state.salaryMax ? 1 : 0) + (this.state.fr !== 'Any' ? 1 : 0);
 
       var btnBase = "display:inline-flex; align-items:center; gap:7px; padding:9px 15px; border-radius:4px; font-family:'Indie Flower',cursive; font-size:18px; font-weight:700; cursor:pointer; white-space:nowrap; box-shadow:1px 2px 6px rgba(44,33,24,0.16);";
       var catBtnStyle = btnBase + 'transform:rotate(-2deg);' + (this.state.openPanel === 'cat' || this.state.cat !== 'all'
@@ -1947,8 +1983,9 @@
       var chips = [];
       if (this.state.theme && Object.prototype.hasOwnProperty.call(this.themeDefs, this.state.theme)) chips.push({ label: this.themeDefs[this.state.theme].label, act: 'chipTheme' });
       if (this.state.ws !== 'Any') chips.push({ label: this.state.ws, act: 'chipWs' });
+      if(!INTERNSHIPS && (this.state.salaryMin||this.state.salaryMax))chips.push({label:'$'+(Number(this.state.salaryMin)||0).toLocaleString()+'–'+(this.state.salaryMax?'$'+Number(this.state.salaryMax).toLocaleString():'Any'),act:'chipPr'});
       if (this.state.pr !== 'Any') chips.push({ label: this.state.pr, act: 'chipPr' });
-      if (this.state.fr !== 'Any') chips.push({ label: this.state.fr, act: 'chipFr' });
+      if (this.state.fr !== 'Any') chips.push({ label: this._recentDay ? 'Added '+this._recentDay : 'Recently added: no dates', act: 'chipFr' });
       if (this.state.st !== 'all') chips.push({ label: window.SUStates ? window.SUStates.label(this.state.st) : this.state.st, act: 'chipSt' });
 
       var chipsHtml = chips.map(function (chip) {
@@ -1974,16 +2011,17 @@
       // =====================================================================
       var out = '';
 
+
       // The desktop nav spans this header to align Google above Saved. Keep the
       // founder card above its transparent area so pointer clicks reach the card.
-      out += '<div style="max-width: 1240px; margin: 0 auto; padding: 26px 40px 0; position: relative; height: 100px; box-sizing: border-box;">' +
+      out += '<div class="su-board-chrome" style="max-width: 1240px; margin: 0 auto; padding: 26px 40px 0; position: relative; height: 100px; box-sizing: border-box;">' +
         '<div data-act="openModal" class="aboutcard" style="position: absolute; z-index: 1; top: 22px; left: 40px; display: flex; align-items: center; gap: 12px; background: #E7D2A8; border-radius: 16px; padding: 9px 16px 9px 9px; cursor: pointer; box-shadow: 0 6px 18px rgba(44,33,24,0.16);">' +
           '<div style="width: 66px; height: 42px; border-radius: 11px; overflow: hidden; flex: none;">' +
             '<img src="assets/5037150f-ce24-477c-bae7-ef884fbc5849.jpg" alt="Nic" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 16%; transform: scale(1.55); transform-origin: 50% 26%;">' +
           '</div>' +
           '<div style="line-height: 1.2;">' +
-            '<div style="font-size: 14px; font-weight: 700; color: #2A2118; font-family: \'Archivo\', sans-serif;">Nic, the founder</div>' +
-            '<div style="font-size: 11px; font-weight: 500; color: #6F5E45; margin-top: 2px; font-family: \'Archivo\', sans-serif;">Currently at Instagram making 6 figures</div>' +
+            '<div style="font-size: 14px; font-weight: 700; color: #2A2118; font-family: var(--su-body);">Nic, the founder</div>' +
+            '<div style="font-size: 11px; font-weight: 500; color: #6F5E45; margin-top: 2px; font-family: var(--su-body);">Currently at Instagram making 6 figures</div>' +
           '</div>' +
           '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex: none; margin-left: 2px;"><path d="M9 6l6 6-6 6" stroke="#6F5E45" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
         '</div>' +
@@ -2004,7 +2042,7 @@
         '<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 24px;">' +
           '<div style="position: relative;">' +
             '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 22px; color: ' + (girly ? '#D6277E' : '#C2552F') + '; transform: rotate(-2deg); display: inline-block;">★ StillUnemployed.com</div>' +
-            '<h1 style="font-family: \'Archivo Black\', \'Archivo\', sans-serif; font-weight: 900; font-size: 66px; line-height: 0.95; letter-spacing: -0.03em; color: ' + boardInk + '; margin: 8px 0 0; max-width: 760px;">Roles I\'d <span style="-webkit-box-decoration-break: clone; box-decoration-break: clone; padding: 0 .12em; background: linear-gradient(98deg, transparent 1.5%, ' + HLC + ' 1.5% 98.5%, transparent 98.5%); background-repeat: no-repeat; background-size: 100% 62%; background-position: 0 80%;">actually</span> apply to.</h1>' +
+            '<h1 style="font-family: \'Archivo Black\', var(--su-body); font-weight: 900; font-size: 66px; line-height: 0.95; letter-spacing: -0.03em; color: ' + boardInk + '; margin: 8px 0 0; max-width: 760px;">Roles for your <span style="-webkit-box-decoration-break: clone; box-decoration-break: clone; padding: 0 .12em; background: linear-gradient(98deg, transparent 1.5%, ' + HLC + ' 1.5% 98.5%, transparent 98.5%); background-repeat: no-repeat; background-size: 100% 62%; background-position: 0 80%;">next</span> chapter.</h1>' +
             '<div class="board-subtitle" style="font-family: \'Indie Flower\', cursive; font-size: 22px; color: ' + subInk + '; margin-top: 14px; transform: rotate(-0.6deg);">Salary up front. Your next move, all in one place.</div>' +
           '</div>' +
           '<div style="display: flex; align-items: flex-start; gap: 12px; flex: none;">' +
@@ -2013,7 +2051,7 @@
           '</div>' +
         '</div>';
 
-      if(INTERNSHIPS)out=out.replace(/Roles I&#39;d/g,'Internships').replace(/Roles I\'d/, 'Internships I\'d').replace('Salary up front. Your next move, all in one place.','Internships, co-ops and student opportunities. Eligibility and pay up front.');
+      if(INTERNSHIPS)out=out.replace('Roles for your','Internships for your').replace('Salary up front. Your next move, all in one place.','Internships, co-ops and student opportunities. Eligibility and pay up front.');
       // toolbar
       out += '<div style="position: relative; margin-top: 30px; z-index: 40;">' +
         '<div style="display: flex; align-items: center; gap: 12px; background: #FBF6E9; border: 1.5px solid #E0CFA8; border-radius: 5px; padding: 11px 11px 11px 18px; box-shadow: 2px 4px 11px rgba(44,33,24,0.10); transform: rotate(-0.4deg);">' +
@@ -2062,9 +2100,9 @@
       '</div>';
 
       out += '<span class="su-results-count su-sr-only" aria-live="polite">' + (this._loading ? '' : esc(showingLabel)) + '</span><div class="su-board-utilities">' +
-        '<details id="su-board-menu" class="su-board-menu"><summary id="su-board-menu-trigger">Board menu <svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>' +
+        '<details id="su-board-menu" class="su-board-menu"><summary id="su-board-menu-trigger">Menu <svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>' +
           '<div class="su-board-menu-sheet">' + (moderationOwner() ? '<button type="button" data-act="openReportedJobs">Reported jobs</button>' : '') + (window.SUDiscovery && window.SUDiscovery.toolsHTML ? window.SUDiscovery.toolsHTML(esc) : '') +
-            '<a href="./suggest.html">Suggest jobs</a><button type="button" data-act="openWelcome">What’s new</button><button type="button" data-act="openModal">About Nic</button>' +
+            '<button type="button" data-act="openRecent">Recently viewed</button><a href="./suggest.html">Suggest jobs</a><a href="/versions.html">Version history</a><button type="button" data-act="openModal">About Nic</button>' +
           '</div></details></div></div>';
       if(chipsHtml) out += '<div class="su-active-filters">' + chipsHtml + '</div>';
 
@@ -2075,7 +2113,7 @@
       if (this.state.savedOnly) {
         out += '<div style="display: flex; align-items: center; gap: 14px; margin-top: 30px; padding: 0 8px;">' +
           '<svg width="26" height="26" viewBox="0 0 24 24" fill="#D8502E" style="flex: none;"><path d="M6 3.5h12a.8.8 0 0 1 .8.8v16.2l-6.8-3.9-6.8 3.9V4.3a.8.8 0 0 1 .8-.8z"></path></svg>' +
-          '<div style="font-family: \'Archivo Black\', \'Archivo\', sans-serif; font-weight: 900; font-size: 34px; letter-spacing: -0.02em; color: ' + boardInk + ';">Saved Section</div>' +
+          '<div style="font-family: \'Archivo Black\', var(--su-body); font-weight: 900; font-size: 34px; letter-spacing: -0.02em; color: ' + boardInk + ';">Saved Section</div>' +
           '<div style="flex: 1; height: 2px; background: repeating-linear-gradient(90deg, rgba(44,33,24,0.22) 0 8px, transparent 8px 14px);"></div>' +
         '</div>';
       }
@@ -2176,13 +2214,20 @@
     },
 
     renderOverlays: function () {
+      // A same-owner sync can change Saved while this note remains open.
+      // Patch its existing control before the content-preservation early return.
+      // Preserve the newsletter iframe, focus and the note's scroll position.
+      var detailSave=document.querySelector('[data-act="detailSave"]');
+      if(detailSave){var detailSaved=this.isSaved(this.state.detailLink);detailSave.setAttribute('aria-pressed',String(detailSaved));detailSave.innerHTML=saveControl(detailSaved);}
+      var feedbackSave=document.querySelector('[data-act="feedbackSave"]');
+      if(feedbackSave){var feedbackSaved=this.isSaved(this.state.feedbackLink);feedbackSave.setAttribute('aria-pressed',String(feedbackSaved));feedbackSave.innerHTML=saveControl(feedbackSaved);}
       var self=this;
       if(this._reportedPanel && this._reportedPanel.owner!==moderationOwner()){this._reportedPanel=null;this.state.reportedOpen=false;}
       if(this.state.detailOpen&&!this.catalogJobs().some(function(job){return jobHasLink(job,self.state.detailLink);})){this.state.detailOpen=false;this.state.detailLink=null;}
       var root = document.getElementById('overlay-root');
       var previousDialog = root.querySelector('[role="dialog"]');
       var previousFocus = focusIntent(document.activeElement);
-      var dialogKey = this.state.reportedOpen ? 'reported' : this.state.detailOpen ? 'detail' : this.state.adviceOpen ? 'advice' : this.state.signupOpen ? 'signup' : this.state.feedbackOpen ? 'feedback' : this.state.lookOpen ? 'look' : this.state.modalOpen ? 'founder' : window.SUDiscovery&&window.SUDiscovery.preferencesOpen() ? 'preferences' : '';
+      var dialogKey = this.state.recentOpen ? 'recent' : this.state.reportedOpen ? 'reported' : this.state.detailOpen ? 'detail' : this.state.adviceOpen ? 'advice' : this.state.signupOpen ? 'signup' : this.state.feedbackOpen ? 'feedback' : this.state.lookOpen ? 'look' : this.state.modalOpen ? 'founder' : window.SUDiscovery&&window.SUDiscovery.preferencesOpen() ? 'preferences' : '';
       if (dialogKey && window.SUBoardControls) window.SUBoardControls.dismiss();
       if (dialogKey && _voteClose) _voteClose();
       if (!previousDialog && dialogKey) this._dialogReturn = previousFocus;
@@ -2190,7 +2235,7 @@
       this._dialogKey = dialogKey;
       // Account activation/sync can refresh the board while this note is open.
       // Preserve its controls and focus when the application question is unchanged.
-      var feedbackIdentity = dialogKey === 'feedback' ? JSON.stringify([this.state.feedbackCo, this.state.feedbackLink,!!moderationOwner(),!!this._reportBusy]) : null;
+      var feedbackIdentity = dialogKey === 'feedback' ? JSON.stringify([this.state.feedbackCo, this.state.feedbackLink,!!moderationOwner(),!!this._reportBusy,!!this._availabilityBusy]) : null;
       if (previousDialog && previousKey === 'feedback' && dialogKey === 'feedback' && this._feedbackIdentity === feedbackIdentity) { var feedbackError=document.getElementById('su-feedback-error');if(feedbackError) {feedbackError.textContent=this._feedbackError||'';feedbackError.hidden=!this._feedbackError;} return; }
       this._feedbackIdentity = feedbackIdentity;
       var preferenceOwner = dialogKey === 'preferences' ? window.SUDiscovery.dialogOwner() : null;
@@ -2203,6 +2248,11 @@
       if(previousDialog&&dialogKey==='reported'&&previousKey==='reported'&&reportedIdentity===this._reportedIdentity)return;
       this._reportedIdentity=reportedIdentity;
       var out = '';
+      if(this.state.recentOpen){
+        var recent=window.SUBoardExperience?window.SUBoardExperience.history():[], labels={viewed:'Viewed',applied:'Applied',dismissed:'Clicked out',unavailable:'Reported no longer available',saved:'Saved for later',not_fit:'Not a fit'};
+        out+='<div class="su-recent-backdrop" data-act="closeRecent"><section class="su-recent-note" data-act="stop"><button type="button" class="su-recent-close" data-act="closeRecent" aria-label="Close recently viewed">×</button><h2>Recently viewed</h2><p>On this device, for the last 30 days.</p>'+
+          (recent.length?'<ul>'+recent.map(function(item){var current=self.catalogJobs().find(function(j){return jobHasLink(j,item.link);});return '<li><strong>'+esc(item.co)+'</strong><span>'+esc(item.role)+'</span><small>'+esc(labels[item.action]||'Viewed')+'</small>'+(current?'<button type="button" data-act="recentDetail" data-link="'+esc(current.link)+'">View role</button>':'<span class="su-recent-offboard">Off the current '+(item.internship?'internships':'jobs')+' board</span>')+'</li>';}).join('')+'</ul><button type="button" data-act="clearRecent">Clear recently viewed</button>':'<p>Open a role to find it here later.</p>')+'</section></div>';
+      }
       if(dialogKey==='reported')out+=this.reportedJobsHTML();
 
       if (dialogKey === 'preferences') out += '<div class="su-preferences-overlay su-discovery" data-act="closePreferences" style="z-index:215">' + window.SUDiscovery.modalHTML(esc) + '</div>';
@@ -2210,7 +2260,7 @@
       // About modal
       if (this.state.modalOpen) {
         out += '<div class="su-founder-overlay" data-act="closeModal" style="position: fixed; inset: 0; z-index: 200; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
-          '<div class="su-founder-note" data-act="stop" style="margin: auto;width: 588px; max-width: 100%; background: #FCFAF3; border-radius: 5px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.8deg); font-family: \'Archivo\', sans-serif;">' +
+          '<div class="su-founder-note" data-act="stop" style="margin: auto;width: 588px; max-width: 100%; background: #FCFAF3; border-radius: 5px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.8deg); font-family: var(--su-body);">' +
             '<div style="position: absolute; top: -13px; left: 66px; width: 122px; height: 30px; background: rgba(228,202,128,0.72); transform: rotate(-4deg); box-shadow: 0 2px 5px rgba(44,33,24,0.14); z-index: 5;"></div>' +
             '<div style="position: absolute; top: -12px; right: 62px; width: 122px; height: 30px; background: rgba(228,202,128,0.72); transform: rotate(3.5deg); box-shadow: 0 2px 5px rgba(44,33,24,0.14); z-index: 5;"></div>' +
             '<div data-act="closeModal" style="position: absolute; top: 20px; right: 20px; width: 38px; height: 38px; border-radius: 50%; background: rgba(252,250,243,0.94); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 8; box-shadow: 0 2px 8px rgba(44,33,24,0.2);">' +
@@ -2219,7 +2269,7 @@
             '<div class="su-founder-image-wrap" style="padding: 16px 16px 0;">' +
               '<div class="su-founder-image" style="position: relative; height: 244px; overflow: hidden; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(44,33,24,0.06);">' +
                 '<img src="assets/home-founder-nic.jpg" alt="Nic, the founder, on SiriusXM" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; filter: saturate(1.04) brightness(1.02);">' +
-                '<div style="position: absolute; bottom: 14px; left: 14px; display: inline-flex; align-items: center; gap: 6px; border: 2.6px solid #FFFFFF; color: #FFFFFF; border-radius: 5px; padding: 5px 10px; font-family: \'Archivo\', sans-serif; font-weight: 900; font-size: 11.5px; letter-spacing: 0.14em; transform: rotate(-3deg); box-shadow: 0 2px 10px rgba(0,0,0,0.28);">' +
+                '<div style="position: absolute; bottom: 14px; left: 14px; display: inline-flex; align-items: center; gap: 6px; border: 2.6px solid #FFFFFF; color: #FFFFFF; border-radius: 5px; padding: 5px 10px; font-family: var(--su-body); font-weight: 900; font-size: 11.5px; letter-spacing: 0.14em; transform: rotate(-3deg); box-shadow: 0 2px 10px rgba(0,0,0,0.28);">' +
                   '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.4"></circle><path d="M8.3 12.2l2.4 2.4 4.9-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
                   'THE REAL ONE' +
                 '</div>' +
@@ -2234,12 +2284,12 @@
               '<div class="su-founder-bio" style="font-size: 15.5px; line-height: 1.62; color: #3a3026; font-weight: 500; margin-top: 18px;">I sent <strong style="font-weight: 800; color: #2C2118;">1,500 applications</strong> and got ghosted more times than I can count. Seven months later, <strong style="font-weight: 800; color: #2C2118;">Instagram</strong> said yes. <strong style="font-weight: 800; color: #2C2118;">StillUnemployed</strong> is the board I wish I\'d had. Find roles with salary information, save the ones that fit and keep your applications together.</div>' +
               '<div class="su-founder-credit" style="font-size: 13px; font-weight: 600; color: #6f6253; letter-spacing: 0.01em; margin-top: 18px;">Content Specialist at Instagram · Class of 2025</div>' +
               '<div class="su-founder-actions" style="display: flex; align-items: center; gap: 16px; margin-top: 22px; flex-wrap: wrap;">' +
-                '<a href="https://NicholasAlexis.com" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 11px; background: #5C4033; color: #F4EEE2; font-size: 16px; font-weight: 700; padding: 15px 26px; border-radius: 12px; cursor: pointer; box-shadow: 0 10px 24px rgba(44,33,24,0.22); text-decoration: none; transform: rotate(-1deg); font-family: \'Archivo\', sans-serif;">View My Portfolio' +
+                '<a href="https://NicholasAlexis.com" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 11px; background: #5C4033; color: #F4EEE2; font-size: 16px; font-weight: 700; padding: 15px 26px; border-radius: 12px; cursor: pointer; box-shadow: 0 10px 24px rgba(44,33,24,0.22); text-decoration: none; transform: rotate(-1deg); font-family: var(--su-body);">View My Portfolio' +
                   '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#F4EEE2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
                 '</a>' +
                 '<div style="font-family: \'Indie Flower\', cursive; font-size: 22px; color: #6F5E45; transform: rotate(-2deg);">- Nic</div>' +
               '</div>' +
-              '<div class="su-founder-release"><a href="/versions.html" data-su-version>Version history</a><button type="button" data-act="openWelcome">What’s new</button></div>' +
+              '<div class="su-founder-release"><a href="/versions.html" data-su-version>Version history</a></div>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -2260,17 +2310,17 @@
                 '<div style="width: 40px; height: 40px; border-radius: 50%; background: #2E7D52; display: flex; align-items: center; justify-content: center; margin: 0 auto;">' +
                   '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4 4L19 7" stroke="#F4EEE2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
                 '</div>' +
-                '<div style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 15px; color: #2A2118; margin-top: 12px;">I applied!</div>' +
+                '<div style="font-family: var(--su-body); font-weight: 800; font-size: 15px; color: #2A2118; margin-top: 12px;">I applied!</div>' +
               '</div>' +
-              '<div data-act="reportBroken" class="fbopt" style="flex: 1; cursor: pointer; background: #ECDBB7; border-radius: 6px; padding: 22px 14px 18px; text-align: center; transform: rotate(1.6deg); box-shadow: 2px 4px 9px rgba(44,33,24,0.16);">' +
+              '<div data-act="reportBroken" aria-disabled="'+!!this._availabilityBusy+'" class="fbopt" style="flex: 1; cursor: pointer; background: #ECDBB7; border-radius: 6px; padding: 22px 14px 18px; text-align: center; transform: rotate(1.6deg); box-shadow: 2px 4px 9px rgba(44,33,24,0.16);">' +
                 '<div style="width: 40px; height: 40px; border-radius: 50%; background: #D8502E; display: flex; align-items: center; justify-content: center; margin: 0 auto;">' +
                   '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 7H6.5a3.5 3.5 0 0 0 0 7H9M15 7h2.5a3.5 3.5 0 0 1 0 7H15M9 10.5h2M4 4l16 16" stroke="#F4EEE2" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
                 '</div>' +
-                '<div style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 15px; color: #3A2A1B; margin-top: 12px;">No longer open</div>' +
+                '<div style="font-family: var(--su-body); font-weight: 800; font-size: 15px; color: #3A2A1B; margin-top: 12px;">' + (this._availabilityBusy?'Sending…':'No longer available') + '</div>' +
               '</div>' +
             '</div>' +
-            '<div data-act="notFit" style="margin-top: 18px; text-align: center; font-family: \'Indie Flower\', cursive; font-size: 19px; color: #8A7558; cursor: pointer;">job wasn\'t a right fit →</div>' +
-            (moderationOwner() ? '<div style="text-align:center;margin-top:12px;"><button type="button" data-act="adminReportJob"'+(this._reportBusy?' disabled':'')+' style="font:19px/1.4 var(--su-hand,\'Indie Flower\',cursive);min-height:44px;padding:4px 10px;border:0;background:transparent;color:#A63D22;text-decoration:underline;cursor:pointer;">'+(this._reportBusy?'Reporting…':'Report job here')+'</button></div>' : '') +
+            '<button type="button" class="su-feedback-save" data-act="feedbackSave">'+saveControl(this.isSaved(this.state.feedbackLink))+'</button>' +
+            (moderationOwner() ? '<div style="text-align:center;margin-top:12px;"><button type="button" data-act="adminReportJob"'+(this._reportBusy?' disabled':'')+' style="font:19px/1.4 var(--su-hand,\'Indie Flower\',cursive);min-height:44px;padding:4px 10px;border:0;background:transparent;color:#A63D22;text-decoration:underline;cursor:pointer;">'+(this._reportBusy?'Reporting…':'Remove job')+'</button></div>' : '') +
             '<p id="su-feedback-error" class="su-action-error" role="status"'+(this._feedbackError?'':' hidden')+'>'+esc(this._feedbackError||'')+'</p>' +
           '</div>' +
         '</div>';
@@ -2341,9 +2391,9 @@
               '</div>' +
               // header
               '<div class="su-detail-company" style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 24px; color: #2C2118; line-height: 1.12; padding-right: 82px;">' + esc(dj.co) + '</div>' +
-              '<div class="su-detail-role" style="font-family: \'Archivo\', sans-serif; font-weight: 600; font-size: 16px; color: #3A2E20; margin-top: 4px; padding-right: 82px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">' + esc(dj.role) + '</div>' +
+              '<div class="su-detail-role" style="font-family: var(--su-body); font-weight: 600; font-size: 16px; color: #3A2E20; margin-top: 4px; padding-right: 82px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">' + esc(dj.role) + '</div>' +
               (dj.pay ? '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 20px; color: #2C2118; margin-top: 10px;">' + esc(cardPay(dj)) + '</div>' : '') +
-              (dmeta ? '<div style="font-family: \'Archivo\', sans-serif; font-size: 13.5px; color: #6F5E45; margin-top: 5px;">' + esc(dmeta) + '</div>' : '') +
+              (dmeta ? '<div style="font-family: var(--su-body); font-size: 13.5px; color: #6F5E45; margin-top: 5px;">' + esc(dmeta) + '</div>' : '') +
               (dj.savedUnavailable ? '<p class="su-saved-availability">'+(dj.confirmedClosed?'No longer available. You saved this job, so it stays here.':dj.savedElsewhere?'Saved from the '+(dj.internship?'internships':'jobs')+' board. Check the employer for current availability.':'This listing is off the current board. Your saved copy stays here; check the employer for availability.')+'</p>' : '') +
               payDisclosure(dj) +
               // TL;DR label (handwritten + swoosh)
@@ -2357,13 +2407,13 @@
               '<div style="margin-top: 22px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">' +
                 (_ageNote
                   ? '<span style="font-family: \'Indie Flower\', cursive; font-size: 16.5px; color: #C2552F; line-height: 1.2; text-align: left; max-width: 60%;">' + _ageNote + '</span>'
-                  : '<span></span>') +
-                '<button type="button" data-act="' + (dj.savedUnavailable ? 'detailArchived' : dj.internship && !internshipCanApply(dj) ? 'detailProgram' : 'detailApply') + '" data-link="' + esc(dj.link) + '" data-co="' + esc(dj.co) + '" style="border:0; background:none; padding:0; font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 21px; color: ' + _applyC + '; display: inline-flex; align-items: center; cursor: pointer; flex: none;">' + (dj.savedUnavailable ? 'View original listing' : dj.internship && !internshipCanApply(dj) ? 'View program' : 'Apply Now') + _arrow + '</button>' +
+                  : '<button class="su-detail-save" type="button" data-act="detailSave" data-link="'+esc(dj.link)+'" aria-pressed="'+this.isSaved(dj.link)+'">'+saveControl(this.isSaved(dj.link))+'</button>') +
+                '<button type="button" data-act="' + (dj.savedUnavailable ? 'detailArchived' : dj.internship && !internshipCanApply(dj) ? 'detailProgram' : 'detailApply') + '" data-link="' + esc(dj.link) + '" data-co="' + esc(dj.co) + '" style="border:0; background:none; padding:0; font-family: var(--su-body); font-weight: 800; font-size: 21px; color: ' + _applyC + '; display: inline-flex; align-items: center; cursor: pointer; flex: none;">' + (dj.savedUnavailable ? 'View original listing' : dj.internship && !internshipCanApply(dj) ? 'View program' : 'Apply Now') + _arrow + '</button>' +
               '</div>' +
               // recipe capture: rotating one-liner + Beehiiv embed. ✕ hides it until reload.
               (!_rShow ? '' :
               '<div style="margin-top: 20px; border-top: 1.5px dashed rgba(44,33,24,0.22); padding-top: 12px; position: relative;">' +
-                '<div data-act="hideRecipe" data-co="' + esc(_rCopy) + '" data-link="' + esc(dj.link) + '" title="hide this" style="position: absolute; top: 5px; right: 0; width: 20px; height: 20px; border-radius: 50%; background: rgba(44,33,24,0.06); display: flex; align-items: center; justify-content: center; cursor: pointer; font-family: \'Archivo\', sans-serif; font-size: 11px; color: #6F5E45;">✕</div>' +
+                '<div data-act="hideRecipe" data-co="' + esc(_rCopy) + '" data-link="' + esc(dj.link) + '" title="hide this" style="position: absolute; top: 5px; right: 0; width: 20px; height: 20px; border-radius: 50%; background: rgba(44,33,24,0.06); display: flex; align-items: center; justify-content: center; cursor: pointer; font-family: var(--su-body); font-size: 11px; color: #6F5E45;">✕</div>' +
                 '<div style="font-family: \'Indie Flower\', cursive; font-size: 16px; color: #2C2118; line-height: 1.3; padding-right: 26px;">' + esc(_rCopy) + '</div>' +
                 newsletterHtml('signup:' + _rCopy) +
               '</div>') +
@@ -2418,7 +2468,7 @@
               '<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.4" stroke-linecap="round"></path></svg>' +
             '</div>' +
             '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 24px; line-height: 1.3; color: #2A2118; padding-right: 24px;">' + esc(this.state.signupOpen) + '</div>' +
-            '<div style="font-family: \'Poppins\', sans-serif; font-size: 14px; line-height: 1.6; color: #3a3026; margin-top: 14px;">One email a week: the exact steps I used to go from 1,500 applications and silence to a 6-figure offer at Instagram.</div>' +
+            '<div style="font-family: var(--su-body); font-size: 14px; line-height: 1.6; color: #3a3026; margin-top: 14px;">One email a week: the exact steps I used to go from 1,500 applications and silence to a 6-figure offer at Instagram.</div>' +
             newsletterHtml('signup-popup') +
             '<div style="font-family: \'Indie Flower\', cursive; font-size: 14.5px; color: #8A7558; margin-top: 8px;">every week · easy unsub&nbsp;&nbsp;- Nic</div>' +
           '</div>' +
@@ -2460,7 +2510,7 @@
       document.body.classList[dialog ? 'add' : 'remove']('su-dialog-open');
       if (dialog) {
         dialog.setAttribute('role', 'dialog'); dialog.setAttribute('aria-modal', 'true'); dialog.tabIndex = -1;
-        dialog.setAttribute('aria-label', { detail:'Job details', advice:'Job hunt advice', signup:'Newsletter signup', feedback:'Application feedback', look:'Choose a theme', founder:'About Nic', preferences:'Your preferences', reported:'Reported jobs' }[dialogKey] || 'Details');
+        dialog.setAttribute('aria-label', { detail:'Job details', advice:'Job hunt advice', signup:'Newsletter signup', feedback:'Application feedback', look:'Choose a theme', founder:'About Nic', preferences:'Your preferences', reported:'Reported jobs', recent:'Recently viewed' }[dialogKey] || 'Details');
         if (previousKey === dialogKey && previousFocus && previousFocus.act && previousFocus.act !== 'stop') restoreIntent(previousFocus);
         if (!dialog.contains(document.activeElement)) dialog.focus({ preventScroll:true });
       } else if (previousDialog) { restoreIntent(this._dialogReturn); this._dialogReturn = null; }
@@ -2471,7 +2521,7 @@
       var panel=this._reportedPanel;if(!panel)return '';
       var button='font:inherit;color:#2A2118;background:#F6E24B;border:1px solid #79694D;border-radius:3px;min-height:44px;padding:8px 12px;cursor:pointer;';
       var html='<div data-act="closeReportedJobs" style="position:fixed;inset:0;z-index:215;background:rgba(44,33,24,.58);display:flex;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;">'+
-        '<div data-act="stop" style="margin:auto;width:560px;max-width:100%;box-sizing:border-box;background:#FCFAF3;color:#2A2118;box-shadow:0 20px 70px rgba(44,33,24,.35);padding:20px;border-radius:5px;font:16px/1.5 Archivo,sans-serif;overflow-wrap:anywhere;">'+
+        '<div data-act="stop" style="margin:auto;width:560px;max-width:100%;box-sizing:border-box;background:#FCFAF3;color:#2A2118;box-shadow:0 20px 70px rgba(44,33,24,.35);padding:20px;border-radius:5px;font:16px/1.5 var(--su-body);overflow-wrap:anywhere;">'+
         '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;"><h2 style="font:28px/1.2 var(--su-hand,Indie Flower),cursive;margin:0;">Reported jobs</h2><button type="button" data-act="closeReportedJobs" aria-label="Close reported jobs" style="'+button+'">Close</button></div>'+
         '<p style="margin:12px 0;">Review reported roles. Clearing a report lets available roles return to the board.</p>'+
         '<p role="status" style="margin:12px 0;">'+esc(panel.error||panel.message||(panel.loading?'Loading reported jobs…':''))+'</p>';
@@ -2539,6 +2589,36 @@
       document.querySelectorAll('[data-act="toggleCat"],[data-act="toggleFilters"]').forEach(function (button) { button.setAttribute('aria-expanded','false'); });
     },
 
+    reportUnavailable: function () {
+      var self=this,link=this.state.feedbackLink,job=this.catalogJobs().find(function(j){return jobHasLink(j,link);});
+      var runtime=window.SUBoardRuntime,owner=runtime&&runtime.owner();
+      if(this._availabilityBusy||!job)return;
+      var attempt=this._availabilityAttempt;
+      if(!attempt||attempt.link!==link||attempt.owner!==owner){
+        try{attempt={link:link,owner:owner,id:window.crypto.randomUUID()};}catch(_){this._feedbackError='Could not prepare this report. Please reopen the job.';this.renderOverlays();return;}
+        this._availabilityAttempt=attempt;
+      }
+      this._availabilityBusy=true;this._feedbackError='';this.renderOverlays();
+      function current(){return (!runtime||runtime.owner()===owner)&&self._availabilityAttempt===attempt;}
+      var service=window.SUJobModeration;
+      Promise.resolve().then(function(){if(!service||!service.reportUnavailable)throw Error('Reporting is unavailable. Please try again.');return service.reportUnavailable(link,{requestId:attempt.id,current:current});}).then(function(receipt){
+        if(!current())return;self._availabilityBusy=false;self._availabilityAttempt=null;
+        if(window.SUBoardExperience)window.SUBoardExperience.record(job,'unavailable');
+        if(window.SUDiscovery)window.SUDiscovery.dismiss(link,'unavailable',{quiet:true});else self._unavailableLocal=(self._unavailableLocal||[]).concat(link);
+        uxEvent('feedback_unavailable');
+        if(self.state.feedbackOpen&&sameJobLink(self.state.feedbackLink,link))self.setState({feedbackOpen:false});
+        self.render();
+        suToast(receipt.globallyHidden?'Reported. Temporarily off the board while we check.':'Reported for a check. Hidden from your board.');
+      }).catch(function(failure){if(!current())return;self._availabilityBusy=false;self._feedbackError=failure.message||'Could not confirm this report. Please retry.';self.renderOverlays();});
+    },
+
+    dismissFeedback: function () {
+      if(!this.state.feedbackOpen)return;
+      var job=this.catalogJobs().find(function(j){return jobHasLink(j,App.state.feedbackLink);});
+      if(window.SUBoardExperience&&job)window.SUBoardExperience.dismiss(job);
+      uxEvent('feedback_dismiss');this.setState({feedbackOpen:false});
+    },
+
     // ---- event wiring (single delegated listener on document) -------------
     bindEvents: function () {
       if (this._eventsBound) return;
@@ -2562,10 +2642,10 @@
         if (e.key === 'Escape') {
           if(window.SUBoardControls)window.SUBoardControls.dismiss();
           if (dialog) {
-            if(self._dialogKey==='feedback')uxEvent('feedback_dismiss');
+            if(self._dialogKey==='feedback')self.dismissFeedback();
             e.preventDefault();
             if (self._dialogKey === 'preferences' && window.SUDiscovery) { window.SUDiscovery.closePreferences(); return; }
-            self.setState({ detailOpen:false, feedbackOpen:false, adviceOpen:null, signupOpen:null, lookOpen:false, modalOpen:false, reportedOpen:false });
+            self.setState({ detailOpen:false, feedbackOpen:false, adviceOpen:null, signupOpen:null, lookOpen:false, modalOpen:false, reportedOpen:false, recentOpen:false });
           } else if (self.state.openPanel) self.setState({ openPanel:null });
           return;
         }
@@ -2606,7 +2686,17 @@
           case 'openModal': self.setState({ modalOpen: true }); break;
           case 'closeModal': self.setState({ modalOpen: false }); break;
           case 'closePreferences': if(window.SUDiscovery)window.SUDiscovery.closePreferences();break;
-          case 'closeFeedback': uxEvent('feedback_dismiss'); self.setState({ feedbackOpen: false }); break;
+          case 'closeFeedback': self.dismissFeedback(); break;
+          case 'feedbackSave': {
+            var saveLink=self.state.feedbackLink;
+            if(self.isSaved(saveLink)||self.toggleSave(saveLink)){self.setState({feedbackOpen:false});suToast('Saved for later. Find it in Saved.');}
+            break;
+          }
+          case 'detailSave': self.toggleSave(el.getAttribute('data-link'));break;
+          case 'openRecent': self.setState({recentOpen:true});break;
+          case 'closeRecent': self.setState({recentOpen:false});break;
+          case 'clearRecent': if(window.SUBoardExperience)window.SUBoardExperience.clearHistory();self.renderOverlays();break;
+          case 'recentDetail': {var recentLink=el.getAttribute('data-link');beginJobDetail(self,recentLink);self.setState({recentOpen:false,detailOpen:true,detailLink:recentLink});break;}
           case 'adminReportJob': self.reportJob(); break;
           case 'openReportedJobs': self.openReportedJobs(); break;
           case 'closeReportedJobs': self.closeReportedJobs(); break;
@@ -2620,6 +2710,7 @@
             }
             var tracked = trackerLog(self.state.feedbackCo, self.state.feedbackLink, tj ? tj.role : '');
             if(!tracked) { self._feedbackError='Could not add this to your tracker. Please try I applied again. Your answer is still here.'; self.renderOverlays(); break; }
+            if(window.SUBoardExperience&&tj)window.SUBoardExperience.record(tj,'applied');
             postReport('applied', self.state.feedbackCo, self.state.feedbackLink);
             if(window.SUDiscovery)window.SUDiscovery.dismiss(self.state.feedbackLink,'applied');
             self.setState({ feedbackOpen: false });
@@ -2632,23 +2723,7 @@
             if(window.SUDiscovery&&window.SUDiscovery.dismiss(self.state.feedbackLink,'not_fit')&&window.SUAnalytics)window.SUAnalytics.emit('feedback_not_fit',{});
             self.setState({feedbackOpen:false});self.render();break;
           }
-          case 'reportBroken': {
-            uxEvent('feedback_unavailable');
-            self.clearFeedbackRedirect();
-            var _bl = self.state.feedbackLink;
-            // SPAM GUARD (Nic, 2026-07-11): max 3 reports/min and 10/day per visitor. Over the
-            // limit the UI still says thanks (looks registered) but nothing is logged — shadow
-            // throttle, so spammers can't tell they're cut off. suRateOk handles the counters.
-            if (suRateOk('br', 3, 60) && suRateOk('brDay', 10, 86400)) {
-              postReport('gone_report', self.state.feedbackCo, _bl);
-            }
-            if(window.SUDiscovery)window.SUDiscovery.dismiss(_bl,'unavailable');
-            else {try{var legacy=JSON.parse(localStorage.getItem('su_reported_links')||'[]');if(legacy.indexOf(_bl)<0)legacy.push(_bl);localStorage.setItem('su_reported_links',JSON.stringify(legacy));}catch(e){}self.jobs=self.jobs.filter(function(j){return !jobHasLink(j,_bl);});}
-            self.state.feedbackOpen = false;
-            self.render();
-            suToast('Hidden from your board. You can restore it with Show hidden jobs.');
-            break;
-          }
+          case 'reportBroken': self.reportUnavailable();break;
           case 'closeDetail': self.setState({ detailOpen: false }); break;
           case 'hideRecipe':
             uxEvent('newsletter_dismiss');
@@ -2733,16 +2808,16 @@
           }
           case 'toggleCat': self.setState({ openPanel: self.state.openPanel === 'cat' ? null : 'cat' }); break;
           case 'toggleFilters': self.setState({ openPanel: self.state.openPanel === 'filters' ? null : 'filters' }); break;
-          case 'clearAll': self.setState({ q: '', cat: 'all', ws: 'Any', st: 'all', pr: 'Any', fr: 'Any', theme: null }); break;
+          case 'clearAll': self.setState({ q: '', cat: 'all', ws: 'Any', st: 'all', pr: 'Any', salaryMin:'', salaryMax:'', fr: 'Any', theme: null }); break;
 
           case 'cat': self.setState({ cat: el.getAttribute('data-val'), openPanel: null }); break;
           case 'ws': self.setState({ ws: el.getAttribute('data-val') }); break;
           case 'pr': self.setState({ pr: el.getAttribute('data-val') }); break;
-          case 'fr': self.setState({ fr: el.getAttribute('data-val') }); break;
+          case 'fr': self.setState({ fr: el.getAttribute('data-val'),recentSeed:String(Date.now()) }); break;
 
           case 'chipTheme': self.setState({ theme: null }); break;
           case 'chipWs': self.setState({ ws: 'Any' }); break;
-          case 'chipPr': self.setState({ pr: 'Any' }); break;
+          case 'chipPr': self.setState({ pr: 'Any', salaryMin:'',salaryMax:'' }); break;
           case 'chipFr': self.setState({ fr: 'Any' }); break;
           case 'chipSt': self.setState({ st: 'all' }); break;
 
@@ -2843,6 +2918,14 @@
 
       // state <select> (delegated change)
       document.addEventListener('change', function (e) {
+        if(e.target&&e.target.getAttribute&&e.target.getAttribute('data-salary')){
+          var field=e.target.getAttribute('data-salary'), raw=e.target.value, value=raw===''?'':String(Math.max(0,Math.min(10000000,Number(raw)||0)));
+          if(e.target.getAttribute('data-unlimited')===value)value='';
+          var patch={pr:'Any'};patch[field]=value;
+          if(field==='salaryMin'&&Number(self.state.salaryMax)>0&&Number(value)>Number(self.state.salaryMax))patch.salaryMax=value;
+          if(field==='salaryMax'&&Number(value)>0&&Number(value)<Number(self.state.salaryMin))patch.salaryMin=value;
+          self.setState(patch);return;
+        }
         if (e.target && e.target.id === 'su-state') {
           // analytics: state filter — additive
           if (typeof window.suTrack === 'function') window.suTrack('filter', 'state', e.target.value, '');
@@ -3062,11 +3145,13 @@
         if (!_rates.length || Math.max.apply(null, _rates) < 25) continue;
       }
       var loc = get(cells, iLoc);
-      (retired?archived:jobs).push({
+      var outsideEarlyCareer=window.SUBoardExperience && window.SUBoardExperience.senior(role);
+      (retired||outsideEarlyCareer?archived:jobs).push({
         co: co, role: role, link: safeUrl(get(cells, iLink)), loc: loc, state: deriveState(loc),
         style: get(cells, iType), ind: get(cells, iCat), pay: get(cells, iPay),
         exp: normExp(get(cells, iExp)), desc: get(cells, iDesc), tldr: get(cells, iTldr),
         pick: get(cells, iPick).toLowerCase() === 'featured',
+        handpicked: /^(handpicked|human reviewed)$/.test(get(cells,col('Review provenance')).toLowerCase()),
         added: get(cells, iAdded),    // yyyy-mm-dd — when we added it
         posted: get(cells, iPosted)   // yyyy-mm-dd — when the COMPANY posted it (from the ATS API)
       });
@@ -3101,10 +3186,14 @@
   var feedRequest=null, lastFeedCheck=0, firstFeed=true, initialView=null;
   function checkViewOwner(){
     var runtime=window.SUBoardRuntime;
-    if(!runtime||!runtime.checkOwner||!runtime.checkOwner())return false;
+    var changed=runtime&&runtime.checkOwner&&runtime.checkOwner();
+    var stale=window.SUStore&&window.SUStore.current&&!window.SUStore.current();
+    if(!changed&&!stale)return false;
     clearTimeout(App._renderTimer);App._renderTimer=null;
-    Object.assign(App.state,{q:'',cat:'all',ws:'Any',pr:'Any',st:'all',fr:'Any',savedOnly:false});
+    Object.assign(App.state,{q:'',cat:'all',ws:'Any',pr:'Any',salaryMin:'',salaryMax:'',st:'all',fr:'Any',savedOnly:false,recentOpen:false});
+    App._activeDemotions=null;App._unavailableLocal=[];App._availabilityBusy=false;App._availabilityAttempt=null;
     App._personalOrder=null;App._profileGeneration=-1;App._feedInteracted=false;
+    if(document.getElementById('overlay-root'))App.renderOverlays();
     return true;
   }
   function restoreView(runtime,initial){
@@ -3179,6 +3268,7 @@
     refreshFeed();
     window.addEventListener('su:auth-changed',function(){
       checkViewOwner();
+      App._availabilityBusy=false;App._availabilityAttempt=null;App._activeDemotions=null;App._unavailableLocal=[];App.state.recentOpen=false;
       if(App._reportAttempt&&App._reportAttempt.owner!==moderationOwner()){App._reportBusy=false;App._reportAttempt=null;}
       if(App._reportToastOwner!==moderationOwner())clearReportedToast();App.renderOverlays();
     });

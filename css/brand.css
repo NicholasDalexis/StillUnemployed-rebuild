@@ -16,7 +16,7 @@
   --su-orange: #C2552F;
   --su-orange-text: #A63D22;
   --su-hand: 'Indie Flower', cursive;
-  --su-body: 'Archivo', sans-serif;
+  --su-body: 'Lexend', system-ui, sans-serif;
   --su-display: 'Archivo Black', 'Archivo', sans-serif;
   --su-tape: rgba(228, 205, 145, .62);
   --su-note-shadow: 3px 6px 13px rgba(44, 33, 24, .17);
@@ -30,3 +30,8 @@
   --su-space-8: 32px;
   --su-space-12: 48px;
 }
+
+/* Reading text uses the shared body face. Component headlines and handwritten
+   controls keep their explicit display/hand roles. */
+body { font-family: var(--su-body); }
+.su-body { font-family: var(--su-body); }

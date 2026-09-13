@@ -6,8 +6,8 @@ const Dashboard=require('../../js/analytics-dashboard.js');
 const {database}=require('./helpers/analytics-store.cjs');
 const now=Date.UTC(2026,8,6),themes=['original','girly','poker','mermaid','bratt','noir','beauty','chess'];
 function event(theme='poker',vote='up',id='theme-event-00001'){return {id,name:'theme_vote',theme,vote,page:'board',occurredAt:now};}
-function deps(){return {env:{SU_ALLOWED_ORIGINS:'http://localhost:8013',SU_ANALYTICS_SECRET:'synthetic-only',SU_ANALYTICS_ADMIN_UIDS:'owner'},db:database(),jobs:{},now:()=>now,auth:{verifyIdToken:async token=>({uid:token})}};}
-function request(actor,events,consent={analytics:true,personalization:false}){return {httpMethod:'POST',headers:{origin:'http://localhost:8013',authorization:'Bearer '+actor},body:JSON.stringify({session:'session-votes-0001',events,consent})};}
+function deps(){return {env:{SU_ALLOWED_ORIGINS:'https://stillunemployed.com',SU_ANALYTICS_SECRET:'synthetic-only',SU_ANALYTICS_ADMIN_UIDS:'owner'},db:database(),jobs:{},now:()=>now,auth:{verifyIdToken:async token=>({uid:token})}};}
+function request(actor,events,consent={analytics:true,personalization:false}){return {httpMethod:'POST',headers:{origin:'https://stillunemployed.com',authorization:'Bearer '+actor},body:JSON.stringify({session:'session-votes-0001',events,consent})};}
 
 test('server preserves all eight exact theme keys and both directions, and rejects incomplete votes',()=>{
  for(const theme of themes)for(const vote of ['up','down']){

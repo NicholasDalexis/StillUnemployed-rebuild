@@ -22,9 +22,8 @@
 # appId) is a PUBLIC IDENTIFIER, not a secret — Google's own docs say to ship it in client-side JS.
 # It grants nothing on its own. The actual security for this feature is:
 #   1. Firestore rules  — a user can only read/write `users/{their own uid}`; everything else denied.
-#   2. Authorized domains — only `localhost` + `preview--stillunemployed.netlify.app` can sign in.
-#      stillunemployed.com is deliberately NOT authorized.
-#   3. js/auth.js hard-gates itself off on the production hostname.
+#   2. Authorized domains include the explicit localhost, preview and production hosts.
+#   3. js/auth.js admits only those known hosts; preview analytics remains excluded.
 #
 # Both auth.js and __/firebase/init.json contain only the public Firebase web configuration.
 # Scoped to these two paths, so a REAL secret leaking anywhere else in the repo still fails the build.
@@ -131,10 +130,8 @@
     #   www.gstatic.com          -> the Firebase SDK modules (script-src)
     #   identitytoolkit/securetoken/firestore .googleapis.com -> auth + data (connect-src)
     #   accounts.google.com + the project's firebaseapp.com -> the sign-in popup (frame-src)
-    # NOTE: js/auth.js hard-gates itself OFF on stillunemployed.com, so production never contacts
-    # any of these. Allowing a host the live site never talks to costs nothing; a CSP is a ceiling,
-    # not a floor. The alternative (a second, preview-only CSP) is a second thing to keep in sync,
-    # and this repo has been bitten three times by exactly that.
+    # The known production and preview hosts share the same Firebase auth handshake.
+    # Preview activity remains excluded from optional production analytics.
     # Firebase Auth uses the Google API loader for its popup/redirect iframe handshake.
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com https://lh3.googleusercontent.com; connect-src 'self' https://docs.google.com https://script.google.com https://script.googleusercontent.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://www.gstatic.com; frame-src 'self' https://subscribe-forms.beehiiv.com https://accounts.google.com https://*.firebaseapp.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
 

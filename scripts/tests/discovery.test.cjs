@@ -82,7 +82,9 @@ test('Board menu tools reflect only the current account and expose disabled empt
 
 test('dismissal notice expires after five seconds, resets for a new action and never crosses account ownership',()=>{
  const f=fixture();f.sign('alice');f.d.dismiss(f.app.jobs[0].link,'not_fit');assert.match(f.html(),/su-discovery-feedback/);f.advance(4999);assert.match(f.html(),/Undo/);
- f.d.dismiss('https://example.org/jobs/2','applied');f.advance(1);assert.match(f.html(),/Application noted/);f.advance(4999);assert.equal(f.html(),'');assert(f.d.hidden(f.app.jobs[0]),'expiry only clears the notice, not the saved disposition');
+ f.d.dismiss('https://example.org/jobs/2','applied');f.advance(1);assert.match(f.html(),/Added to Tracker/);f.advance(4999);assert.equal(f.html(),'');assert(f.d.hidden(f.app.jobs[0]),'expiry only clears the notice, not the saved disposition');
  f.d.dismiss(f.app.jobs[0].link,'not_fit');f.sign('bob');f.advance(5000);assert.equal(f.html(),'');assert.equal(f.d.hidden(f.app.jobs[0]),false);
  f.d.dismiss(f.app.jobs[0].link,'not_fit');f.action('undo');assert.match(f.html(),/Restored/);f.advance(5000);assert.equal(f.html(),'');assert.equal(f.d.hidden(f.app.jobs[0]),false);
 });
+
+test('study synonyms are positive hints and phrase boundaries avoid incidental text matches',()=>{for(const major of ['B.F.A. in visual communications','Communication','Mass communications','Cognitive Science','Information Systems','Photojournalism'])assert.ok(Object.keys(D.fieldBoost({major})).length,major);assert.equal(D.studyPhrase('Work with partners and departments','art'),false);assert.equal(D.studyPhrase('We welcome Fine Arts and related majors','fine arts'),true);assert.deepEqual(D.fieldBoost({major:'Department of transportation'}),{});});

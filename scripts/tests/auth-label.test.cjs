@@ -30,18 +30,18 @@ async function authUI(hostname = 'preview--stillunemployed.netlify.app', options
 test('auth shows Sign in when signed out and Account when authenticated', async () => {
   const ui = await authUI();
   assert.equal(ui.label.textContent, 'Loading…');assert.equal(ui.button.dataset.state, 'loading');assert.equal(ui.button.disabled,true);
-  ui.signIn(null);assert.equal(ui.label.textContent,'Sign in');assert.equal(ui.button.dataset.state,'signed-out');assert.equal(ui.button.disabled,false);
+  ui.signIn(null);assert.equal(ui.label.textContent,'Sign in with Google');assert.equal(ui.button.dataset.state,'signed-out');assert.equal(ui.button.disabled,false);
   ui.signIn({ uid:'test-user', email:'test@example.invalid' });
   assert.equal(ui.label.textContent, 'Account');assert.equal(ui.button.dataset.state, 'synced');
   assert.match(ui.attrs['aria-label'], /Saved jobs and tracker synced/);
   assert.match(ui.attrs['aria-label'], /test@example\.invalid/);
   ui.syncError();assert.equal(ui.label.textContent, 'Account');assert.match(ui.attrs['aria-label'], /Sync failed/);assert.equal(ui.attrs['data-su-help'],'You’re signed in. Click to retry syncing your jobs.');
-  ui.signIn(null);assert.equal(ui.label.textContent, 'Sign in');
+  ui.signIn(null);assert.equal(ui.label.textContent, 'Sign in with Google');
 });
 
-test('public production hostnames still do not initialize Google authentication', async () => {
+test('both public production hostnames initialize Google authentication', async () => {
   for (const hostname of ['stillunemployed.com', 'www.stillunemployed.com']) {
-    const ui = await authUI(hostname);assert.equal(ui.imports, 0);assert.equal(ui.label.textContent, '');
+    const ui = await authUI(hostname);assert.equal(ui.imports, 3);ui.signIn(null);assert.equal(ui.label.textContent, 'Sign in with Google');
   }
 });
 
@@ -67,3 +67,5 @@ test('confirmed Google identity can request a dashboard token when the page has 
  assert.equal(ui.api.accountCurrent(),true);assert.equal(await ui.api.getToken(),'synthetic-token');assert.equal(ui.api.qaAdmin(),true);
  ui.signIn(null);assert.equal(ui.api.accountCurrent(),false);await assert.rejects(()=>ui.api.getToken(),/Sign in required/);
 });
+
+test('unknown hostnames cannot initialize account access',async()=>{const ui=await authUI('attacker.example.com');assert.equal(ui.imports,0);assert.equal(ui.api,undefined);});

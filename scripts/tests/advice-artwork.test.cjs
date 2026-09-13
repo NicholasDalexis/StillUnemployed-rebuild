@@ -88,13 +88,40 @@ test('advice copy has no free-product claims, and browser consumers receive the 
   for (const id of Art.ids) assert.equal(context.window.SUAdviceArt.html(id, false), Art.html(id, false));
 });
 
-test('the four sales lines become a quiet optional invitation without changing their advice or identities', () => {
+test('the four sales lines remain quiet optional invitations with their original identities and artwork', () => {
   for (const id of ['board-trap', 'ghosted', 'wish-list', 'resume-layout']) {
     const before = baseNotes.find(note => note.id === id);
     const after = notes.find(note => note.id === id);
     assert.equal(after.sell, 'More notes like this from The Job Hunt Recipe.');
-    const { sell:_beforeSell, ...originalAdvice } = before;
-    const { sell:_afterSell, ...currentAdvice } = after;
-    assert.deepEqual(currentAdvice, originalAdvice, id + ' keeps its original advice and routing fields');
+    for(const key of ['id','g','d'])assert.equal(after[key],before[key],id + ' keeps its identity and artwork');
   }
+});
+
+test('every effective advice note is two short sentences or at most three concise bullets',()=>{
+  const words=text=>String(text||'').trim().split(/\s+/).filter(Boolean).length;
+  const sentences=new Intl.Segmenter('en',{granularity:'sentence'});
+  for(const note of notes){
+    const why=note.why;
+    if(typeof why==='string'){
+      assert(words(why)<=45,note.id+' remains brief');
+      assert([...sentences.segment(why)].length<=2,note.id+' has at most two sentences');
+    }else{
+      assert(Array.isArray(why.bullets)&&why.bullets.length<=3,note.id);
+      for(const bullet of why.bullets)assert(words(bullet)<=16,note.id+' concise bullet');
+      assert(words([why.intro,...why.bullets,why.outro].join(' '))<=45,note.id);
+    }
+  }
+});
+
+test('shortening retains the qualification, date and deadline caveats',()=>{
+  const note=id=>notes.find(note=>note.id===id);
+  assert.match(note('wish-list').why,/required qualifications.*accepted alternatives/i);
+  assert.doesNotMatch(JSON.stringify(note('wish-list')),/not mandatory|everything.*negotiable/i);
+  assert.match(note('experience-internship').why,/real title and dates.*full-time experience requirement/i);
+  assert.match(note('experience-honest-dates').why,/same three months do not become six months/i);
+  assert.match(note('experience-graduation').why,/asks for dates, answer honestly/i);
+  assert.match(note('no-weekends').why,/do not wait.*miss a deadline/i);
+  assert.match(note('first-come').why,/do not assume.*arrival order/i);
+  assert.match(note('canva-resume').why,/tool alone does not determine/i);
+  assert.doesNotMatch(JSON.stringify(notes),/2 out of 5|gets you auto-rejected|recruiters read applications in the order/i);
 });

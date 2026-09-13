@@ -13,7 +13,7 @@
     timer=null;
     if(!pending||seen(pending)||Date.now()-started>15000||pending==='saved'&&!hasSaved()){pending=false;return;}
     if(!guest()){if(root.SUAuth&&root.SUAuth.signedIn())pending=false;return;}
-    if(root.document.hidden||root.document.querySelector('[aria-modal="true"],dialog[open],.su-launch-toast,.su-feedback-toast,#su-tracker-nudge,#su-saved-nudge')){
+    if(root.document.hidden||root.document.querySelector('[aria-modal="true"],dialog[open],.su-launch-toast,.su-feedback-toast,.su-compact-feedback,#su-tracker-nudge,#su-saved-nudge')){
       timer=root.setTimeout(attempt,500);return;
     }
     // Save the receipt before displaying. Storage failure stays quiet instead of nagging.
