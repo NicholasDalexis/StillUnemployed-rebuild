@@ -128,10 +128,72 @@ test('state filters distinguish restricted remote jobs from unrestricted US remo
  assert.equal(jobs[0].state,'NY');assert.equal(jobs[1].state,'Remote');b.app.jobs=jobs;b.app.state.st='CA';assert.deepEqual(Array.from(b.app.computeShown().shown,j=>j.link),['https://example.com/us']);
  b.app.state.st='NY';assert.equal(b.app.computeShown().shown.length,2);
 });
-test('reset all filters clears search and category as well as detailed filters',()=>{
- const b=board();b.init();b.app.setState({q:'nothing matches',cat:'Social',ws:'Hybrid',st:'NY',pr:'$100K+',fr:'Recently added',theme:'social',openPanel:'filters'});
+test('reset all filters clears search, category and both salary bounds',()=>{
+ const b=board();b.init();b.app.setState({q:'nothing matches',cat:'Social',ws:'Hybrid',st:'NY',pr:'$100K+',salaryMin:'45000',salaryMax:'95000',fr:'Recently added',theme:'social',openPanel:'filters'});
  b.grid.querySelector('[data-act="clearAll"]').click();
- for(const [key,value]of Object.entries({q:'',cat:'all',ws:'Any',st:'all',pr:'Any',fr:'Any',theme:null}))assert.equal(b.app.state[key],value,key);assert.equal(b.app.computeShown().shown.length,1);
+ for(const [key,value]of Object.entries({q:'',cat:'all',ws:'Any',st:'all',pr:'Any',salaryMin:'',salaryMax:'',fr:'Any',theme:null}))assert.equal(b.app.state[key],value,key);assert.equal(b.app.computeShown().shown.length,1);
+ assert.equal(b.document.getElementById('su-salary-min').value,'');assert.equal(b.document.getElementById('su-salary-max').value,'');
+});
+test('salary text blur cannot swallow the next Reset click or restore its cleared value',()=>{
+ const b=board();b.init();b.app.setState({openPanel:'filters'});
+ const min=b.document.getElementById('su-salary-min'),reset=b.grid.querySelector('[data-act="clearAll"]'),before=b.grid.writes;
+ min.focus();min.value='45000';b.fire('input',min);
+ b.fire('pointerdown',reset);b.fire('change',min);b.fire('focusout',min,{relatedTarget:reset});reset.focus();
+ b.runTimers(0);assert.equal(b.grid.writes,before);assert.equal(reset.isConnected,true);assert.equal(b.app.state.salaryMin,'45000');
+ b.fire('pointerup',reset);reset.click();b.runTimers(0);
+ assert.equal(b.app.state.salaryMin,'');assert.equal(b.app.state.salaryMax,'');assert.equal(b.document.getElementById('su-salary-min').value,'');
+});
+test('salary text commits preserve the next field and native state select until their actions finish',()=>{
+ const b=board();b.init();b.app.setState({openPanel:'filters'});
+ const min=b.document.getElementById('su-salary-min'),max=b.document.getElementById('su-salary-max'),state=b.document.getElementById('su-state'),before=b.grid.writes;
+ min.focus();min.value='45000';b.fire('input',min);
+ b.fire('pointerdown',max);b.fire('change',min);b.fire('focusout',min,{relatedTarget:max});max.focus();b.fire('pointerup',max);max.click();b.runTimers(0);
+ assert.equal(b.document.activeElement,max);assert.equal(max.isConnected,true);assert.equal(b.grid.writes,before);assert.equal(b.app.state.salaryMin,'45000');
+ max.value='95000';b.fire('input',max);
+ b.fire('pointerdown',state);b.fire('change',max);b.fire('focusout',max,{relatedTarget:state});state.focus();b.fire('pointerup',state);state.click();b.runTimers(0);
+ assert.equal(state.isConnected,true);assert.equal(b.document.activeElement,state);assert.equal(b.grid.writes,before);assert.equal(b.app.state.salaryMax,'95000');
+ state.value='NY';b.fire('change',state);b.runTimers(0);assert.equal(b.app.state.st,'NY');assert.equal(b.app.state.salaryMin,'45000');assert.equal(b.app.state.salaryMax,'95000');
+});
+test('salary keyboard blur saves bounds and renders once focus leaves the filters',()=>{
+ const b=board();b.init();b.app.setState({openPanel:'filters'});
+ const min=b.document.getElementById('su-salary-min'),max=b.document.getElementById('su-salary-max'),before=b.grid.writes;
+ min.focus();min.value='45000';b.fire('input',min);b.fire('change',min);b.fire('focusout',min,{relatedTarget:max});max.focus();b.runTimers(0);
+ assert.equal(b.app.state.salaryMin,'45000');assert.equal(b.grid.writes,before);
+ b.fire('focusout',max,{relatedTarget:b.document.body});b.document.body.focus();b.runTimers(0);assert.equal(b.grid.writes,before+1);
+ const current=b.document.getElementById('su-salary-max');current.focus();current.value='95000';b.fire('input',current);b.fire('keydown',current,{key:'Enter'});
+ assert.equal(b.app.state.salaryMax,'95000');assert.equal(b.document.getElementById('su-salary-max').value,'95,000');
+});
+test('salary drag formats amounts immediately and retains the native thumb until release',()=>{
+ const b=board();b.init();b.app.setState({openPanel:'filters'});
+ const slider=b.document.getElementById('su-salary-min-slider'),before=b.grid.writes;slider.focus();b.fire('pointerdown',slider);
+ for(const amount of ['45000','65000','95000']){slider.value=amount;b.fire('input',slider);b.fire('change',slider);assert.equal(b.grid.writes,before);assert.equal(b.document.getElementById('su-salary-min-slider'),slider);assert.equal(b.document.getElementById('su-salary-min').value,Number(amount).toLocaleString('en-US'));}
+ b.fire('pointerup',slider);assert.equal(b.app.state.salaryMin,'95000');assert.equal(b.grid.writes,before+1);assert.equal(b.document.activeElement.id,'su-salary-min-slider');
+ assert.doesNotMatch(b.grid.textContent,/Any salary|Includes salaries that overlap/);
+});
+test('salary keyboard gesture commits once, keeps focus, and reconciles crossing bounds',()=>{
+ const b=board();b.init();b.app.setState({openPanel:'filters',salaryMin:'45000',salaryMax:'95000'});
+ const slider=b.document.getElementById('su-salary-min-slider'),before=b.grid.writes;slider.focus();b.fire('keydown',slider,{key:'ArrowRight'});
+ slider.value='100000';b.fire('input',slider);b.fire('change',slider);assert.equal(b.grid.writes,before);assert.equal(b.document.getElementById('su-salary-max').value,'100,000');
+ b.fire('keyup',slider,{key:'ArrowRight'});assert.equal(b.app.state.salaryMin,'100000');assert.equal(b.app.state.salaryMax,'100000');assert.equal(b.document.activeElement.id,'su-salary-min-slider');
+ const max=b.document.getElementById('su-salary-max-slider');max.value=max.getAttribute('max');b.fire('input',max);b.fire('change',max);assert.equal(b.app.state.salaryMax,'');
+});
+test('typed comma salary values preserve annual overlap and refuse invalid or hourly values',()=>{
+ const b=board();b.window.SUBoardExperience=require('../../js/board-experience.js');
+ b.init([job({link:'https://example.com/low',pay:'$30K–50K'}),job({link:'https://example.com/overlap',pay:'$80K–135K'}),job({link:'https://example.com/high',pay:'$160K'}),job({link:'https://example.com/hourly',pay:'$29/hour+'})]);b.app.setState({openPanel:'filters'});
+ let field=b.document.getElementById('su-salary-min');field.value='45000';field.selectionStart=5;b.fire('input',field);assert.equal(field.value,'45,000');b.fire('change',field);assert.equal(b.app.state.salaryMin,'45000');
+ field=b.document.getElementById('su-salary-max');field.value='100,000';b.fire('change',field);assert.equal(b.app.state.salaryMax,'100000');assert.deepEqual(Array.from(b.app.computeShown().shown,j=>j.link).sort(),['https://example.com/low','https://example.com/overlap']);
+ field=b.document.getElementById('su-salary-max');field.value='not a number';b.fire('change',field);assert.equal(field.getAttribute('aria-invalid'),'true');assert.equal(b.app.state.salaryMax,'100000');
+ field.value='';b.fire('change',field);assert.equal(b.app.state.salaryMax,'');
+ b.grid.querySelector('[data-act="clearAll"]').click();assert.equal(b.app.computeShown().shown.length,4);
+});
+test('public themes and legacy cod pair filter control ink and paper, including state and selected pills',()=>{
+ for(const look of Object.keys(themeArt.themes).concat('cod')){
+  const b=board({look});b.init();b.app.setState({openPanel:'filters'});const p=b.app.THEMES[b.app.state.look];
+  if(look==='cod')assert.equal(b.app.state.look,'original','retired cod links use the supported Original palette');
+  assert.equal(b.document.body.style['--su-action-paper'],p.acc);assert.equal(b.document.body.style['--su-action-ink'],p.accInk);
+  const state=b.document.getElementById('su-state');assert.equal(state.style.background,'var(--su-action-paper)');assert.equal(state.style.color,'var(--su-action-ink)');
+  for(const act of ['ws','fr']){const pills=b.grid.querySelectorAll('[data-act="'+act+'"]');assert(pills.length>1);for(const el of pills){const active=el.getAttribute('aria-pressed')==='true';assert.equal(el.style.background,active?p.accInk:p.acc,look+' '+act+' background');assert.equal(el.style.color,active?p.acc:p.accInk,look+' '+act+' ink');}}
+ }
 });
 test('feed has advice without promotional signup cards; newsletter follows actual detail openings',()=>{
  const b=board();b.init(Array.from({length:20},(_,i)=>job({link:'https://example.com/'+i})));
@@ -404,8 +466,10 @@ test('Escape or an outside click dismisses optional theme feedback without recor
 test('version history is quiet and does not open an arrival popup',()=>{
  const b=board({look:'chess'});b.init(themeJobs(12));
  assert.equal(b.grid.querySelector('[data-act="openWelcome"]'),null);
- assert(b.grid.querySelector('a[href="/versions.html"]'));
+ assert.equal(b.grid.querySelector('a[href="/versions.html"]'),null);
  assert.equal(b.overlay.querySelector('[role="dialog"]'),null);
+ b.grid.querySelector('[data-act="openModal"]').click();
+ assert(b.overlay.querySelector('.su-founder-release').querySelector('a[href="/versions.html"]'));
 });
 
 test('withdrawing analytics closes an open prompt and rejects an already queued vote click',()=>{

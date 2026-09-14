@@ -1,0 +1,27 @@
+{
+  "version": "2.5.7",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-13T23:59:14.086548+00:00",
+  "reviewer": "Codex root with independent bounded review by security243",
+  "sourceDigest": "f7c7d52cad15dab74666e2e5f656cea9ab48c948023aa1be49ae3cb95aede8e9",
+  "sourceFileCount": 184,
+  "privacyChanged": true,
+  "termsChanged": false,
+  "baselineReview": "docs/privacy-reviews/2.5.3.json",
+  "scope": "Localhost candidate only. Preview and production promotion require separate instructions.",
+  "checks": {
+    "implementation": "900/900 automated tests; 19/19 version tests after seal. Fifteen native Chrome route/width cases (320,390,701,768,1440), all eight visual themes, five stable headline variants, inline section/focus/scroll checks, reload and hero-category return passed. Frontend browser checks verify timer progression and pause/resume, six real graduation photos, touch/keyboard controls and no mobile hero image downloads.",
+    "disclosures": "Privacy section 5 describes tab-local display markers for headline and homepage section, and existing section view restoration. No email matching, subscription API, subscriber promotion targeting or new analytics fields/permissions added. Terms remains consistent with these navigation/display changes.",
+    "security": "Independent bounded review passed 37 focused tests and diff whitespace check. Captured section/request generations protect catalog metadata; moderation failures keep unknown listings unpublished; owner boundaries protect views; stale analytics digest cannot replace current catalog. Fixed photo paths only. Existing consent, GPC, admin and local exclusions preserved."
+  },
+  "openItems": [
+    "Netlify rejected Functions-only secret scope on current plan; alternative scope awaits Nic decision. No environment values were installed by that rejected call.",
+    "Receiver deployment, one real QA inbox delivery and deliberate preview worker runs remain to verify.",
+    "Production login, real consented production collection, reset and scheduled retention remain to verify after authorized promotion; historical uncollected visits cannot be recovered.",
+    "No end-to-end live cross-account write test or real account deletion performed. Synthetic ownership tests and deployed own-UID rules are verified.",
+    "Physical iPhone Safari QA and private Portfolio Graded campaign visuals remain Nic QA or deferred work.",
+    "Newsletter membership checks, confirmed conversion attribution and Portfolio Graded account matching are separately planned, not enabled by this release. Beehiiv plan/API readiness is unverified.",
+    "Physical iPhone Safari verification remains owner QA. No real Google sign-in, newsletter submission or external report delivery was performed for this local UI patch."
+  ],
+  "policySummary": "Engineering implementation/disclosure review, not legal certification. Prior receipt preserved intact. Historical runtime activation gaps are not marked complete by local UI tests."
+}

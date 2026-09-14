@@ -108,7 +108,7 @@
         "hiApply": "#D4AF37",
         "hiStamp": "#D4AF37",
         "payHi": "linear-gradient(160deg,#26262B,#101014)",
-        "lowCard": "linear-gradient(160deg,#FFFFFF 0%,#F1ECDE 100%)",
+        "lowCard": "linear-gradient(160deg,#F8F1DF 0%,#F3E8D2 100%)",
         "midCard": "linear-gradient(160deg,#1F6B3A 0%,#155229 100%)",
         "midInk": "#EAF6E4",
         "midApply": "#FFD98A",
@@ -119,7 +119,7 @@
       },
       "bands": {
         "low": {
-          "background": "linear-gradient(160deg,#FFFFFF 0%,#F1ECDE 100%)",
+          "background": "linear-gradient(160deg,#F8F1DF 0%,#F3E8D2 100%)",
           "ink": "#23242C",
           "apply": "#C0303A",
           "stamp": "#23242C",

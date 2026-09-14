@@ -253,7 +253,7 @@ function drawCard(job, themeKey, cv) {
   const sw = 29.41; // Preserve existing footer spacing without host font metrics.
   ctx.font = `46px ${F_HAND}`; ctx.fillText('stillunemployed.com', px + sw + 14, by);
   ctx.font = `30px ${F_HAND}`; ctx.fillStyle = hexToRgba(P.ink, 0.72);
-  ctx.fillText(job.internship?'internships worth exploring':"roles I'd actually apply to", px, by + 58);
+  ctx.fillText(job.internship?'internships worth the screenshot':'jobs worth the screenshot', px, by + 58);
 
   ctx.restore();
   return cv.toBuffer('image/png');

@@ -353,8 +353,8 @@
             '<img src="assets/5037150f-ce24-477c-bae7-ef884fbc5849.jpg" alt="Nic" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 16%; transform: scale(1.55); transform-origin: 50% 26%;">' +
           '</span>' +
           '<span style="display:block; line-height: 1.2;">' +
-            '<span style="display:block; font-size: 14px; font-weight: 700; color: #2A2118; font-family: var(--su-body);">Nic, the founder</span>' +
-            '<span style="display:block; font-size: 11px; font-weight: 500; color: #6F5E45; margin-top: 2px; font-family: var(--su-body);">Currently at Instagram making 6 figures</span>' +
+            '<span style="display:block; font-size: 14px; font-weight: 700; color: #2A2118; font-family: var(--su-body);">Hey, I made this board</span>' +
+            '<span style="display:block; font-size: 11px; font-weight: 500; color: #6F5E45; margin-top: 2px; font-family: var(--su-body);">Currently working at Instagram</span>' +
           '</span>' +
           '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex: none; margin-left: 2px;"><path d="M9 6l6 6-6 6" stroke="#6F5E45" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
         '</button>' +

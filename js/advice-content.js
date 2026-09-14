@@ -16,7 +16,7 @@
       why:'List both roles and what you accomplished in each. Keep the real dates: two jobs during the same three months do not become six months of experience.' },
     { id:'experience-read-requirement', hook:'read the words after “experience”', cta:'find the difference',
       why:'“Relevant experience” and “full-time experience” are different asks. Check required versus preferred qualifications and accepted alternatives, then show where your internships, campus work or other experience fit.' },
-    { id:'experience-graduation', hook:'lead with your work', sub:'your graduation year is not your whole story', cta:'keep the answer honest',
+    { id:'experience-graduation', hook:'lead with your work, not your grad year', cta:'keep the answer honest',
       why:'You can leave a graduation year off a general resume when it is not requested, while keeping your degree and completion status accurate. If an application or interviewer asks for dates, answer honestly.' }
   ];
   var overrides = {
@@ -28,7 +28,7 @@
     'ghosted':{hook:'no reply? keep your next move',cta:'keep the hunt moving',sell:'More notes like this from The Job Hunt Recipe.',why:'Silence alone cannot tell you why an employer has not replied. Follow up once when appropriate, then keep applying without treating that silence as a measure of your worth.'},
     'manifesting':{why:'Turn the goal into one task you can finish today: update a resume bullet, send an application or share a project. A small action gives you something concrete to build on.'},
     'canva-resume':{hook:'make your resume easy to read',cta:'keep the layout simple',why:'Use a simple layout with selectable text, clear headings and readable experience bullets. Follow the employer’s file instructions; a design tool alone does not determine whether your resume is rejected.'},
-    'wish-list':{hook:'required or preferred? check the difference',sub:'read the exact requirements',cta:'find where your experience fits',sell:'More notes like this from The Job Hunt Recipe.',why:'Preferred qualifications can leave room for different backgrounds, while required qualifications and accepted alternatives still matter. Compare the posting with your actual experience instead of assuming every requirement is negotiable.'},
+    'wish-list':{hook:'required or preferred? check the difference',sub:'',cta:'find where your experience fits',sell:'More notes like this from The Job Hunt Recipe.',why:'Preferred qualifications can leave room for different backgrounds, while required qualifications and accepted alternatives still matter. Compare the posting with your actual experience instead of assuming every requirement is negotiable.'},
     'follow-up':{why:{intro:'Keep an interview follow-up short:',bullets:['Thank them for their time.','Mention one specific thing you discussed.','Ask about next steps if they were not already clear.']}},
     'show-dont-ask':{why:'A recruiter found my LinkedIn post about the hunt and my projects, which led to my Instagram offer. Share work you can discuss and let it show what you can do.'},
     'volume-trap':{why:'Use a strong base resume for closely related roles, then spend extra time on the opportunities you care about most. Keep every version accurate and relevant to the job.'},
@@ -37,7 +37,7 @@
     'linkedin-dms':{why:'Reference something specific the person shared and make a small, clear request. Include relevant work when useful, without expecting a reply or sending repeated nudges.'},
     'resume-layout':{sell:'More notes like this from The Job Hunt Recipe.',why:'Start with a simple layout: contact details, relevant experience, education and skills. Use readable headings, selectable text and results you can support; follow the employer’s file instructions.'},
     'major-cage':{hook:'your major is not a cage',cta:'look at what the role needs',why:'Compare the role with your skills, projects and experience, including any accepted alternatives to a named degree. Your major need not define every job you pursue, but specific required qualifications still matter.'},
-    'keyword-stuffing':{sub:'use the job’s language honestly',why:'Use the posting’s language where it truthfully describes your skills and work. Repeating keywords or copying requirements without evidence does not show what you can do.'}
+    'keyword-stuffing':{sub:'',why:'Use the posting’s language where it truthfully describes your skills and work. Repeating keywords or copying requirements without evidence does not show what you can do.'}
   };
   function apply(notes) {
     var seen = {};

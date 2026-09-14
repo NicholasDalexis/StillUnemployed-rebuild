@@ -4,8 +4,9 @@
 (function () {
   'use strict';
   var notice, tools, settings, noticeObserver;
+  function desktopNotice() { return !!(window.matchMedia && window.matchMedia('(min-width:701px)').matches); }
   function reserveNoticeSpace() {
-    var height = notice && !notice.hidden ? notice.getBoundingClientRect().height : 0;
+    var height = notice && !notice.hidden && !desktopNotice() ? notice.getBoundingClientRect().height : 0;
     document.documentElement.style.setProperty('--su-mobile-notice-height', Math.ceil(height) + 'px');
   }
   function get(key) { try { return localStorage.getItem(key); } catch (_) { return null; } }
@@ -22,7 +23,7 @@
     sheet.textContent = [
       '.su-cc{box-sizing:border-box;background:var(--su-paper,#FCFAF3);color:var(--su-ink,#2A2118);font:14px/1.5 var(--su-body,Lexend,sans-serif)}',
       '.su-cc[hidden]{display:none}.su-cc-notice{display:flex;align-items:center;gap:16px;max-width:960px;margin:8px auto;padding:8px 16px;border-bottom:1px solid #c9bfae}',
-      '.su-cc-notice p{flex:1;margin:0;font:14px/1.4 var(--su-body,Lexend,sans-serif)}',
+      '.su-cc-notice p{flex:1;margin:0;font:21px/1.3 var(--su-hand,"Indie Flower",cursive)}',
       '.su-cc-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.su-cc-notice .su-cc-actions{flex:none}',
       '.su-cc button,.su-privacy-settings{min-height:44px;padding:8px 12px;font:18px/1.2 var(--su-hand,"Indie Flower",cursive);color:var(--su-ink,#2A2118);border:0;background:var(--su-yellow-paper,#F2E14B);box-shadow:var(--su-note-shadow,2px 3px 7px #2c21181a);cursor:pointer;border-radius:2px}',
       '.su-cc .su-cc-link,.su-privacy-settings{background:none;box-shadow:none;text-decoration:underline;text-underline-offset:3px;color:var(--su-orange-text,#A63D22)}',
@@ -33,7 +34,8 @@
       '.su-cc-option{margin:16px 0}.su-cc-option label{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:600}.su-cc-option input{width:20px;height:20px;flex:none;accent-color:var(--su-ink,#2A2118)}',
       '.su-cc-option p{margin:0 0 0 30px;color:var(--su-muted,#6F5E45)}.su-cc .su-cc-feedback{flex-basis:100%;margin:8px 0 0}.su-cc-feedback:empty{display:none}',
       '.su-privacy-tools{max-width:960px;margin:8px auto;padding:0 12px;text-align:center}.su-privacy-settings{font-size:16px}',
-      '@media(max-width:700px){.su-cc-notice{display:block;margin:0;padding:10px max(12px,env(safe-area-inset-right)) 8px max(12px,env(safe-area-inset-left))}.su-cc-notice p{font-size:14px}.su-cc-notice .su-cc-actions{margin-top:6px;gap:6px}.su-cc-notice button{font-size:16px;padding:8px 10px}.su-cc-details{margin:12px;padding:16px}.su-cc-details .su-cc-actions{gap:6px}}'
+      '@media(min-width:701px){.su-cc-notice,.su-cc-details-from-notice{position:fixed;left:20px;bottom:20px;z-index:180;width:360px;max-width:calc(100vw - 40px);max-height:calc(100dvh - 40px);overflow:auto;margin:0;padding:20px;border:1px solid #d4c8b4;border-radius:3px;box-shadow:var(--su-note-shadow,2px 6px 20px #2c211830)}.su-cc-notice{display:block}.su-cc-notice .su-cc-actions{margin-top:14px;gap:8px;align-items:stretch}.su-cc-notice .su-cc-accept,.su-cc-notice .su-cc-decline{flex:1}.su-cc-details-from-notice{width:420px}}',
+      '@media(max-width:700px){.su-cc-notice{display:block;margin:0;padding:10px max(12px,env(safe-area-inset-right)) 8px max(12px,env(safe-area-inset-left))}.su-cc-notice p{font-size:18px}.su-cc-notice .su-cc-actions{margin-top:6px;gap:6px}.su-cc-notice button{font-size:16px;padding:8px 10px}.su-cc-details{margin:12px;padding:16px}.su-cc-details .su-cc-actions{gap:6px}}'
     ].join('');
     document.head.appendChild(sheet);
   }
@@ -51,7 +53,7 @@
     var opener = event && event.currentTarget || document.activeElement;
     var panel = document.createElement('section'); settings = panel;
     panel.id = 'su-privacy-choices'; panel.className = 'su-cc su-cc-details'; panel.tabIndex = -1; panel.setAttribute('aria-labelledby', 'su-privacy-title');
-    panel.innerHTML = '<button type="button" class="su-cc-close" aria-label="Close privacy choices">×</button><h2 id="su-privacy-title">your privacy choices</h2><p>Saved jobs and your tracker work without these extras.</p><div class="su-cc-option"><label><input type="checkbox" name="analytics">Help improve the board</label><p>Share usage, including job clicks and estimated time away after opening a job. We can’t see another site’s activity.</p></div><div class="su-cc-option"><label><input type="checkbox" name="personalization">Tailor my job feed</label><p>When signed in, use the roles I explore and save to recommend jobs.</p><p>Written major, location and interest preferences are separate. Clear those in Your preferences on the board.</p></div><p><a href="/privacy.html">How your data is used</a></p><div class="su-cc-actions"><button type="button" class="su-cc-save">Save choices</button><button type="button" class="su-cc-decline">No thanks</button><button type="button" class="su-cc-link su-cc-reset">Reset history</button></div><p class="su-cc-feedback" role="status"></p>';
+    panel.innerHTML = '<button type="button" class="su-cc-close" aria-label="Close privacy choices">×</button><h2 id="su-privacy-title">your privacy choices</h2><p>Saved jobs and your tracker work without these extras.</p><div class="su-cc-option"><label><input type="checkbox" name="analytics">Help improve the board</label><p>Share usage, including job clicks and estimated time away after opening a job. We can’t see another site’s activity.</p></div><div class="su-cc-option"><label><input type="checkbox" name="personalization">Tailor my job feed</label><p>When signed in, use the roles I explore and save to recommend jobs.</p><p>Written major, location and interest preferences are separate. Edit or clear those in Filters, then Tune your feed on the board.</p></div><p><a href="/privacy.html">How your data is used</a></p><div class="su-cc-actions"><button type="button" class="su-cc-save">Save choices</button><button type="button" class="su-cc-decline">No thanks</button><button type="button" class="su-cc-link su-cc-reset">Reset history</button></div><p class="su-cc-feedback" role="status"></p>';
     var analytics = panel.querySelector('[name="analytics"]'), personalization = panel.querySelector('[name="personalization"]'), feedback = panel.querySelector('[role="status"]');
     analytics.checked = get('su_consent_v3') === 'granted'; personalization.checked = get('su_personalization_v1') === 'granted';
     if (navigator.globalPrivacyControl) { analytics.checked = false; analytics.disabled = true; feedback.textContent = 'Your browser privacy signal keeps optional analytics off.'; }
@@ -67,9 +69,10 @@
       finally { button.disabled = false; }
     });
     // Expand where the visitor asked, without a modal or a jump to the page top.
-    if (notice && notice.contains(opener)) { notice.hidden = true; reserveNoticeSpace(); notice.parentNode.insertBefore(panel, notice.nextSibling); }
+    var fromNotice = !!(notice && notice.contains(opener));
+    if (fromNotice) { panel.className += ' su-cc-details-from-notice'; notice.hidden = true; reserveNoticeSpace(); notice.parentNode.insertBefore(panel, notice.nextSibling); }
     else tools.appendChild(panel);
-    panel.focus({ preventScroll:true }); panel.scrollIntoView({ block:'nearest' });
+    panel.focus({ preventScroll:true }); if (!fromNotice || !desktopNotice()) panel.scrollIntoView({ block:'nearest' });
   }
   function showNotice() {
     notice = document.createElement('section'); notice.className = 'su-cc su-cc-notice'; notice.setAttribute('aria-label', 'Privacy notice');
@@ -79,7 +82,7 @@
     notice.querySelector('.su-cc-accept').addEventListener('click', function () { save(!gpc, true, feedback, function () { focusAfterClose(); }); });
     notice.querySelector('.su-cc-decline').addEventListener('click', function () { save(false, false, feedback, function () { focusAfterClose(); }); });
     notice.querySelector('.su-cc-choose').addEventListener('click', showSettings);
-    // In flow on every screen: never cover a job, the headline or bottom navigation.
+    // Mobile stays in flow; desktop uses a compact corner note.
     document.body.insertBefore(notice, document.body.firstChild);
     reserveNoticeSpace();
     if (typeof ResizeObserver === 'function') { noticeObserver = new ResizeObserver(reserveNoticeSpace); noticeObserver.observe(notice); }

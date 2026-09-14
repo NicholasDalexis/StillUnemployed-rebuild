@@ -58,8 +58,8 @@ test('approved internship metadata has the same canonical ID the collector accep
 
 test('hidden menu counts only current catalog records, including canonical aliases',()=>{
  const f=fixture();f.sign('alice');f.d.dismiss(f.app.jobs[0].link+'?utm_source=old','not_fit');f.d.dismiss('https://example.org/retired','applied');
- assert.equal(f.d.hiddenCount(),1);assert.match(f.d.toolsHTML(String),/Show hidden jobs \(1\)/);
- f.action('hidden');assert.match(f.d.toolsHTML(String),/aria-pressed="true"[^>]*>Hide dismissed jobs \(1\)/);
+ assert.equal(f.d.hiddenCount(),1);assert.match(f.d.toolsHTML(String),/Hidden jobs \(1\)/);
+ f.action('hidden');assert.match(f.d.toolsHTML(String),/aria-pressed="true"[^>]*>Hidden jobs \(1\)/);
  f.app.jobs=[];f.d.updateCatalog([]);assert.equal(f.d.hiddenCount(),0);assert.match(f.d.toolsHTML(String),/data-discovery="hidden"[^>]* disabled/);
  assert.equal(f.d.confirmedCount(),1,'catalog removal does not erase account dispositions');
 });
@@ -72,9 +72,9 @@ test('feed recovery and later refreshes leave paused visit history unchanged',()
 
 
 test('Board menu tools reflect only the current account and expose disabled empty hidden control to guests',()=>{
- const f=fixture();assert.equal(f.html(),'');assert.equal(f.d.hiddenCount(),0);assert.doesNotMatch(f.d.toolsHTML(String),/Your preferences/);assert.match(f.d.toolsHTML(String),/disabled>Show hidden jobs \(0\)/);
+ const f=fixture();assert.equal(f.html(),'');assert.equal(f.d.hiddenCount(),0);assert.doesNotMatch(f.d.toolsHTML(String),/Your preferences/);assert.match(f.d.toolsHTML(String),/disabled>Hidden jobs \(0\)/);
  f.d.dismiss(f.app.jobs[0].link,'not_fit');assert.equal(f.d.hiddenCount(),1);assert.doesNotMatch(f.d.toolsHTML(String),/disabled/);assert.match(f.html(),/data-discovery="undo"/);assert.doesNotMatch(f.html(),/Your preferences|data-discovery="hidden"|new picks/);
- f.sign('alice');assert.equal(f.d.hiddenCount(),0);assert.match(f.d.toolsHTML(String),/id="su-preferences-open"[^>]*data-discovery="settings"/);assert.equal(f.html(),'');
+ f.sign('alice');assert.equal(f.d.hiddenCount(),0);assert.equal(f.d.toolsHTML(String).includes('su-preferences-open'),false);assert.match(f.d.preferencesHTML(),/id="su-preferences-open"[^>]*data-discovery="settings"/);assert.equal(f.html(),'');
  f.d.dismiss(f.app.jobs[0].link,'applied');assert.equal(f.d.hiddenCount(),1);f.sign('bob');assert.equal(f.d.hiddenCount(),0);assert.equal(f.html(),'');
  f.sign('alice');assert.equal(f.d.hiddenCount(),1);f.sign(null);assert.equal(f.d.hiddenCount(),1,'guest history stays separate and returns only for the guest');
 });

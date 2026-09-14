@@ -302,6 +302,8 @@ body.su-dialog-open { overflow:hidden; }
 .su-newsletter-loading { z-index:0; pointer-events:none; }
 .su-newsletter-retry { display:block; margin-top:8px; min-height:44px; border:0; background:var(--su-paper); color:var(--su-orange-text); font:16px var(--su-body); text-decoration:underline; cursor:pointer; }
 .su-newsletter-retry[hidden] { display:none; }
+.su-newsletter-footer{display:flex;flex-wrap:wrap;column-gap:.3em;row-gap:0;margin:8px 0 0;color:#6F5E45;font:14.5px/1.4 var(--su-hand)}
+.su-newsletter-footer span{white-space:nowrap}
 
 /* QA 2.3.7: small paper controls, with the theme's paired action colors. */
 .su-tracker-nudge{background:var(--su-paper,#FCFAF3);color:var(--su-ink,#2A2118);padding:7px 0 7px 12px}

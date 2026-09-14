@@ -66,7 +66,7 @@
     function blocked(){return !!(App&&(App.state.detailOpen||App.state.feedbackOpen||App.state.adviceOpen||App.state.signupOpen||App.state.lookOpen||App.state.modalOpen))||!!root.document.querySelector('dialog[open], [role="dialog"][aria-modal="true"]:not(#overlay-root *)');}
     function preferencesOpen(){return signed()&&form&&!blocked();}
     function modalHTML(esc){
-        var v=draft||useProfile();return '<form class="su-discovery-note su-preferences" id="su-discovery-form" data-act="stop" tabindex="-1" aria-labelledby="su-preferences-title"><button type="button" class="su-discovery-close" data-discovery="close" aria-label="Close preferences">×</button><h2 id="su-preferences-title">Make this board a little more you.</h2><p>A few hints help sort your jobs. Every answer is optional.</p><label for="su-major">Major or area of study <span>(optional)</span></label><input id="su-major" name="major" maxlength="100" value="'+esc(v.major)+'" placeholder="e.g. communications"><label for="su-location">Preferred location <span>(optional)</span></label><input id="su-location" name="location" maxlength="100" value="'+esc(v.location)+'" placeholder="e.g. Chicago"><details class="su-preferences-more"'+(v.info?' open':'')+'><summary>Anything else you want to explore? <span>(optional)</span></summary><label for="su-info">Roles or interests</label><textarea id="su-info" name="info" maxlength="300" placeholder="Roles or creative skills you enjoy">'+esc(v.info)+'</textarea><p class="su-discovery-small">These hints help sort your jobs. You can edit or clear them anytime. Skip sensitive details.</p></details><p class="su-preferences-error" role="status">'+esc(formError)+'</p><div class="su-discovery-tools su-preferences-actions"><button type="submit">Save preferences</button><button type="button" data-discovery="skip">Skip for now</button></div></form>';
+        var v=draft||useProfile();return '<form class="su-discovery-note su-preferences" id="su-discovery-form" data-act="stop" tabindex="-1" aria-labelledby="su-preferences-title"><button type="button" class="su-discovery-close" data-discovery="close" aria-label="Close preferences">×</button><h2 id="su-preferences-title">Tune your feed</h2><p>We’ll remember these interests between visits to help order your jobs. Every answer is optional; these hints never filter roles out.</p><label for="su-major">Major or area of study <span>(optional)</span></label><input id="su-major" name="major" maxlength="100" value="'+esc(v.major)+'" placeholder="e.g. communications"><label for="su-location">Preferred location <span>(optional)</span></label><input id="su-location" name="location" maxlength="100" value="'+esc(v.location)+'" placeholder="e.g. Chicago"><details class="su-preferences-more"'+(v.info?' open':'')+'><summary>Anything else you want to explore? <span>(optional)</span></summary><label for="su-info">Roles or interests</label><textarea id="su-info" name="info" maxlength="300" placeholder="Roles or creative skills you enjoy">'+esc(v.info)+'</textarea><p class="su-discovery-small">These hints help sort your jobs. You can edit or clear them anytime. Skip sensitive details.</p></details><p class="su-preferences-error" role="status">'+esc(formError)+'</p><div class="su-discovery-tools su-preferences-actions"><button type="submit">Save preferences</button><button type="button" data-discovery="skip">Skip for now</button></div></form>';
     }
     function track(name){if(root.SUAnalytics&&typeof root.SUAnalytics.emit==='function')root.SUAnalytics.emit(name,{});}
     function closePreferences(){
@@ -87,9 +87,9 @@
     function hiddenCount(){return App&&Array.isArray(App.jobs)?App.jobs.filter(hidden).length:0;}
     function toolsHTML(esc){
       var total=hiddenCount();
-      return (signed()?'<button type="button" id="su-preferences-open" data-discovery="settings" aria-haspopup="dialog">Your preferences</button>':'')+
-        '<button type="button" data-discovery="hidden" aria-pressed="'+showHidden+'"'+(total?'':' disabled')+'>'+esc(showHidden?'Hide dismissed jobs':'Show hidden jobs')+' ('+total+')</button>';
+      return '<button type="button" data-discovery="hidden" aria-pressed="'+showHidden+'"'+(total?'':' disabled')+'>'+esc('Hidden jobs')+' ('+total+')</button>';
     }
+    function preferencesHTML(){return signed()?'<button type="button" id="su-preferences-open" class="su-tune-feed" data-discovery="settings" aria-haspopup="dialog">Tune your feed →</button>':'';}
     function html(esc){
       if(!message&&!preferenceResult)return '';
       return '<section class="su-discovery su-discovery-feedback'+(preferenceResult?'':' su-compact-feedback')+'" aria-label="Board update"><p role="status"><span id="su-preference-status">'+esc(resultText())+'</span>'+(preferenceResult?' <button type="button" id="su-preference-retry" data-discovery="retry"'+(root.SUAuth.syncState&&root.SUAuth.syncState()==='error'?'':' hidden')+'>Retry sync</button>':'')+(undo&&message==='Added to Tracker.'?' <a class="su-tracker-sticky" href="/tracker.html">Tracker →</a>':'')+(undo?' <button type="button" data-discovery="undo">Undo</button>':'')+'</p></section>';
@@ -108,7 +108,11 @@
       function readForm(){var f=root.document.getElementById('su-discovery-form');return profile(f?{major:f.elements.major.value,location:f.elements.location.value,info:f.elements.info.value}:{});}
       root.document.addEventListener('submit',function(e){if(e.target.id!=='su-discovery-form')return;e.preventDefault();if(!signed())return;try{if(!write('profile',readForm()))throw Error('Not saved');write('promptAnswered',true);form=false;draft=null;promptDismissed=true;preferenceResult='saved';message='';track('preference_save');render();}catch(err){track('preference_error');formError='Could not save preferences. Your answers are still here. Please try again.';render();}});
       root.document.addEventListener('click',function(e){var button=e.target.closest&&e.target.closest('[data-discovery]');if(!button)return;e.preventDefault();var action=button.getAttribute('data-discovery');if(!signed()&&['hidden','undo','restore'].indexOf(action)<0)return;try{
-        if(action==='settings'){clearMessageTimer();track('preference_open');form=true;draft=null;message='';formError='';preferenceResult='';}
+        if(action==='settings'){
+          // The modal returns to the visible Filters trigger after its panel closes.
+          if(App.state.openPanel&&App.closeBoardPanels){var opener=root.document.querySelector('[data-act="toggleFilters"]');App.closeBoardPanels();if(opener)opener.focus({preventScroll:true});}
+          clearMessageTimer();track('preference_open');form=true;draft=null;message='';formError='';preferenceResult='';
+        }
         if(action==='close'){closePreferences();return;}
         if(action==='retry'){if(root.SUAuth.retrySync)root.SUAuth.retrySync();return;}
         if(action==='hidden')showHidden=!showHidden;
@@ -122,7 +126,7 @@
       }catch(err){if(action==='clear')track('preference_error');message='This change could not be saved. Please try again.';formError=message;render();}});
       account=root.SUStore&&root.SUStore.owner();rememberVisit();
     }
-    return {start:start,updateCatalog:updateCatalog,order:order,html:html,toolsHTML:toolsHTML,hiddenCount:hiddenCount,preferencesOpen:preferencesOpen,modalHTML:modalHTML,refreshDialog:refreshDialog,closePreferences:closePreferences,dialogOwner:function(){return account;},hidden:hidden,showHidden:function(){return showHidden;},dismiss:dismiss,key:key,confirmedCount:count,profile:useProfile};
+    return {start:start,updateCatalog:updateCatalog,order:order,html:html,toolsHTML:toolsHTML,preferencesHTML:preferencesHTML,hiddenCount:hiddenCount,preferencesOpen:preferencesOpen,modalHTML:modalHTML,refreshDialog:refreshDialog,closePreferences:closePreferences,dialogOwner:function(){return account;},hidden:hidden,showHidden:function(){return showHidden;},dismiss:dismiss,key:key,confirmedCount:count,profile:useProfile};
   }
   return {profile:profile,fieldBoost:fieldBoost,studyPhrase:studyPhrase,lane:lane,starter:starter,create:create};
 });

@@ -58,7 +58,7 @@
       button.setAttribute('data-su-help', help);
       button.dataset.state = user ? syncState : (loadingSdk || !authReady && !errorCode ? 'loading' : errorCode ? 'error' : signingIn ? 'signing-in' : 'signed-out');
       var label = button.querySelector('.su-auth-label');
-      if (label) label.textContent = signingOut ? 'Signing out…' : signingIn ? 'Signing in…' : user ? 'Account' : loadingSdk || !authReady && !errorCode ? 'Loading…' : !authReady && errorCode ? 'Retry sign-in' : 'Sign in with Google';
+      if (label) label.textContent = signingOut ? 'Signing out…' : signingIn ? 'Signing in…' : user ? 'Account' : loadingSdk || !authReady && !errorCode ? 'Loading…' : !authReady && errorCode ? 'Retry sign-in' : 'Sign in';
       var qaLabel = button.querySelector('.su-auth-qa');
       if (qaLabel) qaLabel.hidden = !qaAdmin();
       if(accountChanging){button.dataset.state='loading';if(label)label.textContent='Loading…';}

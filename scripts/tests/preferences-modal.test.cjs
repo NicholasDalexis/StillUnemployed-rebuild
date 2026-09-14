@@ -34,6 +34,7 @@ function preferencesUI(t) {
   root.document = b.document;root.localStorage = b.localStorage;root.SUPersonalization = P;
   root.SUAnalytics.emit = (name, payload) => emitted.push({ name, payload });
   const proto = Object.getPrototypeOf(b.document.body);
+  proto.remove = function () { if(this.parentNode)this.parentNode.removeChild(this); };
   Object.defineProperties(proto, {
     open:{ get() { return this.getAttribute('open') !== null; }, set(value) { value ? this.setAttribute('open', '') : this.removeAttribute('open'); } },
     hidden:{ get() { return this.getAttribute('hidden') !== null; }, set(value) { value ? this.setAttribute('hidden', '') : this.removeAttribute('hidden'); } },
@@ -79,12 +80,10 @@ function preferencesUI(t) {
     return node;
   }
   function open() {
-    const menu = b.document.getElementById('su-board-menu'), trigger = b.document.getElementById('su-board-menu-trigger');
-    assert(menu);assert(trigger);trigger.focus();
-    // The adapter does not implement the browser's default summary toggle.
-    menu.open = true;b.fire('toggle', menu);
+    const trigger = b.grid.querySelector('[data-act="toggleFilters"]');
+    assert(trigger);trigger.focus();trigger.click();
     const button = b.document.getElementById('su-preferences-open');assert(button);button.focus();button.click();
-    assert.equal(menu.open, false, 'choosing preferences closes Board first');return form();
+    assert.equal(b.app.state.openPanel, null, 'choosing preferences closes Filters first');return form();
   }
   function input(name, value) { const node = form().elements[name];node.value = value;node.focus();b.fire('input', node);return node; }
   function action(name) { const node = b.document.querySelector('[data-discovery="'+name+'"]');assert(node, name);node.click(); }
@@ -106,7 +105,7 @@ test('preferences open in the shared modal layer and all dismissal paths restore
     else u.action(close);
     assert.equal(u.form(), null, close);assert.equal(u.b.grid.inert, false);
     assert.equal(u.b.document.body.classList.contains('su-dialog-open'), false);
-    assert.equal(u.b.document.activeElement, u.b.document.getElementById('su-board-menu-trigger'));
+    assert.equal(u.b.document.activeElement, u.b.grid.querySelector('[data-act="toggleFilters"]'));
     assert.equal(u.store.discovery().promptAnswered, true);
   }
 });
@@ -165,7 +164,7 @@ test('Skip for now remains a dismissal when the browser cannot persist the promp
   u.store.setDiscovery = () => { throw new Error('Quota exceeded'); };
   u.action('skip');assert.equal(u.form(), null, 'an optional question must stay skippable when storage fails');
   assert.equal(u.b.grid.inert, false);assert.equal(u.b.document.body.classList.contains('su-dialog-open'), false);
-  assert.equal(u.b.document.activeElement, u.b.document.getElementById('su-board-menu-trigger'));
+  assert.equal(u.b.document.activeElement, u.b.grid.querySelector('[data-act="toggleFilters"]'));
   assert.deepEqual(u.emitted.map(e=>e.name), ['preference_open'], 'a failed persistent skip is not reported as saved');
   u.b.app.render();assert.equal(u.form(), null, 'this visit does not immediately repeat a dismissed prompt');
 });

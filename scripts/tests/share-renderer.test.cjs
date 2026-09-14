@@ -99,7 +99,7 @@ test('the real renderer retains fitting full titles and bounds long copy without
         assert.equal(drawn.find(r=>r.y===294).text,job.pay,'employer pay remains exact');
         const footer=drawn.find(r=>r.y===470);
         assert.equal(footer.text,'stillunemployed.com');assert.equal(footer.x,141.41);
-        assert.equal(drawn.find(r=>r.y===528).text,"roles I'd actually apply to");
+        assert.equal(drawn.find(r=>r.y===528).text,'jobs worth the screenshot');
       }
     }
   } finally { proto.fillText = original; }

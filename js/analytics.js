@@ -1,7 +1,7 @@
 /* Consent-aware first-party product measurement. Public metadata only. */
 (function(){
   'use strict';
-  var queue=[],pending=[],catalog={},profile={},generation=0,authEpoch=0,flushBusy=false;
+  var queue=[],pending=[],catalog={},catalogGeneration=0,profile={},generation=0,authEpoch=0,flushBusy=false;
   var visitor=null,session=null,sessionAt=0,seen={},outbound=null,lastActivity=Date.now(),activeAt=Date.now(),activeSeconds=0;
   var ENDPOINT='/.netlify/functions/analytics-events',PROFILE='/.netlify/functions/analytics-profile';
   // Count decisions and recoveries without attaching job data or private errors.
@@ -55,9 +55,13 @@
   }
   function keyFor(link){return window.SUJobIdentity ? window.SUJobIdentity.keys(link)[0]||link : link;}
   async function registerJobs(jobs){
+    var registration=++catalogGeneration;
+    catalog={};
     if(!window.crypto||!window.crypto.subtle)return;
     var next={};
-    await Promise.all(jobs.map(async function(job){var key=keyFor(job.link);var bytes=await window.crypto.subtle.digest('SHA-256',new TextEncoder().encode(key));var id=Array.from(new Uint8Array(bytes)).map(function(n){return n.toString(16).padStart(2,'0');}).join('');next[key]={id:id,job:job};}));
+    try{await Promise.all(jobs.map(async function(job){var key=keyFor(job.link);var bytes=await window.crypto.subtle.digest('SHA-256',new TextEncoder().encode(key));var id=Array.from(new Uint8Array(bytes)).map(function(n){return n.toString(16).padStart(2,'0');}).join('');next[key]={id:id,job:job};}));}catch(_){return;}
+    // A slower previous board must never replace the currently visible catalog.
+    if(registration!==catalogGeneration)return;
     catalog=next;pending.splice(0).forEach(function(e){jobEvent(e.name,e.link);});
   }
   function jobEvent(name,link){

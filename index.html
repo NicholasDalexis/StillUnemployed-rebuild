@@ -77,15 +77,15 @@
   </script>
   <!-- First-party analytics: defer keeps document order, so this runs BEFORE js/app.js -->
   <script src="js/personalization.js?v=237" defer></script>
-<script src="js/analytics.js?v=235" defer></script>
+<script src="js/analytics.js?v=2.5.7" defer></script>
   <!-- Compact privacy notice; optional features stay off until chosen. -->
   <script src="js/job-identity.js?v=2" defer></script>
   <script src="js/sync-store.js?v=235" defer></script>
   <script src="js/ga.js?v=235" defer></script>
   <link rel="stylesheet" href="css/discovery.css?v=235">
   <link rel="stylesheet" href="css/account.css?v=242">
-  <link rel="stylesheet" href="css/board-runtime.css?v=243">
-  <link rel="stylesheet" href="css/home.css?v=253">
+  <link rel="stylesheet" href="css/board-runtime.css?v=2.5.7">
+  <link rel="stylesheet" href="css/home.css?v=2.5.7">
   <link rel="stylesheet" href="css/board-experience.css?v=253">
 </head>
 <body class="su-home-board">
@@ -102,14 +102,15 @@
         </nav>
         <section class="nh-intro" aria-labelledby="nh-heading">
           <p class="nh-eyebrow"><span aria-hidden="true">★</span> stillunemployed.com</p>
-          <h1 id="nh-heading"><span>Still</span><em>Unemployed?</em></h1>
+          <h1 id="nh-heading"><span>Still</span><em>Unemployed?<svg class="nh-heading-underline" width="430" height="26" viewBox="0 0 430 26" fill="none" aria-hidden="true"><path d="M6 15 C 110 5, 250 5, 380 12 C 400 13, 415 15, 424 19" stroke="#E8502E" stroke-width="4.5" stroke-linecap="round"></path></svg></em></h1>
           <a href="#board" class="postit nh-browse">Find some jobs <span aria-hidden="true">→</span></a>
           <div id="nh-bookmark-slot"></div>
         </section>
         <section class="nh-photos" aria-label="Explore job categories">
           <figure id="nh-grad-photo" class="nh-grad-photo" tabindex="0" aria-labelledby="nh-grad-caption">
             <span class="nh-grad-print"><img id="nh-grad" data-desktop-src="assets/grad-1.jpg" width="400" height="500" alt="Nic on graduation day"><span>before the job hunt</span></span>
-            <figcaption id="nh-grad-caption">me on grad day <span aria-hidden="true">↘</span></figcaption>
+            <span class="nh-grad-controls"><button type="button" id="nh-grad-prev" aria-label="Previous graduation photo">‹</button><button type="button" id="nh-grad-next" aria-label="Next graduation photo">›</button></span>
+            <figcaption id="nh-grad-caption"><span class="nh-grad-caption-text">me on grad day <span class="nh-grad-caption-arrow" aria-hidden="true">↘</span></span></figcaption>
           </figure>
           <div class="nh-main-photo">
             <span class="nh-tape nh-tape-left" aria-hidden="true"></span><span class="nh-tape nh-tape-right" aria-hidden="true"></span>
@@ -128,25 +129,22 @@
                 <button type="button" data-dot="3" aria-label="Creative tech" aria-pressed="false"></button>
                 <button type="button" data-dot="4" aria-label="Marketing" aria-pressed="false"></button>
               </div>
-              <button type="button" id="nh-pause" aria-label="Pause category slideshow" aria-pressed="false">Pause</button>
             </div>
-            <a id="nh-cta" href="/jobs.html?theme=social" class="postit nh-cta-postit"><span id="nh-cta-text">Find social jobs here</span><span aria-hidden="true">→</span></a>
+            <a id="nh-cta" href="/jobs.html?theme=social" class="nh-cta-caption"><span id="nh-cta-text">Find social jobs here</span><span aria-hidden="true">→</span></a>
           </div>
         </section>
-        <section class="nh-proof" aria-label="The story and the recipe">
-          <button type="button" id="nh-founder" data-act="openModal" class="nh-founder">
-            <span class="nh-founder-top"><img data-desktop-src="assets/home-founder-nic.jpg" width="58" height="58" alt="Nic"><span>hey, I'm Nic.<br>I built this.</span></span>
-            <span class="nh-founder-story">I sent <strong>1,500 applications</strong> and got ghosted for seven months. Then Instagram said yes.</span>
-            <span class="nh-founder-link">Read my story <span aria-hidden="true">→</span></span>
-          </button>
-          <aside class="nh-newsletter">
-            <span class="nh-newsletter-tape" aria-hidden="true"></span>
-            <h2>P.S. want the recipe?</h2>
-            <p>A little perspective for the job hunt. One email a week, easy to unsubscribe.</p>
-            <a href="https://JobHuntRecipe.com" target="_blank" rel="noopener noreferrer" class="postit nh-recipe-btn">Get the recipe <span aria-hidden="true">→</span></a>
-          </aside>
-        </section>
+
       </div>
+      <aside class="nh-edge-notes" aria-label="A couple of notes from Nic" hidden>
+        <button type="button" id="nh-founder" data-act="openModal" class="nh-edge-note nh-edge-founder" aria-haspopup="dialog" aria-describedby="nh-founder-preview">
+          <span class="nh-edge-title"><span class="nh-founder-avatar"><img data-desktop-src="assets/home-founder-nic.jpg" width="1200" height="684" alt=""></span><span>Hey, I'm Nic.<br>I built this.</span><span class="nh-edge-arrow" aria-hidden="true">↗</span></span>
+          <span class="nh-edge-preview" id="nh-founder-preview">1,500 applications later, I built the board I wish I'd had.</span>
+        </button>
+        <button type="button" id="nh-recipe" class="nh-edge-note nh-edge-recipe" aria-haspopup="dialog" aria-controls="nh-recipe-dialog" aria-describedby="nh-recipe-preview">
+          <span class="nh-edge-title"><span>P.S. want<br>the recipe?</span><span class="nh-edge-arrow" aria-hidden="true">↗</span></span>
+          <span class="nh-edge-preview" id="nh-recipe-preview">The exact steps that helped me get a job at Instagram</span>
+        </button>
+      </aside>
     </section>
     <!-- Same single renderer as jobs.html. No duplicate catalog, IDs or embedded frame. -->
     <section data-screen-label="Jobs" class="board" id="board" tabindex="-1" aria-label="Job board" style="min-height:100vh;padding-bottom:90px">
@@ -158,25 +156,27 @@
   <footer class="home-footer">
     <span>&copy; 2026 Elevate Media Technologies LLC</span>
     <a href="/about.html">How this board works</a><a href="/privacy.html">Privacy Policy</a><a href="/terms.html">Terms of Service</a>
-    <a data-su-version href="/versions.html#version-2-5-3" aria-label="Version 2.5.3. View version history">Version 2.5.3</a>
+    <a data-su-version href="/versions.html#version-2-5-8" aria-label="Version 2.5.8. View version history">Version 2.5.8</a>
   </footer>
-  <script src="js/release.js?v=2.5.3" defer></script>
+  <script src="js/release.js?v=2.5.8" defer></script>
   <script src="js/onboarding.js?v=241" defer></script>
   <script src="js/theme-art.js?v=3" defer></script>
-  <script src="js/advice-content.js?v=2" defer></script>
-  <script src="js/advice-illustrations.js?v=2" defer></script>
+  <script src="js/advice-content.js?v=2.5.6" defer></script>
+  <script src="js/advice-illustrations.js?v=2.5.6" defer></script>
   <script src="js/discovery.js?v=237" defer></script>
   <script src="js/internships.js?v=235" defer></script>
-  <script src="js/board-runtime.js?v=241" defer></script>
+  <script src="js/board-runtime.js?v=2.5.7" defer></script>
   <script src="js/saved-reminder.js?v=241" defer></script>
   <script src="js/signin-reminder.js?v=241" defer></script>
   <script src="js/us-states.js?v=241" defer></script>
   <script src="js/pay-display.js?v=241" defer></script>
   <script src="js/board-controls.js?v=235" defer></script>
+  <script src="js/board-heading.js?v=2.5.7" defer></script>
   <script src="js/job-moderation.js" defer></script>
   <script src="js/board-experience.js?v=253" defer></script>
-  <script src="js/app.js?v=243" defer></script>
-  <script src="js/home.js?v=253" defer></script>
+  <script src="js/app.js?v=2.5.7" defer></script>
+  <script src="js/home.js?v=2.5.7" defer></script>
+  <script src="js/home-recipe.js?v=2.5.6" defer></script>
   <script src="js/bookmark.js?v=253" defer></script>
   <script type="module" src="js/auth.js?v=243"></script>
 </body>

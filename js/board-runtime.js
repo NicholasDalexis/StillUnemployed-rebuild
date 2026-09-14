@@ -4,7 +4,7 @@
   else root.SUBoardRuntime=factory(root);
 })(typeof window!=='undefined'?window:this,function(root){
   'use strict';
-  var pending={},TTL=30*60*1000, keys=['q','cat','ws','pr','salaryMin','salaryMax','st','fr','recentSeed','savedOnly'];
+  var pending={},TTL=30*60*1000, keys=['q','cat','ws','pr','salaryMin','salaryMax','st','fr','recentSeed','savedOnly','theme'];
   function emit(name){if(root.SUAnalytics&&root.SUAnalytics.emit)root.SUAnalytics.emit(name,{});}
   function request(key,load){
     if(pending[key])return pending[key];
