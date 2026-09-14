@@ -1,18 +1,18 @@
 {
-  "version": "2.5.9",
+  "version": "2.5.8",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-14T03:08:16.369944+00:00",
+  "reviewedAt": "2026-09-14T01:56:55.060723+00:00",
   "reviewer": "Codex root with independent bounded review by security243",
-  "sourceDigest": "f794a9170404f10c2e64d826fd86303847b6e07217e616d0035faf65ec3f6ba4",
+  "sourceDigest": "62c89507e71217d94035ae0cc4671f7d1e32efe302dd7659b71a67335024fdc7",
   "sourceFileCount": 184,
   "privacyChanged": false,
   "termsChanged": false,
-  "baselineReview": "docs/privacy-reviews/2.5.8.json",
-  "scope": "Local-only UI update for Nic QA. No preview or production promotion is included.",
+  "baselineReview": "docs/privacy-reviews/2.5.7.json",
+  "scope": "Local reviewed candidate; Nic explicitly authorized promotion to the existing preview. Production promotion is not authorized.",
   "checks": {
-    "implementation": "905/905 full tests passed under Node22.23.2 after the mobile layout correction. Independent review passed149 focused tests and13 additional offline toolbar assertions. Local390/320 and desktop geometry,44px transparent targets,18px Save/Share and16px X glyphs, long-company wrapping, keyboard order, personal save toggles and focus return verified. Counts overlap; no new data-flow behavior.",
-    "disclosures": "Privacy and Terms reviewed against the presentation-only changes; no wording change needed. Existing consent, subscriber and account disclosures remain unchanged. No new event, storage key, endpoint, permission, provider integration or subscriber matching.",
-    "security": "Static aria-hidden SVG replaces text and variant SVG icons. Native Save, Share and Close buttons preserve existing handlers; same-owner Save synchronization updates accessible label/state without replacing the open dialog/form. Tracker removal continues to use its confirmation. No hosted account, report, application or subscription action was performed."
+    "implementation": "905/905 automated tests under Node22.23.2. Changed-surface Chrome checks at390/701/1440, touch and keyboard graduation navigation, safe long-company wrapping,44px bookmark controls, save synchronization, approved invitation cycles and unchanged open form/copy passed. Real Beehiiv home form visibly loaded without recovery; no signup submitted.",
+    "disclosures": "Privacy and Terms read against the patch: existing optional Beehiiv subscription, consent and display-marker disclosures remain consistent. Twenty copy choices use page memory only, no new storage keys, analytics event, email lookup or member matching. Footer explicitly identifies the weekly newsletter.",
+    "security": "Independent bounded review passed53focused tests with no blocker. Personal save/unsave uses unchanged owner-aware SUStore; archived jobs keep availability notice and original-link action without publication. Fixed iframe URL/CSP and consent/GPC/local/admin exclusions preserved. Cross-origin iframe load is not provider readiness or conversion proof."
   },
   "openItems": [
     "Netlify Functions-only secret scope was unavailable on the current plan. Alternative scope or upgrade awaits Nic decision; analytics and automated availability verifier/outbox remain unconfigured.",

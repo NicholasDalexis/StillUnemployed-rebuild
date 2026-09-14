@@ -36,7 +36,7 @@
     dialog.id = 'nh-recipe-dialog';
     dialog.setAttribute('aria-labelledby', 'nh-recipe-heading');
     dialog.setAttribute('aria-describedby', 'nh-recipe-intro');
-    dialog.innerHTML = '<button type="button" class="nh-recipe-close" aria-label="Close newsletter signup">×</button>' +
+    dialog.innerHTML = '<button type="button" class="nh-recipe-close" aria-label="Close newsletter signup"><svg class="su-close-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>' +
       '<h2 id="nh-recipe-heading">P.S. want the recipe?</h2>' +
       '<p id="nh-recipe-intro" class="nh-recipe-intro"><span>The newsletter meant to be unsubscribed from</span><span class="nh-recipe-aside">(when you get the job).</span></p>' +
       '<ul class="nh-recipe-issues" aria-label="The three latest published issues">' + issues.map(function (issue) {

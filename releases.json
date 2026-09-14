@@ -1,7 +1,22 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.5.8",
+  "currentVersion": "2.5.9",
   "releases": [
+    {
+      "version": "2.5.9",
+      "date": "2026-09-13",
+      "title": "Compact job controls",
+      "changes": [
+        "Group smaller Save, Share and Close icons at the top right of job details with transparent 44px targets; preserve the Share hint and readable mobile company names.",
+        "Use one consistent round-cap X icon across site-owned close, dismiss and remove controls without changing their actions."
+      ],
+      "public": {
+        "title": "A tidier job card",
+        "changes": [
+          "Save, share and close sit together, with smaller icons and the same familiar controls."
+        ]
+      }
+    },
     {
       "version": "2.5.8",
       "date": "2026-09-13",
@@ -614,7 +629,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "62c89507e71217d94035ae0cc4671f7d1e32efe302dd7659b71a67335024fdc7",
+    "digest": "f794a9170404f10c2e64d826fd86303847b6e07217e616d0035faf65ec3f6ba4",
     "fileCount": 184
   }
 }

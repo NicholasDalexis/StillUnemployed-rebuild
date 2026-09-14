@@ -365,13 +365,22 @@ body.su-dialog-open { overflow:hidden; }
 
 /* Jobs and internships share one readable paper dialog and visible share hint. */
 .su-detail-dialog { transform:none !important; overflow-wrap:anywhere; }
-.su-detail-dialog .su-detail-company { min-height:64px; padding-right:82px; }
+.su-detail-header { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:start; gap:8px; margin:-20px -20px 0 0; }
+.su-detail-dialog .su-detail-company { min-width:0; padding-top:20px; }
 .su-detail-dialog .su-detail-role { display:block !important; overflow:visible !important; -webkit-line-clamp:unset !important; padding-right:0 !important; margin-top:14px !important; }
-#overlay-root .su-detail-dialog .su-detail-share-button { top:10px !important; right:58px !important; width:44px !important; height:44px !important; }
-#overlay-root .su-detail-dialog .su-detail-share-hint { top:55px !important; right:58px !important; width:44px; min-height:44px; }
-#overlay-root .su-detail-dialog .su-detail-close { top:10px !important; right:10px !important; width:44px !important; height:44px !important; }
+.su-detail-actions { display:flex; gap:0; padding-bottom:34px; }
+#overlay-root .su-detail-actions > button { position:relative; display:inline-flex; align-items:center; justify-content:center; flex:none; width:44px; height:44px; min-width:44px; min-height:44px; padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; color:#5C4033; cursor:pointer; }
+.su-detail-actions > button:focus-visible { outline:2px solid var(--su-orange-text); outline-offset:-4px; }
+.su-detail-actions .su-detail-save > svg { width:18px; height:18px; }
+.su-detail-share-hint { position:absolute; top:40px; left:0; width:44px; display:flex; flex-direction:column; align-items:center; color:#A63D22; font:700 16px/1.15 var(--su-hand); white-space:nowrap; }
 .su-detail-dialog [data-act="detailApply"],.su-detail-dialog [data-act="detailProgram"] { min-height:44px; color:var(--su-orange-text) !important; }
 @media(max-width:700px) {
   .su-detail-dialog { padding:30px 24px 26px 38px !important; }
   .su-detail-dialog > div:first-child { left:26px !important; }
+  .su-detail-header { margin-right:-14px; }
+}
+@media(max-width:700px) {
+  .su-detail-header { grid-template-columns:minmax(0,1fr); }
+  .su-detail-actions { grid-row:1; justify-self:end; }
+  .su-detail-dialog .su-detail-company { padding-top:0; }
 }

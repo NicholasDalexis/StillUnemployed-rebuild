@@ -14,7 +14,7 @@
       timer=root.setTimeout(attempt,500);return;
     }
     panel=root.document.createElement('aside');panel.id='su-saved-nudge';panel.className='su-tracker-nudge su-saved-nudge';panel.setAttribute('aria-label','Saved job reminder');
-    panel.innerHTML='<button type="button" class="su-saved-shortcut" aria-label="View saved jobs"><span role="status">Save for Later</span><svg width="24" height="14" viewBox="0 0 28 14" fill="none" aria-hidden="true"><path d="M1 7 Q12 1 25 7 M19 2 L26 7 L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="su-tracker-sticky">Saved</span></button><button type="button" data-dismiss aria-label="Dismiss saved reminder">×</button>';
+    panel.innerHTML='<button type="button" class="su-saved-shortcut" aria-label="View saved jobs"><span role="status">Save for Later</span><svg width="24" height="14" viewBox="0 0 28 14" fill="none" aria-hidden="true"><path d="M1 7 Q12 1 25 7 M19 2 L26 7 L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="su-tracker-sticky">Saved</span></button><button type="button" data-dismiss aria-label="Dismiss saved reminder"><svg class="su-close-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>';
     panel.querySelector('[data-dismiss]').addEventListener('click',hide);
     panel.querySelector('.su-saved-shortcut').addEventListener('click',function(){
       if(identity!==runtime.owner()){hide();return;}

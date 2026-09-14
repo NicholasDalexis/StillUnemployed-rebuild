@@ -605,7 +605,7 @@
     setTimeout(function () {
       if (identity !== runtime.owner() || document.getElementById('su-tracker-nudge') || document.getElementById('su-saved-nudge') || document.getElementById('su-signin-reminder') || document.querySelector('.su-compact-feedback')) return;
       var wrap=document.createElement('div');wrap.id='su-tracker-nudge';wrap.className='su-tracker-nudge';
-      wrap.innerHTML='<a href="tracker.html"><span>Check applied jobs</span> <svg width="24" height="14" viewBox="0 0 28 14" fill="none" aria-hidden="true"><path d="M1 7 Q12 1 25 7 M19 2 L26 7 L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="su-tracker-sticky">Tracker</span></a><button type="button" aria-label="Dismiss tracker reminder">×</button>';
+      wrap.innerHTML='<a href="tracker.html"><span>Check applied jobs</span> <svg width="24" height="14" viewBox="0 0 28 14" fill="none" aria-hidden="true"><path d="M1 7 Q12 1 25 7 M19 2 L26 7 L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="su-tracker-sticky">Tracker</span></a><button type="button" aria-label="Dismiss tracker reminder"><svg class="su-close-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>';
       var timer;
       function hide(){clearTimeout(timer);if(wrap.parentNode)wrap.parentNode.removeChild(wrap);window.removeEventListener('su:auth-changed',hide);window.removeEventListener('storage',ownerChanged);}
       function ownerChanged(){if(identity!==runtime.owner())hide();}
@@ -686,7 +686,7 @@
     toast.style.cssText='background:#B62619;color:#FFF5ED;display:flex;align-items:center;gap:12px;flex-wrap:wrap;max-width:calc(100vw - 32px);box-sizing:border-box;';
     var label=document.createElement('span');label.setAttribute('role','status');label.textContent='Reported';toast.appendChild(label);
     var undo=document.createElement('button');undo.type='button';undo.textContent='Undo';undo.style.cssText='font:inherit;color:inherit;background:transparent;border:0;text-decoration:underline;min-height:44px;cursor:pointer;';toast.appendChild(undo);
-    var dismiss=document.createElement('button');dismiss.type='button';dismiss.textContent='×';dismiss.setAttribute('aria-label','Dismiss report confirmation');dismiss.style.cssText=undo.style.cssText;dismiss.addEventListener('click',clearReportedToast);toast.appendChild(dismiss);
+    var dismiss=document.createElement('button');dismiss.type='button';dismiss.innerHTML='<svg class="su-close-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg>';dismiss.setAttribute('aria-label','Dismiss report confirmation');dismiss.style.cssText=undo.style.cssText;dismiss.addEventListener('click',clearReportedToast);toast.appendChild(dismiss);
     var holdExpiry=false;
     function expire(outside){clearTimeout(App._reportToastTimer);if(holdExpiry||(!outside&&toast.contains(document.activeElement)))return;App._reportToastTimer=setTimeout(function(){if(App._reportToast===toast)clearReportedToast();},5000);}
     toast.addEventListener('focusin',function(){clearTimeout(App._reportToastTimer);});
@@ -1906,7 +1906,7 @@
             '<div style="position: relative; width: 178px; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 21px, rgba(96,130,170,0.34) 21px 22px); background-position: 0 16px; border-radius: 2px; padding: 13px 14px 12px; box-shadow: 3px 7px 17px rgba(44,33,24,0.3); box-sizing: border-box; transform-origin: bottom left; animation: ' + noteAnim + ';">' +
               '<div style="position: absolute; top: 0; left: 14px; bottom: 0; width: 1px; background: rgba(214,80,46,0.4);"></div>' +
               '<div style="position: absolute; top: -8px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 56px; height: 15px; background: rgba(228,202,128,0.6); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>' +
-              '<div data-act="closeNote" data-id="' + id + '" style="position: absolute; top: -9px; right: -9px; width: 23px; height: 23px; border-radius: 50%; background: #2C2118; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.32); z-index: 4;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#F4EFE6" stroke-width="2.6" stroke-linecap="round"></path></svg></div>' +
+              '<div data-act="closeNote" data-id="' + id + '" style="position: absolute; top: -9px; right: -9px; width: 23px; height: 23px; border-radius: 50%; background: #2C2118; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.32); z-index: 4;"><svg class="su-close-icon" color="#F4EFE6" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>' +
               '<div style="font-family: \'Indie Flower\', cursive; font-size: 14.5px; line-height: 22px; color: #2A2118; padding-left: 8px;">' + esc(personalNote) + '</div>' +
               '<div style="font-family: \'Indie Flower\', cursive; font-size: 14px; color: #6F5E45; text-align: right; line-height: 22px;">- Nic</div>' +
             '</div>' +
@@ -1998,7 +1998,7 @@
       var savedBtnStyle = savedBtnBase + (this.state.savedOnly ? 'background:#2A2118; color:#F4E9C9;' : ('background:' + ACC + '; color:' + ACC_INK + ';'));
       // digits render clearer in Archivo than in Indie Flower (Nic, 2026-07-11); cap at 99+
       var savedNum = '<span style="font-family: var(--su-body); font-weight: 800; font-size: 16px; letter-spacing: 0;">' + (savedCount > 99 ? '99+' : savedCount) + '</span>';
-      var savedLabel = this.state.savedOnly ? ('Saved (' + savedNum + ') ✕') : ('Saved (' + savedNum + ')');
+      var savedLabel = this.state.savedOnly ? ('Saved (' + savedNum + ') <svg class="su-close-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg>') : ('Saved (' + savedNum + ')');
 
       // "Change Look?" toolbar button (base + open/closed colors, ported verbatim)
       var changeLookBtnBase = "display:inline-flex; align-items:center; gap:7px; font-family:'Indie Flower',cursive; font-weight:700; font-size:19px; padding:11px 16px; transform:rotate(-3deg); box-shadow:2px 4px 9px rgba(44,33,24,0.2); white-space:nowrap; position:relative; top:8px; flex:none; cursor:pointer; border-radius:2px;";
@@ -2030,7 +2030,7 @@
 
       var chipsHtml = chips.map(function (chip) {
         return '<div data-act="' + chip.act + '" style="display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; cursor: pointer; background: ' + ACC + '; color: ' + ACC_INK + '; font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 16px; transform: rotate(-1.5deg); box-shadow: 1px 2px 5px rgba(44,33,24,0.16);">' + esc(chip.label) +
-          '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M6 6l12 12M18 6L6 18" stroke="' + ACC_INK + '" stroke-width="2.6" stroke-linecap="round"></path></svg></div>';
+          '<svg class="su-close-icon" color="' + ACC_INK + '" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>';
       }).join('');
 
       var showingLabel = this.state.savedOnly ? shown.length + ' saved '+(shown.length===1?'role':'roles') : shown.length + (INTERNSHIPS ? (shown.length === 1 ? ' internship' : ' internships') : (shown.length === 1 ? ' job' : ' jobs'));
@@ -2110,7 +2110,7 @@
       // filters panel
       if (this.state.openPanel === 'filters') {
         out += '<div data-su-panel="filters" style="position: absolute; right: 0; top: calc(100% + 12px); width: 320px; max-width: calc(100% - 40px); background: #FBF6E9; border: 1.5px dashed #CDB88C; border-radius: 6px; box-shadow: 4px 8px 22px -8px rgba(44,33,24,0.4); padding: 18px 18px 20px; transform: rotate(0.6deg);">' +
-          '<div data-act="toggleFilters" style="position: absolute; top: 12px; right: 12px; width: 26px; height: 26px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.6" stroke-linecap="round"></path></svg></div>' +
+          '<div data-act="toggleFilters" style="position: absolute; top: 12px; right: 12px; width: 26px; height: 26px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg class="su-close-icon" color="#5C4033" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>' +
           '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 0;">which state?</div>' +
           '<select id="su-state" aria-label="State" style="width: 100%; box-sizing: border-box; font-family: \'Indie Flower\', cursive; font-size: 17px; color: var(--su-action-ink); background: var(--su-action-paper); border: 1.5px solid currentColor; border-radius: 5px; padding: 9px 12px; cursor: pointer; outline: none; margin-top: 11px;">' + stateOpts + '</select>' +
           '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top:18px;">how fresh?</div>' +
@@ -2296,7 +2296,7 @@
       var out = '';
       if(this.state.recentOpen){
         var recent=window.SUBoardExperience?window.SUBoardExperience.history():[], labels={viewed:'Viewed',applied:'Applied',dismissed:'Clicked out',unavailable:'Reported no longer available',saved:'Saved for later',not_fit:'Not a fit'};
-        out+='<div class="su-recent-backdrop" data-act="closeRecent"><section class="su-recent-note" data-act="stop"><button type="button" class="su-recent-close" data-act="closeRecent" aria-label="Close recently viewed">×</button><h2>Recently viewed</h2><p>On this device, for the last 30 days.</p>'+
+        out+='<div class="su-recent-backdrop" data-act="closeRecent"><section class="su-recent-note" data-act="stop"><button type="button" class="su-recent-close" data-act="closeRecent" aria-label="Close recently viewed"><svg class="su-close-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg></button><h2>Recently viewed</h2><p>On this device, for the last 30 days.</p>'+
           (recent.length?'<ul>'+recent.map(function(item){var current=self.catalogJobs().find(function(j){return jobHasLink(j,item.link);});return '<li><strong>'+esc(item.co)+'</strong><span>'+esc(item.role)+'</span><small>'+esc(labels[item.action]||'Viewed')+'</small>'+(current?'<button type="button" data-act="recentDetail" data-link="'+esc(current.link)+'">View role</button>':'<span class="su-recent-offboard">Off the current '+(item.internship?'internships':'jobs')+' board</span>')+'</li>';}).join('')+'</ul><button type="button" data-act="clearRecent">Clear recently viewed</button>':'<p>Open a role to find it here later.</p>')+'</section></div>';
       }
       if(dialogKey==='reported')out+=this.reportedJobsHTML();
@@ -2310,7 +2310,7 @@
             '<div style="position: absolute; top: -13px; left: 66px; width: 122px; height: 30px; background: rgba(228,202,128,0.72); transform: rotate(-4deg); box-shadow: 0 2px 5px rgba(44,33,24,0.14); z-index: 5;"></div>' +
             '<div style="position: absolute; top: -12px; right: 62px; width: 122px; height: 30px; background: rgba(228,202,128,0.72); transform: rotate(3.5deg); box-shadow: 0 2px 5px rgba(44,33,24,0.14); z-index: 5;"></div>' +
             '<div data-act="closeModal" style="position: absolute; top: 20px; right: 20px; width: 38px; height: 38px; border-radius: 50%; background: rgba(252,250,243,0.94); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 8; box-shadow: 0 2px 8px rgba(44,33,24,0.2);">' +
-              '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.2" stroke-linecap="round"></path></svg>' +
+              '<svg class="su-close-icon" color="#5C4033" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg>' +
             '</div>' +
             '<div class="su-founder-image-wrap" style="padding: 16px 16px 0;">' +
               '<div class="su-founder-image" style="position: relative; height: 244px; overflow: hidden; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(44,33,24,0.06);">' +
@@ -2347,7 +2347,7 @@
           '<div data-act="stop" style="margin: auto;width: 460px; max-width: 100%; background: #F4EEE2; border-radius: 8px; padding: 30px 30px 28px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.7deg);">' +
             '<div class="su-feedback-header"><div class="su-feedback-heading">welcome back!</div><span class="su-account-slot su-feedback-account">' +
               '<button type="button" class="su-feedback-close" data-act="closeFeedback" title="Close application feedback" aria-label="Close application feedback">' +
-                '<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path></svg>' +
+                '<svg class="su-close-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg>' +
               '</button>' +
             '</span></div>' +
             '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #6F5E45; margin-top: 6px;">how\'d it go with ' + esc(this.state.feedbackCo) + '?</div>' +
@@ -2424,20 +2424,22 @@
               // red left margin line + tape
               '<div style="position: absolute; top: 0; bottom: 0; left: 36px; width: 1.5px; background: rgba(214,80,46,0.4);"></div>' +
               '<div style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(-2.5deg); width: 120px; height: 28px; background: rgba(228,202,128,0.6); border-left: 1px dashed rgba(255,255,255,.5); border-right: 1px dashed rgba(255,255,255,.5); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>' +
-              // share + close (corner). Share = bigger circular tap target + a hand-drawn
-              // "Share" hint with an up-arrow so people know what the icon does.
-              '<div class="su-detail-share-button" data-act="detailShare" data-link="' + esc(dj.link) + '" title="Share with a friend" style="position: absolute; top: 9px; right: 46px; width: 32px; height: 32px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #5C4033;">' +
-                '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"></circle><circle cx="6" cy="12" r="2.6"></circle><circle cx="18" cy="19" r="2.6"></circle><path d="M8.6 13.4l6.9 4M15.5 6.6l-6.9 4"></path></svg>' +
+              // Compact corner controls keep the same personal Save/Share/Close actions.
+              '<div class="su-detail-header">' +
+                '<div class="su-detail-company" style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 24px; color: #2C2118; line-height: 1.12;">' + esc(dj.co) + '</div>' +
+                '<div class="su-detail-actions" role="group" aria-label="Job actions">' +
+                  '<button class="su-detail-save" type="button" data-act="detailSave" data-link="'+esc(dj.link)+'" aria-label="'+(this.isSaved(dj.link)?'Remove job from Saved':'Save job for later')+'" aria-pressed="'+this.isSaved(dj.link)+'">'+saveControl(this.isSaved(dj.link),true)+'</button>' +
+                  '<button type="button" class="su-detail-share-button" data-act="detailShare" data-link="' + esc(dj.link) + '" title="Share with a friend" aria-label="Share job">' +
+                    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="18" cy="5" r="2.6"></circle><circle cx="6" cy="12" r="2.6"></circle><circle cx="18" cy="19" r="2.6"></circle><path d="M8.6 13.4l6.9 4M15.5 6.6l-6.9 4"></path></svg>' +
+                    '<span class="su-detail-share-hint" aria-hidden="true">' +
+                      '<svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M10 18.5 C 8.4 12.5, 11.6 7.5, 10 2 M5.4 6 L10 1.3 L14.6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>Share</span>' +
+                    '</span>' +
+                  '</button>' +
+                  '<button type="button" class="su-detail-close" data-act="closeDetail" aria-label="Close job details" title="Close job details">' +
+                    '<svg class="su-close-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg>' +
+                  '</button>' +
+                '</div>' +
               '</div>' +
-              '<div class="su-detail-share-hint" data-act="detailShare" data-link="' + esc(dj.link) + '" style="position: absolute; top: 43px; right: 39px; display: flex; flex-direction: column; align-items: center; cursor: pointer; color: #C2552F;">' +
-                '<svg width="18" height="18" viewBox="0 0 20 20" fill="none" style="overflow: visible;"><path d="M10 18.5 C 8.4 12.5, 11.6 7.5, 10 2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="M5.4 6 L10 1.3 L14.6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
-                '<span style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 16px; margin-top: 1px; white-space: nowrap;">Share</span>' +
-              '</div>' +
-              '<div class="su-detail-close" data-act="closeDetail" style="position: absolute; top: 11px; right: 13px; width: 27px; height: 27px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
-                '<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.4" stroke-linecap="round"></path></svg>' +
-              '</div>' +
-              // header
-              '<div class="su-detail-company" style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 24px; color: #2C2118; line-height: 1.12; padding-right: 82px;"><span>' + esc(dj.co) + '</span> <button class="su-detail-save" type="button" data-act="detailSave" data-link="'+esc(dj.link)+'" aria-label="'+(this.isSaved(dj.link)?'Remove job from Saved':'Save job for later')+'" aria-pressed="'+this.isSaved(dj.link)+'">'+saveControl(this.isSaved(dj.link),true)+'</button></div>' +
               '<div class="su-detail-role" style="font-family: var(--su-body); font-weight: 600; font-size: 16px; color: #3A2E20; margin-top: 4px; padding-right: 82px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">' + esc(dj.role) + '</div>' +
               (dj.pay ? '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 20px; color: #2C2118; margin-top: 10px;">' + esc(cardPay(dj)) + '</div>' : '') +
               (dmeta ? '<div style="font-family: var(--su-body); font-size: 13.5px; color: #6F5E45; margin-top: 5px;">' + esc(dmeta) + '</div>' : '') +
@@ -2457,7 +2459,7 @@
               // recipe capture: rotating one-liner + Beehiiv embed. ✕ hides it until reload.
               (!_rShow ? '' :
               '<div data-newsletter-id="'+_rInvitation.id+'" data-newsletter-revision="'+_rInvitation.revision+'" style="margin-top: 20px; border-top: 1.5px dashed rgba(44,33,24,0.22); padding-top: 12px; position: relative;">' +
-                '<div data-act="hideRecipe" data-co="' + esc(_rCopy) + '" data-link="' + esc(dj.link) + '" title="hide this" style="position: absolute; top: 5px; right: 0; width: 20px; height: 20px; border-radius: 50%; background: rgba(44,33,24,0.06); display: flex; align-items: center; justify-content: center; cursor: pointer; font-family: var(--su-body); font-size: 11px; color: #6F5E45;">✕</div>' +
+                '<div data-act="hideRecipe" data-co="' + esc(_rCopy) + '" data-link="' + esc(dj.link) + '" title="hide this" style="position: absolute; top: 5px; right: 0; width: 20px; height: 20px; border-radius: 50%; background: rgba(44,33,24,0.06); display: flex; align-items: center; justify-content: center; cursor: pointer; font-family: var(--su-body); font-size: 11px; color: #6F5E45;"><svg class="su-close-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>' +
                 '<div style="font-family: \'Indie Flower\', cursive; font-size: 16px; color: #2C2118; line-height: 1.3; padding-right: 26px;">' + esc(_rCopy) + '</div>' +
                 newsletterHtml('signup:' + _rInvitation.id) + newsletterFooter() +
               '</div>') +
@@ -2478,7 +2480,7 @@
               '<div style="position: absolute; top: 0; bottom: 0; left: 36px; width: 1.5px; background: rgba(214,80,46,0.4);"></div>' +
               '<div style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(-2.5deg); width: 120px; height: 28px; background: rgba(228,202,128,0.6); border-left: 1px dashed rgba(255,255,255,.5); border-right: 1px dashed rgba(255,255,255,.5); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>' +
               '<div data-act="closeAdvice" style="position: absolute; top: 11px; right: 13px; width: 27px; height: 27px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
-                '<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.4" stroke-linecap="round"></path></svg>' +
+                '<svg class="su-close-icon" color="#5C4033" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg>' +
               '</div>' +
               '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 15px; color: #8A7558; transform: rotate(-1deg);">note to self ↓</div>' +
               '<div style="position: relative; display: inline-block; margin-top: 8px; padding-right: 26px;">' +
@@ -2508,7 +2510,7 @@
             '<div style="position: absolute; top: 0; bottom: 0; left: 36px; width: 1.5px; background: rgba(214,80,46,0.4);"></div>' +
             '<div style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 120px; height: 28px; background: rgba(228,202,128,0.6); border-left: 1px dashed rgba(255,255,255,.5); border-right: 1px dashed rgba(255,255,255,.5); box-shadow: 0 1px 2px rgba(0,0,0,.08);"></div>' +
             '<div data-act="closeSignup" style="position: absolute; top: 11px; right: 13px; width: 27px; height: 27px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
-              '<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.4" stroke-linecap="round"></path></svg>' +
+              '<svg class="su-close-icon" color="#5C4033" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg>' +
             '</div>' +
             '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 24px; line-height: 1.3; color: #2A2118; padding-right: 24px;">' + esc(this.state.signupOpen) + '</div>' +
             '<div style="font-family: var(--su-body); font-size: 14px; line-height: 1.6; color: #3a3026; margin-top: 14px;">One email a week: the exact steps I used to go from 1,500 applications and silence to a 6-figure offer at Instagram.</div>' +
@@ -2523,7 +2525,7 @@
         out += '<div data-act="closeLook" style="position: fixed; inset: 0; z-index: 210; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
           '<div data-act="stop" style="margin: auto;width: 560px; max-width: 100%; background: #F4EEE2; border-radius: 8px; padding: 30px 30px 28px; position: relative; box-shadow: 0 40px 90px rgba(44,33,24,0.4); transform: rotate(-0.7deg);">' +
             '<div data-act="closeLook" style="position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%; background: rgba(44,33,24,0.06); display: flex; align-items: center; justify-content: center; cursor: pointer;">' +
-              '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#5C4033" stroke-width="2.2" stroke-linecap="round"></path></svg>' +
+              '<svg class="su-close-icon" color="#5C4033" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg>' +
             '</div>' +
             '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 27px; color: #2A2118; line-height: 1.1; transform: rotate(-1deg);">change the look?</div>' +
             '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #6F5E45; margin-top: 6px;">pick a vibe for the board ↓</div>' +

@@ -438,7 +438,7 @@
             '<select class="trk-status ' + statusCls(r.status) + '" data-id="' + esc(r.id) + '" aria-label="Application status">' + opts + '</select>' +
             '<textarea class="trk-notes" data-id="' + esc(r.id) + '" rows="1" aria-label="Application notes" placeholder="notes... (recruiter name, next step)">' + esc(Object.prototype.hasOwnProperty.call(self.noteDrafts,r.id)?self.noteDrafts[r.id]:(r.notes || '')) + '</textarea>' +
             '<button type="button" class="trk-del" data-act="delRow" data-id="' + esc(r.id) + '" aria-label="Remove ' + esc(r.company || r.role || 'application') + ' from tracker" aria-expanded="' + !!confirming + '"' + (confirming ? ' aria-controls="trk-remove-confirm"' : '') + (del ? ' disabled' : '') + '>' +
-              '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"></path></svg>' +
+              '<svg class="su-close-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg>' +
             '</button>' +
             '<div class="trk-report-action"><button type="button" data-act="openReport" data-id="' + esc(r.id) + '" class="trk-report-button" aria-label="Report ' + esc(r.company || r.role || 'this job') + ' for review" aria-expanded="' + !!report + '"' + (report ? ' aria-controls="trk-report-panel"' : '') + '>Report</button></div>';
           if(report) {

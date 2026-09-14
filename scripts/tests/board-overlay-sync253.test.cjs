@@ -23,7 +23,7 @@ test('open detail reflects a synced save before a subsequent toggle without repl
   const button = b.overlay.querySelector('[data-act="detailSave"]');
   button.focus();
   assert.equal(b.overlay.querySelectorAll('[data-act="detailSave"]').length, 1);
-  assert.equal(button.parentElement.classList.contains('su-detail-company'), true);
+  assert.equal(button.parentElement.classList.contains('su-detail-actions'), true);
   assert.equal(button.getAttribute('aria-pressed'), 'false');
   assert.equal(button.textContent, '');
   assert.equal(button.getAttribute('aria-label'), 'Save job for later');
