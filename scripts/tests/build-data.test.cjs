@@ -18,22 +18,20 @@ const csv = (records = [], columns = header) => [columns, ...records.map(record 
   .map(cells => cells.map(value => '"' + value.replace(/"/g, '""') + '"').join(',')).join('\r\n');
 
 function homeFeed(fetcher = async () => { throw new Error('offline'); }, identityAvailable = true) {
-  const total = { textContent: 'old count' };
-  const featured = { innerHTML: 'old jobs', textContent: '', children: [], appendChild(child) { this.children.push(child); } };
-  const sandbox = {
-    URL, fetch: fetcher, console: { warn() {} }, setInterval() {},
-    // Feed-data tests use a ready availability dependency; dedicated moderation tests cover failures and recovery.
-    window: { SUJobIdentity: identityAvailable ? identity : undefined, SUJobModeration:{refresh:async()=>({status:'ready',revision:0}),filter:jobs=>jobs}, addEventListener() {} },
-    document: {
-      readyState: 'loading', addEventListener() {},
-      querySelector(selector) { return selector === '#nh-total' ? total : selector === '#nh-featured' ? featured : null; },
-      createElement() { return { style:{},setAttribute() {},addEventListener() {},textContent:'' }; }
+  const {board} = require('./helpers/board-harness.cjs');
+  let current;
+  function rootBoard(options={}) {
+    const b=board({...options,identityAvailable});b.document.body.className='su-home-board';b.location.pathname='/';return b;
+  }
+  current=rootBoard();
+  return {
+    parseCSV:current.helpers.parseCSV,rowsToJobs:current.helpers.rowsToJobs,
+    get grid(){return current.grid;},get app(){return current.app;},
+    async load(){
+      let options;try{options={response:await fetcher('https://docs.google.com/spreadsheets/current-jobs')};}catch(error){options={fetchError:error};}
+      current=rootBoard(options);await current.boot();
     }
   };
-  // Expose the real closure's feed functions inside the test VM; never boot UI or contact a service.
-  const source = fs.readFileSync(path.join(root, 'js/home.js'), 'utf8').replace(/\}\)\(\);\s*$/, 'globalThis.feed = {parseCSV: nhParseCSV, rowsToJobs: nhRowsToJobs, load: nhLoadJobs};\n})();');
-  vm.runInNewContext(source, sandbox);
-  return { ...sandbox.feed, total, featured };
 }
 
 test('production shares use the custom domain; preview shares use their branch domain', async () => {
@@ -117,9 +115,9 @@ test('valid zero eligible jobs builds successfully and homepage shows zero witho
   const calls = [];
   const home = homeFeed(async url => { calls.push(url); return { ok: true, text: async () => text }; });
   await home.load();
-  assert.equal(home.total.textContent, '0');
-  assert.match(home.featured.textContent, /No roles available/);
-  assert.equal(home.featured.innerHTML, '');
+  assert.equal(home.app.jobs.length, 0);
+  assert.equal(home.grid.querySelectorAll('.note[data-act="openJob"]').length, 0);
+  assert.equal(home.app._loadError, false);
   assert.equal(calls.length, 1);
 });
 
@@ -128,9 +126,9 @@ test('homepage outage clears old cards and shows unavailable without fetching st
   const home = homeFeed(async url => { calls.push(url); throw new Error('offline'); });
   await home.load();
   assert.equal(calls.length, 1);
-  assert.equal(home.featured.innerHTML, '');
-  assert.equal(home.total.textContent, '…');
-  assert.match(home.featured.children[0].textContent, /Could not check current job availability/);
+  assert.equal(home.grid.querySelectorAll('.note[data-act="openJob"]').length, 0);
+  assert.match(home.grid.textContent, /Jobs could not load right now/);
+  assert(home.grid.querySelector('[data-act="retryJobs"]'));
 });
 
 test('home and share loaders collapse confirmed aliases after eligibility, retaining every old share hash', async () => {
@@ -160,6 +158,6 @@ test('homepage missing identity dependency clears stale content instead of rende
   const pair = aliasPairs[0], text = csv(pair.links.map(Link => row({ Link }))), calls = [];
   const home = homeFeed(async url => { calls.push(url); return { ok: true, text: async () => text }; }, false);
   assert.throws(() => home.rowsToJobs(home.parseCSV(text)), /identity check unavailable/);
-  await home.load();assert.equal(calls.length, 1);assert.equal(home.total.textContent, '…');assert.equal(home.featured.innerHTML, '');
-  assert.match(home.featured.children[0].textContent, /Could not check current job availability/);
+  await home.load();assert.equal(calls.length, 1);assert.equal(home.grid.querySelectorAll('.note[data-act="openJob"]').length, 0);
+  assert.match(home.grid.textContent, /Jobs could not load right now/);
 });

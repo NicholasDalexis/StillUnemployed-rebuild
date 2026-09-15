@@ -58,8 +58,8 @@ test('approved internship metadata has the same canonical ID the collector accep
 
 test('hidden menu counts only current catalog records, including canonical aliases',()=>{
  const f=fixture();f.sign('alice');f.d.dismiss(f.app.jobs[0].link+'?utm_source=old','not_fit');f.d.dismiss('https://example.org/retired','applied');
- assert.equal(f.d.hiddenCount(),1);assert.match(f.d.toolsHTML(String),/Show hidden jobs \(1\)/);
- f.action('hidden');assert.match(f.d.toolsHTML(String),/aria-pressed="true"[^>]*>Hide dismissed jobs \(1\)/);
+ assert.equal(f.d.hiddenCount(),1);assert.match(f.d.toolsHTML(String),/Hidden jobs \(1\)/);
+ f.action('hidden');assert.match(f.d.toolsHTML(String),/aria-pressed="true"[^>]*>Hidden jobs \(1\)/);
  f.app.jobs=[];f.d.updateCatalog([]);assert.equal(f.d.hiddenCount(),0);assert.match(f.d.toolsHTML(String),/data-discovery="hidden"[^>]* disabled/);
  assert.equal(f.d.confirmedCount(),1,'catalog removal does not erase account dispositions');
 });
@@ -72,9 +72,9 @@ test('feed recovery and later refreshes leave paused visit history unchanged',()
 
 
 test('Board menu tools reflect only the current account and expose disabled empty hidden control to guests',()=>{
- const f=fixture();assert.equal(f.html(),'');assert.equal(f.d.hiddenCount(),0);assert.doesNotMatch(f.d.toolsHTML(String),/Your preferences/);assert.match(f.d.toolsHTML(String),/disabled>Show hidden jobs \(0\)/);
+ const f=fixture();assert.equal(f.html(),'');assert.equal(f.d.hiddenCount(),0);assert.doesNotMatch(f.d.toolsHTML(String),/Your preferences/);assert.match(f.d.toolsHTML(String),/disabled>Hidden jobs \(0\)/);
  f.d.dismiss(f.app.jobs[0].link,'not_fit');assert.equal(f.d.hiddenCount(),1);assert.doesNotMatch(f.d.toolsHTML(String),/disabled/);assert.match(f.html(),/data-discovery="undo"/);assert.doesNotMatch(f.html(),/Your preferences|data-discovery="hidden"|new picks/);
- f.sign('alice');assert.equal(f.d.hiddenCount(),0);assert.match(f.d.toolsHTML(String),/id="su-preferences-open"[^>]*data-discovery="settings"/);assert.equal(f.html(),'');
+ f.sign('alice');assert.equal(f.d.hiddenCount(),0);assert.equal(f.d.toolsHTML(String).includes('su-preferences-open'),false);assert.match(f.d.preferencesHTML(),/id="su-preferences-open"[^>]*data-discovery="settings"/);assert.equal(f.html(),'');
  f.d.dismiss(f.app.jobs[0].link,'applied');assert.equal(f.d.hiddenCount(),1);f.sign('bob');assert.equal(f.d.hiddenCount(),0);assert.equal(f.html(),'');
  f.sign('alice');assert.equal(f.d.hiddenCount(),1);f.sign(null);assert.equal(f.d.hiddenCount(),1,'guest history stays separate and returns only for the guest');
 });
@@ -82,7 +82,9 @@ test('Board menu tools reflect only the current account and expose disabled empt
 
 test('dismissal notice expires after five seconds, resets for a new action and never crosses account ownership',()=>{
  const f=fixture();f.sign('alice');f.d.dismiss(f.app.jobs[0].link,'not_fit');assert.match(f.html(),/su-discovery-feedback/);f.advance(4999);assert.match(f.html(),/Undo/);
- f.d.dismiss('https://example.org/jobs/2','applied');f.advance(1);assert.match(f.html(),/Application noted/);f.advance(4999);assert.equal(f.html(),'');assert(f.d.hidden(f.app.jobs[0]),'expiry only clears the notice, not the saved disposition');
+ f.d.dismiss('https://example.org/jobs/2','applied');f.advance(1);assert.match(f.html(),/Added to Tracker/);f.advance(4999);assert.equal(f.html(),'');assert(f.d.hidden(f.app.jobs[0]),'expiry only clears the notice, not the saved disposition');
  f.d.dismiss(f.app.jobs[0].link,'not_fit');f.sign('bob');f.advance(5000);assert.equal(f.html(),'');assert.equal(f.d.hidden(f.app.jobs[0]),false);
  f.d.dismiss(f.app.jobs[0].link,'not_fit');f.action('undo');assert.match(f.html(),/Restored/);f.advance(5000);assert.equal(f.html(),'');assert.equal(f.d.hidden(f.app.jobs[0]),false);
 });
+
+test('study synonyms are positive hints and phrase boundaries avoid incidental text matches',()=>{for(const major of ['B.F.A. in visual communications','Communication','Mass communications','Cognitive Science','Information Systems','Photojournalism'])assert.ok(Object.keys(D.fieldBoost({major})).length,major);assert.equal(D.studyPhrase('Work with partners and departments','art'),false);assert.equal(D.studyPhrase('We welcome Fine Arts and related majors','fine arts'),true);assert.deepEqual(D.fieldBoost({major:'Department of transportation'}),{});});

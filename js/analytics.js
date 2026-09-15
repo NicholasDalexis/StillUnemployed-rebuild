@@ -1,7 +1,7 @@
 /* Consent-aware first-party product measurement. Public metadata only. */
 (function(){
   'use strict';
-  var queue=[],pending=[],catalog={},profile={},generation=0,authEpoch=0,flushBusy=false;
+  var queue=[],pending=[],catalog={},catalogGeneration=0,profile={},generation=0,authEpoch=0,flushBusy=false;
   var visitor=null,session=null,sessionAt=0,seen={},outbound=null,lastActivity=Date.now(),activeAt=Date.now(),activeSeconds=0;
   var ENDPOINT='/.netlify/functions/analytics-events',PROFILE='/.netlify/functions/analytics-profile';
   // Count decisions and recoveries without attaching job data or private errors.
@@ -14,11 +14,11 @@
   function stored(k){try{return localStorage.getItem(k);}catch(e){return null;}}
   function put(k,v){try{if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){}}
   function choices(){return {analytics:stored('su_consent_v3')==='granted'&&!navigator.globalPrivacyControl,personalization:stored('su_personalization_v1')==='granted'};}
-  function excluded(){return stored('su_admin')==='1'||!!(window.SUAuth&&window.SUAuth.measurementExcluded&&window.SUAuth.measurementExcluded());}
+  function excluded(){return !!(location.hostname&&!/^(www\.)?stillunemployed\.com$/.test(location.hostname))||stored('su_admin')==='1'||!!(window.SUAuth&&window.SUAuth.measurementExcluded&&window.SUAuth.measurementExcluded());}
   function identityReady(){
     // Module initialization can follow this deferred script. Do not count an
-    // unresolved preview account as anonymous while Firebase is still loading.
-    if(!window.SUAuth&&location.hostname&&!/^(www\.)?stillunemployed\.com$/.test(location.hostname)&&document.querySelector&&document.querySelector('script[src^="js/auth.js"]'))return false;
+    // unresolved account as anonymous while Firebase is still loading.
+    if(!window.SUAuth&&location.hostname&&document.querySelector&&document.querySelector('script[src^="js/auth.js"]'))return false;
     return !window.SUAuth||!window.SUAuth.measurementReady||window.SUAuth.measurementReady();
   }
   function signedIn(){return !!(window.SUAuth&&window.SUAuth.signedIn());}
@@ -55,9 +55,13 @@
   }
   function keyFor(link){return window.SUJobIdentity ? window.SUJobIdentity.keys(link)[0]||link : link;}
   async function registerJobs(jobs){
+    var registration=++catalogGeneration;
+    catalog={};
     if(!window.crypto||!window.crypto.subtle)return;
     var next={};
-    await Promise.all(jobs.map(async function(job){var key=keyFor(job.link);var bytes=await window.crypto.subtle.digest('SHA-256',new TextEncoder().encode(key));var id=Array.from(new Uint8Array(bytes)).map(function(n){return n.toString(16).padStart(2,'0');}).join('');next[key]={id:id,job:job};}));
+    try{await Promise.all(jobs.map(async function(job){var key=keyFor(job.link);var bytes=await window.crypto.subtle.digest('SHA-256',new TextEncoder().encode(key));var id=Array.from(new Uint8Array(bytes)).map(function(n){return n.toString(16).padStart(2,'0');}).join('');next[key]={id:id,job:job};}));}catch(_){return;}
+    // A slower previous board must never replace the currently visible catalog.
+    if(registration!==catalogGeneration)return;
     catalog=next;pending.splice(0).forEach(function(e){jobEvent(e.name,e.link);});
   }
   function jobEvent(name,link){
@@ -82,8 +86,10 @@
     else {lastActivity=Date.now();if(outbound&&outbound.hiddenAt){var timing=window.SUPersonalization.away(outbound.hiddenAt,Date.now());emit('outbound_return',Object.assign({jobId:outbound.jobId,outboundId:outbound.outboundId},timing));outbound=null;}}
   }
   async function reset(){
-    authEpoch++;queue=[];pending=[];seen={};outbound=null;profile={};generation++;
-    if(signedIn()||visitor||stored('su_analytics_visitor')){var headers={'Content-Type':'application/json'};if(signedIn())headers.Authorization='Bearer '+await window.SUAuth.getToken();var r=await fetch(PROFILE,{method:'DELETE',headers:headers,body:JSON.stringify({visitor:visitor||stored('su_analytics_visitor')}),credentials:'same-origin'});if(!r.ok)throw new Error('Reset could not finish. Please try again.');}
+    authEpoch++;var resetEpoch=authEpoch;queue=[];pending=[];seen={};outbound=null;profile={};generation++;
+    if(signedIn()||visitor||stored('su_analytics_visitor')){var headers={'Content-Type':'application/json'};if(signedIn())headers.Authorization='Bearer '+await window.SUAuth.getToken();if(resetEpoch!==authEpoch)throw new Error('Account changed. Please retry from your current account.');var r=await fetch(PROFILE,{method:'DELETE',headers:headers,body:JSON.stringify({visitor:visitor||stored('su_analytics_visitor')}),credentials:'same-origin'});if(!r.ok)throw new Error('Reset could not finish. Please try again.');}
+    if(resetEpoch!==authEpoch)throw new Error('Account changed. Please retry from your current account.');
+    if(window.SUBoardExperience&&typeof window.SUBoardExperience.clearHistory==='function')window.SUBoardExperience.clearHistory();
     put('su_analytics_visitor',null);visitor=null;window.dispatchEvent(new CustomEvent('su:profile-ready',{detail:{generation:generation,reset:true}}));
   }
   window.SUAnalytics={emit:emit,job:jobEvent,registerJobs:registerJobs,flush:flush,choices:choices,excluded:excluded,profile:function(){return profile;},generation:function(){return generation;},reset:reset,loadProfile:loadProfile};

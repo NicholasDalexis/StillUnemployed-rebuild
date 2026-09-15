@@ -7,7 +7,7 @@
    Rows arrive two ways:
      - auto-logged by js/app.js when someone taps "I applied!" on the board
        (source: 'StillUnemployed', deduped by verified posting identity)
-     - added by hand with the form on this page (source: 'Me')
+     - added by hand with an optional source (older unspecified rows use 'Me')
 
    The page follows the same conventions as js/app.js: one big render()
    that rebuilds #board, a delegated click/change listener, and the same
@@ -188,6 +188,25 @@
     try { return new URL(value).href; } catch (e) { return value; }
   }
 
+  var SOURCES = ['LinkedIn', 'Indeed', 'Company website', 'Referral', 'Other'];
+  function inferredSource(link) {
+    try {
+      var url = new URL(linkKey(link));
+      if (!/^https?:$/.test(url.protocol) || url.username || url.password) return '';
+      var host = url.hostname.toLowerCase().replace(/\.$/, '');
+      function within(domain) { return host === domain || host.slice(-(domain.length + 1)) === '.' + domain; }
+      if (within('linkedin.com')) return 'LinkedIn';
+      if (within('indeed.com')) return 'Indeed';
+      if (['greenhouse.io', 'lever.co', 'myworkdayjobs.com', 'ashbyhq.com', 'smartrecruiters.com', 'workable.com'].some(within)) return 'Company website';
+    } catch (e) {}
+    return '';
+  }
+  function sourceOptions(selected) {
+    return [''].concat(SOURCES).map(function (source) {
+      return '<option value="' + esc(source) + '"' + (source === selected ? ' selected' : '') + '>' + esc(source || 'Select a source (optional)') + '</option>';
+    }).join('');
+  }
+
   function captureFocus(board) {
     var active = document.activeElement;
     if (!active || !board.contains(active)) return null;
@@ -227,6 +246,8 @@
     deleting: {},   // id -> true while the strike-through goodbye plays
     pendingRemoval: null, // explicit Yes/No choice, bound to the current account
     draft: {},
+    sourceChosen: false,
+    reportIntent: null,
     formMessage: '',
     owner: accountKey(),
     accountGeneration: 0,
@@ -300,10 +321,11 @@
       var self = this;
       var board = document.getElementById('board');
       var focus = captureFocus(board);
-      if(this.owner !== accountKey()) { this.owner=accountKey(); this.accountGeneration++; this.draft={}; this.noteDrafts={}; this.deleting={}; this.pendingRemoval=null; this.formMessage=''; this.writeError=''; this.localChanged=false; this.rows=loadRows(); options={clearDraft:true}; focus=null; }
+      if(this.owner !== accountKey()) { this.owner=accountKey(); this.accountGeneration++; this.draft={}; this.noteDrafts={}; this.deleting={}; this.pendingRemoval=null; this.reportIntent=null; this.formMessage=''; this.writeError=''; this.localChanged=false; this.rows=loadRows(); options={clearDraft:true}; focus=null; }
       if(this.pendingRemoval && !this.rows.some(function(r){return r && r.id===self.pendingRemoval.id;})) this.pendingRemoval=null;
-      if (options && options.clearDraft) this.draft = {};
-      else ['trk-co', 'trk-role', 'trk-link'].forEach(function (id) {
+      if(this.reportIntent && !this.rows.some(function(r){return r && r.id===self.reportIntent.id;})) this.reportIntent=null;
+      if (options && options.clearDraft) { this.draft = {}; this.sourceChosen = false; }
+      else ['trk-co', 'trk-role', 'trk-link', 'trk-source'].forEach(function (id) {
         var input = document.getElementById(id);
         if (input) self.draft[id] = input.value;
       });
@@ -331,14 +353,14 @@
             '<img src="assets/5037150f-ce24-477c-bae7-ef884fbc5849.jpg" alt="Nic" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 16%; transform: scale(1.55); transform-origin: 50% 26%;">' +
           '</span>' +
           '<span style="display:block; line-height: 1.2;">' +
-            '<span style="display:block; font-size: 14px; font-weight: 700; color: #2A2118; font-family: \'Archivo\', sans-serif;">Nic, the founder</span>' +
-            '<span style="display:block; font-size: 11px; font-weight: 500; color: #6F5E45; margin-top: 2px; font-family: \'Archivo\', sans-serif;">Currently at Instagram making 6 figures</span>' +
+            '<span style="display:block; font-size: 14px; font-weight: 700; color: #2A2118; font-family: var(--su-body);">Hey, I made this board</span>' +
+            '<span style="display:block; font-size: 11px; font-weight: 500; color: #6F5E45; margin-top: 2px; font-family: var(--su-body);">Currently working at Instagram</span>' +
           '</span>' +
           '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex: none; margin-left: 2px;"><path d="M9 6l6 6-6 6" stroke="#6F5E45" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>' +
         '</button>' +
         '<div class="su-main-nav" style="position: absolute; top: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px;">' +
           '<a href="./jobs.html" class="postit trk-nav-a r2">Jobs</a>' +
-          '<a href="./tracker.html" class="postit trk-nav-a r3">Tracker' + (this.rows.length ? ' (<span style="font-family: \'Archivo\', sans-serif; font-weight: 800; font-size: 16px;">' + (this.rows.length > 99 ? '99+' : this.rows.length) + '</span>)' : '') + '</a>' +
+          '<a href="./tracker.html" class="postit trk-nav-a r3">Tracker' + (this.rows.length ? ' (<span style="font-family: var(--su-body); font-weight: 800; font-size: 16px;">' + (this.rows.length > 99 ? '99+' : this.rows.length) + '</span>)' : '') + '</a>' +
           '<a href="./internships.html" class="postit trk-nav-a r1">Internships</a>' +
           '<span class="su-account-slot"></span>' +
                   '</div>' +
@@ -378,6 +400,8 @@
           '<input id="trk-link" class="trk-input" aria-label="Posting link (optional)" inputmode="url" placeholder="link (optional)" value="' + esc(this.draft['trk-link'] || '') + '">' +
           '<button id="trk-add" type="button" data-act="addRow" class="trk-addbtn" aria-describedby="trk-form-feedback">+ add it</button>' +
         '</div>' +
+        '<label class="trk-source-field" for="trk-source">Where did you find this? <span>Optional</span><select id="trk-source" class="trk-input" aria-describedby="trk-source-help">' + sourceOptions(this.draft['trk-source'] || '') + '</select></label>' +
+        '<p id="trk-source-help" class="trk-source-help">We can recognize some job sites from your link. You can change the source.</p>' +
         '<p id="trk-form-feedback" role="status" aria-live="polite" style="margin:8px 0 0;color:#6F5E45;">' + esc(this.formMessage) + '</p>' +
       '</div>';
 
@@ -403,19 +427,30 @@
           var opts = STATUSES.map(function (s) {
             return '<option value="' + esc(s) + '"' + (r.status === s ? ' selected' : '') + '>' + esc(s) + '</option>';
           }).join('');
+          var report = self.reportIntent && self.reportIntent.id === r.id ? self.reportIntent : null;
           out += '<div class="trk-row' + (del ? ' deleting' : '') + '" data-id="' + esc(r.id) + '">' +
             '<div class="trk-main">' +
               '<div class="trk-co">' + esc(r.company || '—') + '</div>' +
               '<div class="trk-role">' + esc(r.role || '') + (linkHtml ? '&nbsp;&nbsp;' + linkHtml : '') + '</div>' +
-              '<div class="trk-src">' + (r.source === 'StillUnemployed' ? '<span style="color: var(--trk-star, #C2552F); font-family: \'Indie Flower\', cursive; font-weight: 700;">★</span> via StillUnemployed.com' : 'added by you') + '</div>' +
+              '<div class="trk-src">' + (r.source === 'StillUnemployed' ? '<span style="color: var(--trk-star, #C2552F); font-family: \'Indie Flower\', cursive; font-weight: 700;">★</span> via StillUnemployed.com' : SOURCES.indexOf(r.source) !== -1 ? 'via ' + esc(r.source) : 'added by you') + '</div>' +
             '</div>' +
             '<div class="trk-date" title="date applied">' + esc(fmtDate(r.dateApplied)) + '</div>' +
             '<select class="trk-status ' + statusCls(r.status) + '" data-id="' + esc(r.id) + '" aria-label="Application status">' + opts + '</select>' +
             '<textarea class="trk-notes" data-id="' + esc(r.id) + '" rows="1" aria-label="Application notes" placeholder="notes... (recruiter name, next step)">' + esc(Object.prototype.hasOwnProperty.call(self.noteDrafts,r.id)?self.noteDrafts[r.id]:(r.notes || '')) + '</textarea>' +
             '<button type="button" class="trk-del" data-act="delRow" data-id="' + esc(r.id) + '" aria-label="Remove ' + esc(r.company || r.role || 'application') + ' from tracker" aria-expanded="' + !!confirming + '"' + (confirming ? ' aria-controls="trk-remove-confirm"' : '') + (del ? ' disabled' : '') + '>' +
-              '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"></path></svg>' +
+              '<svg class="su-close-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg>' +
             '</button>' +
-          '</div>';
+            '<div class="trk-report-action"><button type="button" data-act="openReport" data-id="' + esc(r.id) + '" class="trk-report-button" aria-label="Report ' + esc(r.company || r.role || 'this job') + ' for review" aria-expanded="' + !!report + '"' + (report ? ' aria-controls="trk-report-panel"' : '') + '>Report</button></div>';
+          if(report) {
+            var signedIn = window.SUAuth && window.SUAuth.signedIn && window.SUAuth.signedIn();
+            out += '<section id="trk-report-panel" class="trk-report-panel" aria-label="Report job for review" aria-busy="' + report.busy + '"><h2>Report this job</h2>' +
+              '<p>Send the posting link, company, role and source to our team for review. Your Tracker notes stay private. We cannot remove a job from another website.</p>' +
+              (!report.received ? '<label for="trk-report-reason">What happened?</label><select id="trk-report-reason" class="trk-input"' + (report.busy ? ' disabled' : '') + '>' + [['suspicious','Suspicious or inappropriate contact'],['unavailable','Job no longer available'],['incorrect','Incorrect job details'],['other','Something else']].map(function(reason){return '<option value="' + reason[0] + '"' + (reason[0] === report.reason ? ' selected' : '') + '>' + reason[1] + '</option>';}).join('') + '</select>' : '') +
+              '<p id="trk-report-feedback" role="status" aria-live="polite">' + esc(report.message || (signedIn ? '' : 'Sign in to send a report.')) + '</p>' +
+              '<div class="trk-report-actions">' + (!report.received ? '<button type="button" class="trk-report-send" data-act="' + (signedIn ? 'sendReport' : 'signInReport') + '" data-id="' + esc(r.id) + '"' + (report.busy ? ' disabled' : '') + '>' + (report.busy ? 'Sending…' : signedIn ? 'Send for review' : 'Sign in with Google') + '</button>' : '') +
+              '<button type="button" data-act="closeReport" data-id="' + esc(r.id) + '">' + (report.received ? 'Done' : report.busy ? 'Close' : 'Cancel') + '</button></div></section>';
+          }
+          out += '</div>';
         });
         out += '</div>';
       }
@@ -442,6 +477,7 @@
     },
 
     addRow: function () {
+      if(this.owner !== accountKey()) { this.render(); return; }
       var co = (document.getElementById('trk-co') || {}).value || '';
       var role = (document.getElementById('trk-role') || {}).value || '';
       var link = (document.getElementById('trk-link') || {}).value || '';
@@ -471,7 +507,7 @@
       nextRows.unshift({
         id: 'su-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
         company: co, role: role, link: link,
-        source: 'Me', dateApplied: todayISO(), status: 'Applied', notes: ''
+        source: SOURCES.indexOf((document.getElementById('trk-source') || {}).value) !== -1 ? document.getElementById('trk-source').value : (this.sourceChosen ? 'Me' : inferredSource(link) || 'Me'), dateApplied: todayISO(), status: 'Applied', notes: ''
       });
       if(!this.persistRows(nextRows)) { this.formMessage=this.writeError; this.render(); return; }
       // analytics (js/analytics.js): manual add — additive no-op without it
@@ -480,6 +516,32 @@
       this.render({ clearDraft: true });
       var again = document.getElementById('trk-co');
       if (again) again.focus();
+    },
+
+    openReport: function (id) {
+      if(this.owner !== accountKey()) { this.render(); return; }
+      if(this.reportIntent && this.reportIntent.id === id) return;
+      var row=loadRows().find(function(item){ return item && item.id === id; });
+      if(!row) return;
+      this.reportIntent = { id:id, owner:this.owner, generation:this.accountGeneration, requestId:window.crypto && window.crypto.randomUUID ? window.crypto.randomUUID() : '', reason:'suspicious', job:{link:row.link,company:row.company,role:row.role,source:row.source}, busy:false, received:false, message:'' };
+      this.render(); this.focusRowAction(id, 'closeReport');
+    },
+    closeReport: function (id) {
+      if(!this.reportIntent || this.reportIntent.id !== id) return;
+      this.reportIntent = null; this.render(); this.focusRowAction(id, 'openReport');
+    },
+    sendReport: function (id) {
+      var self = this, intent = this.reportIntent;
+      function current() { return self.reportIntent === intent && intent.owner === accountKey() && intent.generation === self.accountGeneration && loadRows().some(function(row){return row && row.id === id;}); }
+      if(!intent || intent.id !== id || intent.busy || intent.received || !current()) return;
+      if(!window.SUTrackerReports) { intent.message='Reporting is unavailable right now. Please try again later.'; this.render(); return; }
+      intent.busy = true; intent.message = 'Sending your report…'; this.render();
+      return window.SUTrackerReports.report(intent.job, {requestId:intent.requestId,reason:intent.reason,current:current}).then(function(receipt){
+        if(!current()) return;
+        intent.received=true; intent.message=receipt.duplicate ? 'Your report is already pending review.' : 'Report received. Our team will review it.';
+      }).catch(function(error){if(current())intent.message=error.message || 'Receipt could not be confirmed. Please retry.';}).finally(function(){
+        if(current()) { intent.busy=false; self.render(); self.focusRowAction(id, intent.received ? 'closeReport' : 'sendReport'); }
+      });
     },
 
     delRow: function (id, pointer) {
@@ -579,6 +641,10 @@
           case 'cancelRemoval': self.cancelRemoval(el.getAttribute('data-id')); break;
           case 'confirmRemoval': self.confirmRemoval(el.getAttribute('data-id')); break;
           case 'exportCsv': self.exportCsv(); break;
+          case 'openReport': self.openReport(el.getAttribute('data-id')); break;
+          case 'closeReport': self.closeReport(el.getAttribute('data-id')); break;
+          case 'sendReport': self.sendReport(el.getAttribute('data-id')); break;
+          case 'signInReport': if(window.SUAuth && window.SUAuth.signIn)window.SUAuth.signIn(el); break;
         }
       });
 
@@ -586,7 +652,14 @@
       document.addEventListener('change', function (e) {
         var t = e.target;
         if (!t) return;
-        if (t.classList && t.classList.contains('trk-status')) {
+        if(t.id === 'trk-report-reason') {
+          var report=self.reportIntent;
+          if(report && !report.busy && !report.received && report.owner===accountKey() && ['suspicious','unavailable','incorrect','other'].indexOf(t.value)!==-1) {
+            report.reason=t.value; report.requestId=window.crypto && window.crypto.randomUUID ? window.crypto.randomUUID() : ''; report.message='';
+          }
+        }
+        else if(t.id === 'trk-source') { self.sourceChosen = true; self.draft[t.id] = t.value; }
+        else if (t.classList && t.classList.contains('trk-status')) {
           if(self.owner!==accountKey() || !document.getElementById('board').contains(t)) { self.refreshRows(); return; }
           var id=t.getAttribute('data-id'),value=t.value;
           var saved=self.setField(id, 'status', value);
@@ -603,6 +676,10 @@
         var t = e.target;
         if (t && (t.id === 'trk-co' || t.id === 'trk-role' || t.id === 'trk-link')) {
           self.draft[t.id] = t.value;
+          if(t.id === 'trk-link' && !self.sourceChosen) {
+            var source = document.getElementById('trk-source');
+            if(source) { source.value = inferredSource(t.value); self.draft['trk-source'] = source.value; }
+          }
           self.formMessage = '';
           var feedback = document.getElementById('trk-form-feedback');
           if (feedback) feedback.textContent = '';
@@ -626,6 +703,7 @@
           if(pointerDialog) pointerDialog.removeAttribute('data-pointer-opening');
         }
         if(e.key==='Escape' && self.pendingRemoval) { e.preventDefault(); self.cancelRemoval(self.pendingRemoval.id); return; }
+        if(e.key==='Escape' && self.reportIntent) { e.preventDefault(); self.closeReport(self.reportIntent.id); return; }
         if(e.key==='Tab' && self.pendingRemoval) {
           var confirmation=document.getElementById('trk-remove-confirm');
           var choices=confirmation ? Array.from(confirmation.querySelectorAll('button:not(:disabled)')) : [];

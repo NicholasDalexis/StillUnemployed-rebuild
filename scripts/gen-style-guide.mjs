@@ -126,7 +126,7 @@ export function buildCatalog(root = ROOT) {
   const fonts = readFileSync(join(root, 'css/fonts.css'), 'utf8');
   const fontFaces = [...new Set([...fonts.matchAll(/@font-face\s*\{([^}]+)\}/g)].map(match => {
     const rule=declarations(match[1]);
-    return JSON.stringify({family:rule['font-family'].replace(/^['"]|['"]$/g,''),style:rule['font-style'],weight:Number(rule['font-weight'])});
+    return JSON.stringify({family:rule['font-family'].replace(/^['"]|['"]$/g,''),style:rule['font-style'],weight:/^\d+$/.test(rule['font-weight'])?Number(rule['font-weight']):rule['font-weight']});
   }))].map(item => JSON.parse(item));
   if (!fontFaces.length) throw new Error('Shared font face catalog is empty');
   const routeSlugs=object(app, 'var slug = ');

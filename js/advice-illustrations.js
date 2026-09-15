@@ -3,7 +3,7 @@
   'use strict';
   var ink='#2A2118',accent='#B14D28';
   function path(d,color){return '<path d="'+d+'" stroke="'+(color||ink)+'"/>';}
-  function label(x,y,text,size){return '<text x="'+x+'" y="'+y+'" fill="'+ink+'" stroke="none" text-anchor="middle" font-family="Indie Flower, cursive" font-size="'+(size||14)+'">'+text+'</text>';}
+  function label(x,y,text,size){return '<text x="'+x+'" y="'+y+'" fill="'+ink+'" stroke="none" text-anchor="middle" font-family="Indie Flower, cursive" style="font-family:var(--su-hand, Indie Flower, cursive)" font-size="'+(size||14)+'">'+text+'</text>';}
   function paper(x,y,w,h,rot){return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="2" fill="#FFFEF9" stroke="'+ink+'" transform="rotate('+(rot||0)+' '+(x+w/2)+' '+(y+h/2)+')"/>';}
   function arrow(x,y){return path('M'+x+' '+y+' q14 -4 28 0 m-8 -6 8 6 -8 6',accent);}
   var drawings={
@@ -26,7 +26,7 @@
     'experience-ambassador': paper(8,20,50,65,-5)+label(33,45,'brand',13)+label(33,62,'rep',13)+path('M71 36 h24 M71 69 h24',accent)+paper(106,9,34,69,4)+path('M113 24 h19 v26 h-19 Z M120 65 h6')+paper(149,46,39,42,-3)+label(168,72,'event',11),
     'experience-honest-dates': label(42,21,'role A',13)+label(42,52,'role B',13)+paper(79,6,102,24,-1)+paper(79,38,102,24,1)+path('M112 7 v22 M146 7 v22 M112 39 v22 M146 39 v22')+path('M80 72 v7 h101 v-7',accent)+label(130,96,'same three months',12),
     'experience-read-requirement': paper(9,13,102,72,-3)+label(60,36,'required',13)+path('M24 49 h68 M24 64 h52')+'<circle cx="139" cy="40" r="23" stroke="'+accent+'"/>'+path('M155 58 l27 25',accent)+label(140,38,'full',12)+label(140,52,'time?',12),
-    'experience-graduation': paper(13,17,71,70,-4)+label(48,43,'degree',15)+label(48,64,'school',15)+arrow(91,49)+paper(126,17,64,59,3)+label(158,41,'true date',12)+label(158,58,'+ your work',11)+path('M135 76 l-4 10 16 -10',accent)
+    'experience-graduation': path('M12 37 l31 -16 31 16 -31 16 Z M25 45 v17 q19 11 37 -1 V45 M74 37 v29')+paper(108,10,76,84,3)+label(146,34,'your work',16)+path('M123 47 h45 M123 60 h39 M123 73 h43')+path('M119 87 q27 -4 52 -1',accent)
   };
   function has(id){return Object.prototype.hasOwnProperty.call(drawings,id);}
   function html(id,big){

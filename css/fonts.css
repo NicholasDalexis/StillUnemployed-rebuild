@@ -1,4 +1,13 @@
 /* Existing self-hosted brand faces. Shared by the style guide and new pages. */
+/* Unmodified Google Fonts Lexend variable font, SIL OFL 1.1.
+   License and source receipt: assets/fonts/lexend/. */
+@font-face {
+  font-family: 'Lexend';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../assets/fonts/lexend/Lexend-Variable.ttf") format('truetype');
+}
 @font-face {
   font-family: 'Archivo';
   font-style: normal;

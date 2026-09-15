@@ -7,16 +7,19 @@
   var RETURNING_PICKS_ENABLED=false;
   function clean(value,max){return String(value||'').replace(/[\u0000-\u001f\u007f]/g,' ').trim().slice(0,max);}
   function profile(value){value=value||{};return {major:clean(value.major,100),location:clean(value.location,100),info:clean(value.info,300)};}
-  function fieldBoost(value){var text=(profile(value).major+' '+profile(value).info).toLowerCase(),out={};
+  function studyText(value){return String(value||'').toLowerCase().replace(/[’']/g,'').replace(/[^a-z0-9]+/g,' ').trim();}
+  function studyPhrase(haystack,needle){var phrase=studyText(needle);return (phrase.length>=3||phrase==='ux'||phrase==='ui')&&(' '+studyText(haystack)+' ').indexOf(' '+phrase+' ')>=0;}
+  function fieldBoost(value){var text=studyText(profile(value).major+' '+profile(value).info),out={};
+    function matches(words){return words.some(function(word){return studyPhrase(text,word);});}
     function add(fields){fields.forEach(function(f,i){out[f]=(out[f]||0)+(i?1:3);});}
-    if(/market|business|advertis|communication|public relations|social media/.test(text))add(['Marketing','Creative']);
-    if(/graphic|visual|illustrat|fine art|brand design/.test(text))add(['Creative','Product Design','Creative Technology','Marketing']);
-    if(/\bux\b|\bui\b|product design|interaction|human.computer|psychology/.test(text))add(['Product Design','Creative','Marketing']);
-    if(/photo|journalism/.test(text))add(['Photography','Marketing','Video']);
-    if(/fashion|apparel|textile/.test(text))add(['Fashion Design','Creative','Marketing']);
-    if(/computer|software|web develop|creative tech|information tech/.test(text))add(['Web Development','Creative Technology','Product Design','Artificial Intelligence']);
-    if(/film|video|cinema|animation|audio|music|podcast/.test(text))add(['Video','Creative','Marketing']);
-    if(/english|writing|literature|copy/.test(text))add(['Marketing','Product Design']);
+    if(matches(['marketing','business','business administration','advertising','communication','communications','public relations','mass communication','mass communications','social media','strategic communication','strategic communications']))add(['Marketing','Creative']);
+    if(matches(['graphic design','graphic arts','visual communication','visual communications','visual arts','illustration','fine art','fine arts','brand design','branding','bfa','b f a','design']))add(['Creative','Product Design','Creative Technology','Marketing']);
+    if(matches(['ux','ui','ux design','ui design','product design','interaction design','human computer interaction','hci','psychology','cognitive science']))add(['Product Design','Creative','Marketing']);
+    if(matches(['photo','photography','photojournalism','journalism','digital media']))add(['Photography','Marketing','Video']);
+    if(matches(['fashion','fashion design','apparel','textile','textiles']))add(['Fashion Design','Creative','Marketing']);
+    if(matches(['computer science','computer engineering','software','software engineering','web development','creative technology','creative tech','information technology','information systems','informatics','computing']))add(['Web Development','Creative Technology','Product Design','Artificial Intelligence']);
+    if(matches(['film','film studies','filmmaking','video','cinema','animation','audio','music','podcast','podcasting','media production']))add(['Video','Creative','Marketing']);
+    if(matches(['english','writing','creative writing','literature','copywriting','copy']))add(['Marketing','Product Design']);
     return out;
   }
   function lane(job){var c=job.ind||'',r=String(job.role||'').toLowerCase();
@@ -52,7 +55,7 @@
     function useProfile(){return signed()?profile(data().profile):profile();}
     function order(jobs,P,interest){if(!signed()||!root.SUAnalytics||!root.SUAnalytics.choices||!root.SUAnalytics.choices().personalization)interest={};var prefs=useProfile(),boost=fieldBoost(prefs),major=prefs.major.toLowerCase();
       // A posting can explicitly welcome a major outside the small adjacency dictionary.
-      var directFields={};if(major.length>=3)jobs.forEach(function(j){if(String(j.desc||'').toLowerCase().indexOf(major)>=0)directFields[P.classify(j).field]=true;});
+      var directFields={};if(major.length>=3)jobs.forEach(function(j){if(studyPhrase(j.desc||'',major))directFields[P.classify(j).field]=true;});
       Object.keys(directFields).forEach(function(field){boost[field]=(boost[field]||0)+3;});
       var ranked=P.rank(jobs,interest,{fieldBoost:boost});
       if(first&&!signed())ranked=starter(jobs,P);
@@ -63,7 +66,7 @@
     function blocked(){return !!(App&&(App.state.detailOpen||App.state.feedbackOpen||App.state.adviceOpen||App.state.signupOpen||App.state.lookOpen||App.state.modalOpen))||!!root.document.querySelector('dialog[open], [role="dialog"][aria-modal="true"]:not(#overlay-root *)');}
     function preferencesOpen(){return signed()&&form&&!blocked();}
     function modalHTML(esc){
-        var v=draft||useProfile();return '<form class="su-discovery-note su-preferences" id="su-discovery-form" data-act="stop" tabindex="-1" aria-labelledby="su-preferences-title"><button type="button" class="su-discovery-close" data-discovery="close" aria-label="Close preferences">×</button><h2 id="su-preferences-title">Make this board a little more you.</h2><p>A few hints help sort your jobs. Every answer is optional.</p><label for="su-major">Major or area of study <span>(optional)</span></label><input id="su-major" name="major" maxlength="100" value="'+esc(v.major)+'" placeholder="e.g. communications"><label for="su-location">Preferred location <span>(optional)</span></label><input id="su-location" name="location" maxlength="100" value="'+esc(v.location)+'" placeholder="e.g. Chicago"><details class="su-preferences-more"'+(v.info?' open':'')+'><summary>Anything else you want to explore? <span>(optional)</span></summary><label for="su-info">Roles or interests</label><textarea id="su-info" name="info" maxlength="300" placeholder="Roles or creative skills you enjoy">'+esc(v.info)+'</textarea><p class="su-discovery-small">These hints help sort your jobs. You can edit or clear them anytime. Skip sensitive details.</p></details><p class="su-preferences-error" role="status">'+esc(formError)+'</p><div class="su-discovery-tools su-preferences-actions"><button type="submit">Save preferences</button><button type="button" data-discovery="skip">Skip for now</button></div></form>';
+        var v=draft||useProfile();return '<form class="su-discovery-note su-preferences" id="su-discovery-form" data-act="stop" tabindex="-1" aria-labelledby="su-preferences-title"><button type="button" class="su-discovery-close" data-discovery="close" aria-label="Close preferences"><svg class="su-close-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg></button><h2 id="su-preferences-title">Tune your feed</h2><p>We’ll remember these interests between visits to help order your jobs. Every answer is optional; these hints never filter roles out.</p><label for="su-major">Major or area of study <span>(optional)</span></label><input id="su-major" name="major" maxlength="100" value="'+esc(v.major)+'" placeholder="e.g. communications"><label for="su-location">Preferred location <span>(optional)</span></label><input id="su-location" name="location" maxlength="100" value="'+esc(v.location)+'" placeholder="e.g. Chicago"><details class="su-preferences-more"'+(v.info?' open':'')+'><summary>Anything else you want to explore? <span>(optional)</span></summary><label for="su-info">Roles or interests</label><textarea id="su-info" name="info" maxlength="300" placeholder="Roles or creative skills you enjoy">'+esc(v.info)+'</textarea><p class="su-discovery-small">These hints help sort your jobs. You can edit or clear them anytime. Skip sensitive details.</p></details><p class="su-preferences-error" role="status">'+esc(formError)+'</p><div class="su-discovery-tools su-preferences-actions"><button type="submit">Save preferences</button><button type="button" data-discovery="skip">Skip for now</button></div></form>';
     }
     function track(name){if(root.SUAnalytics&&typeof root.SUAnalytics.emit==='function')root.SUAnalytics.emit(name,{});}
     function closePreferences(){
@@ -84,16 +87,16 @@
     function hiddenCount(){return App&&Array.isArray(App.jobs)?App.jobs.filter(hidden).length:0;}
     function toolsHTML(esc){
       var total=hiddenCount();
-      return (signed()?'<button type="button" id="su-preferences-open" data-discovery="settings" aria-haspopup="dialog">Your preferences</button>':'')+
-        '<button type="button" data-discovery="hidden" aria-pressed="'+showHidden+'"'+(total?'':' disabled')+'>'+esc(showHidden?'Hide dismissed jobs':'Show hidden jobs')+' ('+total+')</button>';
+      return '<button type="button" data-discovery="hidden" aria-pressed="'+showHidden+'"'+(total?'':' disabled')+'>'+esc('Hidden jobs')+' ('+total+')</button>';
     }
+    function preferencesHTML(){return signed()?'<button type="button" id="su-preferences-open" class="su-tune-feed" data-discovery="settings" aria-haspopup="dialog">Tune your feed →</button>':'';}
     function html(esc){
       if(!message&&!preferenceResult)return '';
-      return '<section class="su-discovery su-discovery-feedback" aria-label="Board update"><p role="status"><span id="su-preference-status">'+esc(resultText())+'</span>'+(preferenceResult?' <button type="button" id="su-preference-retry" data-discovery="retry"'+(root.SUAuth.syncState&&root.SUAuth.syncState()==='error'?'':' hidden')+'>Retry sync</button>':'')+(undo?' <button type="button" data-discovery="undo">Undo</button>':'')+'</p></section>';
+      return '<section class="su-discovery su-discovery-feedback'+(preferenceResult?'':' su-compact-feedback')+'" aria-label="Board update"><p role="status"><span id="su-preference-status">'+esc(resultText())+'</span>'+(preferenceResult?' <button type="button" id="su-preference-retry" data-discovery="retry"'+(root.SUAuth.syncState&&root.SUAuth.syncState()==='error'?'':' hidden')+'>Retry sync</button>':'')+(undo&&message==='Added to Tracker.'?' <a class="su-tracker-sticky" href="/tracker.html">Tracker →</a>':'')+(undo?' <button type="button" data-discovery="undo">Undo</button>':'')+'</p></section>';
     }
     function clearMessageTimer(){if(messageTimer!==null&&root.clearTimeout)root.clearTimeout(messageTimer);messageTimer=null;}
     function expireMessage(){clearMessageTimer();if(!root.setTimeout)return;var expected=message,owner=account;messageTimer=root.setTimeout(function(){messageTimer=null;if(owner!==account||message!==expected)return;message='';undo=null;var status=root.document.getElementById('su-preference-status'),note=status&&status.closest('.su-discovery-feedback');if(note&&!preferenceResult)note.remove();},5000);}
-    function dismiss(link,reason){preferenceResult='';var k=key(link),previous=data()[k]||null;undo={key:k,previous:previous};var value={link:link,reason:reason,hidden:true,confirmed:reason==='applied'||!!(previous&&previous.confirmed)};if(!write(k,value))return false;message=reason==='applied'?'Application noted. Hidden from your board.':'Job hidden from your board.';expireMessage();return true;}
+    function dismiss(link,reason,options){preferenceResult='';var k=key(link),previous=data()[k]||null;undo={key:k,previous:previous};var value={link:link,reason:reason,hidden:true,confirmed:reason==='applied'||!!(previous&&previous.confirmed)};if(!write(k,value))return false;message=reason==='applied'?'Added to Tracker.':'Hidden from your board.';if(options&&options.quiet){message='';undo=null;clearMessageTimer();}else expireMessage();return true;}
     function updateCatalog(jobs){if(!App)return;var live=new Map((Array.isArray(jobs)?jobs:App.jobs).map(function(j){return [canonical(j.link),j];}));recommendations=recommendations.map(function(j){return live.get(canonical(j.link));}).filter(Boolean);if(!visitReady)rememberVisit();}
     function start(app){App=app;if(started)return;started=true;try{var legacy=JSON.parse(root.localStorage.getItem('su_reported_links')||'[]'),guest=JSON.parse(root.localStorage.getItem('su_discovery_guest')||'{}');legacy.forEach(function(link){if(!guest[key(link)])guest[key(link)]={link:link,reason:'unavailable',hidden:true,confirmed:false};});root.localStorage.setItem('su_discovery_guest',JSON.stringify(guest));}catch(e){}try{first=!root.localStorage.getItem('su_discovery_started');root.localStorage.setItem('su_discovery_started','1');}catch(e){}
       function auth(){clearMessageTimer();account=root.SUStore&&root.SUStore.owner();form=false;draft=null;undo=null;message='';formError='';preferenceResult='';promptDismissed=false;showHidden=false;recommendations=[];recOpen=false;visitReady=false;rememberVisit();render();}
@@ -105,7 +108,11 @@
       function readForm(){var f=root.document.getElementById('su-discovery-form');return profile(f?{major:f.elements.major.value,location:f.elements.location.value,info:f.elements.info.value}:{});}
       root.document.addEventListener('submit',function(e){if(e.target.id!=='su-discovery-form')return;e.preventDefault();if(!signed())return;try{if(!write('profile',readForm()))throw Error('Not saved');write('promptAnswered',true);form=false;draft=null;promptDismissed=true;preferenceResult='saved';message='';track('preference_save');render();}catch(err){track('preference_error');formError='Could not save preferences. Your answers are still here. Please try again.';render();}});
       root.document.addEventListener('click',function(e){var button=e.target.closest&&e.target.closest('[data-discovery]');if(!button)return;e.preventDefault();var action=button.getAttribute('data-discovery');if(!signed()&&['hidden','undo','restore'].indexOf(action)<0)return;try{
-        if(action==='settings'){clearMessageTimer();track('preference_open');form=true;draft=null;message='';formError='';preferenceResult='';}
+        if(action==='settings'){
+          // The modal returns to the visible Filters trigger after its panel closes.
+          if(App.state.openPanel&&App.closeBoardPanels){var opener=root.document.querySelector('[data-act="toggleFilters"]');App.closeBoardPanels();if(opener)opener.focus({preventScroll:true});}
+          clearMessageTimer();track('preference_open');form=true;draft=null;message='';formError='';preferenceResult='';
+        }
         if(action==='close'){closePreferences();return;}
         if(action==='retry'){if(root.SUAuth.retrySync)root.SUAuth.retrySync();return;}
         if(action==='hidden')showHidden=!showHidden;
@@ -119,7 +126,7 @@
       }catch(err){if(action==='clear')track('preference_error');message='This change could not be saved. Please try again.';formError=message;render();}});
       account=root.SUStore&&root.SUStore.owner();rememberVisit();
     }
-    return {start:start,updateCatalog:updateCatalog,order:order,html:html,toolsHTML:toolsHTML,hiddenCount:hiddenCount,preferencesOpen:preferencesOpen,modalHTML:modalHTML,refreshDialog:refreshDialog,closePreferences:closePreferences,dialogOwner:function(){return account;},hidden:hidden,showHidden:function(){return showHidden;},dismiss:dismiss,key:key,confirmedCount:count,profile:useProfile};
+    return {start:start,updateCatalog:updateCatalog,order:order,html:html,toolsHTML:toolsHTML,preferencesHTML:preferencesHTML,hiddenCount:hiddenCount,preferencesOpen:preferencesOpen,modalHTML:modalHTML,refreshDialog:refreshDialog,closePreferences:closePreferences,dialogOwner:function(){return account;},hidden:hidden,showHidden:function(){return showHidden;},dismiss:dismiss,key:key,confirmedCount:count,profile:useProfile};
   }
-  return {profile:profile,fieldBoost:fieldBoost,lane:lane,starter:starter,create:create};
+  return {profile:profile,fieldBoost:fieldBoost,studyPhrase:studyPhrase,lane:lane,starter:starter,create:create};
 });

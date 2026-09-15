@@ -43,9 +43,9 @@ function renderedCard(b, link) {
   const card = b.grid.querySelectorAll('.note[data-link]').find(node => node.getAttribute('data-link') === link);
   assert(card, 'rendered card for ' + link);
   const apply = card.querySelector('a[data-act="apply"]');
-  const stamp = card.querySelectorAll('div').find(node => /^Human[- ]verified$/i.test(node.textContent.trim()));
+  const stamp = card.querySelectorAll('div').find(node => /^Our picks$/i.test(node.textContent.trim()));
   assert(apply, 'the card retains its real Apply action');
-  assert(stamp, 'the card retains its verification stamp');
+  assert(stamp, 'the card retains its selection stamp');
   assertActiveRoute(apply,link);
   return { card, background:card.style.background, ink:card.style.color, apply:apply.style.color, stamp:stamp.style.color };
 }

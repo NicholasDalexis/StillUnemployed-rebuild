@@ -37,6 +37,10 @@ function excludedAccount(decoded,env){
 function body(request){if(Buffer.byteLength(request.body||'')>32768)throw error(413,'Request too large');try{return JSON.parse(request.body||'{}');}catch{throw error(400,'Invalid JSON');}}
 async function collect(request,d) {
   Core.authorizeOrigin(request,d.env);
+  // Test builds must never inflate the production audience, even if a client sends events.
+  if(d.env.CONTEXT && d.env.CONTEXT!=='production')return {accepted:0,excluded:true};
+  const origin=request.headers.origin||request.headers.Origin||'';
+  if(origin && !/^https:\/\/(www\.)?stillunemployed\.com$/.test(origin))return {accepted:0,excluded:true};
   const input=body(request), choices=input.consent||{};
   if(choices.analytics!==true && choices.personalization!==true)throw error(403,'Consent required');
   if(!Array.isArray(input.events)||input.events.length>30||!input.events.length)throw error(400,'Invalid batch');

@@ -161,7 +161,7 @@ export function renderReleaseScript(data) {
     document.querySelectorAll('[data-su-version]').forEach(function (link) {
       link.textContent = 'Version ' + version;
       link.setAttribute('href', '/versions.html#version-' + version.replace(/\\./g, '-'));
-      link.setAttribute('aria-label', 'Version ' + version + '. Explore Version 2 features');
+      link.setAttribute('aria-label', 'Version ' + version + '. View version history');
     });
   }
   // The board calls render after replacing its markup. No observer is needed.
@@ -228,7 +228,7 @@ ${cards}
 export function refreshVersionLinks(html, version) {
   return html.replace(/(<a\b[^>]*\bdata-su-version(?=\s|=|>)(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+))?[^>]*>)[^<]*(<\/a>)/g, (_match, open, close) => {
     const attributes = open.slice(0, -1).replace(/\s+(?:href|aria-label)\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '');
-    return attributes + ' href="/versions.html#' + anchor(version) + '" aria-label="' + esc(label(version) + '. Explore Version 2 features') + '">' + label(version) + close;
+    return attributes + ' href="/versions.html#' + anchor(version) + '" aria-label="' + esc(label(version) + '. View version history') + '">' + label(version) + close;
   })
     .replace(/(js\/release\.js\?v=)[^"'\s>]+/g, (_match, prefix) => prefix + version);
 }

@@ -12,7 +12,7 @@
   function inspect(link){return root.SUJobIdentity&&root.SUJobIdentity.inspect(link);}
   function validLink(link){var info=typeof link==='string'&&link.length<=8192&&inspect(link);return !!(info&&info.valid&&!info.ambiguous);}
   function validate(data){
-    if(!data||data.schemaVersion!==1||!Number.isSafeInteger(data.revision)||data.revision<floor||!Array.isArray(data.removed)||data.removed.length>1000||typeof data.checkedAt!=='string'||!Number.isFinite(Date.parse(data.checkedAt)))throw error();
+    if(!data||data.schemaVersion!==1||!Number.isSafeInteger(data.revision)||data.revision<floor||!Array.isArray(data.removed)||data.removed.length>3000||typeof data.checkedAt!=='string'||!Number.isFinite(Date.parse(data.checkedAt)))throw error();
     data.removed.forEach(function(row){if(!row||!validLink(row.link)||!Array.isArray(row.keys)||!row.keys.length||row.keys.length>64||row.keys.some(function(k){return typeof k!=='string'||k.length>8200||!/^(url:|ats:)/.test(k);})||!Array.isArray(row.slugs)||row.slugs.length>64||row.slugs.some(function(s){return typeof s!=='string'||!/^[a-zA-Z0-9_-]{1,300}$/.test(s);}))throw error();});
     return {status:'ready',revision:data.revision,removed:data.removed,checkedAt:data.checkedAt};
   }
@@ -41,6 +41,25 @@
     return state.removed.some(function(row){return row.keys.some(function(k){return keys.indexOf(k)!==-1;});});
   }
   function filter(jobs){return jobs.filter(function(job){return !blocked(job);});}
+  function reportUnavailable(link,options){
+    options=options||{};var auth=root.SUAuth,current=options.current||function(){return true;};
+    var signed=!!(auth&&auth.signedIn&&auth.signedIn()),requestId=options.requestId;
+    function guard(){if(!current()||signed!==!!(auth&&auth.signedIn&&auth.signedIn()))throw error('Account changed. Reopen the job to report it.');}
+    if(!validLink(link)||typeof requestId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(requestId))return Promise.reject(error('Could not prepare this report. Please reopen the job.'));
+    return Promise.resolve().then(function(){guard();return signed?auth.getToken(true):null;}).then(function(token){
+      guard();var headers={'Content-Type':'application/json'};if(token)headers.Authorization='Bearer '+token;
+      return timedFetch({method:'POST',redirect:'error',headers:headers,body:JSON.stringify({requestId:requestId,link:link})},'/api/job-availability');
+    }).then(function(response){
+      guard();if(!response.ok)throw error(response.status===429?'Too many reports right now. Please try again later.':response.status===401||response.status===403?'Sign in again, then reopen this job.':'Could not confirm this report. Retry to check the same request.');
+      return response.json();
+    }).then(function(data){
+      guard();var scope=/--stillunemployed\.netlify\.app$/.test(root.location.hostname)?'preview':'production';
+      if(!data||data.schemaVersion!==1||data.requestId!==requestId||!/^[a-f0-9]{64}$/.test(data.reportId||'')||['queued_check','quarantined','human_review','restored','retired'].indexOf(data.status)<0||data.scope!==scope||typeof data.globallyHidden!=='boolean'||typeof data.duplicate!=='boolean')throw error('Could not confirm this report. Retry to check the same request.');
+      // A failed follow-up index request does not invalidate the durable receipt.
+      // Existing refresh behavior still fails closed until a healthy index arrives.
+      epoch++;request=null;refresh().catch(function(){});return data;
+    });
+  }
   function admin(options){
     options=options||{};var current=options.current||function(){return true;},auth=root.SUAuth;
     function guard(){if(!current()||!auth||!auth.qaAdmin||!auth.qaAdmin())throw error('Account changed. Reopen Reported jobs to try again.');}
@@ -84,5 +103,5 @@
     root.addEventListener('focus',check);root.addEventListener('pageshow',resume);root.addEventListener('pagehide',pause);root.document.addEventListener('visibilitychange',check);resume();
     return function(){stopped=true;pause();root.removeEventListener('focus',check);root.removeEventListener('pageshow',resume);root.removeEventListener('pagehide',pause);root.document.removeEventListener('visibilitychange',check);};
   }
-  return {refresh:refresh,filter:filter,blocked:blocked,mutate:mutate,admin:admin,navigate:navigate,watch:watch,status:function(){return state;},subscribe:function(fn){listeners.push(fn);return function(){listeners=listeners.filter(function(f){return f!==fn;});};}};
+  return {refresh:refresh,filter:filter,blocked:blocked,reportUnavailable:reportUnavailable,mutate:mutate,admin:admin,navigate:navigate,watch:watch,status:function(){return state;},subscribe:function(fn){listeners.push(fn);return function(){listeners=listeners.filter(function(f){return f!==fn;});};}};
 });

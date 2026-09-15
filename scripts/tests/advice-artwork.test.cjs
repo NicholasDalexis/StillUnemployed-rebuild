@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
+const { createRequire } = require('node:module');
 const Art = require('../../js/advice-illustrations.js');
 const Content = require('../../js/advice-content.js');
 
@@ -23,8 +24,8 @@ function renderer(name) {
   assert(end > start, name + ' must have a bounded extraction');
   return appSource.slice(start, end);
 }
-const renderContext = { window:{ SUAdviceArt:Art } };
-vm.runInNewContext(renderer('adviceGraphicHtml') + '\n' + renderer('adviceDoodleHtml'), renderContext, { timeout:1000 });
+const renderContext = { window:{ SUAdviceArt:Art }, esc:value=>String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;') };
+vm.runInNewContext(renderer('adviceGraphicHtml') + '\n' + renderer('adviceDoodleHtml') + '\n' + renderer('adviceCardHtml'), renderContext, { timeout:1000 });
 
 test('every published advice note has topic artwork on both its front and detail', () => {
   assert(notes.length >= 24, 'the current approved bank is included');
@@ -88,13 +89,104 @@ test('advice copy has no free-product claims, and browser consumers receive the 
   for (const id of Art.ids) assert.equal(context.window.SUAdviceArt.html(id, false), Art.html(id, false));
 });
 
-test('the four sales lines become a quiet optional invitation without changing their advice or identities', () => {
+test('the four sales lines remain quiet optional invitations with their original identities and artwork', () => {
   for (const id of ['board-trap', 'ghosted', 'wish-list', 'resume-layout']) {
     const before = baseNotes.find(note => note.id === id);
     const after = notes.find(note => note.id === id);
     assert.equal(after.sell, 'More notes like this from The Job Hunt Recipe.');
-    const { sell:_beforeSell, ...originalAdvice } = before;
-    const { sell:_afterSell, ...currentAdvice } = after;
-    assert.deepEqual(currentAdvice, originalAdvice, id + ' keeps its original advice and routing fields');
+    for(const key of ['id','g','d'])assert.equal(after[key],before[key],id + ' keeps its identity and artwork');
   }
+});
+
+test('every effective advice note is two short sentences or at most three concise bullets',()=>{
+  const words=text=>String(text||'').trim().split(/\s+/).filter(Boolean).length;
+  const sentences=new Intl.Segmenter('en',{granularity:'sentence'});
+  for(const note of notes){
+    const why=note.why;
+    if(typeof why==='string'){
+      assert(words(why)<=45,note.id+' remains brief');
+      assert([...sentences.segment(why)].length<=2,note.id+' has at most two sentences');
+    }else{
+      assert(Array.isArray(why.bullets)&&why.bullets.length<=3,note.id);
+      for(const bullet of why.bullets)assert(words(bullet)<=16,note.id+' concise bullet');
+      assert(words([why.intro,...why.bullets,why.outro].join(' '))<=45,note.id);
+    }
+  }
+});
+
+test('shortening retains the qualification, date and deadline caveats',()=>{
+  const note=id=>notes.find(note=>note.id===id);
+  assert.match(note('wish-list').why,/required qualifications.*accepted alternatives/i);
+  assert.doesNotMatch(JSON.stringify(note('wish-list')),/not mandatory|everything.*negotiable/i);
+  assert.match(note('experience-internship').why,/real title and dates.*full-time experience requirement/i);
+  assert.match(note('experience-honest-dates').why,/same three months do not become six months/i);
+  assert.match(note('experience-graduation').why,/asks for dates, answer honestly/i);
+  assert.match(note('no-weekends').why,/do not wait.*miss a deadline/i);
+  assert.match(note('first-come').why,/do not assume.*arrival order/i);
+  assert.match(note('canva-resume').why,/tool alone does not determine/i);
+  assert.doesNotMatch(JSON.stringify(notes),/2 out of 5|gets you auto-rejected|recruiters read applications in the order/i);
+});
+
+
+// Exercise real modal rendering and iframe recovery with the established offline
+// adapter, injecting the same public content/art modules that the page loads.
+const fixturePath = path.join(__dirname, 'board-qa.test.cjs');
+const fixtureSource = fs.readFileSync(fixturePath, 'utf8').replace('SUStates:require',
+  "SUAdviceContent:require('../../js/advice-content.js'),SUAdviceArt:require('../../js/advice-illustrations.js'),SUStates:require");
+const fixtureModule = {exports:{}};
+vm.runInNewContext(fixtureSource.slice(0,fixtureSource.indexOf('\ntest('))+'\nmodule.exports={board};',{
+ require:createRequire(fixturePath),module:fixtureModule,__dirname,Buffer,URL,URLSearchParams,setImmediate
+},{filename:fixturePath});
+const {board}=fixtureModule.exports;
+
+test('all advice fronts contain one headline, artwork and the existing CTA without secondary copy',()=>{
+ for(const note of notes){
+  const front=renderContext.adviceCardHtml({...note,sub:'SECONDARY COPY MUST NOT RENDER'},'m',0,'#F2E14B');
+  assert(front.includes(renderContext.esc(note.hook)),note.id+' headline');
+  assert(front.includes(renderContext.esc(note.cta)),note.id+' CTA');
+  assert.match(front,/<svg\b/,note.id+' artwork');
+  assert.doesNotMatch(front,/SECONDARY COPY MUST NOT RENDER|note to self|2 out of 5/,note.id);
+ }
+});
+
+test('graduation uses the same single headline in its front and opened note',()=>{
+ const note=notes.find(note=>note.id==='experience-graduation');
+ assert.equal(note.hook,'lead with your work, not your grad year');
+ const b=board();b.init();b.app.setState({adviceOpen:note.id});
+ assert.equal(b.overlay.textContent.split(note.hook).length-1,1);
+ assert(b.overlay.textContent.includes('note to self'));
+ assert(b.overlay.textContent.includes(note.why));
+ assert.doesNotMatch(b.overlay.textContent,/your graduation year is not your whole story/);
+ assert.equal(b.overlay.querySelectorAll('iframe').length,1);
+ const art=Art.html(note.id,false);assert.match(art,/>your work</);assert.equal((art.match(/<text\b/g)||[]).length,1);
+});
+
+test('every shared illustration label explicitly retains the handwritten font token',()=>{
+ for(const id of Art.ids){
+  for(const label of Art.html(id,false).match(/<text\b[^>]*>/g)||[]){
+   assert.match(label,/style="font-family:var\(--su-hand, Indie Flower, cursive\)"/,id);
+   assert.doesNotMatch(label,/Lexend/);
+  }
+ }
+});
+
+test('newsletter retry stays hidden on a normal load and recovers an unresolved timeout',()=>{
+ const b=board();b.init();b.app.setState({adviceOpen:'experience-graduation'});
+ const wrap=b.overlay.querySelector('.su-newsletter-frame'),frame=wrap.querySelector('iframe'),retry=wrap.querySelector('.su-newsletter-retry'),status=wrap.querySelector('[role="status"]');
+ assert.equal(retry.hidden,true,'normal loading does not display a failure action');
+ b.runTimers(8000);assert.equal(retry.hidden,false);assert.equal(status.hidden,true);assert.equal(wrap.getAttribute('aria-busy'),'false');
+ b.fire('load',frame);assert.equal(retry.hidden,true,'a late load removes timeout recovery');
+ assert.equal(wrap.getAttribute('aria-busy'),'false');
+});
+
+test('an observed newsletter error offers a retry without closing or replacing the form',()=>{
+ const b=board();b.init();b.app.setState({adviceOpen:'experience-graduation'});
+ const wrap=b.overlay.querySelector('.su-newsletter-frame'),frame=wrap.querySelector('iframe'),retry=wrap.querySelector('.su-newsletter-retry');
+ b.fire('error',frame);assert.equal(retry.hidden,false);
+ b.fire('load',frame);assert.equal(retry.hidden,false,'a known error is not erased by its error-document load');
+ const requested=[];Object.defineProperty(frame,'src',{set:value=>requested.push(value),get:()=>requested.at(-1)});
+ retry.click();assert.equal(requested.length,1);assert.equal(requested[0],frame.getAttribute('data-src'));assert.equal(wrap.getAttribute('aria-busy'),'true');assert.equal(retry.hidden,true);
+ b.fire('load',frame);assert.equal(retry.hidden,true);assert.equal(wrap.getAttribute('aria-busy'),'false');
+ assert.equal(b.app.state.adviceOpen,'experience-graduation');assert.equal(b.overlay.querySelector('iframe'),frame);
+ b.fireWindow('su:data-sync');assert.equal(b.overlay.querySelector('iframe'),frame);
 });

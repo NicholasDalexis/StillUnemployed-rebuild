@@ -7,7 +7,7 @@ const ANALYTICS='su_consent_v3', PERSONALIZATION='su_personalization_v1';
 
 // Small offline adapter for the real privacy script's DOM, storage and events.
 // It models focus and hidden ancestors, not layout or a browser's rendering.
-function privacy({values={},gpc=false,readBlocked=false,writeMode='normal',reset,readyState='complete'}={}) {
+function privacy({values={},gpc=false,readBlocked=false,writeMode='normal',reset,readyState='complete',desktop=false}={}) {
  let document;
  class Element {
   constructor(tag,attrs={}) { this.tagName=tag.toUpperCase();this.attrs=attrs;this.children=[];this.listeners={};this.parentNode=null;this.style={};this.text='';this.checked=false;this.disabled=false;this.hidden=false; }
@@ -37,7 +37,7 @@ function privacy({values={},gpc=false,readBlocked=false,writeMode='normal',reset
  document={readyState,createElement:tag=>new Element(tag),getElementById(id){return [this.head,this.body,...this.head.querySelectorAll('*'),...this.body.querySelectorAll('*')].find(el=>el.id===id)||null;},querySelectorAll(selector){return this.body.querySelectorAll(selector);},addEventListener(type,fn){(listeners[type]??=[]).push(fn);}};
  document.documentElement={style:{setProperty(key,value){this[key]=value;}}};
  document.head=new Element('head');document.body=new Element('body');const home=document.body.appendChild(new Element('a',{href:'/index.html'}));home.textContent='Home';document.activeElement=home;
- const window={addEventListener(type,fn){(windowListeners[type]??=[]).push(fn);},dispatchEvent(event){events.push(event.type);},SUAnalytics:reset?{reset}:undefined};
+ const window={matchMedia:()=>({matches:desktop}),addEventListener(type,fn){(windowListeners[type]??=[]).push(fn);},dispatchEvent(event){events.push(event.type);},SUAnalytics:reset?{reset}:undefined};
  vm.runInNewContext(source,{window,document,navigator,localStorage:storage,ResizeObserver:class{constructor(callback){this.callback=callback;observers.push(this);}observe(target){this.target=target;}disconnect(){this.disconnected=true;}},CustomEvent:class {constructor(type){this.type=type;}}},{filename:'js/ga.js'});
  const query=selector=>document.body.querySelector(selector), click=selector=>{const el=query(selector);assert(el,selector);return el.click();};
  return {document,window,navigator,state,writes,events,home,query,click,observers,reserve:()=>document.documentElement.style['--su-mobile-notice-height'],resize(){for(const fn of windowListeners.resize||[])fn();},boot(){for(const fn of listeners.DOMContentLoaded||[])fn();},open(fromFooter=false){click(fromFooter?'.su-privacy-settings':'.su-cc-choose');return query('.su-cc-details');}};
@@ -54,6 +54,14 @@ test('fresh visit shows only a compact notice; it creates no choices, checkbox p
 test('No thanks declines both options and removes the notice only after confirmed storage',()=>{
  const h=privacy();h.click('.su-cc-decline');assert.deepEqual(choices(h),['denied','denied']);assert.equal(h.query('.su-cc-notice'),null);assert.deepEqual(h.events,['su:consent-changed']);assert.equal(h.document.activeElement,h.home);assert.equal(h.reserve(),'0px');assert.equal(h.observers[0].disconnected,true);
  const reload=privacy({values:h.state});assert.equal(reload.query('.su-cc-notice'),null);assert(reload.query('.su-privacy-settings'));
+});
+
+test('desktop corner choices do not jump the page or reserve a mobile banner gap',()=>{
+ const h=privacy({desktop:true});assert.equal(h.reserve(),'0px');
+ const opener=h.query('.su-cc-choose'),panel=h.open();
+ assert.match(panel.className,/su-cc-details-from-notice/);assert.equal(panel.scrolled,undefined);assert.equal(h.document.activeElement,panel);
+ h.click('.su-cc-close');assert.equal(h.document.activeElement,opener);assert.deepEqual(h.state,{});assert.equal(h.reserve(),'0px');
+ const footer=h.open(true);assert.equal(footer.scrolled,true,'explicit footer settings remain at the footer');
 });
 
 test('Allow optional grants both only after explicit activation',()=>{

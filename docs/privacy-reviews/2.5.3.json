@@ -1,0 +1,25 @@
+{
+  "version": "2.5.3",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-13T19:44:39.217Z",
+  "reviewer": "Codex root with independent bounded security review",
+  "sourceDigest": "6b3657984b22d54bbd55b0937f863158eb4f321f8e6e58bba761dbd25e51a96a",
+  "sourceFileCount": 181,
+  "privacyChanged": true,
+  "termsChanged": true,
+  "baselineReview": "docs/privacy-reviews/2.5.2.json",
+  "scope": "Local candidate for preview; production promotion is not authorized in this turn.",
+  "checks": {
+    "implementation": "869/869 tests passed under Node22.23.2. All seven build stages passed:348 Jobs,43 Internships,3232 share pages/images and3250 final HTML pages. Firebase Admin Auth and Firestore cold-loaded under Node22.23.2.32 responsive theme cases plus four Save/Recently viewed/range flows passed. Independent report/auth/outbox tests validate current Google identity, anonymous isolation, owner replay, canonical ATS evidence, unknown escalation and send deduplication.",
+    "disclosures": "Reviewed accounts, device/cache scope, 100-role/30-day Recent history, current-tab welcome-back demotion, user-selected Tracker source, private reports, signed-in quarantine, operational email recipient/provider, analytics consent/limits, retention/reset and existing account deletion contact. No blanket individual-review claim; Our picks and Handpicked distinguish provenance.",
+    "security": "Service identity has default-database-limited document permissions and Auth lookup only; no credentials in repo. Production/preview Google origin configuration natively saved/read back. npm audit has zero vulnerabilities. Runtime/provider activation and actual delivery are separate gates."
+  },
+  "openItems": [
+    "Netlify rejected Functions-only secret scope on current plan; alternative scope awaits Nic decision. No environment values were installed by that rejected call.",
+    "Receiver deployment, one real QA inbox delivery and deliberate preview worker runs remain to verify.",
+    "Production login, real consented production collection, reset and scheduled retention remain to verify after authorized promotion; historical uncollected visits cannot be recovered.",
+    "No end-to-end live cross-account write test or real account deletion performed. Synthetic ownership tests and deployed own-UID rules are verified.",
+    "Physical iPhone Safari QA and private Portfolio Graded campaign visuals remain Nic QA or deferred work."
+  ],
+  "policySummary": "Engineering implementation/disclosure review, not legal certification. Prior receipt retained intact; operational limitations are not represented as completed tests."
+}

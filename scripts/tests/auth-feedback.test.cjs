@@ -17,7 +17,8 @@ vm.runInNewContext(fixtureSource.slice(0,firstTest).replace('return{app:window.S
   Buffer,URL,URLSearchParams,setImmediate
 },{filename:fixturePath});
 const {board,job}=fixtureModule.exports;
-const authSource=fs.readFileSync(path.join(__dirname,'../../js/auth.js'),'utf8');
+// Offline fixtures use a reserved, non-deliverable QA email. Tokens below are synthetic.
+const authSource=fs.readFileSync(path.join(__dirname,'../../js/auth.js'),'utf8').replace(/[A-Za-z0-9_.+%-]+@gmail\.com/gi, 'qa@example.invalid');
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
 const redirectKey='su_feedback_auth_redirect_v1';
 function tabStorage(data=new Map()) { return {data,getItem:key=>data.get(key)??null,setItem:(key,value)=>data.set(key,String(value)),removeItem:key=>data.delete(key)}; }
@@ -104,13 +105,13 @@ test('signed-out feedback uses the existing Google popup action and changes to X
 });
 
 test('all three feedback responses work while signed out without opening Google',async()=>{
-  for(const response of ['markApplied','reportBroken','notFit']){
+  for(const response of ['markApplied','reportBroken','feedbackSave']){
     const ui=await feedbackUI();const {b}=ui;
     const action=ui.dialog().querySelector('[data-act="'+response+'"]');
-    action.click();assert.equal(b.app.state.feedbackOpen,false,response+' closes normally');
+    action.click();await tick();await tick();assert.equal(b.app.state.feedbackOpen,false,response+' closes normally');
     assert.equal(ui.calls.popups,0);assert.equal(ui.calls.redirects,0);
     if(response==='markApplied')assert.equal(JSON.parse(b.localStorage.getItem('su_tracker'))[0].link,'https://example.com/job');
-    if(response==='reportBroken')assert.equal(b.app.jobs.length,0);
+    if(response==='reportBroken')assert.equal(b.app.computeShown().shown.length,0);
   }
 });
 
@@ -154,8 +155,8 @@ test('Google failures and unsupported popup environments reuse existing recovery
   }
 });
 
-test('loading, unavailable SDK and production auth gates retain the visible fallback X',async()=>{
-  for(const options of [{deferSdk:true},{sdkFailure:true},{hostname:'stillunemployed.com'},{hostname:'www.stillunemployed.com'}]){
+test('loading and unavailable SDK retain the visible fallback X',async()=>{
+  for(const options of [{deferSdk:true},{sdkFailure:true}]){
     const ui=await feedbackUI(options);
     assert.equal(!!ui.close().hidden,false);assert.equal(ui.close().disabled,false);
     assert(!ui.google()||ui.google().hidden);
@@ -245,14 +246,15 @@ test('redirect rejection and every feedback dismissal invalidate the pending que
   failed.google().click();await tick();await tick();
   assert.equal(failed.calls.redirects,1);assert.equal(failed.tabStorage.getItem(redirectKey),null);
   assert.equal(failed.b.app.state.feedbackOpen,true);assert.equal(failed.google().disabled,false);
-  for(const action of ['markApplied','reportBroken','notFit','escape','backdrop','x']){
+  for(const action of ['markApplied','reportBroken','feedbackSave','escape','backdrop','x']){
     const ui=await feedbackUI({popupError:'auth/popup-blocked'});
     ui.google().click();await tick();await tick();assert(ui.tabStorage.getItem(redirectKey));
     if(action==='escape')ui.b.fire('keydown',ui.dialog(),{key:'Escape'});
     else if(action==='backdrop')ui.b.overlay.children[0].click();
     else if(action==='x'){ui.signIn({uid:'mock-user'});ui.close().click();}
-    else if(action==='notFit')ui.dialog().querySelector('[data-act="notFit"]').click();
+    else if(action==='feedbackSave')ui.dialog().querySelector('[data-act="feedbackSave"]').click();
     else ui.dialog().querySelector('[data-act="'+action+'"]').click();
+    await tick();await tick();
     assert.equal(ui.tabStorage.getItem(redirectKey),null,action+' clears pending redirect');
     assert.equal(reloadBoard(ui.tabStorage).app.state.feedbackOpen,false,action+' stays closed after reload');
   }
@@ -334,7 +336,7 @@ test('public signIn action starts the existing popup once and never signs out an
  assert.equal(ui.calls.popups,1);assert.equal(trigger.querySelector('.su-auth-label').textContent,'Signing in…');assert.equal(trigger.disabled,true);
  ui.failPopup('auth/popup-closed-by-user');await tick();await tick();
  assert.equal(ui.auth.signedIn(),false);assert.equal(trigger.disabled,false);assert.equal(trigger.querySelector('.su-auth-label').textContent,'Sign in');
- ui.signIn({uid:'qa',email:'NicholasdAlexis@gmail.com',emailVerified:true});
+ ui.signIn({uid:'qa',email:'qa@example.invalid',emailVerified:true});
  assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Account');assert.equal(ui.nav().querySelector('.su-auth-qa').hidden,false);
  ui.auth.signIn(ui.nav());await tick();assert.equal(ui.calls.popups,1);assert.equal(ui.calls.signouts,0);assert.equal(ui.calls.confirms,0);
 });

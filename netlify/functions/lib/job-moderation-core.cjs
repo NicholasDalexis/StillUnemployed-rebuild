@@ -119,4 +119,4 @@ async function mutate({store,input,scope,getCatalog,now=Date.now}){
   }
   throw conflict();
 }
-module.exports={SITE_ID,LIMITS,fail,unavailable,conflict,scopeFor,authorizeOrigin,within,readLimited,requestBody,empty,validateState,readState,publicIndex,sourceRecord,mutate};
+module.exports={SITE_ID,LIMITS,fail,unavailable,conflict,scopeFor,authorizeOrigin,within,readLimited,requestBody,empty,validateState,readState,publicIndex,sourceRecord,replay,mutate};

@@ -1,0 +1,27 @@
+{
+  "version": "2.5.8",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-14T01:56:55.060723+00:00",
+  "reviewer": "Codex root with independent bounded review by security243",
+  "sourceDigest": "62c89507e71217d94035ae0cc4671f7d1e32efe302dd7659b71a67335024fdc7",
+  "sourceFileCount": 184,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "baselineReview": "docs/privacy-reviews/2.5.7.json",
+  "scope": "Local reviewed candidate; Nic explicitly authorized promotion to the existing preview. Production promotion is not authorized.",
+  "checks": {
+    "implementation": "905/905 automated tests under Node22.23.2. Changed-surface Chrome checks at390/701/1440, touch and keyboard graduation navigation, safe long-company wrapping,44px bookmark controls, save synchronization, approved invitation cycles and unchanged open form/copy passed. Real Beehiiv home form visibly loaded without recovery; no signup submitted.",
+    "disclosures": "Privacy and Terms read against the patch: existing optional Beehiiv subscription, consent and display-marker disclosures remain consistent. Twenty copy choices use page memory only, no new storage keys, analytics event, email lookup or member matching. Footer explicitly identifies the weekly newsletter.",
+    "security": "Independent bounded review passed53focused tests with no blocker. Personal save/unsave uses unchanged owner-aware SUStore; archived jobs keep availability notice and original-link action without publication. Fixed iframe URL/CSP and consent/GPC/local/admin exclusions preserved. Cross-origin iframe load is not provider readiness or conversion proof."
+  },
+  "openItems": [
+    "Netlify Functions-only secret scope was unavailable on the current plan. Alternative scope or upgrade awaits Nic decision; analytics and automated availability verifier/outbox remain unconfigured.",
+    "Availability receiver version1 was already deployed and one QA inbox email plus duplicate-suppression replay verified in2.5.3. Deliberate preview worker runs remain pending runtime configuration.",
+    "Production fresh Google login, real consented collection, reset and scheduled retention remain to verify after authorized promotion. Missing historical traffic cannot be reconstructed.",
+    "No end-to-end live cross-account write test or real account deletion was performed in this UI patch. Prior synthetic ownership and deployed own-UID rule evidence remains distinct.",
+    "Beehiiv Scale plan and Codex MCP OAuth are verified. Runtime subscription lookup, confirmed conversion attribution and Portfolio Graded membership matching remain planned, with API scope/credentials and provider integration tests still outstanding.",
+    "Physical iPhone Safari remains Nic QA; private Portfolio Graded campaign visuals are deferred. No real subscription, job report, external application, account mutation or provider send occurred during the current UI tests.",
+    "Cross-origin iframes may emit load for an error document. Conditional retry can detect a deadline or observed error, not every provider failure; no signup success is inferred from load."
+  ],
+  "policySummary": "Engineering implementation/disclosure review, not legal certification. Prior receipt preserved intact. Historical runtime activation gaps are not marked complete by local UI tests."
+}

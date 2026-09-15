@@ -1,0 +1,21 @@
+{
+  "retrieved": "2026-09-13",
+  "modified": false,
+  "files": {
+    "Lexend-Variable.ttf": {
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/lexend/Lexend%5Bwght%5D.ttf",
+      "bytes": 175756,
+      "sha256": "3add53e641fbc81da64da4bb254285e2831b52b029527bc0714e2b9610832ee6"
+    },
+    "OFL.txt": {
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/lexend/OFL.txt",
+      "bytes": 4436,
+      "sha256": "5da8505887d0fa7fe963445fd58852707fda34adfeb65af25c99d152bab285bd"
+    },
+    "METADATA.pb": {
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/lexend/METADATA.pb",
+      "bytes": 949,
+      "sha256": "b49d2fc75e302d8961616bb2005309a8bd76c32787f0769fcb910a8b0f10fcb0"
+    }
+  }
+}

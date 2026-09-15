@@ -33,9 +33,9 @@ test('only the current admin gets the separate report action; personal closed fe
  await b.boot();b.openFeedback();
  const note=b.overlay.querySelector('[role="dialog"]');
  assert(note.querySelector('[data-act="adminReportJob"]'));
- assert(note.textContent.indexOf('Report job here')>note.textContent.indexOf("job wasn't a right fit"));
- b.overlay.querySelector('[data-act="reportBroken"]').click();
- assert.equal(mutations,0);assert.equal(b.app.jobs.length,0,'personal hiding retains its existing behavior');
+ assert(note.textContent.indexOf('Remove job')>note.textContent.indexOf('Save for later'));
+ b.overlay.querySelector('[data-act="reportBroken"]').click();await tick();await tick();
+ assert.equal(mutations,0);assert.equal(b.app.computeShown().shown.length,0,'personal hiding retains its existing behavior');
  b.admin(false);b.openFeedback();assert.equal(b.overlay.querySelector('[data-act="adminReportJob"]'),null);
  b.admin(true);b.owner(null);b.openFeedback();assert.equal(b.overlay.querySelector('[data-act="adminReportJob"]'),null);
 });
@@ -95,7 +95,7 @@ test('fresh public moderation removes active cards and details while retaining a
  let callback,removed=false;b.window.SUJobModeration.subscribe=fn=>{callback=fn;return()=>{};};b.window.SUJobModeration.filter=jobs=>removed?[]:jobs;
  await b.boot();assert.equal(b.app.jobs.length,1);assert(store.archivedSaved([]).length===1,'the current card is captured for the existing bookmark');
  b.grid.querySelector('[data-act="openJob"]').click();removed=true;callback({status:'ready',revision:1});
- assert.equal(b.app.jobs.length,0);assert.equal(b.grid.querySelectorAll('.note[data-act="openJob"]').length,0);
+ assert.equal(b.app.computeShown().shown.length,0);assert.equal(b.grid.querySelectorAll('.note[data-act="openJob"]').length,0);
  b.app.setState({savedOnly:true});const archive=b.grid.querySelector('[data-act="openJob"]');assert(archive,'the bookmarked missing job remains available');archive.click();
  const original=b.overlay.querySelector('[data-act="detailArchived"]');assert(original);original.click();
  assert.equal(b.opened.at(-1)[0],link,'archived personal access keeps its original employer link');
@@ -105,7 +105,7 @@ test('fresh public moderation removes active cards and details while retaining a
 test('public moderation failure clears active cards and keeps an explicit retry without touching saved data',async()=>{
  const b=setup({saved:{[link]:true}});let callback;
  b.window.SUJobModeration.subscribe=fn=>{callback=fn;return()=>{};};await b.boot();const before=b.localStorage.getItem('su_saved_jobs');
- callback({status:'error',revision:0});assert.equal(b.app.jobs.length,0);assert.match(b.grid.textContent,/Could not check current job availability/);
+ callback({status:'error',revision:0});assert.equal(b.app.computeShown().shown.length,0);assert.match(b.grid.textContent,/Could not check current job availability/);
  assert(b.grid.querySelector('[data-act="retryJobs"]'));assert.equal(b.localStorage.getItem('su_saved_jobs'),before);
 });
 
@@ -142,9 +142,9 @@ test('a late report cannot close or attach its error to a different feedback car
 
 test('an unrelated public-index update does not revive a legacy personal hide when Discovery is unavailable',async()=>{
  const b=setup();let update;b.window.SUJobModeration.subscribe=callback=>{update=callback;return()=>{};};await b.boot();b.openFeedback();
- b.overlay.querySelector('[data-act="reportBroken"]').click();assert.equal(b.app.jobs.length,0);
- update({status:'ready',revision:1});assert.equal(b.app.jobs.length,0);
- assert.equal(JSON.parse(b.localStorage.getItem('su_reported_links'))[0],link);
+ b.overlay.querySelector('[data-act="reportBroken"]').click();await tick();await tick();assert.equal(b.app.computeShown().shown.length,0);
+ update({status:'ready',revision:1});assert.equal(b.app.computeShown().shown.length,0);
+ assert(b.app._unavailableLocal.includes(link));
 });
 
 
@@ -152,7 +152,7 @@ test('a recovered moderation index retries an initially failed feed without revi
  const b=setup();let update,fail=true;const ready={status:'ready',revision:0};
  b.window.SUJobModeration.subscribe=callback=>{update=callback;return()=>{};};
  b.window.SUJobModeration.refresh=async()=>{if(fail)throw Error('Availability unavailable');return ready;};
- await b.boot();assert.equal(b.app.jobs.length,0);assert.equal(b.app._loadError,true);
+ await b.boot();assert.equal(b.app.computeShown().shown.length,0);assert.equal(b.app._loadError,true);
  fail=false;update(ready);await tick();await tick();
  assert.equal(b.app.jobs.length,1);assert.equal(b.app._loadError,false);assert.equal(b.requests.length,2,'recovery reads the live feed again');
  assert(!b.requests.some(request=>request.url.includes('jobs-data.json')));

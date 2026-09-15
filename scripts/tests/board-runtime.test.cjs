@@ -109,3 +109,20 @@ test('section navigation tolerates malformed storage and does not rewrite anothe
  h.session.set('su_view_internships','broken');assert.doesNotThrow(()=>h.api.enterSection('tracker'));assert.equal(h.session.get('su_view_jobs'),before);
  h.root.sessionStorage.setItem=()=>{throw Error('quota')};assert.equal(h.api.enterSection('jobs'),false);
 });
+
+
+test('root and dedicated Jobs share filters but restore separate scroll positions',()=>{
+ const h=harness();h.root.location={pathname:'/jobs.html'};h.root.scrollY=620;h.api.save('jobs',{q:'design',salaryMin:'65000',salaryMax:'110000',recentSeed:'recent-seed'});
+ h.root.location.pathname='/';assert.equal(h.api.read('jobs').state.q,'design');assert.equal(h.api.read('jobs').y,0);
+ assert.equal(h.api.read('jobs').state.salaryMin,'65000');assert.equal(h.api.read('jobs').state.salaryMax,'110000');assert.equal(h.api.read('jobs').state.recentSeed,'recent-seed');
+ h.root.scrollY=1940;h.api.save('jobs',{q:'brand'});assert.equal(h.api.read('jobs').y,1940);
+ h.root.location.pathname='/jobs/beauty';assert.equal(h.api.read('jobs').state.q,'brand');assert.equal(h.api.read('jobs').y,620);
+ h.root.location.pathname='/index.html';assert.equal(h.api.read('jobs').y,1940);
+});
+test('legacy scroll receipts never jump past the new homepage and stale surfaces are not revived',()=>{
+ const h=harness();h.session.set('su_view_jobs',JSON.stringify({v:1,owner:'guest',at:h.now(),state:{q:'design'},y:810}));
+ h.root.location={pathname:'/'};assert.equal(h.api.read('jobs').y,0);
+ h.api.save('jobs',{q:'design',savedOnly:true});h.root.location.pathname='/jobs.html';assert.equal(h.api.read('jobs').y,810);
+ h.api.clearSavedViews();assert.equal(h.api.read('jobs').y,0);h.root.location.pathname='/';assert.equal(h.api.read('jobs').y,0);
+ h.advance(30*60000+1);h.api.save('jobs',{q:'new'});h.root.location.pathname='/jobs.html';assert.equal(h.api.read('jobs').y,0);
+});

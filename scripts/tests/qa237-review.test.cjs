@@ -67,7 +67,7 @@ test('all themes on both boards reveal the stamp only after the inline note is c
   const id=tab.getAttribute('data-id');
   const current=()=>b.grid.querySelectorAll('.note[data-act="openJob"]').find(node=>node.getAttribute('data-id')===id);
   assert.equal(current().querySelector('.su-internship-stamp'),null);
-  assert.doesNotMatch(current().textContent,/Human.verified/i);
+  assert.doesNotMatch(current().textContent,/Our picks/i);
   const saved=b.localStorage.getItem('su_saved_jobs');tab.click();
   assert.equal(!!b.app.state.detailOpen,false);assert(current().querySelector('[data-act="closeNote"]'));
   assert.equal(current().querySelector('.su-internship-stamp'),null);
@@ -76,7 +76,7 @@ test('all themes on both boards reveal the stamp only after the inline note is c
   assert.equal(b.app.state.openNotes[id],'done');assert.equal(current().querySelector('[data-act="openNote"]'),null);
   assert(current().querySelector('.stampfade'),'revealed stamp animates for '+pathname+' '+look);
   if(isIntern)assert(current().querySelector('.su-internship-stamp'));
-  else assert.match(current().textContent,/Human.verified/i);
+  else assert.match(current().textContent,/Our picks/i);
   assert.equal(b.localStorage.getItem('su_saved_jobs'),saved);assert.equal(!!b.app.state.detailOpen,false);
  }
 });

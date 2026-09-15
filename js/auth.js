@@ -1,10 +1,10 @@
-/* Google sign-in and live sync. Preview only until the production account rollout.
+/* Google sign-in and live sync on approved board origins.
  * Firebase web config is public. Firestore users/{uid} rules enforce account isolation.
  */
 (function () {
   'use strict';
   var host = location.hostname.toLowerCase();
-  if (host === 'stillunemployed.com' || host === 'www.stillunemployed.com') return;
+  if (!['stillunemployed.com','www.stillunemployed.com','localhost','127.0.0.1'].includes(host) && !/^[a-z0-9-]+--stillunemployed\.netlify\.app$/.test(host)) return;
   var IS_LOCAL = host === 'localhost' || host === '127.0.0.1';
   var FIREBASE_CONFIG = {
     apiKey:            'AIzaSyCr1iE41BhaOyiEWko3khE3laL3Cq7Ryc0',

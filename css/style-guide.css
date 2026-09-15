@@ -46,7 +46,7 @@
     .type-hand { font:400 2rem/1.2 var(--su-hand); }
     .type-body { font:400 1rem/1.6 var(--su-body); }
     .type-heavy { font:400 clamp(1.6rem,4vw,2.25rem)/1.15 var(--su-display); letter-spacing:-.025em; }
-    .type-poppins { font:400 1rem/1.6 'Poppins',sans-serif; }
+    .type-lexend { font:400 1rem/1.6 var(--su-body); }
     .type-playfair { font:italic 800 2rem/1.2 'Playfair Display',serif; }
     .type-newsreader { font:italic 400 1.6rem/1.3 'Newsreader',serif; }
     .weight-row { display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:16px; font-family:var(--su-body); }
@@ -117,7 +117,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline:3px solid
 .sample-card { position:relative; min-width:0; }
 .sample-card h3 { font-size:23px; }
 .sample-card .role { font-size:16.5px; }
-.sample-card .role + p { font-family:'Poppins',sans-serif; font-size:14.5px; }
+.sample-card .role + p { font-family:var(--su-body); font-size:14.5px; }
 .card-bottom { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin:24px 0 16px; }
 .sample-apply { font:800 15.5px/1.4 var(--su-body); }
 .card-palette { font:400 .8rem/1.6 var(--su-body); overflow-wrap:anywhere; border-top:1px solid currentColor; padding-top:12px; }

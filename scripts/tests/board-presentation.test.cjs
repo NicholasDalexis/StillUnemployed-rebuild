@@ -173,10 +173,10 @@ test('real discovery actions share the count row in Board menu, separate from th
     assert.equal(menu.tagName,'DETAILS'); assert.equal(menu.getAttribute('open'),null);
     const count=b.grid.querySelector('.su-results-count'); assert.equal(menu.parentElement.parentElement,count.parentElement);assert(count.parentElement.classList.contains('su-board-meta'));
     assert(menu.parentElement.classList.contains('su-board-utilities'));
-    const actions=menu.querySelectorAll('a,button'); assert.equal(actions.length,signedIn?5:4);
-    assert(menu.querySelector('[data-discovery="hidden"]')); assert(menu.querySelector('a[href="./suggest.html"]')); assert(menu.querySelector('[data-act="openWelcome"]'));
-    assert.equal(menu.querySelector('[data-act="openModal"]').textContent,'About Nic');
-    assert.equal(!!menu.querySelector('[data-discovery="settings"]'),signedIn);
+    const actions=menu.querySelectorAll('a,button'); assert.equal(actions.length,3);
+    assert(menu.querySelector('[data-discovery="hidden"]')); assert(menu.querySelector('a[href="./suggest.html"]')); assert.equal(menu.querySelector('a[href="/versions.html"]'),null);assert(menu.querySelector('[data-act="openRecent"]'));
+    assert.equal(menu.querySelector('[data-act="openModal"]'),null);
+    assert.equal(menu.querySelector('[data-discovery="settings"]'),null);b.app.setState({openPanel:'filters'});assert.equal(!!b.grid.querySelector('[data-discovery="settings"]'),signedIn);
     for(const action of ['toggleSavedOnly','toggleLook']) assert.equal(menu.querySelector('[data-act="'+action+'"]'),null);
     assert(!b.grid.querySelector('.su-main-nav').contains(menu));
     assert.equal(b.grid.querySelector('[data-discovery="recommend"]'),null);

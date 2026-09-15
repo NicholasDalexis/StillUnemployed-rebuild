@@ -1,7 +1,94 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.5.2",
+  "currentVersion": "2.5.9",
   "releases": [
+    {
+      "version": "2.5.9",
+      "date": "2026-09-13",
+      "title": "Compact job controls",
+      "changes": [
+        "Group smaller Save, Share and Close icons at the top right of job details with transparent 44px targets; preserve the Share hint and readable mobile company names.",
+        "Use one consistent round-cap X icon across site-owned close, dismiss and remove controls without changing their actions."
+      ],
+      "public": {
+        "title": "A tidier job card",
+        "changes": [
+          "Save, share and close sit together, with smaller icons and the same familiar controls."
+        ]
+      }
+    },
+    {
+      "version": "2.5.8",
+      "date": "2026-09-13",
+      "title": "Newsletter invitations and quieter detail controls",
+      "changes": [
+        "Move the detail bookmark beside the company, restore explicit newsletter footer chunks and show signup recovery only after unresolved loading or observed error.",
+        "Rotate twenty approved newsletter invitations with stable IDs in page memory, keeping the selected copy and form stable while reading.",
+        "Use a circular closer homepage portrait, exact recipe hover wording, photo-mounted graduation arrows and the quieter creator chip copy."
+      ],
+      "public": {
+        "title": "A little less in the way",
+        "changes": [
+          "Save jobs beside the company name, with a cleaner detail note.",
+          "Fresh newsletter invitations and clearer photo controls on the homepage."
+        ]
+      }
+    },
+    {
+      "version": "2.5.7",
+      "date": "2026-09-13",
+      "title": "Homepage photo progress and inline board switching",
+      "changes": [
+        "Active homepage carousel pill fills on the slide timer; manual graduation arrows browse the six existing photos.",
+        "Desktop homepage switches Jobs and Internships inline with section filters, view restoration, moderation and stale-response guards; dedicated and mobile headings are plain.",
+        "Five approved headline variants stay stable while browsing. Homepage job calls to action return to Jobs. No newsletter subscriber matching or new conversion collection activated."
+      ]
+    },
+    {
+      "version": "2.5.6",
+      "date": "2026-09-13",
+      "title": "Local homepage and board navigation polish",
+      "changes": [
+        "Localhost QA: move homepage sign-in left, expose the grad photo, write category links on the white Polaroid margin, and fade desktop edge notes while preserving autoplay and centered tabs.",
+        "Remove newsletter issue-number labels, split the unsubscribe message, and shorten the footer. Covers and issue titles remain a static snapshot; the existing Beehiiv signup stays embedded.",
+        "Add a theme-preserving Jobs and Internships heading picker and alternate the two approved screenshot and resume headlines on page load, with tab-only storage disclosure and no A/B analytics.",
+        "Simplify advice cards to one hook and handwritten artwork, use warm cream Casino low-salary cards, retain signup retry recovery, and correct narrow desktop header and picker clipping. Trust stamps and advice signup copy await a separate choice."
+      ]
+    },
+    {
+      "version": "2.5.5",
+      "date": "2026-09-13",
+      "title": "Local homepage notes and board polish",
+      "changes": [
+        "Local review only. Desktop homepage gains Nic and newsletter edge notes, an on-site signup with three published issue previews, handwritten corner privacy choices, upper carousel dots and continued automatic rotation without a visible Pause control.",
+        "Simplifies the board menu and moves written preferences to Filters: Tune your feed; removes generic board subtitles; reduces the founder version link; corrects all-theme filters and mobile salary input formatting, dragging, Reset click handling and narrow-screen placement.",
+        "Preserves the 2.5.4 identity correction, Google sign-in, account ownership and optional privacy choices. Copy alternatives await Nic selection. 877 tests and responsive browser checks pass; preview and production are unchanged."
+      ]
+    },
+    {
+      "version": "2.5.4",
+      "date": "2026-09-13",
+      "title": "Restore homepage identity and centered navigation",
+      "changes": [
+        "Local review only: restore the original Playfair Display headline, brown italic line and orange drawn underline; center the three desktop navigation tabs independently of the account control; use the Google logo with the shorter visible Sign in label. Preserve the approved simpler copy, full board, mobile entry, and Lexend body text."
+      ]
+    },
+    {
+      "version": "2.5.3",
+      "date": "2026-09-13",
+      "title": "Clearer browsing and reliable report review",
+      "changes": [
+        "Shared responsive homepage and board; compact onboarding; Lexend body copy; source-backed labels; salary range, calendar-day shuffle and employer spacing; Save, Recently viewed and Tracker source/report improvements; production auth gate and consent-aware analytics; signed report quarantine with canonical evidence checks and durable notification retries."
+      ],
+      "public": {
+        "title": "Find your next role, with fewer detours",
+        "changes": [
+          "Start browsing immediately on mobile, or explore the shorter desktop homepage with the full board below.",
+          "Save from job details, revisit recently viewed roles and record where you found each application.",
+          "Read shorter advice in Lexend, choose a salary range and explore a more varied mix of employers."
+        ]
+      }
+    },
     {
       "version": "2.5.2",
       "date": "2026-09-09",
@@ -542,7 +629,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "0afc4e8fd5554c49628ea9915879ac34bc22dfa5090aec6fac317952a63ad90e",
-    "fileCount": 159
+    "digest": "f794a9170404f10c2e64d826fd86303847b6e07217e616d0035faf65ec3f6ba4",
+    "fileCount": 184
   }
 }

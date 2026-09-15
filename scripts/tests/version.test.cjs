@@ -111,7 +111,7 @@ test('static and newly rendered board links share immutable version data and a r
   for (const link of [homepage, founder, footer]) {
     assert.equal(link.textContent, 'Version 2.1.0');
     assert.equal(link.attributes.href, '/versions.html#version-2-1-0');
-    assert.equal(link.attributes['aria-label'], 'Version 2.1.0. Explore Version 2 features');
+    assert.equal(link.attributes['aria-label'], 'Version 2.1.0. View version history');
     for (const page of ['http://localhost:8000/', 'http://localhost:8000/jobs/casino/']) {
       assert.equal(new URL(link.attributes.href, page).href, 'http://localhost:8000/versions.html#version-2-1-0');
     }
@@ -215,7 +215,7 @@ test('the CLI records approved 2.5.0 and keeps subsequent check and refresh idem
 test('a bump refreshes every marked static page without creating a fingerprint self-reference', async () => {
   const { applyRelease } = await versionTool, fixture = releaseFixture(), { dir, put } = fixture;
   try {
-    const html = '<a class="version-link" data-su-version="" href="./versions.html#version-2" aria-label="Version 2. Explore Version 2 features">Version 2</a>' +
+    const html = '<a class="version-link" data-su-version="" href="./versions.html#version-2" aria-label="Version 2. View version history">Version 2</a>' +
       '<a href="./privacy.html">Privacy</a><script src="/js/release.js?v=2" defer></script>';
     for (const page of ['jobs.html', 'tracker.html', 'about.htm']) put(page, html);
     const sealed = applyRelease(dir, { seal:true });
@@ -225,7 +225,7 @@ test('a bump refreshes every marked static page without creating a fingerprint s
     for (const page of ['index.html', 'jobs.html', 'tracker.html', 'about.htm']) {
       const result = fs.readFileSync(path.join(dir, page), 'utf8');
       assert.match(result, /data-su-version[^>]*href="\/versions\.html#version-2-1-0"[^>]*>Version 2\.1\.0<\/a>/);
-      assert.match(result, /aria-label="Version 2\.1\.0\. Explore Version 2 features"/);
+      assert.match(result, /aria-label="Version 2\.1\.0\. View version history"/);
       assert.match(result, /js\/release\.js\?v=2\.1\.0/);
       assert(result.includes(page === 'index.html' ? '<a href="./terms.html">Terms</a>' : '<a href="./privacy.html">Privacy</a>'));
     }
