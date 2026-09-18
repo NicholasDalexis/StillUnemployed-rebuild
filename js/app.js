@@ -935,6 +935,36 @@
   }
 
   // Preserve the artwork while exposing the delegated controls to keyboard users.
+  // Patch around the live search path without ever detaching the native input.
+  // Background catalog/auth updates can arrive while the phone keyboard is open.
+  function replaceBoardKeepingSearch(board, html) {
+    var live = board.querySelector('#su-search');
+    if (!live || !board.ownerDocument) return false;
+    var draft = board.ownerDocument.createElement('div');
+    draft.innerHTML = html;
+    var next = draft.querySelector('#su-search');
+    if (!next) return false;
+    function patch(current, fresh) {
+      if (current === live) return;
+      var keep = Array.from(current.children).find(function(el){return el===live || el.contains(live);});
+      var replacement = Array.from(fresh.children).find(function(el){return el===next || el.contains(next);});
+      if (!keep || !replacement) throw new Error('Search structure changed');
+      patch(keep, replacement);
+      if (current !== board) {
+        current.getAttributeNames().forEach(function(name){if(!fresh.hasAttribute(name))current.removeAttribute(name);});
+        fresh.getAttributeNames().forEach(function(name){current.setAttribute(name,fresh.getAttribute(name));});
+      }
+      Array.from(current.childNodes).forEach(function(node){if(node!==keep)current.removeChild(node);});
+      var after=false;
+      Array.from(fresh.childNodes).forEach(function(node){
+        if(node===replacement){after=true;return;}
+        current.insertBefore(node,after?null:keep);
+      });
+    }
+    patch(board,draft);
+    return true;
+  }
+
   function prepareActions(root) {
     var labels = { toggleSave:'Save job', detailShare:'Share job', closeDetail:'Close job details',
       closeLook:'Close themes', closeFeedback:'Close application feedback', closeModal:'Close founder note',
@@ -1717,11 +1747,11 @@
     // =======================================================================
     // RENDER — rebuilds the whole .board markup, reproducing the template.
     // =======================================================================
-    render: function () {
-      try { this.renderBoard(); var error=document.getElementById('su-runtime-error');if(error)error.hidden=true; }
+    render: function (searchOnly) {
+      try { this.renderBoard(searchOnly); var error=document.getElementById('su-runtime-error');if(error)error.hidden=true; }
       catch(e){uxEvent('render_error');var notice=document.getElementById('su-runtime-error');if(notice)notice.hidden=false;}
     },
-    renderBoard: function () {
+    renderBoard: function (searchOnly) {
       var self = this;
       var board = document.getElementById('board');
       var sc = this.computeShown();
@@ -2126,6 +2156,8 @@
 
       out += '</div>'; // /toolbar relative wrap
 
+      var resultsStart = out.length;
+      out += '<div id="su-search-results">';
       if(window.SUDiscovery) out += window.SUDiscovery.html(esc);
 
       // One quiet row: pay context and secondary actions. Results stay announced offscreen.
@@ -2195,6 +2227,8 @@
         out += '</ul></section>';
       }
       if(moderationOwner()) out += '<button type="button" class="su-admin-review" data-act="openReportedJobs">QA admin: review reported jobs</button>';
+      out += '</div>'; // /search results
+      var resultsEnd = out.length;
       out += '</div>'; // /header+content wrap
 
       // Capture focus intent BEFORE the innerHTML swap. Replacing innerHTML removes the
@@ -2206,7 +2240,24 @@
 
       var previousFocus = focusIntent(document.activeElement);
       var keepSectionFocus = document.activeElement && document.activeElement.classList.contains('su-section-trigger');
-      board.innerHTML = out;
+      // Search never detaches the native input: preserve keyboard, selection and IME.
+      var results = document.getElementById('su-search-results');
+      if (searchOnly === true && results) {
+        var opening = '<div id="su-search-results">';
+        results.innerHTML = out.slice(resultsStart + opening.length, resultsEnd - 6);
+        prepareActions(results);
+        if(window.SUBoardControls)window.SUBoardControls.prepare(board);
+        var categoryPanel=board.querySelector('[data-su-panel="cat"]');
+        if(categoryPanel){
+          categoryPanel.querySelectorAll('[data-act="cat"]').forEach(function(row){
+            var category=row.getAttribute('data-val'),count=row.querySelector('span');
+            if(count)count.textContent=String(category==='all'?base.length:base.filter(function(j){return j.ind===category;}).length);
+          });
+        }
+        this.observeImpressions();
+        return;
+      }
+      if (!keepSearchFocus || !replaceBoardKeepingSearch(board, out)) board.innerHTML = out;
       prepareActions(board);
       if (keepSectionFocus) {
         var sectionTrigger=board.querySelector('.su-section-trigger');
@@ -2215,7 +2266,7 @@
 
       // restore focus + caret to the search input after re-render
       var inp = document.getElementById('su-search');
-      if (inp && keepSearchFocus) {
+      if (inp && keepSearchFocus && document.activeElement !== inp) {
         inp.focus();
         try { inp.setSelectionRange(this._searchCaret, this._searchCaret); } catch (e) {}
       }
@@ -2916,25 +2967,34 @@
         }
       });
 
-      // search input (delegated): track caret so re-render keeps focus
-      document.addEventListener('input', function (e) {
-        if (e.target && e.target.id === 'su-search') {
-          self._searchFocused = true;
-          self._searchCaret = e.target.selectionStart;
-          // DEBOUNCE the (expensive) full board re-render so typing stays snappy on mobile.
-          // The native input shows each keystroke instantly; the filtered results settle
-          // ~140ms after you pause. (This was the "1 second per letter" mobile lag.)
-          clearTimeout(self._renderTimer);
-          (function (val) { self._renderTimer = setTimeout(function () { self.setState({ q: val }); }, 140); })(e.target.value);
-          // analytics: log the query once it settles (1.5s debounce) — additive
-          clearTimeout(self._qTimer);
-          self._qTimer = setTimeout(function () {
-            var q = String(self.state.q || '').trim();
-            if (!q || q === self._qLast) return;
-            self._qLast = q;
-            if (typeof window.suTrack === 'function') window.suTrack('search', 'search', '', '');
-          }, 1500);
-        }
+      // Commit the draft immediately so other controls cannot restore a stale query.
+      // Only the results render is deferred; never rebuild the input while typing.
+      function queueSearch(e) {
+        if (!e.target || e.target.id !== 'su-search') return;
+        self._searchFocused = true;
+        self._searchCaret = e.target.selectionStart;
+        self.state.q = e.target.value;
+        clearTimeout(self._renderTimer);
+        if (e.isComposing || self._searchComposing) return;
+        self._renderTimer = setTimeout(function () {
+          self._renderTimer = null;
+          if(window.SUBoardExperience)self._activeDemotions=window.SUBoardExperience.demotions();
+          self.render(true);
+        }, 140);
+        clearTimeout(self._qTimer);
+        self._qTimer = setTimeout(function () {
+          var q = String(self.state.q || '').trim();
+          if (!q || q === self._qLast) return;
+          self._qLast = q;
+          if (typeof window.suTrack === 'function') window.suTrack('search', 'search', '', '');
+        }, 1500);
+      }
+      document.addEventListener('input', queueSearch);
+      document.addEventListener('compositionstart', function(e) {
+        if(e.target && e.target.id==='su-search'){self._searchComposing=true;clearTimeout(self._renderTimer);}
+      });
+      document.addEventListener('compositionend', function(e) {
+        if(e.target && e.target.id==='su-search'){self._searchComposing=false;queueSearch(e);}
       });
       document.addEventListener('focusin', function (e) {
         if (e.target && e.target.id === 'su-search') self._searchFocused = true;
@@ -3347,7 +3407,7 @@
     var restored=runtime && runtime.read?runtime.read(section):null;
     Object.assign(App.state,sectionFilters(section,restored),{openPanel:null,openNotes:{},detailOpen:false,detailLink:'',adviceOpen:null,signupOpen:null,feedbackOpen:false,feedbackCo:'',feedbackLink:'',modalOpen:false,lookOpen:false,reportedOpen:false,recentOpen:false});
     App.clearFeedbackRedirect();
-    App._searchFocused=false;App._searchCaret=0;App._personalOrder=null;App._orderCatalog=null;App._profileGeneration=-1;App._feedInteracted=false;App._activeDemotions=null;App._openNoteDeck=null;
+    App._searchFocused=false;App._searchComposing=false;App._searchCaret=0;App._personalOrder=null;App._orderCatalog=null;App._profileGeneration=-1;App._feedInteracted=false;App._activeDemotions=null;App._openNoteDeck=null;
     App._availabilityBusy=false;App._availabilityAttempt=null;
     App._moderationCatalog=null;App._closedLinks=[];App._archiveCatalog=[];App._internshipStatus=null;
     App._loading=true;App._loadingVisible=false;App._loadError=false;App._moderationError=false;App._refreshing=false;

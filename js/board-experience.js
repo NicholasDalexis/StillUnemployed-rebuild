@@ -50,12 +50,13 @@
   }
   function employer(job) { return String(job.co || '').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9]+/g,' ').replace(/\b(?:incorporated|corporation|inc|corp|llc|ltd)\b/g,'').trim().replace(/\s+/g,' '); }
   function spaced(items, constrained) {
-    var pending=items.slice(), result=[], last=new Map();
+    var pending=items.slice(), result=[], last=new Map(), names=new Map(), counts=new Map();
+    items.forEach(function(j){var key=employer(j);names.set(j,key);counts.set(key,(counts.get(key)||0)+1);});
+    function company(j){return names.get(j);}
     while(pending.length) {
-      var counts=new Map();pending.forEach(function(j){var key=employer(j);counts.set(key,(counts.get(key)||0)+1);});
       var index=-1,biggest=0;
       pending.forEach(function(j,i){
-        var key=employer(j),at=last.get(key),count=counts.get(key);
+        var key=company(j),at=last.get(key),count=counts.get(key);
         if(at!==undefined&&result.length-at<=4)return;
         if(constrained){if(count>biggest){index=i;biggest=count;}return;}
         if(index>=0)return;
@@ -70,15 +71,15 @@
         if(peak&&(peak-1)*5+tied>left)possible=false;
         if(possible)index=i;
       });
-      if(index<0)index=pending.findIndex(function(j){var at=last.get(employer(j));return at===undefined||result.length-at>4;});
-      if(index<0){var oldest=Infinity;pending.forEach(function(j,i){var at=last.get(employer(j));if(at<oldest){oldest=at;index=i;}});}
-      var next=pending.splice(Math.max(0,index),1)[0];last.set(employer(next),result.length);result.push(next);
+      if(index<0)index=pending.findIndex(function(j){var at=last.get(company(j));return at===undefined||result.length-at>4;});
+      if(index<0){var oldest=Infinity;pending.forEach(function(j,i){var at=last.get(company(j));if(at<oldest){oldest=at;index=i;}});}
+      var next=pending.splice(Math.max(0,index),1)[0];var nextKey=company(next);counts.set(nextKey,counts.get(nextKey)-1);last.set(nextKey,result.length);result.push(next);
     }
     // Preserve the incoming shuffle/rank whenever feasible. If the greedy
     // look-ahead stranded a repeat, retry the standard frequency scheduler.
-    if(!constrained&&result.some(function(j,i){return result.slice(Math.max(0,i-4),i).some(function(before){return employer(before)===employer(j);});})){
+    if(!constrained&&result.some(function(j,i){return result.slice(Math.max(0,i-4),i).some(function(before){return company(before)===company(j);});})){
       var alternative=spaced(items,true);
-      function repeats(list){return list.reduce(function(n,j,i){return n+Number(list.slice(Math.max(0,i-4),i).some(function(before){return employer(before)===employer(j);}));},0);}
+      function repeats(list){return list.reduce(function(n,j,i){return n+Number(list.slice(Math.max(0,i-4),i).some(function(before){return company(before)===company(j);}));},0);}
       if(repeats(alternative)<repeats(result))return alternative;
     }
     return result;

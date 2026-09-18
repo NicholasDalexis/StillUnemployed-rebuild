@@ -1,18 +1,18 @@
 {
-  "version": "2.6.0",
+  "version": "2.5.9",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-18T17:15:36.761Z",
-  "reviewer": "Codex root",
-  "sourceDigest": "ef50aa803668b3bbec197392ef4436c18424b4c7b8dc392db430acc43ed2c011",
+  "reviewedAt": "2026-09-14T03:08:16.369944+00:00",
+  "reviewer": "Codex root with independent bounded review by security243",
+  "sourceDigest": "f794a9170404f10c2e64d826fd86303847b6e07217e616d0035faf65ec3f6ba4",
   "sourceFileCount": 184,
   "privacyChanged": false,
   "termsChanged": false,
-  "baselineReview": "docs/privacy-reviews/2.5.9.json",
-  "scope": "Authorized production promotion of SU-BUG-086 search performance fix.",
+  "baselineReview": "docs/privacy-reviews/2.5.8.json",
+  "scope": "Local-only UI update for Nic QA. No preview or production promotion is included.",
   "checks": {
-    "implementation": "907 tests passed before packaging; 19 focused tests and repeated 390px slowed mobile browser checks passed after final menu rebinding. Search field identity, focus, caret, empty/clear and composition verified on Jobs and Internships.",
-    "disclosures": "Privacy and Terms reviewed, no wording change needed. No new events, payload fields, storage, provider, permissions or data collection. Search text remains excluded from analytics.",
-    "security": "Existing escaped rendering and event delegation retained. Only result replacement, native input preservation and per-call employer normalization/counting changed. No cross-account cache or network integration added."
+    "implementation": "905/905 full tests passed under Node22.23.2 after the mobile layout correction. Independent review passed149 focused tests and13 additional offline toolbar assertions. Local390/320 and desktop geometry,44px transparent targets,18px Save/Share and16px X glyphs, long-company wrapping, keyboard order, personal save toggles and focus return verified. Counts overlap; no new data-flow behavior.",
+    "disclosures": "Privacy and Terms reviewed against the presentation-only changes; no wording change needed. Existing consent, subscriber and account disclosures remain unchanged. No new event, storage key, endpoint, permission, provider integration or subscriber matching.",
+    "security": "Static aria-hidden SVG replaces text and variant SVG icons. Native Save, Share and Close buttons preserve existing handlers; same-owner Save synchronization updates accessible label/state without replacing the open dialog/form. Tracker removal continues to use its confirmation. No hosted account, report, application or subscription action was performed."
   },
   "openItems": [
     "Netlify Functions-only secret scope was unavailable on the current plan. Alternative scope or upgrade awaits Nic decision; analytics and automated availability verifier/outbox remain unconfigured.",

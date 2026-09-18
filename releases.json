@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.5.9",
+  "currentVersion": "2.6.0",
   "releases": [
+    {
+      "version": "2.6.0",
+      "date": "2026-09-18",
+      "title": "Small improvements",
+      "changes": [
+        "Fix SU-BUG-086 mobile search input lag: retain the native input during result and background renders, preserve composition and draft state, and avoid repeated employer normalization/counting."
+      ],
+      "public": {
+        "title": "Faster search",
+        "changes": [
+          "Search responds faster while keeping your keyboard and cursor in place."
+        ]
+      }
+    },
     {
       "version": "2.5.9",
       "date": "2026-09-13",
@@ -629,7 +643,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "f794a9170404f10c2e64d826fd86303847b6e07217e616d0035faf65ec3f6ba4",
+    "digest": "ef50aa803668b3bbec197392ef4436c18424b4c7b8dc392db430acc43ed2c011",
     "fileCount": 184
   }
 }
