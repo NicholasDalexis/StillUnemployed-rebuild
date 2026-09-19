@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.6.1",
+  "currentVersion": "2.6.2",
   "releases": [
+    {
+      "version": "2.6.2",
+      "date": "2026-09-19",
+      "title": "Production handoff checks and search accuracy",
+      "changes": [
+        "Geographic search, production artifact and private configuration gates, branded recovery and public guides. Analytics preview configuration; production activation requires hosted verification."
+      ],
+      "public": {
+        "title": "Find the right location",
+        "changes": [
+          "State searches now recognize state names and abbreviations, with clearer recovery when a page is missing."
+        ]
+      }
+    },
     {
       "version": "2.6.1",
       "date": "2026-09-19",
@@ -657,7 +671,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "2d4ce13dba1fd10bf2def9a4682b3181f7355efb5a2ce29a28f310b215b4a5be",
-    "fileCount": 184
+    "digest": "d421e6cad021bf4e12fc82b0dbfc645a026ffb500bc603ed8228fc601134a027",
+    "fileCount": 189
   }
 }

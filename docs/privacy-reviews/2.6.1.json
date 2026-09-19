@@ -1,0 +1,27 @@
+{
+  "version": "2.6.1",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-19T21:30:05.032Z",
+  "reviewer": "Codex root",
+  "sourceDigest": "2d4ce13dba1fd10bf2def9a4682b3181f7355efb5a2ce29a28f310b215b4a5be",
+  "sourceFileCount": 184,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "baselineReview": "docs/privacy-reviews/2.6.0.json",
+  "scope": "Authorized preview of residual SU-BUG-086 mobile search performance fix.",
+  "checks": {
+    "implementation": "910 tests passed for the local candidate. At 390px and 6x CPU slowdown, Jobs/Internships design searches preserve native input, focus/caret and full result order/markup. Rapid input, clear, composition, category and inline section changes cancel stale batches.",
+    "disclosures": "Privacy and Terms reviewed for the delta. No new events, payload fields, storage, provider, permissions or data collection. Search text remains excluded from analytics. No wording change required.",
+    "security": "Existing escaped card rendering, consent checks and event delegation retained. Generation cancellation prevents stale catalog/owner results from appending. No cross-account cache, new network integration or authentication change."
+  },
+  "openItems": [
+    "Netlify Functions-only secret scope was unavailable on the current plan. Alternative scope or upgrade awaits Nic decision; analytics and automated availability verifier/outbox remain unconfigured.",
+    "Availability receiver version1 was already deployed and one QA inbox email plus duplicate-suppression replay verified in2.5.3. Deliberate preview worker runs remain pending runtime configuration.",
+    "Production fresh Google login, real consented collection, reset and scheduled retention remain to verify after authorized promotion. Missing historical traffic cannot be reconstructed.",
+    "No end-to-end live cross-account write test or real account deletion was performed in this UI patch. Prior synthetic ownership and deployed own-UID rule evidence remains distinct.",
+    "Beehiiv Scale plan and Codex MCP OAuth are verified. Runtime subscription lookup, confirmed conversion attribution and Portfolio Graded membership matching remain planned, with API scope/credentials and provider integration tests still outstanding.",
+    "Physical iPhone Safari remains Nic QA; private Portfolio Graded campaign visuals are deferred. No real subscription, job report, external application, account mutation or provider send occurred during the current UI tests.",
+    "Cross-origin iframes may emit load for an error document. Conditional retry can detect a deadline or observed error, not every provider failure; no signup success is inferred from load."
+  ],
+  "policySummary": "Engineering implementation/disclosure review, not legal certification. Prior receipt preserved intact. Historical runtime activation gaps are not marked complete by local UI tests."
+}

@@ -925,15 +925,6 @@
     } catch (e) { return false; /* Keep the feedback open until the application is actually stored. */ }
   }
 
-  // US states (name + 2-letter code) so a state search also surfaces remote-anywhere roles.
-  var SU_STATES = { 'al':1,'alabama':1,'ak':1,'alaska':1,'az':1,'arizona':1,'ar':1,'arkansas':1,'ca':1,'california':1,'co':1,'colorado':1,'ct':1,'connecticut':1,'de':1,'delaware':1,'fl':1,'florida':1,'ga':1,'georgia':1,'hi':1,'hawaii':1,'id':1,'idaho':1,'il':1,'illinois':1,'in':1,'indiana':1,'ia':1,'iowa':1,'ks':1,'kansas':1,'ky':1,'kentucky':1,'la':1,'louisiana':1,'me':1,'maine':1,'md':1,'maryland':1,'ma':1,'massachusetts':1,'mi':1,'michigan':1,'mn':1,'minnesota':1,'ms':1,'mississippi':1,'mo':1,'missouri':1,'mt':1,'montana':1,'ne':1,'nebraska':1,'nv':1,'nevada':1,'nh':1,'new hampshire':1,'nj':1,'new jersey':1,'nm':1,'new mexico':1,'ny':1,'new york':1,'nc':1,'north carolina':1,'nd':1,'north dakota':1,'oh':1,'ohio':1,'ok':1,'oklahoma':1,'or':1,'oregon':1,'pa':1,'pennsylvania':1,'ri':1,'rhode island':1,'sc':1,'south carolina':1,'sd':1,'south dakota':1,'tn':1,'tennessee':1,'tx':1,'texas':1,'ut':1,'utah':1,'vt':1,'vermont':1,'va':1,'virginia':1,'wa':1,'washington':1,'wv':1,'west virginia':1,'wi':1,'wisconsin':1,'wy':1,'wyoming':1,'dc':1,'washington dc':1,'district of columbia':1 };
-  function suIsStateQuery(q) {
-    if (!q) return false;
-    if (SU_STATES[q]) return true;                          // exact state name or 2-letter code
-    if (q.length >= 3) { for (var s in SU_STATES) { if (s.length > 2 && s.indexOf(q) === 0) return true; } }  // prefix like "cali", "penn"
-    return false;
-  }
-
   // Preserve the artwork while exposing the delegated controls to keyboard users.
   // Patch around the live search path without ever detaching the native input.
   // Background catalog/auth updates can arrive while the phone keyboard is open.
@@ -1381,21 +1372,27 @@
           if (!inCat && !inKw) return false;
         }
       }
-      var q = this.state.q.trim().toLowerCase();
+      var q = this.state.q.trim();
       if (q) {
-        var hay = (j.co + ' ' + j.role + ' ' + j.loc + ' ' + j.state + ' ' + j.ind).toLowerCase();
-        if (j.state === 'NY') hay += ' nyc';
-        if (hay.indexOf('san francisco') !== -1) hay += ' sf bay area';
-        if (hay.indexOf('los angeles') !== -1) hay += ' la';
-        if (hay.indexOf(q) === -1) {
-          // A remote-from-ANYWHERE role (just "Remote", no fixed city/state) shows up for
-          // ANY state search — you can do it from anywhere. A "New York · Remote" role has
-          // a state attached, so it stays tied to that state and won't flood other searches.
-          var loc = (j.loc || '').toLowerCase();
-          var locNoRemote = loc.replace(/remote/g, '').replace(/[^a-z]+/g, ' ')
-            .replace(/\b(us|usa|united states|anywhere|nationwide)\b/g, '').replace(/\s+/g, ' ').trim();
-          var remoteAnywhere = loc.indexOf('remote') !== -1 && locNoRemote.length === 0;
-          if (!(remoteAnywhere && suIsStateQuery(q))) return false;
+        // Parse once per query, not once per card. State matching shares the
+        // dropdown's geography and unrestricted-remote rules.
+        if (this._searchQuery !== q) {
+          this._searchQuery = q;
+          this._searchPlan = window.SUStates ? window.SUStates.searchQuery(q) : { states: [], text: q.toLowerCase() };
+        }
+        var plan = this._searchPlan;
+        var companyPhrase = /\s/.test(q) && String(j.co || '').toLowerCase().indexOf(q.toLowerCase()) >= 0;
+        if (!companyPhrase && plan.states.length && !isRemoteAnywhere(j)) {
+          var locations = window.SUStates.extract(j.state, j.loc);
+          if (/\bdc\b|district of columbia|washington[, ]+d\.c\./i.test([j.state, j.loc].join(' '))) locations.push('DC');
+          if (!plan.states.some(function (code) { return locations.indexOf(code) >= 0; })) return false;
+        }
+        if (!companyPhrase && plan.text) {
+          var hay = [j.co, j.role, j.loc, j.state, j.ind].join(' ').toLowerCase();
+          if (window.SUStates && window.SUStates.extract(j.state, j.loc).indexOf('NY') >= 0) hay += ' nyc';
+          if (hay.indexOf('san francisco') !== -1) hay += ' sf bay area';
+          if (hay.indexOf('los angeles') !== -1) hay += ' la';
+          if (hay.indexOf(plan.text) < 0) return false;
         }
       }
       if (this.state.ws !== 'Any' && j.style !== this.state.ws) return false;
@@ -2173,7 +2170,7 @@
       // filters panel
       if (this.state.openPanel === 'filters') {
         out += '<div data-su-panel="filters" style="position: absolute; right: 0; top: calc(100% + 12px); width: 320px; max-width: calc(100% - 40px); background: #FBF6E9; border: 1.5px dashed #CDB88C; border-radius: 6px; box-shadow: 4px 8px 22px -8px rgba(44,33,24,0.4); padding: 18px 18px 20px; transform: rotate(0.6deg);">' +
-          '<div data-act="toggleFilters" style="position: absolute; top: 12px; right: 12px; width: 26px; height: 26px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg class="su-close-icon" color="#5C4033" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>' +
+          '<div data-act="toggleFilters" aria-label="Close filters" style="position: absolute; top: 12px; right: 12px; width: 26px; height: 26px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg class="su-close-icon" color="#5C4033" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>' +
           '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 0;">which state?</div>' +
           '<select id="su-state" aria-label="State" style="width: 100%; box-sizing: border-box; font-family: \'Indie Flower\', cursive; font-size: 17px; color: var(--su-action-ink); background: var(--su-action-paper); border: 1.5px solid currentColor; border-radius: 5px; padding: 9px 12px; cursor: pointer; outline: none; margin-top: 11px;">' + stateOpts + '</select>' +
           '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top:18px;">how fresh?</div>' +
@@ -3293,7 +3290,7 @@
     var s = String(loc || '').trim();
     var codes = s.match(/\b[A-Z]{2}\b/g) || [];
     for (var c = 0; c < codes.length; c++) {
-      if (SU_STATES[codes[c].toLowerCase()]) return codes[c];
+      if (codes[c] === 'DC' || (window.SUStates && window.SUStates.normalize(codes[c]))) return codes[c];
     }
     // Only unrestricted US remote roles match every state. Preserve a named region.
     if (/remote/i.test(s)) {

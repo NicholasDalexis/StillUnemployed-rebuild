@@ -11,8 +11,10 @@ export const PAGES = Object.freeze({
   'internships.html': { path:'/internships', title:'Internships and student opportunities | StillUnemployed.com', description:'Explore internships and student opportunities with clear pay labels, program timing and eligibility details. See the employer’s full requirements before applying.' },
   'about.html': { path:'/about', title:'How this job board works | StillUnemployed.com', description:'What StillUnemployed covers, how pay and job summaries are presented, and what to check with the employer before applying.' },
   'versions.html': { path:'/versions', title:'Version history | StillUnemployed.com', description:'What has changed on StillUnemployed.com, one release at a time.' },
-  'privacy.html': { path:'/privacy' },
-  'terms.html': { path:'/terms' },
+  'privacy.html': { path:'/privacy', title:'Privacy and your choices | StillUnemployed.com', description:'How StillUnemployed handles accounts, saved jobs, optional analytics and personalization, and how to change your privacy choices.' },
+  'terms.html': { path:'/terms', title:'Terms of use | StillUnemployed.com', description:'Terms for using StillUnemployed, including third-party job listings, salary information, applications and community reports.' },
+  'job-search-guide.html': { path:'/job-search-guide', title:'Finding early-career creative jobs | StillUnemployed.com', description:'A practical guide to finding creative, marketing and design jobs across job boards, employer websites and your network.' },
+  'pay-guide.html': { path:'/pay-guide', title:'Reading a job salary range | StillUnemployed.com', description:'Compare disclosed salary ranges, hourly pay and location conditions before deciding which jobs fit your search.' },
 });
 const PRIVATE = new Set(['tracker.html','analytics.html','suggest.html','style-guide.html','404.html']);
 const escape = value => String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -35,6 +37,13 @@ export function htmlMetadata(html, relative, production) {
       .replace(/<link\b[^>]*>/gi, tag => attr(tag,'rel').split(/\s+/).includes('canonical') ? '' : tag)
       .replace(/<meta\b[^>]*>/gi, tag => ['robots','googlebot','bingbot'].includes(attr(tag,'name')) ? '' : tag)
       .replace(/<script\b[^>]*data-su-seo[^>]*>[\s\S]*?<\/script\s*>/gi, '');
+    // Source pages may contain preview social URLs. Final production metadata
+    // must never send shared links or thumbnails back to a branch deployment.
+    if (production) head = head.replace(/<meta\b[^>]*>/gi, tag => {
+      const key = attr(tag, 'property') || attr(tag, 'name');
+      if (!['og:url', 'og:image', 'twitter:url', 'twitter:image'].includes(key)) return tag;
+      return tag.replace(/(\bcontent\s*=\s*["'])https:\/\/(?:[a-z0-9-]+--)?stillunemployed\.netlify\.app(?=[/"'])/i, '$1'+ORIGIN);
+    });
     if (policy.page?.title) head = head.replace(/<title\b[^>]*>[\s\S]*?<\/title\s*>/i, '<title>'+escape(policy.page.title)+'</title>');
     let metadata = '\n  <!-- SU SEO START -->';
     if (policy.page?.description) {

@@ -70,3 +70,12 @@ test('incomplete page metadata fails the build instead of silently leaving an un
  const seo=await modulePromise;
  assert.throws(()=>seo.htmlMetadata('<p>Not a full document</p>','jobs.html',false),/complete HTML head/);
 });
+
+test('production replaces owned preview social origins without changing image paths or external URLs',async()=>{
+ const seo=await modulePromise;
+ const source='<html><head><meta property="og:url" content="https://preview--stillunemployed.netlify.app/jobs.html"><meta property="og:image" content="https://preview--stillunemployed.netlify.app/assets/card.png"><meta name="twitter:image" content="https://stillunemployed.netlify.app/assets/card.png"></head><body></body></html>';
+ const result=seo.htmlMetadata(source,'jobs.html',true);
+ assert.doesNotMatch(result,/netlify\.app/);assert.match(result,/https:\/\/stillunemployed.com\/assets\/card.png/);
+ assert.match(seo.htmlMetadata(source,'jobs.html',false),/preview--stillunemployed/);
+ assert.equal(seo.htmlMetadata(result,'jobs.html',true),result);
+});

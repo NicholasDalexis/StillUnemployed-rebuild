@@ -33,6 +33,29 @@
   }
   function label(value) { return BY_CODE[normalize(value)] || ''; }
 
+  // Interpret state queries independently of employer/title text. In mixed
+  // queries, ordinary words such as "in" and "or" are not postal codes.
+  function searchQuery(value) {
+    var text = clean(value), exact = normalize(text), codes = [];
+    if (/^(?:dc|washington[ ,]+d\.?c\.?|district of columbia)$/i.test(text)) return { states: ['DC'], text: '' };
+    if (exact) return { states: [exact], text: '' };
+    if (text.length >= 3) {
+      var prefixes = STATES.filter(function (s) { return s.name.toLowerCase().indexOf(text.toLowerCase()) === 0; });
+      if (prefixes.length === 1) return { states: [prefixes[0].code], text: '' };
+    }
+    text = text.replace(new RegExp('\\b(' + namePattern + ')\\b', 'gi'), function (name) {
+      codes.push(normalize(name)); return ' ';
+    });
+    text = text.replace(/\b[a-z]{2}\b/gi, function (word) {
+      var code = word.toUpperCase();
+      if (!BY_CODE[code] || (ambiguous.test(code) && word !== code)) return word;
+      codes.push(code); return ' ';
+    });
+    if (codes.length) text = text.replace(/\b(?:in|near|within)\b/gi, ' ').replace(/[,;|/]+/g, ' ');
+    return { states: codes.filter(function (code, i) { return codes.indexOf(code) === i; }), text: clean(text).toLowerCase() };
+  }
+
+
   function scan(value, found, structured) {
     var text = clean(value);
     if (!text) return;
@@ -147,5 +170,5 @@
     if (keys.length === 1) return places[keys[0]];
     return country.test(text.split(';')[0].trim()) ? 'Location not listed' : original;
   }
-  return Object.freeze({ STATES: Object.freeze(STATES), BY_CODE: Object.freeze(BY_CODE), normalize: normalize, extract: extract, label: label, cardLocation: cardLocation });
+  return Object.freeze({ STATES: Object.freeze(STATES), BY_CODE: Object.freeze(BY_CODE), normalize: normalize, searchQuery: searchQuery, extract: extract, label: label, cardLocation: cardLocation });
 });
