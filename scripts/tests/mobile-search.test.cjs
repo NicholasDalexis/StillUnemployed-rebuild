@@ -17,3 +17,28 @@ test('employer spacing normalizes company names once per pass, not per candidate
  const result=X.spaced(jobs);assert.equal(new Set(result).size,400);assert(reads<=800,'normalization should stay linear across the optional fallback');
  result.forEach((j,i)=>assert(!result.slice(Math.max(0,i-4),i).some(prior=>prior.co===j.co)));
 });
+
+const catalog = () => Array.from({length:40},(_,i)=>job({co:'Company '+i,role:i%2?'Designer':'Copywriter',link:'https://example.com/job/'+i}));
+const links = b => Array.from(b.document.querySelectorAll('[data-act="openJob"]'),n=>n.getAttribute('data-link'));
+const finishSearch = b => {for(let i=0;i<12;i++)b.runTimers(32);};
+test('large search yields, then preserves every result, order and displayed position',()=>{
+ const b=board();b.init(catalog());b.app.state.q='design';b.app.render(true);
+ const expected=Array.from(b.app.computeShown().shown,j=>j.link);
+ assert(links(b).length<expected.length,'a broad query must yield before generating all cards');
+ assert.equal(b.document.getElementById('su-search-results').getAttribute('aria-busy'),'true');
+ finishSearch(b);assert.deepEqual(links(b),expected);
+ assert.equal(b.document.getElementById('su-search-results').getAttribute('aria-busy'),null);
+ Array.from(b.app.computeShown().shown).forEach((j,i)=>assert.equal(j._pos,i));
+});
+test('another letter cancels unfinished results, including an empty subsequent search',()=>{
+ const b=board();b.init(catalog());b.app.render(true);const input=b.document.getElementById('su-search');
+ input.value='not-a-match';b.fire('input',input);const before=links(b);
+ finishSearch(b);assert.deepEqual(links(b),before,'cancelled batches cannot append stale jobs');
+ b.runTimers(240);assert.equal(links(b).length,0);finishSearch(b);assert.equal(links(b).length,0);
+ assert.equal(b.document.getElementById('su-search-results').getAttribute('aria-busy'),null);
+});
+test('catalog replacement invalidates queued cards from the previous owner/catalog',()=>{
+ const b=board();b.init(catalog());b.app.render(true);
+ b.app.jobs=[job({co:'New catalog',link:'https://example.com/new'})];b.app.render();
+ finishSearch(b);assert.deepEqual(links(b),['https://example.com/new']);
+});

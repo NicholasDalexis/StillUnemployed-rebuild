@@ -1,18 +1,18 @@
 {
-  "version": "2.6.1",
+  "version": "2.6.0",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-19T21:30:05.032Z",
+  "reviewedAt": "2026-09-18T17:15:36.761Z",
   "reviewer": "Codex root",
-  "sourceDigest": "2d4ce13dba1fd10bf2def9a4682b3181f7355efb5a2ce29a28f310b215b4a5be",
+  "sourceDigest": "ef50aa803668b3bbec197392ef4436c18424b4c7b8dc392db430acc43ed2c011",
   "sourceFileCount": 184,
   "privacyChanged": false,
   "termsChanged": false,
-  "baselineReview": "docs/privacy-reviews/2.6.0.json",
-  "scope": "Authorized preview of residual SU-BUG-086 mobile search performance fix.",
+  "baselineReview": "docs/privacy-reviews/2.5.9.json",
+  "scope": "Authorized production promotion of SU-BUG-086 search performance fix.",
   "checks": {
-    "implementation": "910 tests passed for the local candidate. At 390px and 6x CPU slowdown, Jobs/Internships design searches preserve native input, focus/caret and full result order/markup. Rapid input, clear, composition, category and inline section changes cancel stale batches.",
-    "disclosures": "Privacy and Terms reviewed for the delta. No new events, payload fields, storage, provider, permissions or data collection. Search text remains excluded from analytics. No wording change required.",
-    "security": "Existing escaped card rendering, consent checks and event delegation retained. Generation cancellation prevents stale catalog/owner results from appending. No cross-account cache, new network integration or authentication change."
+    "implementation": "907 tests passed before packaging; 19 focused tests and repeated 390px slowed mobile browser checks passed after final menu rebinding. Search field identity, focus, caret, empty/clear and composition verified on Jobs and Internships.",
+    "disclosures": "Privacy and Terms reviewed, no wording change needed. No new events, payload fields, storage, provider, permissions or data collection. Search text remains excluded from analytics.",
+    "security": "Existing escaped rendering and event delegation retained. Only result replacement, native input preservation and per-call employer normalization/counting changed. No cross-account cache or network integration added."
   },
   "openItems": [
     "Netlify Functions-only secret scope was unavailable on the current plan. Alternative scope or upgrade awaits Nic decision; analytics and automated availability verifier/outbox remain unconfigured.",

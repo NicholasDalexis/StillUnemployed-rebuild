@@ -1751,17 +1751,30 @@
       try { this.renderBoard(searchOnly); var error=document.getElementById('su-runtime-error');if(error)error.hidden=true; }
       catch(e){uxEvent('render_error');var notice=document.getElementById('su-runtime-error');if(notice)notice.hidden=false;}
     },
+    cancelSearchFill: function () {
+      clearTimeout(this._searchFillTimer);
+      this._searchFillTimer = null;
+      this._searchRenderGeneration = (this._searchRenderGeneration || 0) + 1;
+    },
+    observeJobImpressions: function (root, reset) {
+      if (!window.IntersectionObserver || !window.SUAnalytics) return;
+      if (reset && this._jobImpressions) this._jobImpressions.disconnect();
+      if (!this._jobImpressions) this._jobImpressions = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if(entry.isIntersecting && entry.intersectionRatio >= 0.5) window.SUAnalytics.job('job_impression', entry.target.getAttribute('data-link'));
+        });
+      }, {threshold:0.5});
+      root.querySelectorAll('[data-act="openJob"][data-link]').forEach(function(card) { this._jobImpressions.observe(card); }, this);
+    },
     renderBoard: function (searchOnly) {
+      this.cancelSearchFill();
+      var searchGeneration = this._searchRenderGeneration;
+      var progressive = searchOnly === true || this._searchFocused;
       var self = this;
       var board = document.getElementById('board');
       var sc = this.computeShown();
       var base = sc.base, shown = sc.shown;
-      setTimeout(function(){
-        if(!window.IntersectionObserver||!window.SUAnalytics)return;
-        if(self._jobImpressions)self._jobImpressions.disconnect();
-        self._jobImpressions=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting&&entry.intersectionRatio>=0.5)window.SUAnalytics.job('job_impression',entry.target.getAttribute('data-link'));});},{threshold:0.5});
-        document.querySelectorAll('[data-act="openJob"][data-link]').forEach(function(card){self._jobImpressions.observe(card);});
-      },0);
+
 
       // ---- active "Change Look?" theme (ported from renderVals THEMES) ----
       var look = this.state.look;
@@ -1840,7 +1853,7 @@
         }
       }
 
-      var cardsHtml = shown.map(function (j, k) {
+      function renderCard(j, k) {
         var id = self.jobs.indexOf(j);if(id<0)id=self.jobs.length+k;
         // POSITION IN THE LIST AS THE USER SEES IT (Nic, 2026-07-12). The newsletter capture block
         // used to appear on a HASH of the job link (~1 in 3), which clusters: two adjacent cards
@@ -1994,29 +2007,49 @@
         if(window.SUDiscovery && window.SUDiscovery.hidden(j))html += '<button type="button" class="su-restore" data-discovery="restore" data-key="'+esc(window.SUDiscovery.key(j.link))+'">Hidden · restore to board</button>';
         html += '</div>'; // .note
         return html;
-      });
+      }
 
       // ---- interleave advice notes + signup cards into the feed (2026-07-18) ----
       // Two cadences live in the same DOM: .su-ins-d (desktop: note = every 3rd row's middle
       // slot, signup = a row-end two rows later) and .su-ins-m (mobile: J J S J J N). CSS
       // display:none removes the hidden set from the grid flow, so each viewport only ever
       // sees its own cadence. Saved-only view stays pure jobs (no notes, no signup cards).
-      var feedHtml = '';
-      if (!this.state.savedOnly && !(window.SUDiscovery&&window.SUDiscovery.showHidden()) && shown.length) {
-        var insD = suFeedSchedule(shown.length, false, !this._recipeHidden);
-        var insM = suFeedSchedule(shown.length, true, !this._recipeHidden);
-        var addIns = function (list, mode) {
-          (list || []).forEach(function (it) {
-            feedHtml += adviceCardHtml(adviceAt(it.n), mode, it.n, ACC);
-          });
-        };
-        for (var fi = 0; fi < cardsHtml.length; fi++) {
-          addIns(insD[fi], 'd');
-          addIns(insM[fi], 'm');
-          feedHtml += cardsHtml[fi];
+      var withAdvice = !this.state.savedOnly && !showingHidden && shown.length;
+      var insD = withAdvice ? suFeedSchedule(shown.length, false, !this._recipeHidden) : {};
+      var insM = withAdvice ? suFeedSchedule(shown.length, true, !this._recipeHidden) : {};
+      function feedCard(k) {
+        var html = '';
+        function addIns(list, mode) {
+          (list || []).forEach(function(it) { html += adviceCardHtml(adviceAt(it.n), mode, it.n, ACC); });
         }
-      } else {
-        feedHtml = cardsHtml.join('');
+        addIns(insD[k], 'd');addIns(insM[k], 'm');
+        return html + renderCard(shown[k], k);
+      }
+      // A broad first letter can match the whole catalog. Bound the synchronous
+      // work, then yield between small batches so the next keystroke can cancel it.
+      var rendered = progressive ? Math.min(6, shown.length) : shown.length;
+      var feedHtml = '';
+      for (var fi = 0; fi < rendered; fi++) feedHtml += feedCard(fi);
+      function fillSearchResults() {
+        var resultRoot = document.getElementById('su-search-results');
+        var grid = resultRoot && resultRoot.querySelector('.job-grid');
+        if (!grid || rendered >= shown.length) return;
+        resultRoot.setAttribute('aria-busy', 'true');
+        function fill() {
+          if (searchGeneration !== self._searchRenderGeneration || !grid.isConnected || rendered >= shown.length) return;
+          var draft = document.createElement('div'), html = '', start = performance.now(), count = 0;
+          while (rendered < shown.length && count < 4 && (count === 0 || performance.now() - start < 6)) {
+            html += feedCard(rendered++);count++;
+          }
+          draft.innerHTML = html;
+          prepareActions(draft);
+          self.observeJobImpressions(draft, false);
+          self.observeImpressions(draft);
+          Array.from(draft.children).forEach(function(node) { grid.appendChild(node); });
+          if (rendered < shown.length) self._searchFillTimer = setTimeout(fill, 32);
+          else { self._searchFillTimer = null;resultRoot.removeAttribute('aria-busy'); }
+        }
+        self._searchFillTimer = setTimeout(fill, 32);
       }
 
       // ---- states list for the <select> ----
@@ -2244,6 +2277,7 @@
       var results = document.getElementById('su-search-results');
       if (searchOnly === true && results) {
         var opening = '<div id="su-search-results">';
+        results.removeAttribute('aria-busy');
         results.innerHTML = out.slice(resultsStart + opening.length, resultsEnd - 6);
         prepareActions(results);
         if(window.SUBoardControls)window.SUBoardControls.prepare(board);
@@ -2255,6 +2289,8 @@
           });
         }
         this.observeImpressions();
+        this.observeJobImpressions(results, true);
+        fillSearchResults();
         return;
       }
       if (!keepSearchFocus || !replaceBoardKeepingSearch(board, out)) board.innerHTML = out;
@@ -2276,6 +2312,8 @@
 
       // note/signup impressions (once per element key per page load — no scroll spam)
       this.observeImpressions();
+      this.observeJobImpressions(board, true);
+      fillSearchResults();
     },
 
     // Impression logging for advice notes + signup cards, per the UX rules ("note
@@ -2283,7 +2321,7 @@
     // visibility, each data-imp key fires ONCE per page load (re-renders reuse the same
     // keys, so filter churn can't double-count). Hidden-cadence duplicates never
     // intersect, so each note/card counts once no matter the viewport.
-    observeImpressions: function () {
+    observeImpressions: function (root) {
       if (!('IntersectionObserver' in window)) return;
       var self = this;
       this._impFired = this._impFired || {};
@@ -2300,7 +2338,9 @@
           });
         }, { threshold: 0.5 });
       }
-      var els = document.querySelectorAll('[data-imp]');
+      // Release removed offscreen cards instead of retaining every old result tree.
+      if (!root) this._impObs.disconnect();
+      var els = (root || document).querySelectorAll('[data-imp]');
       for (var i = 0; i < els.length; i++) {
         var k = els[i].getAttribute('data-imp');
         if (k && !this._impFired[k]) this._impObs.observe(els[i]);
@@ -2975,12 +3015,13 @@
         self._searchCaret = e.target.selectionStart;
         self.state.q = e.target.value;
         clearTimeout(self._renderTimer);
+        self.cancelSearchFill();
         if (e.isComposing || self._searchComposing) return;
         self._renderTimer = setTimeout(function () {
           self._renderTimer = null;
           if(window.SUBoardExperience)self._activeDemotions=window.SUBoardExperience.demotions();
           self.render(true);
-        }, 140);
+        }, 240);
         clearTimeout(self._qTimer);
         self._qTimer = setTimeout(function () {
           var q = String(self.state.q || '').trim();
@@ -2991,7 +3032,7 @@
       }
       document.addEventListener('input', queueSearch);
       document.addEventListener('compositionstart', function(e) {
-        if(e.target && e.target.id==='su-search'){self._searchComposing=true;clearTimeout(self._renderTimer);}
+        if(e.target && e.target.id==='su-search'){self._searchComposing=true;clearTimeout(self._renderTimer);self.cancelSearchFill();}
       });
       document.addEventListener('compositionend', function(e) {
         if(e.target && e.target.id==='su-search'){self._searchComposing=false;queueSearch(e);}
@@ -3398,6 +3439,7 @@
     if(runtime && runtime.save)runtime.save(currentSection(),App.state);
     if(runtime && runtime.enterSection)runtime.enterSection(section);
     if(runtime && runtime.clearSavedViews)runtime.clearSavedViews();
+    App.cancelSearchFill();
     clearTimeout(App._renderTimer);App._renderTimer=null;clearTimeout(App._qTimer);App._qTimer=null;
     if(App._cancelSalaryEdit)App._cancelSalaryEdit();
     // Invalidate the prior result before changing any catalog-dependent state.
@@ -3421,6 +3463,7 @@
     var changed=runtime&&runtime.checkOwner&&runtime.checkOwner();
     var stale=window.SUStore&&window.SUStore.current&&!window.SUStore.current();
     if(!changed&&!stale)return false;
+    App.cancelSearchFill();
     clearTimeout(App._renderTimer);App._renderTimer=null;
     Object.assign(App.state,{q:'',cat:'all',ws:'Any',pr:'Any',salaryMin:'',salaryMax:'',st:'all',fr:'Any',savedOnly:false,recentOpen:false});
     App._activeDemotions=null;App._unavailableLocal=[];App._availabilityBusy=false;App._availabilityAttempt=null;

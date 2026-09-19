@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.6.0",
+  "currentVersion": "2.6.1",
   "releases": [
+    {
+      "version": "2.6.1",
+      "date": "2026-09-19",
+      "title": "Smoother mobile search",
+      "changes": [
+        "Fix residual SU-BUG-086 typing lag by rendering search results in cancellable batches, yielding between appends and releasing replaced impression observers."
+      ],
+      "public": {
+        "title": "Smoother search",
+        "changes": [
+          "Keep typing while search results load, with your keyboard and cursor staying in place."
+        ]
+      }
+    },
     {
       "version": "2.6.0",
       "date": "2026-09-18",
@@ -643,7 +657,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "ef50aa803668b3bbec197392ef4436c18424b4c7b8dc392db430acc43ed2c011",
+    "digest": "2d4ce13dba1fd10bf2def9a4682b3181f7355efb5a2ce29a28f310b215b4a5be",
     "fileCount": 184
   }
 }
