@@ -63,7 +63,7 @@ const server=http.createServer((req,res)=> {
     await page.locator('#question').fill('How many women use the tracker?');await page.locator('#question-form button').click();
     check('unsupported question returns limitation',(await page.locator('#question-answer').textContent()).includes('cannot answer demographic questions'));
     await page.locator('#question').fill('How many people signed up?');await page.locator('#question-form button').click();
-    check('supported question uses returned aggregate',(await page.locator('#question-answer').textContent()).startsWith('126 recorded sign-ups'));
+    check('supported question uses returned aggregate',(await page.locator('#question-answer').textContent()).startsWith('126 recorded new board accounts'));
     await page.locator('#trend-metric').selectOption('apply_clicks');
     check('trend control updates accessible summary',(await page.locator('#trend-summary').textContent()).includes('Apply clicks'));
     await page.locator('.data-details summary').click();check('daily table accessible',await page.locator('#daily-table tr').count()===30);

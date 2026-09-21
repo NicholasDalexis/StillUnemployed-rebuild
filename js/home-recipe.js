@@ -26,7 +26,7 @@
       frameLoaded = true;global.clearTimeout(loadingTimer);loading.hidden = true;error.hidden = true;retry.hidden = true;
     };
     frame.onerror = showRecovery;
-    frame.src = signup;
+    if(global.SUNewsletter)global.SUNewsletter.load(frame,signup,{placement:'homepage',cta:'home-recipe',exposure:'homepage'});else frame.src=signup;
     loadingTimer = global.setTimeout(function () {
       if (!frameLoaded) showRecovery();
     }, 8000);

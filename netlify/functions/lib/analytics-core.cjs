@@ -2,6 +2,7 @@
 const crypto = require('node:crypto');
 const P = require('../../../js/personalization.js');
 const Identity = require('../../../js/job-identity.js');
+const Newsletter = require('./newsletter-attribution.cjs');
 const COUNT_ONLY_EVENTS = new Set(['preference_save','preference_clear','preference_skip','feedback_not_fit',
   'preferred_source_click','feedback_open','feedback_dismiss','feedback_unavailable',
   'feed_ready','feed_load_error','feed_retry','feed_refresh','search_empty',
@@ -12,16 +13,18 @@ const PAGES = new Set(['home','board','internships','tracker','privacy','terms',
 const THEMES = new Set(['original','girly','poker','mermaid','bratt','noir','beauty','chess']);
 const ID = /^[a-f0-9]{64}$/;
 const hash = v => crypto.createHash('sha256').update(String(v)).digest('hex');
+['tldr_open','newsletter_impression','newsletter_engagement'].forEach(name=>EVENTS.add(name));
 function jobId(job) { return hash(Identity.keys(job.link)[0] || job.link); }
 function catalog(jobs) { const out={}; for (const job of jobs) out[jobId(job)]={...P.classify(job),salary:P.salary(job.pay),company:job.co||'Company not listed',jobLabel:(job.role||'Job')+' at '+(job.co||'Company not listed')};return out; }
 function cleanEvent(input, jobs) {
   if (!input || !EVENTS.has(input.name) || !/^[a-zA-Z0-9_-]{16,64}$/.test(input.id||'') || !PAGES.has(input.page)) throw Object.assign(new Error('Invalid event'), {status:400});
   const out={id:input.id,name:input.name,page:input.page};
+  if(['newsletter_impression','newsletter_engagement'].includes(out.name))return Object.assign(out,Newsletter.context(input,jobs));
   // These counts never retain written answers, job attribution or optional metadata.
   if(COUNT_ONLY_EVENTS.has(out.name))return out;
   if(/^[a-zA-Z0-9_-]{16,64}$/.test(input.outboundId||''))out.outboundId=input.outboundId;
   if(input.jobId) { if(!ID.test(input.jobId)||!jobs[input.jobId])throw Object.assign(new Error('Unknown job'),{status:400});out.jobId=input.jobId;out.field=jobs[input.jobId].field;out.role=jobs[input.jobId].role;out.company=jobs[input.jobId].company;out.jobLabel=jobs[input.jobId].jobLabel; }
-  if(/^(job_|apply_click|application_reported|outbound_)/.test(out.name) && !out.jobId)throw Object.assign(new Error('Job required'),{status:400});
+  if(/^(job_|tldr_open|apply_click|application_reported|outbound_)/.test(out.name) && !out.jobId)throw Object.assign(new Error('Job required'),{status:400});
   if(input.theme && THEMES.has(input.theme))out.theme=input.theme;
   if(out.name==='theme_vote' && (!out.theme || !['up','down'].includes(input.vote)))throw Object.assign(new Error('Theme and vote required'),{status:400});
   if(['category','workstyle','pay','freshness','state','theme','saved'].includes(input.filter))out.filter=input.filter;

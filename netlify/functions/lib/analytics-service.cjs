@@ -5,6 +5,7 @@ const P=require('../../../js/personalization.js');
 const bundled=require('../../../jobs-data.json');
 const {loadJobs}=require('./job-source.cjs');
 const DAY=86400000;
+const Newsletter=require('./newsletter-attribution.cjs');
 let jobsCache=null,jobsCacheAt=0;
 async function liveCatalog(){
   if(jobsCache&&Date.now()-jobsCacheAt<300000)return jobsCache;
@@ -65,12 +66,20 @@ async function collect(request,d) {
     if(used+cleaned.length>300)throw error(429,'Please retry later');
     const eventRefs=cleaned.map(e=>d.db.doc('suAnalyticsEvents/'+Core.hash(actor+':'+e.id)));
     const eventDocs=await Promise.all(eventRefs.map(r=>tx.get(r)));
+    const newsletterDocs=await Promise.all(input.events.map(e=>Newsletter.TOKEN.test(e.newsletterReceipt||'')?tx.get(d.db.doc('suAnalyticsEvents/newsletter-receipt-'+e.newsletterReceipt)):null));
     let profile=old.expiresAt && Number(old.expiresAt.toMillis?old.expiresAt.toMillis():old.expiresAt)<=now ? {} : old.jobs||{};
     Object.keys(profile).forEach(id=>{if(!Number.isFinite(profile[id].at)||profile[id].at<=now-90*DAY)delete profile[id];});
     let accepted=0,signupRecorded=!!old.signupRecorded;
     for(let i=0;i<cleaned.length;i++) {
       if(eventDocs[i].exists || (Number.isFinite(input.events[i].occurredAt) && input.events[i].occurredAt <= (old.resetAt||0)))continue;
       const e=cleaned[i];
+      if(['newsletter_impression','newsletter_engagement'].includes(e.name)){
+        if(choices.analytics!==true)continue;
+        const doc=newsletterDocs[i],receipt=doc&&doc.exists?doc.data():null;
+        if(!receipt||receipt.revoked||receipt.actor!==actor||receipt.session!==input.session||Number(receipt.expiresAt.toMillis?receipt.expiresAt.toMillis():receipt.expiresAt)<=now)continue;
+        Object.assign(e,receipt.context,{exposureId:Core.hash(input.events[i].newsletterReceipt)});
+        if(e.name==='newsletter_impression'&&!receipt.viewedAt)tx.set(doc.ref,{...receipt,viewedAt:now});
+      }
       if(e.name==='auth_signup')continue;
       if(choices.personalization===true && e.jobId)profile=P.update(profile,e,d.jobs[e.jobId],now);
       // Idempotency receipts also exist for personalization-only requests, but contain
@@ -110,6 +119,44 @@ async function profile(request,d) {
   const jobs={};Object.entries(data.jobs||{}).forEach(([id,v])=>{if(v.at>d.now()-90*DAY)jobs[id]=v;});
   return {jobs,updatedAt:data.updatedAt||null};
 }
+async function newsletter(request,d){
+  Core.authorizeOrigin(request,d.env);
+  const input=body(request),now=d.now();
+  if(input.action==='revoke'){
+    // Possession of a random receipt can only disable that receipt, never read it.
+    if(!Array.isArray(input.tokens)||input.tokens.length>100||input.tokens.some(t=>!Newsletter.TOKEN.test(t)))throw error(400,'Invalid receipts');
+    await d.db.runTransaction(async tx=>{
+      const rateRef=d.db.doc('suAnalyticsRates/newsletter-revoke-'+hmac(d.env,request.headers['x-nf-client-connection-ip']||'unknown'));
+      const rate=await tx.get(rateRef),window=Math.floor(now/60000),used=rate.exists&&rate.data().window===window?rate.data().count:0;
+      if(used+input.tokens.length>500)throw error(429,'Please retry later');
+      for(const token of input.tokens)tx.set(d.db.doc('suAnalyticsEvents/newsletter-receipt-'+token),{revoked:true,analytics:false,expiresAt:new Date(now+30*DAY)});
+      tx.set(rateRef,{window,count:used+input.tokens.length,expiresAt:new Date(now+DAY)});
+    });
+    return {revoked:true};
+  }
+  if(d.env.CONTEXT!=='production'||!/^https:\/\/(www\.)?stillunemployed\.com$/.test(request.headers.origin||''))return {excluded:true};
+  if(d.env.SU_NEWSLETTER_ATTRIBUTION_ENABLED!=='true'||!d.env.SU_BEEHIIV_WEBHOOK_SECRET)throw error(503,'Newsletter attribution is not configured');
+  if(input.consent?.analytics!==true)throw error(403,'Analytics consent required');
+  const decoded=await verifiedIdentity(request,d);
+  if(excludedAccount(decoded,d.env))return {excluded:true};
+  if(!/^[a-zA-Z0-9_-]{16,64}$/.test(input.session||'')||!Newsletter.TOKEN.test(input.token||'')||(!decoded&&!/^[a-zA-Z0-9_-]{16,64}$/.test(input.visitor||''))||!Number.isFinite(input.occurredAt)||Math.abs(now-input.occurredAt)>300000)throw error(400,'Invalid receipt');
+  if(input.jobId&&d.getJobs)d.jobs=await d.getJobs();
+  const context=Newsletter.context(input,d.jobs),actor=hmac(d.env,decoded?'account:'+decoded.uid:'guest:'+input.visitor);
+  const page=['home','board','internships'].includes(input.page)?input.page:'other';
+  const ref=d.db.doc('suAnalyticsEvents/newsletter-receipt-'+input.token),profileRef=d.db.doc('suAnalyticsProfiles/'+actor),rateRef=d.db.doc('suAnalyticsRates/newsletter-'+hmac(d.env,request.headers['x-nf-client-connection-ip']||actor));
+  return d.db.runTransaction(async tx=>{
+    const old=await tx.get(ref),profile=await tx.get(profileRef),rate=await tx.get(rateRef);
+    if(old.exists) return old.data().revoked||old.data().actor!==actor?{excluded:true}:{campaign:'su_'+input.token};
+    if(profile.exists&&input.occurredAt<=(profile.data().resetAt||0))return {excluded:true};
+    const window=Math.floor(now/60000),used=rate.exists&&rate.data().window===window?rate.data().count:0;
+    if(used>=30)throw error(429,'Please retry later');
+    tx.set(ref,{actor,session:input.session,page,context,at:now,analytics:false,expiresAt:new Date(now+30*DAY)});
+    // Read by the webhook transaction; reset races cause a transaction retry.
+    if(!profile.exists)tx.set(profileRef,{jobs:{},resetAt:0,updatedAt:now,expiresAt:new Date(now+90*DAY),nextSignalExpiryAt:new Date(now+90*DAY)});
+    tx.set(rateRef,{window,count:used+1,expiresAt:new Date(now+DAY)});
+    return {campaign:'su_'+input.token};
+  });
+}
 async function admin(request,d) {
   Core.authorizeOrigin(request,d.env);const uid=await identity(request,d,true);
   const allowed=(d.env.SU_ANALYTICS_ADMIN_UIDS||'').split(',').map(s=>s.trim()).filter(Boolean);
@@ -118,7 +165,7 @@ async function admin(request,d) {
   const docs=await d.db.collection('suAnalyticsEvents').where('at','>=',d.now()-days*DAY).limit(20001).get();
   if(docs.size>20000)throw error(503,'This window is too large; choose fewer days');
   const rows=docs.docs.map(doc=>doc.data()).filter(e=>e.analytics===true && e.name && e.at<=d.now());
-  return {...Core.reduceRows(rows,days,d.now()),coverage:{label:'Only visitors who opted into analytics',dimensionSuppression:'Field, role and theme groups with fewer than 5 visitors are withheld',complete:true}};
+  return {...Core.reduceRows(rows,days,d.now()),newsletter:d.env.SU_NEWSLETTER_ATTRIBUTION_ENABLED==='true'?Newsletter.aggregate(rows):null,coverage:{label:'Only visitors who opted into analytics',dimensionSuppression:'Dimension groups with fewer than 5 visitors are withheld',complete:true}};
 }
 async function cleanup(d) {
   let deleted=0,pruned=0;
@@ -151,4 +198,4 @@ function handler(action,methods){return async request=>{
   const headers={'Content-Type':'application/json','Cache-Control':'private, no-store','Vary':'Origin, Authorization','X-Content-Type-Options':'nosniff'};
   try{if(!methods.includes(request.httpMethod))throw error(405,'Method not allowed');const result=await action(request,dependencies());return {statusCode:200,headers,body:JSON.stringify(result)};}catch(e){return {statusCode:e.status||503,headers,body:JSON.stringify({error:e.status?e.message:'Analytics service unavailable'})};}
 };}
-module.exports={dependencies,identity,excludedAccount,collect,profile,admin,cleanup,handler,hmac};
+module.exports={dependencies,identity,excludedAccount,collect,profile,newsletter,admin,cleanup,handler,hmac};

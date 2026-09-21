@@ -9,7 +9,7 @@
   var COUNT_KEYS = ['events', 'visits', 'visitors', 'signups', 'logins', 'job_opens', 'saves', 'apply_clicks', 'reported_applied', 'tracker_users'];
   var THEME_NAMES = {original:'Original',girly:'For the girlies',poker:'Casino',mermaid:'Mermaidcore',bratt:'bratt',noir:'Black Cat',beauty:'Beauty',chess:'Chess'};
   function themeRows(rows) { return rows.map(function(row){return {label:THEME_NAMES[row.label] || row.label,count:row.count};}); }
-  var EVENT_NAMES = {preference_save:'Preference save actions',preference_clear:'Preference clear actions',preference_skip:'Preference skip actions',feedback_not_fit:'Not a fit responses',
+  var EVENT_NAMES = {tldr_open:'TL;DR openings',newsletter_impression:'Visible newsletter form exposures',newsletter_engagement:'Newsletter form focus',newsletter_submitted:'Subscriptions received by Beehiiv',newsletter_confirmed:'Provider-confirmed newsletter signups',preference_save:'Preference save actions',preference_clear:'Preference clear actions',preference_skip:'Preference skip actions',feedback_not_fit:'Not a fit responses',
     preferred_source_click:'Google source selector link clicks',feedback_open:'Feedback notes shown',feedback_dismiss:'Feedback notes dismissed',feedback_unavailable:'Reported unavailable responses',
     feed_ready:'Completed feed loads',feed_load_error:'Feed loading failures',feed_retry:'Feed retry actions',feed_refresh:'Feed refresh starts',search_empty:'Searches with no matches',
     signin_start:'Sign-in starts',signin_cancel:'Sign-in cancellations',signin_error:'Sign-in failures',signout_complete:'Completed sign-outs',signout_error:'Sign-out failures',sync_error:'Sync failures',sync_retry:'Sync retry actions',sync_recovered:'Sync recoveries',
@@ -28,6 +28,14 @@
       return { label: x.label.slice(0, 160), count: count(x.count) };
     }).sort(function (a, b) { return (b.count || 0) - (a.count || 0) || a.label.localeCompare(b.label); });
   }
+  function newsletter(value){
+    if(!value||typeof value!=='object')return null;
+    var out={};['impressions','engagements','submitted','confirmed','matchedConversions'].forEach(function(k){out[k]=count(value[k]);});
+    function rate(v){return typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=1?v:null;}
+    out.rate=rate(value.rate);
+    ['cta','placement','job'].forEach(function(k){out[k]=Array.isArray(value[k])?value[k].slice(0,150).filter(function(r){return r&&typeof r.label==='string';}).map(function(r){return {label:r.label.slice(0,160),impressions:count(r.impressions),converted:count(r.converted),rate:rate(r.rate)};}):[];});
+    return out;
+  }
   function normalize(raw) {
     if (!raw || typeof raw !== 'object' || !raw.totals || !Array.isArray(raw.daily) || raw.tracking !== 'consent-only') throw new Error('invalid-response');
     var totals = {}; COUNT_KEYS.forEach(function (key) { totals[key] = count(raw.totals[key]); });
@@ -35,7 +43,7 @@
     return {
       windowDays: [7, 30, 90].indexOf(raw.windowDays) >= 0 ? raw.windowDays : null,
       generatedAt: typeof raw.generatedAt === 'string' && Number.isFinite(Date.parse(raw.generatedAt)) ? raw.generatedAt : null,
-      tracking: 'consent-only', totals: totals,
+      tracking: 'consent-only', totals: totals, newsletter: newsletter(raw.newsletter),
       daily: raw.daily.slice(0, 92).filter(function (d) { return d && /^\d{4}-\d{2}-\d{2}$/.test(d.date) && Number.isFinite(Date.parse(d.date)); }).map(function (d) {
         return { date: d.date, visits: count(d.visits), job_opens: count(d.job_opens), apply_clicks: count(d.apply_clicks) };
       }).sort(function (a, b) { return a.date.localeCompare(b.date); }),
@@ -75,7 +83,7 @@
       return ties.map(function (r) { return r.label; }).join(', ') + (ties.length > 1 ? ' tie at ' : ' leads with ') + format(top.count) + ' recorded ' + (dimension === 'themes' ? 'theme selections' : dimension === 'jobs' || dimension === 'companies' ? 'card opens' : 'card opens') + period + '. Small groups are withheld; counts are actions, not unique people.';
     }
     var key = null, label = '';
-    if (/^(how many )?(people |users )?(signed up|signups|sign ups|new accounts)( did we have| were there)?$/.test(q)) { key = 'signups'; label = 'recorded sign-ups'; }
+    if (/^(how many )?(people |users )?(signed up|signups|sign ups|new accounts)( did we have| were there)?$/.test(q)) { key = 'signups'; label = 'recorded new board accounts (not newsletter subscriptions)'; }
     if (/^(how many )?(people |users )?(use|used|are using) (the )?tracker$|^(tracker users|who uses the tracker)$/.test(q)) { key = 'tracker_users'; label = 'distinct recorded tracker users'; }
     if (/^(how many )?(visits|site visits|sessions)( did we have| were there)?$/.test(q)) { key = 'visits'; label = 'recorded visits'; }
     if (/^(how many )?(visitors|people visited|users visited)( the site)?$/.test(q)) { key = 'visitors'; label = 'distinct recorded visitors'; }
@@ -97,7 +105,7 @@
   function fixture(days) {
     var daily = Array.from({ length: days }, function (_, i) { return { date: new Date(Date.UTC(2026, 7, 31 - days + i)).toISOString().slice(0, 10), visits: 36 + (i * 17 % 43), job_opens: 52 + (i * 23 % 97), apply_clicks: 13 + (i * 13 % 29) }; });
     function sum(k) { return daily.reduce(function (s, d) { return s + d[k]; }, 0); }
-    return normalize({ jobs: [{label: 'Social Media Coordinator at Sample Studio', count: 89}, {label: 'Associate Product Designer at Example Company', count: 73}, {label: 'Assistant Fashion Designer at Sample House', count: 64}], companies: [{label: 'Sample Studio', count: 142}, {label: 'Example Company', count: 119}, {label: 'Sample House', count: 86}], pageTiming: [{label: 'board', count: 684, meanActiveSeconds: 172}, {label: 'tracker', count: 247, meanActiveSeconds: 136}, {label: 'privacy', count: 62, meanActiveSeconds: 38}, {label: 'terms', count: 41, meanActiveSeconds: 27}], windowDays: days, generatedAt: new Date().toISOString(), tracking: 'consent-only', totals: { events: sum('job_opens') * 3, visits: sum('visits'), visitors: 842, signups: 126, logins: 313, job_opens: sum('job_opens'), saves: 397, apply_clicks: sum('apply_clicks'), reported_applied: 214, tracker_users: 168 }, daily: daily, fields: [{ label: 'Marketing', count: 1218 }, { label: 'UX / UI Design', count: 642 }, { label: 'Fashion Design', count: 388 }, { label: 'Photography', count: 241 }, { label: 'Creative Technology', count: 173 }], roles: [{ label: 'Social & Community', count: 684 }, { label: 'Brand Marketing', count: 532 }, { label: 'Product Design', count: 407 }, { label: 'Content & Copy', count: 294 }, { label: 'Apparel Design', count: 227 }], themes: [{ label: 'original', count: 320 }, { label: 'poker', count: 197 }, { label: 'beauty', count: 134 }, { label: 'chess', count: 98 }], themeVotes: {up:[{label:'poker',count:36},{label:'beauty',count:24},{label:'noir',count:18}],down:[{label:'poker',count:9},{label:'beauty',count:7}]}, events: [{ label: 'job_open', count: sum('job_opens') }, { label: 'apply_click', count: sum('apply_clicks') }, { label: 'save', count: 397 }, { label: 'privacy_open', count: 62 }, { label: 'theme_change', count: 749 }, {label:'theme_vote',count:94}], timing: { returned: 326, unknown: 82, capped: 48, meanAwaySeconds: 242 }, privacy: { rawRetentionDays: 90, minimumCohort: 5 }, coverage: { complete: true } });
+    return normalize({ newsletter:{impressions:240,engagements:70,submitted:26,confirmed:20,matchedConversions:18,rate:18/240,cta:[{label:'N01',impressions:120,converted:12,rate:0.1}],placement:[{label:'job-detail',impressions:160,converted:14,rate:14/160}],job:[]}, jobs: [{label: 'Social Media Coordinator at Sample Studio', count: 89}, {label: 'Associate Product Designer at Example Company', count: 73}, {label: 'Assistant Fashion Designer at Sample House', count: 64}], companies: [{label: 'Sample Studio', count: 142}, {label: 'Example Company', count: 119}, {label: 'Sample House', count: 86}], pageTiming: [{label: 'board', count: 684, meanActiveSeconds: 172}, {label: 'tracker', count: 247, meanActiveSeconds: 136}, {label: 'privacy', count: 62, meanActiveSeconds: 38}, {label: 'terms', count: 41, meanActiveSeconds: 27}], windowDays: days, generatedAt: new Date().toISOString(), tracking: 'consent-only', totals: { events: sum('job_opens') * 3, visits: sum('visits'), visitors: 842, signups: 126, logins: 313, job_opens: sum('job_opens'), saves: 397, apply_clicks: sum('apply_clicks'), reported_applied: 214, tracker_users: 168 }, daily: daily, fields: [{ label: 'Marketing', count: 1218 }, { label: 'UX / UI Design', count: 642 }, { label: 'Fashion Design', count: 388 }, { label: 'Photography', count: 241 }, { label: 'Creative Technology', count: 173 }], roles: [{ label: 'Social & Community', count: 684 }, { label: 'Brand Marketing', count: 532 }, { label: 'Product Design', count: 407 }, { label: 'Content & Copy', count: 294 }, { label: 'Apparel Design', count: 227 }], themes: [{ label: 'original', count: 320 }, { label: 'poker', count: 197 }, { label: 'beauty', count: 134 }, { label: 'chess', count: 98 }], themeVotes: {up:[{label:'poker',count:36},{label:'beauty',count:24},{label:'noir',count:18}],down:[{label:'poker',count:9},{label:'beauty',count:7}]}, events: [{ label: 'job_open', count: sum('job_opens') }, { label: 'apply_click', count: sum('apply_clicks') }, { label: 'save', count: 397 }, { label: 'privacy_open', count: 62 }, { label: 'theme_change', count: 749 }, {label:'theme_vote',count:94}], timing: { returned: 326, unknown: 82, capped: 48, meanAwaySeconds: 242 }, privacy: { rawRetentionDays: 90, minimumCohort: 5 }, coverage: { complete: true } });
   }
   function mount(win) {
     var doc = win.document, data = null, demo = false, request = 0, controller = null;
@@ -107,7 +115,7 @@
     function text(id, value) { el(id).textContent = value; }
     function state(kind, title, detail) { el('service-state').hidden = !kind; el('service-state').dataset.state = kind || ''; text('state-title', title || ''); text('state-detail', detail || ''); }
     function cancel() { request += 1; if (controller) controller.abort(); controller = null; }
-    function clear() { data = null; el('dashboard-data').hidden = true; el('freshness').hidden = true; ['metrics','daily-chart','daily-axis','daily-table','journey','fields','roles','themes','theme-likes','theme-dislikes','popular-jobs','companies','page-timing','events','timing-stats','away-average','trend-summary','freshness','cohort-note','retention-note'].forEach(function (id) { el(id).replaceChildren(); }); text('question-answer', 'Try a suggested question to get started.'); el('question').value = ''; }
+    function clear() { data = null; if(el('newsletter-summary'))el('newsletter-summary').textContent='';if(el('newsletter-breakdown'))el('newsletter-breakdown').replaceChildren();el('dashboard-data').hidden = true; el('freshness').hidden = true; ['metrics','daily-chart','daily-axis','daily-table','journey','fields','roles','themes','theme-likes','theme-dislikes','popular-jobs','companies','page-timing','events','timing-stats','away-average','trend-summary','freshness','cohort-note','retention-note'].forEach(function (id) { el(id).replaceChildren(); }); text('question-answer', 'Try a suggested question to get started.'); el('question').value = ''; }
     function bars(id, rows, empty) {
       var parent = el(id); parent.replaceChildren();
       if (!rows.length) { parent.appendChild(node('li', empty || 'No reportable groups in this window. Empty groups may be below the privacy threshold.', 'empty-chart')); return; }
@@ -126,9 +134,21 @@
       var isStale = stale(data.generatedAt); el('freshness').dataset.stale = String(!demo && isStale);
       text('freshness', demo ? 'SYNTHETIC PREVIEW · All counts are invented. Dates and windows are illustrative.' : (isStale ? 'STALE OR UNKNOWN REFRESH TIME · ' : '') + (data.generatedAt ? 'Generated ' + new Date(data.generatedAt).toLocaleString() + ' · ' : 'Refresh time unavailable · ') + (data.windowDays ? 'Last ' + data.windowDays + ' days · ' : '') + 'UTC daily buckets · Consented activity only');
       el('metrics').replaceChildren();
-      [['visits','Visits','Recorded browsing sessions'], ['visitors','Visitors','Distinct analytics visitors'], ['job_opens','Job opens','Cards explored'], ['signups','Sign-ups','New accounts with analytics consent'], ['tracker_users','Tracker users','Distinct analytics visitors']].forEach(function (m) { var card = node('div', undefined, 'metric'); card.append(node('p', m[1], 'metric-label'), node('strong', format(data.totals[m[0]]), 'metric-value'), node('p', m[2], 'metric-note')); el('metrics').appendChild(card); });
+      [['visits','Visits','Recorded browsing sessions'], ['visitors','Visitors','Distinct analytics visitors'], ['job_opens','Job opens','Cards explored'], ['signups','New accounts','New accounts with analytics consent'], ['tracker_users','Tracker users','Distinct analytics visitors']].forEach(function (m) { var card = node('div', undefined, 'metric'); card.append(node('p', m[1], 'metric-label'), node('strong', format(data.totals[m[0]]), 'metric-value'), node('p', m[2], 'metric-note')); el('metrics').appendChild(card); });
       ['fields','roles'].forEach(function (id) { bars(id, data[id]); });
       bars('events',eventRows(data.events));
+      if(el('newsletter-summary')){
+        var n=data.newsletter;
+        text('newsletter-summary',n?format(n.impressions)+' visible form exposures · '+format(n.submitted)+' subscriptions received by Beehiiv · '+format(n.confirmed)+' confirmed signups · '+(typeof n.rate==='number'&&Number.isFinite(n.rate)?(n.rate*100).toFixed(1)+'% matched exposure conversion':'Conversion rate unavailable'):'Newsletter confirmation tracking is not active for this report. Missing data is not zero.');
+        var breakdown=el('newsletter-breakdown');breakdown.replaceChildren();
+        if(n)['cta','placement','job'].forEach(function(dimension){
+          breakdown.appendChild(node('h3',{cta:'By invitation',placement:'By popup location',job:'By job'}[dimension]));
+          var rows=Array.isArray(n[dimension])?n[dimension].slice(0,150):[];
+          if(!rows.length)breakdown.appendChild(node('p','No groups meet the minimum of five visitors yet.','small-note'));
+          rows.forEach(function(row){breakdown.appendChild(node('p',String(row.label).slice(0,160)+': '+format(row.impressions)+' exposures; '+format(row.converted)+' converted exposures; '+(typeof row.rate==='number'&&Number.isFinite(row.rate)?(row.rate*100).toFixed(1)+'%':'rate withheld')+'.','small-note'));});
+        });
+      }
+
       bars('themes',themeRows(data.themes));
       ['up','down'].forEach(function(direction){bars(direction==='up'?'theme-likes':'theme-dislikes',data.themeVotes?themeRows(data.themeVotes[direction]):[],data.themeVotes?'No reportable votes in this direction. Activity may be absent or below the privacy threshold.':'Theme vote breakdowns are unavailable in this response. Missing votes are not zero.');});
       bars('popular-jobs', data.jobs.slice(0, 10)); bars('companies', data.companies.slice(0, 10));

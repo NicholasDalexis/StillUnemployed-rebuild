@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.6.2",
+  "currentVersion": "2.6.3",
   "releases": [
+    {
+      "version": "2.6.3",
+      "date": "2026-09-20",
+      "title": "Newsletter attribution",
+      "changes": [
+        "Local candidate: consented newsletter exposures and provider-confirmed subscription attribution by approved invitation, placement and canonical job. Disabled until Beehiiv webhook setup and production verification. Separate board accounts from newsletter acquisitions."
+      ]
+    },
     {
       "version": "2.6.2",
       "date": "2026-09-19",
@@ -671,7 +679,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "d421e6cad021bf4e12fc82b0dbfc645a026ffb500bc603ed8228fc601134a027",
-    "fileCount": 189
+    "digest": "50ad9e31d1e8185f23c0419fc60de805c97379f0983b0ba56ac7ea272fe40316",
+    "fileCount": 194
   }
 }

@@ -1,0 +1,23 @@
+{
+  "version": "2.6.2",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-19T23:50:59.132Z",
+  "reviewer": "Codex root",
+  "sourceDigest": "d421e6cad021bf4e12fc82b0dbfc645a026ffb500bc603ed8228fc601134a027",
+  "sourceFileCount": 189,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "baselineReview": "docs/privacy-reviews/2.6.1.json",
+  "scope": "State search accuracy, public metadata/recovery/guides, promotion gates, preview analytics configuration.",
+  "checks": {
+    "disclosures": "Reviewed Privacy and Terms against this delta. Existing policy covers first-party consented events, HMAC-linked identifiers, Firestore storage, reset, 90-day retention and QA exclusion. No new tracking payload or provider. Guides clarify disclosed pay and sourcing without blanket verification claims.",
+    "security": "919 tests passed before release sealing. Auth origin regression included in build. Final artifact rejects preview destinations, private-key signatures and exact configured secrets. Production build requires production-specific analytics settings.",
+    "storage": "Real isolated Firestore guest event, replay deduplication, aggregate and reset verified. QA collections removed. Prepared credential has read-only Firebase Auth access; no additional permissions granted."
+  },
+  "openItems": [
+    "Preview hosted configuration and owner read pending release verification. Production remains 2.6.1 with analytics unconfigured until separately authorized activation.",
+    "Fresh Google login, cross-account denial and physical iPhone QA remain distinct from synthetic tests.",
+    "Search Console/Bing session access could not be retrieved in this run. Indexable individual job pages stay gated on complete source-backed detail and reliable removal.",
+    "Beehiiv confirmed subscription and Portfolio Graded matching remain unimplemented provider integrations."
+  ]
+}

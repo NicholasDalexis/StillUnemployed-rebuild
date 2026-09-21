@@ -33,7 +33,7 @@
     var c=choices();if(!c.analytics && !({job_open:1,job_save:1,apply_click:1,application_reported:1})[name])return;
     var e={id:randomId(),name:name,page:page(),occurredAt:Date.now()};
     // Explicit keys only. Never copy strings from DOM labels, forms or URLs.
-    if(!countOnly)['jobId','theme','filter','status','seconds','capped','vote','outboundId'].forEach(function(k){if(params&&params[k]!==undefined)e[k]=params[k];});
+    if(!countOnly)['jobId','theme','filter','status','seconds','capped','vote','outboundId','placement','cta','revision','newsletterReceipt'].forEach(function(k){if(params&&params[k]!==undefined)e[k]=params[k];});
     queue.push(e);if(queue.length>120)queue.shift();
     if(queue.length>=20)flush();
   }
@@ -87,12 +87,26 @@
   }
   async function reset(){
     authEpoch++;var resetEpoch=authEpoch;queue=[];pending=[];seen={};outbound=null;profile={};generation++;
+    if(window.SUNewsletter)await window.SUNewsletter.revoke();
+    if(resetEpoch!==authEpoch)throw new Error('Account changed. Please retry from your current account.');
     if(signedIn()||visitor||stored('su_analytics_visitor')){var headers={'Content-Type':'application/json'};if(signedIn())headers.Authorization='Bearer '+await window.SUAuth.getToken();if(resetEpoch!==authEpoch)throw new Error('Account changed. Please retry from your current account.');var r=await fetch(PROFILE,{method:'DELETE',headers:headers,body:JSON.stringify({visitor:visitor||stored('su_analytics_visitor')}),credentials:'same-origin'});if(!r.ok)throw new Error('Reset could not finish. Please try again.');}
     if(resetEpoch!==authEpoch)throw new Error('Account changed. Please retry from your current account.');
     if(window.SUBoardExperience&&typeof window.SUBoardExperience.clearHistory==='function')window.SUBoardExperience.clearHistory();
     put('su_analytics_visitor',null);visitor=null;window.dispatchEvent(new CustomEvent('su:profile-ready',{detail:{generation:generation,reset:true}}));
   }
-  window.SUAnalytics={emit:emit,job:jobEvent,registerJobs:registerJobs,flush:flush,choices:choices,excluded:excluded,profile:function(){return profile;},generation:function(){return generation;},reset:reset,loadProfile:loadProfile};
+  async function newsletterRequest(token, context, signal){
+    if(!choices().analytics||!consentEnabled()||!identifiers())return null;
+    var epoch=authEpoch,headers={'Content-Type':'application/json'},item=context.link?catalog[keyFor(context.link)]:null;
+    if(context.placement==='job-detail'&&!item)return null;
+    if(signedIn())headers.Authorization='Bearer '+await window.SUAuth.getToken();
+    if(epoch!==authEpoch||!choices().analytics||!consentEnabled())return null;
+    var response=await fetch('/.netlify/functions/newsletter-attribution',{method:'POST',headers:headers,signal:signal,credentials:'same-origin',body:JSON.stringify({token:token,occurredAt:Date.now(),session:session,visitor:visitor,consent:{analytics:true},page:page(),placement:context.placement,cta:context.cta,jobId:item?item.id:undefined})});
+    if(!response.ok)return null;
+    var result=await response.json();
+    if(epoch!==authEpoch||!choices().analytics||!consentEnabled())return null;
+    return result.campaign==='su_'+token?{campaign:result.campaign,jobId:item?item.id:undefined}:null;
+  }
+  window.SUAnalytics={newsletterRequest:newsletterRequest,emit:emit,job:jobEvent,registerJobs:registerJobs,flush:flush,choices:choices,excluded:excluded,profile:function(){return profile;},generation:function(){return generation;},reset:reset,loadProfile:loadProfile};
   window.suTrack=function(action,company,role,link){
     if(action==='cta'){var eventName={newsletter:'newsletter_click',story:'founder_open',carousel:'board_open'}[company];if(eventName)emit(eventName,{});return;}
     if(action==='themevote'){

@@ -41,7 +41,7 @@ test('unknown, old and implausibly future timestamps are marked stale', () => {
   assert.equal(dashboard.stale(new Date(now-2000).toISOString(),now),false);
 });
 test('questions support reported totals but do not imply people from action counts', () => {
-  assert.match(dashboard.answer('How many people signed up?',sample()), /^126 recorded sign-ups/);
+  assert.match(dashboard.answer('How many people signed up?',sample()), /^126 recorded new board accounts/);
   assert.match(dashboard.answer('How many people use the tracker?',sample()), /^168 distinct recorded tracker users/);
   assert.match(dashboard.answer('How many people clicked apply?',sample()), /not a count of people/);
   assert.match(dashboard.answer('How many visits?',sample()), /opted-in activity only/);

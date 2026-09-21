@@ -118,6 +118,7 @@
     {id:'N24',revision:1,text:'I have a few thoughts on this job market.'},
     {id:'N26',revision:1,text:'I learned a few things. Want them?'}
   ];
+  var newsletterExposure=0;
   var invitationCycle={remaining:[],last:null};
   function nextNewsletterInvitation(){
     if(!invitationCycle.remaining.length){
@@ -126,7 +127,7 @@
       if(invitationCycle.remaining[0]===invitationCycle.last){var first=invitationCycle.remaining[0];invitationCycle.remaining[0]=invitationCycle.remaining[1];invitationCycle.remaining[1]=first;}
     }
     var id=invitationCycle.remaining.shift();invitationCycle.last=id;
-    return NEWSLETTER_INVITATIONS.find(function(item){return item.id===id;});
+    return Object.assign({},NEWSLETTER_INVITATIONS.find(function(item){return item.id===id;}),{exposure:++newsletterExposure});
   }
   var detailOpens = 0;
   function saveControl(saved, iconOnly) {
@@ -144,6 +145,7 @@
     comp._detailRecipe = detailOpens % 2 === 0;
     comp._detailRecipeInvitation = comp._detailRecipe && !comp._recipeHidden ? nextNewsletterInvitation() : null;
     comp._detailRecipeCopy = comp._detailRecipeInvitation ? comp._detailRecipeInvitation.text : '';
+    if(window.SUAnalytics)window.SUAnalytics.job('tldr_open',link);
     suRecipeView(link, comp);
   }
 
@@ -451,10 +453,11 @@
   }
 
   var NEWSLETTER_URL = 'https://subscribe-forms.beehiiv.com/af2e314d-125f-431d-a8e0-0020be04d97c';
-  function newsletterHtml(cta) {
+  function newsletterHtml(cta, context) {
+    context=context||{};
     return '<div class="su-newsletter-frame" aria-busy="true">' +
       '<div class="su-newsletter-loading" role="status"><span>Loading signup…</span><i aria-hidden="true"></i></div>' +
-      '<iframe data-src="' + NEWSLETTER_URL + '" data-test-id="beehiiv-embed" data-cta="' + esc(cta) + '" title="Newsletter signup" height="50" frameborder="0" scrolling="no" loading="eager"></iframe>' +
+      '<iframe data-newsletter-context="'+esc(JSON.stringify(context))+'" data-src="' + NEWSLETTER_URL + '" data-test-id="beehiiv-embed" data-cta="' + esc(cta) + '" title="Newsletter signup" height="50" frameborder="0" scrolling="no" loading="eager"></iframe>' +
       '<button type="button" class="su-newsletter-retry" hidden>Retry signup</button></div>';
   }
   function newsletterFooter(){return '<p class="su-newsletter-footer"><span>Every week.</span> <span>easy unsub.</span> <span>newsletter - Nic</span></p>';}
@@ -484,7 +487,7 @@
           wrap.setAttribute('aria-busy','false');if(status)status.hidden=true;
           if(retry)retry.hidden=false;
         },8000);
-        frame.src=frame.getAttribute('data-src');
+        if(window.SUNewsletter)window.SUNewsletter.load(frame,frame.getAttribute('data-src'),JSON.parse(frame.getAttribute('data-newsletter-context')||'{}'));else frame.src=frame.getAttribute('data-src');
       }
       frame.addEventListener('load',ready);
       frame.addEventListener('error',failure);
@@ -2549,7 +2552,7 @@
               '<div data-newsletter-id="'+_rInvitation.id+'" data-newsletter-revision="'+_rInvitation.revision+'" style="margin-top: 20px; border-top: 1.5px dashed rgba(44,33,24,0.22); padding-top: 12px; position: relative;">' +
                 '<div data-act="hideRecipe" data-co="' + esc(_rCopy) + '" data-link="' + esc(dj.link) + '" title="hide this" style="position: absolute; top: 5px; right: 0; width: 20px; height: 20px; border-radius: 50%; background: rgba(44,33,24,0.06); display: flex; align-items: center; justify-content: center; cursor: pointer; font-family: var(--su-body); font-size: 11px; color: #6F5E45;"><svg class="su-close-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>' +
                 '<div style="font-family: \'Indie Flower\', cursive; font-size: 16px; color: #2C2118; line-height: 1.3; padding-right: 26px;">' + esc(_rCopy) + '</div>' +
-                newsletterHtml('signup:' + _rInvitation.id) + newsletterFooter() +
+                newsletterHtml('signup:' + _rInvitation.id,{placement:'job-detail',cta:_rInvitation.id,link:dj.link,exposure:_rInvitation.exposure}) + newsletterFooter() +
               '</div>') +
             '</div>' +
           '</div>';
@@ -2582,7 +2585,7 @@
               '<div style="margin-top: 20px;">' + adviceWhyHtml(_an.why) + '</div>' +
               '<div data-newsletter-id="'+this._adviceInvitation.id+'" data-newsletter-revision="'+this._adviceInvitation.revision+'" style="margin-top: 24px; border-top: 1.5px dashed rgba(44,33,24,0.22); padding-top: 16px;">' +
                 '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 17px; color: #2C2118; line-height: 1.4;">' + esc(this._adviceInvitation.text) + '</div>' +
-                newsletterHtml('note:' + _an.id) +
+                newsletterHtml('note:' + _an.id,{placement:'advice',cta:this._adviceInvitation.id,exposure:this._adviceInvitation.exposure}) +
                 newsletterFooter() +
               '</div>' +
             '</div>' +
@@ -2602,7 +2605,7 @@
             '</div>' +
             '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 24px; line-height: 1.3; color: #2A2118; padding-right: 24px;">' + esc(this.state.signupOpen) + '</div>' +
             '<div style="font-family: var(--su-body); font-size: 14px; line-height: 1.6; color: #3a3026; margin-top: 14px;">One email a week: the exact steps I used to go from 1,500 applications and silence to a 6-figure offer at Instagram.</div>' +
-            newsletterHtml('signup-popup') +
+            newsletterHtml('signup-popup',{placement:'signup-card',cta:'signup-card',exposure:this._signupExposure}) +
             newsletterFooter() +
           '</div>' +
         '</div>';
@@ -2884,7 +2887,7 @@
           case 'openSignup': {
             var _sl = el.getAttribute('data-line') || 'the exact recipe that got me my job at Instagram';
             if (typeof window.suTrack === 'function') window.suTrack('signup_open', _sl.slice(0, 60), '', '');
-            self.setState({ signupOpen: _sl });
+            self._signupExposure=++newsletterExposure;self.setState({ signupOpen: _sl });
             break;
           }
           case 'closeSignup': self.setState({ signupOpen: null }); break;
@@ -3039,24 +3042,6 @@
       });
       document.addEventListener('focusout', function (e) {
         if (e.target && e.target.id === 'su-search') self._searchFocused = false;
-      });
-
-      // note→newsletter + signup-card clicks happen INSIDE the Beehiiv iframe, which we can't
-      // listen into. Proxy: when the window blurs and focus just moved to an embed iframe,
-      // that was a click into it. Fires once per iframe key per page load — no spam.
-      window.addEventListener('blur', function () {
-        try {
-          var ae = document.activeElement;
-          if (!ae || ae.tagName !== 'IFRAME') return;
-          var v = ae.getAttribute('data-cta');
-          if (!v) return;
-          self._ctaFired = self._ctaFired || {};
-          if (self._ctaFired[v]) return;
-          self._ctaFired[v] = 1;
-          var ci = v.indexOf(':');
-          var kind = ci < 0 ? v : v.slice(0, ci), val = ci < 0 ? '' : v.slice(ci + 1);
-          if (typeof window.suTrack === 'function') window.suTrack(kind === 'note' ? 'note_cta' : 'signup_cta', val.slice(0, 60), '', '');
-        } catch (e2) {}
       });
 
       // Salary values update in place while dragging or typing. Only commit the
