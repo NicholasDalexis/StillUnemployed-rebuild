@@ -438,7 +438,7 @@
         '<div style="font-family:\'Indie Flower\',cursive; font-weight:700; font-size:24px; line-height:1.22; color:#2A2118;">' + esc(note.hook) + '</div>' +
         '<svg width="120" height="9" viewBox="0 0 120 9" fill="none" style="position:absolute; left:0; bottom:-4px;"><path d="M2 6 C 40 2, 80 2, 118 5" stroke="' + ACC + '" stroke-width="3.5" stroke-linecap="round"></path></svg>' +
       '</div>' +
-      adviceGraphicHtml(note, ACC, false) +
+      '<div data-advice-motion="' + esc(note.id) + '">' + adviceGraphicHtml(note, ACC, false) + '</div>' +
       adviceDoodleHtml(note) +
       '<div style="flex:1; min-height:12px;"></div>' +
       // The flip CTA continues the thought ("wait, why friday?" · "you could just..."), it doesn't
@@ -2580,7 +2580,7 @@
               '</div>' +
               // Nic's layout note: the back felt cramped — handwriting into body text into handwriting
               // with no air. Each section now gets real margin, and the why supports bullets.
-              adviceGraphicHtml(_an, _accA, true) +
+              '<div data-advice-motion="' + esc(_an.id) + '">' + adviceGraphicHtml(_an, _accA, true) + '</div>' +
               adviceDoodleHtml(_an) +
               '<div style="margin-top: 20px;">' + adviceWhyHtml(_an.why) + '</div>' +
               '<div data-newsletter-id="'+this._adviceInvitation.id+'" data-newsletter-revision="'+this._adviceInvitation.revision+'" style="margin-top: 24px; border-top: 1.5px dashed rgba(44,33,24,0.22); padding-top: 16px;">' +

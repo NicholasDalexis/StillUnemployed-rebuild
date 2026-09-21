@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.6.3",
+  "currentVersion": "2.6.4",
   "releases": [
+    {
+      "version": "2.6.4",
+      "date": "2026-09-21",
+      "title": "Illustrated advice in motion",
+      "changes": [
+        "Animate the original advice drawings with short viewport-triggered sequences, reduced-motion fallback and no card movement. Subscriber matching remains a separate unfinished integration."
+      ],
+      "public": {
+        "title": "Advice that draws itself",
+        "changes": [
+          "The drawings in job-hunt notes now come to life as you scroll."
+        ]
+      }
+    },
     {
       "version": "2.6.3",
       "date": "2026-09-20",
@@ -679,7 +693,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "50ad9e31d1e8185f23c0419fc60de805c97379f0983b0ba56ac7ea272fe40316",
-    "fileCount": 194
+    "digest": "73acefc8c2c99269940eed0431423298a3fae32be184106d8880a58b30c76c69",
+    "fileCount": 195
   }
 }
