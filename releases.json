@@ -1,7 +1,23 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.6.4",
+  "currentVersion": "2.6.5",
   "releases": [
+    {
+      "version": "2.6.5",
+      "date": "2026-09-21",
+      "title": "Read-only jobs API preview",
+      "changes": [
+        "RD1085: bounded public jobs search and details, OpenAPI, current visibility authorities and fail-closed responses; preview-only enablement.",
+        "Privacy and Terms describe agent/API queries and narrow job-search reuse. No account access, automatic applications or Muse approval."
+      ],
+      "public": {
+        "title": "Job discovery integration support",
+        "changes": [
+          "Behind-the-scenes support for read-only job-search integrations where enabled. Account and application actions are not included.",
+          "Updated Privacy and Terms to explain API searches and third-party agents."
+        ]
+      }
+    },
     {
       "version": "2.6.4",
       "date": "2026-09-21",
@@ -693,7 +709,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "73acefc8c2c99269940eed0431423298a3fae32be184106d8880a58b30c76c69",
-    "fileCount": 195
+    "digest": "0b61fb2c36a32cb94cf5378419bce55569ee93e1e290c40c1ac747552ae056b1",
+    "fileCount": 202
   }
 }

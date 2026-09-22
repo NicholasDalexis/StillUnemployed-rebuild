@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Connector experiment | StillUnemployed</title><link rel="stylesheet" href="/css/brand.css"><link rel="stylesheet" href="/review.css"><script src="/review.js" defer></script></head>
+<body><main>
+  <header><p class="eyebrow">StillUnemployed · Local experiment</p><h1>A new way to find our jobs.</h1><p>Try the search behind our proposed Muse connector. These are real public listings. Muse discovery and approval still need to be tested separately.</p></header>
+  <section class="note" aria-labelledby="search-heading"><h2 id="search-heading">What are you looking for?</h2>
+  <form id="search-form">
+    <div class="fields"><label>Role or company<input name="q" maxlength="160" placeholder="Marketing, design, or a company"></label><label>City or state<input name="location" maxlength="100" placeholder="NYC, California, or CA"></label><label>Work arrangement<select name="work_mode"><option value="">Any arrangement</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">Onsite</option></select></label><label>Annual pay from ($)<input name="min_salary" type="number" min="0" max="1000000" step="1000" placeholder="70000" aria-describedby="pay-help"></label><label>Required minimum experience<select name="max_experience"><option value="">Any stated experience</option><option value="0">No experience required</option><option value="1">At most 1 year</option><option value="2">At most 2 years</option><option value="3">At most 3 years</option></select></label></div>
+    <p id="pay-help" class="small">Pay uses overlapping annual ranges, not a guaranteed offer. Hourly pay is excluded when filtering by annual pay. Unknown experience is excluded when filtering by years.</p>
+    <div class="actions"><button type="submit" id="search-button">Find jobs →</button><button type="button" class="secondary" id="browse">Browse all jobs</button></div>
+  </form></section>
+  <p id="status" role="status" aria-live="polite">Choose your filters, then find jobs.</p>
+  <p id="freshness" class="small"></p>
+  <section id="results" aria-label="Job results" aria-busy="false"></section>
+  <button id="more" hidden class="secondary">Load more jobs</button>
+  <details class="technical"><summary>See the API request and response</summary><p><a id="request-link" href="/api/jobs/search" target="_blank" rel="noopener">Open search response</a> · <a href="/api/jobs/openapi.json" target="_blank" rel="noopener">OpenAPI specification</a></p><pre id="raw">No search yet.</pre></details>
+  <footer><p>Listings reflect the board's active source and current visibility checks. Confirm availability and requirements with the employer. This experiment cannot submit applications or access your account.</p></footer>
+</main></body></html>
