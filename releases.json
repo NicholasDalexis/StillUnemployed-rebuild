@@ -1,7 +1,23 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.6.5",
+  "currentVersion": "2.6.7",
   "releases": [
+    {
+      "version": "2.6.7",
+      "date": "2026-09-22",
+      "title": "Carry independent board signup into preview",
+      "changes": [
+        "Preview 2.6.7 includes the separate orange StillUnemployed Beehiiv form alongside previously approved preview features."
+      ]
+    },
+    {
+      "version": "2.6.6",
+      "date": "2026-09-22",
+      "title": "Restore independent StillUnemployed signup",
+      "changes": [
+        "Production-line hotfix: use a dedicated orange Beehiiv form for the board; preserve the Job Hunt Recipe form and exclude preview-only features."
+      ]
+    },
     {
       "version": "2.6.5",
       "date": "2026-09-21",
@@ -709,7 +725,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "0b61fb2c36a32cb94cf5378419bce55569ee93e1e290c40c1ac747552ae056b1",
+    "digest": "521025b642ee631ae80fc76c87b8b2969570b4b1e267b5a00c638b0889d60f8a",
     "fileCount": 202
   }
 }
