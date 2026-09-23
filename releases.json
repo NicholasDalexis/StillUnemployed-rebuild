@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.6.7",
+  "currentVersion": "2.6.8",
   "releases": [
+    {
+      "version": "2.6.8",
+      "date": "2026-09-23",
+      "title": "Use resume spelling in board headlines",
+      "changes": [
+        "Preview-only copy correction: use resume without accents in the rotating Jobs and Internships headline."
+      ]
+    },
     {
       "version": "2.6.7",
       "date": "2026-09-22",
@@ -725,7 +733,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "521025b642ee631ae80fc76c87b8b2969570b4b1e267b5a00c638b0889d60f8a",
+    "digest": "485f5303ef11933776b862072685f1db5113c3bd8a864953c7298acecabcd137",
     "fileCount": 202
   }
 }

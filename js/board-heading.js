@@ -16,7 +16,7 @@
   var looks = { original:'original', poker:'casino', girly:'girlies', mermaid:'mermaid', bratt:'bratt', noir:'blackcat', beauty:'beauty', chess:'chess' };
   var copy = [
     { start:'worth the ', marked:'screenshot.' },
-    { start:'worth fixing your ', marked:'résumé for.' },
+    { start:'worth fixing your ', marked:'resume for.' },
     { start:'worth ', marked:'saving.' },
     { start:'worth ', marked:'bookmarking.' },
     { start:'to save ', marked:'before you forget.' }
