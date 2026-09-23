@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.6.2",
+  "currentVersion": "2.6.3",
   "releases": [
+    {
+      "version": "2.6.3",
+      "date": "2026-09-22",
+      "title": "Restore StillUnemployed signup",
+      "changes": [
+        "Restored the orange newsletter signup design and separated it from Job Hunt Recipe."
+      ]
+    },
     {
       "version": "2.6.2",
       "date": "2026-09-19",
@@ -671,7 +679,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "d421e6cad021bf4e12fc82b0dbfc645a026ffb500bc603ed8228fc601134a027",
+    "digest": "e53fcede390b5cbf85deeda7d8c2b67e04e76c3df45cf182f5aa959c202d2b56",
     "fileCount": 189
   }
 }

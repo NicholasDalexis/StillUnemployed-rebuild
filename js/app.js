@@ -450,7 +450,9 @@
       postReport('recipe_view', comp._detailRecipeCopy, link);
   }
 
-  var NEWSLETTER_URL = 'https://subscribe-forms.beehiiv.com/af2e314d-125f-431d-a8e0-0020be04d97c';
+  // Dedicated StillUnemployed form. Do not reuse the Job Hunt Recipe homepage form:
+  // Beehiiv serves each form's published styling to every site using its ID.
+  var NEWSLETTER_URL = 'https://subscribe-forms.beehiiv.com/d3ffa100-9fdf-498d-b096-a6c5f8a4deaa';
   function newsletterHtml(cta) {
     return '<div class="su-newsletter-frame" aria-busy="true">' +
       '<div class="su-newsletter-loading" role="status"><span>Loading signup…</span><i aria-hidden="true"></i></div>' +
