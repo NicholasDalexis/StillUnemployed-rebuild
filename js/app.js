@@ -452,7 +452,9 @@
       postReport('recipe_view', comp._detailRecipeCopy, link);
   }
 
-  var NEWSLETTER_URL = 'https://subscribe-forms.beehiiv.com/af2e314d-125f-431d-a8e0-0020be04d97c';
+  // Dedicated StillUnemployed form. Beehiiv styling and success behavior are
+  // shared by every site using a form ID; Recipe owns its separate form.
+  var NEWSLETTER_URL = 'https://subscribe-forms.beehiiv.com/d3ffa100-9fdf-498d-b096-a6c5f8a4deaa';
   function newsletterHtml(cta, context) {
     context=context||{};
     return '<div class="su-newsletter-frame" aria-busy="true">' +
