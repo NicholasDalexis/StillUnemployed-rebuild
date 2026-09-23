@@ -1,22 +1,22 @@
 {
-  "version": "2.6.3",
+  "version": "2.6.6",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-23T02:14:35.802Z",
+  "reviewedAt": "2026-09-23T02:22:09.957Z",
   "reviewer": "Codex root",
   "sourceDigest": "e53fcede390b5cbf85deeda7d8c2b67e04e76c3df45cf182f5aa959c202d2b56",
   "sourceFileCount": 189,
   "privacyChanged": false,
   "termsChanged": false,
   "baselineReview": "docs/privacy-review.json at Version 2.6.2",
-  "scope": "Dedicated Beehiiv signup form and visual restoration for StillUnemployed; Job Hunt Recipe retains its separate form.",
+  "scope": "Production-line 2.6.6 signup hotfix; preview-only 2.6.3–2.6.5 features excluded from the production artifact.",
   "checks": {
     "disclosures": "Read current Privacy and Terms. Both already identify Beehiiv as the optional newsletter provider. No new provider, tracking payload, account data, or subscription recipient; no policy wording change needed.",
     "security": "Only the trusted Beehiiv form ID changes in the embedded iframe. No new script, privilege, storage, or data path. Original Recipe form and redirect remain untouched.",
     "visual": "Desktop and 390 px local Chrome checks show outlined white field, Enter your email placeholder, and rectangular orange Subscribe button without clipping. Archived 2.5.8 capture used as visual reference."
   },
   "openItems": [
-    "Hosted preview and production remain separate verification stages.",
-    "No test subscription submitted; actual Beehiiv delivery and confirmation require separate account test.",
+    "PR deploy preview and production verification are separate stages.",
+    "No test subscription submitted through the duplicate.",
     "Exact historical Beehiiv design tokens were unavailable; match is based on archived screenshot."
   ]
 }

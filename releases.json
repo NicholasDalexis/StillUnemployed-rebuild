@@ -1,14 +1,45 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.6.3",
+  "currentVersion": "2.6.6",
   "releases": [
     {
-      "version": "2.6.3",
+      "version": "2.6.6",
       "date": "2026-09-22",
-      "title": "Restore StillUnemployed signup",
+      "title": "Restore independent StillUnemployed signup",
       "changes": [
-        "Restored the orange newsletter signup design and separated it from Job Hunt Recipe."
+        "Production-line hotfix: use a dedicated orange Beehiiv form for the board; preserve the Job Hunt Recipe form and exclude preview-only features."
       ]
+    },
+    {
+      "version": "2.6.5",
+      "date": "2026-09-21",
+      "title": "Read-only jobs API preview",
+      "changes": [
+        "RD1085: bounded public jobs search and details, OpenAPI, current visibility authorities and fail-closed responses; preview-only enablement.",
+        "Privacy and Terms describe agent/API queries and narrow job-search reuse. No account access, automatic applications or Muse approval.",
+        "Preview-only historical build; these features are not part of the production signup hotfix."
+      ],
+      "public": false
+    },
+    {
+      "version": "2.6.4",
+      "date": "2026-09-21",
+      "title": "Illustrated advice in motion",
+      "changes": [
+        "Animate the original advice drawings with short viewport-triggered sequences, reduced-motion fallback and no card movement. Subscriber matching remains a separate unfinished integration.",
+        "Preview-only historical build; these features are not part of the production signup hotfix."
+      ],
+      "public": false
+    },
+    {
+      "version": "2.6.3",
+      "date": "2026-09-20",
+      "title": "Newsletter attribution",
+      "changes": [
+        "Local candidate: consented newsletter exposures and provider-confirmed subscription attribution by approved invitation, placement and canonical job. Disabled until Beehiiv webhook setup and production verification. Separate board accounts from newsletter acquisitions.",
+        "Preview-only historical build; these features are not part of the production signup hotfix."
+      ],
+      "public": false
     },
     {
       "version": "2.6.2",
