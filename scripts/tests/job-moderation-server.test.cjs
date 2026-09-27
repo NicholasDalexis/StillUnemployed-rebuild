@@ -32,9 +32,22 @@ test('origin, body scope, unknown actions and oversized input cannot write',asyn
   assert.equal((await f.call(body({unknown:'x'.repeat(20000)}))).status,413);
   assert.equal((await f.call(body(),{headers:{'Content-Type':'text/plain'}})).status,415);assert.equal(f.store.writes,0);
 });
-test('rejected authentication opens no storage and production mutations stay disabled',async()=>{
+test('rejected authentication opens no storage on preview or production',async()=>{
   const f=await fixture({authenticate:async()=>{throw Core.fail(401,'Sign in again');}});assert.equal((await f.call(body())).status,401);assert.equal(f.seen.length,0);
-  const g=await fixture();assert.equal((await g.call(body(),{origin:'https://stillunemployed.com'},{...context,deploy:{context:'production'}})).status,403);assert.equal(g.seen.length,0);
+  assert.equal((await f.call(body(),{origin:'https://stillunemployed.com'},{...context,deploy:{context:'production'}})).status,401);assert.equal(f.seen.length,0);
+  const g=await fixture({authenticate:async()=>({role:'member'})});assert.equal((await g.call(body(),{origin:'https://stillunemployed.com'},{...context,deploy:{context:'production'}})).status,403);assert.equal(g.seen.length,0);
+});
+test('verified owner can remove and restore production jobs without changing preview state',async()=>{
+  const [{createService}]=await modules,stores={preview:storage(),production:storage()};
+  const handler=createService({openStore:scope=>stores[scope],authenticate:async()=>({role:'owner'}),getCatalog:async()=>({jobs,checkedAt:NOW}),getAvailability:async()=>({schemaVersion:1,revision:0,removed:[]}),now:()=>NOW});
+  const prod={...context,deploy:{context:'production'}},origin='https://stillunemployed.com',input=body();
+  const report=await handler(req(input,{origin}),prod);assert.equal(report.status,200);assert.equal((await report.json()).scope,'production');
+  assert.equal(stores.production.writes,1);assert.equal(stores.preview.writes,0);
+  assert.equal((await (await handler(req(null,{origin}),prod)).json()).removed.length,1);
+  assert.equal((await (await handler(req(),context)).json()).removed.length,0);
+  const replay=await handler(req(input,{origin}),prod);assert.equal(replay.status,200);assert.equal(stores.production.writes,1);
+  const restore=await handler(req(body({action:'restore',expectedRevision:1}),{origin}),prod);assert.equal(restore.status,200);assert.equal((await restore.json()).restored,true);
+  assert.equal((await (await handler(req(null,{origin}),prod)).json()).removed.length,0);assert.equal(stores.preview.writes,0);
 });
 test('report matches current catalog and preserves private audit while publishing only suppression',async()=>{
   const f=await fixture(),input=body(),r=await f.call(input);assert.equal(r.status,200);assert.deepEqual(r.body,{reported:true,link:jobs[0].link,revision:1,requestId:input.requestId,scope:'preview'});

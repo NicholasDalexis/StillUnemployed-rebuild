@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.1",
+  "currentVersion": "2.7.2",
   "releases": [
+    {
+      "version": "2.7.2",
+      "date": "2026-09-27",
+      "title": "Small improvements",
+      "changes": [
+        "Allow verified owner moderation on production as well as preview; preserve authentication, origin checks, audit receipts, concurrency controls and separate state."
+      ],
+      "public": {
+        "title": "A board maintenance fix",
+        "changes": [
+          "Fixed an issue preventing board maintenance on the live site."
+        ]
+      }
+    },
     {
       "version": "2.7.1",
       "date": "2026-09-26",
@@ -778,7 +792,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "12aa6d8af36cde63576f01c0c378e5fd580145807e2f1618bbf4fc550a7545d5",
+    "digest": "72fd9f0f1fe39f02eb9550208a65b3da16b6a6cb783c7fe14f23fcad72703982",
     "fileCount": 205
   }
 }

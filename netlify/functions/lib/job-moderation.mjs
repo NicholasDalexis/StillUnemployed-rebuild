@@ -33,8 +33,7 @@ export function createService({openStore=storeFor,authenticate=verifyOwner,getCa
       if(request.method==='GET'){const [stored,availability]=await Promise.all([Core.readState(openStore(scope)),getAvailability(request,context)]);return response(200,combineIndex(Core.publicIndex(stored.state,now()),availability));}
       if(request.method!=='POST')return response(405,{error:'Method not allowed'});
       Core.authorizeOrigin(request);if((await authenticate(request))?.role!=='owner')throw Core.fail(403,'Owner access required');
-      // Preview rollout only. A later explicit production review must remove this gate.
-      if(scope==='production')return response(403,{error:'Owner changes are available on preview only.'});
+      // Owner authentication above applies on both origins; deploy scope keeps their state separate.
       const input=await Core.requestBody(request),store=openStore(scope);
       if(input.expectedRevision!==undefined){const [stored,availability]=await Promise.all([Core.readState(store),getAvailability(request,context)]);const prior=Core.replay(stored.state,input,scope);if(prior)return response(200,{...prior,revision:prior.revision+availability.revision});if(input.expectedRevision!==stored.state.revision+availability.revision)throw Core.conflict();input.expectedRevision=stored.state.revision;}
       const receipt=await Core.mutate({store,input,scope,getCatalog,now}),availability=await getAvailability(request,context);

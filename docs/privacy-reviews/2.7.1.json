@@ -1,0 +1,20 @@
+{
+  "version": "2.7.1",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-27T03:14:16.792Z",
+  "reviewer": "Codex root",
+  "sourceDigest": "12aa6d8af36cde63576f01c0c378e5fd580145807e2f1618bbf4fc550a7545d5",
+  "sourceFileCount": 205,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "baselineReview": "docs/privacy-reviews/2.7.0.json",
+  "scope": "Visual-only desktop pay-key selection: black check inside the existing colored square and tighter spacing. No collection, provider, permissions or filtering changes.",
+  "checks": {
+    "disclosures": "Current privacy and terms unchanged; existing pay-filter event and reminder disclosures remain applicable.",
+    "security": "No auth, backend or account-data changes."
+  },
+  "openItems": [
+    "Local candidate only. Hosted preview and production release, and fresh production Google login remain pending.",
+    "Beehiiv provider-confirmation environment/webhook missing; SU-RM-065 subscriber suppression remains planned."
+  ]
+}
