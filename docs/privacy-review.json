@@ -1,21 +1,21 @@
 {
-  "version": "2.7.4.3",
+  "version": "2.7.4.4",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-27T23:07:08.028Z",
+  "reviewedAt": "2026-09-27T23:24:00.575Z",
   "reviewer": "Codex root",
-  "sourceDigest": "59dcfb70524cdfdbdee7b0125e26a6c70b4b690b77321e8d99be44e85693d9f8",
+  "sourceDigest": "f57e923f751d85d4ed74dba22fc504fbf1995fbefafdc805367c754356febf03",
   "sourceFileCount": 210,
   "privacyChanged": false,
   "termsChanged": false,
-  "baselineReview": "docs/privacy-review.json (2.7.4.2 receipt)",
-  "scope": "Preview-only successful Beehiiv return retains the same job note without counting a duplicate job view. No new data or provider.",
+  "baselineReview": "docs/privacy-review.json (2.7.4.3 receipt)",
+  "scope": "Preview-only focus styling for the existing newsletter success dialog. No new data or provider.",
   "checks": {
-    "disclosures": "Reviewed privacy.html and terms.html. Existing Beehiiv subscription, optional attribution, public job context, and browser-tab session controls cover this flow. The return marker is tab-local, expires after 10 minutes, and contains no email.",
-    "security": "Production form unchanged. Preview redirect limited to same-origin board routes, scoped callback CSP, and no client success inference from focus or submit attempt. Signed Beehiiv webhook remains conversion authority."
+    "disclosures": "Reviewed privacy.html and terms.html. Styling-only change; no new collection, retention, disclosure, or account behavior.",
+    "security": "The heading keeps programmatic focus for screen-reader context; action controls retain their visible keyboard focus treatment. Production form and redirect remain unchanged."
   },
   "openItems": [
-    "Hosted preview form load and redirect QA pending.",
-    "End-to-end real subscribe and physical iPhone Gmail Open/Cancel remain unverified.",
+    "Real preview signup returned to the branded Thanks dialog in 2.7.4.3; 2.7.4.4 styling awaits hosted visual QA.",
+    "Physical iPhone Gmail Open/Cancel remains unverified.",
     "Production configuration and readiness check required before future promotion."
   ]
 }

@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.4.3",
+  "currentVersion": "2.7.4.4",
   "releases": [
+    {
+      "version": "2.7.4.4",
+      "date": "2026-09-27",
+      "title": "Newsletter confirmation polish",
+      "changes": [
+        "Remove the browser focus rectangle from the programmatically focused thank-you heading while retaining accessible focus on its controls."
+      ],
+      "public": {
+        "title": "Signup feedback",
+        "changes": [
+          "A cleaner thank-you after subscribing on preview."
+        ]
+      }
+    },
     {
       "version": "2.7.4.3",
       "date": "2026-09-27",
@@ -866,7 +880,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "59dcfb70524cdfdbdee7b0125e26a6c70b4b690b77321e8d99be44e85693d9f8",
+    "digest": "f57e923f751d85d4ed74dba22fc504fbf1995fbefafdc805367c754356febf03",
     "fileCount": 210
   }
 }
