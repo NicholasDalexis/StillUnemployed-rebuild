@@ -49,6 +49,33 @@
     return result;
   }
   function employer(job) { return String(job.co || '').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9]+/g,' ').replace(/\b(?:incorporated|corporation|inc|corp|llc|ltd)\b/g,'').trim().replace(/\s+/g,' '); }
+  // Editorial brand recognition, never inferred applicant or traffic counts.
+  var KNOWN_BRANDS = ['Google','Alphabet','YouTube','Spotify','Microsoft','Xbox','LinkedIn','Bubble Skincare','LVMH','Michael Kors','Meta','Instagram','Facebook','Apple','Amazon','Adobe','Netflix','Disney','The Walt Disney Company','Nike','Adidas','TikTok','ByteDance','Pinterest','Snap','Snapchat','Reddit','Salesforce','Samsung','IBM','NVIDIA','Intel','Sony','PlayStation','Nintendo','Warner Bros Discovery','Warner Bros','NBCUniversal','Comcast','Paramount','HBO','Hulu','ESPN','Target','Walmart','Sephora','Ulta Beauty','Estee Lauder','The Estee Lauder Companies','L Oreal','Louis Vuitton','Dior','Gucci','Prada','Chanel','Ralph Lauren','Coach','Tapestry','Levi Strauss and Co','Levi Strauss','Gap','Old Navy','American Eagle','Aritzia','Lululemon','New Balance','Converse','Crocs','LEGO','Mattel','Hasbro','Airbnb','Uber','Lyft','DoorDash','Duolingo','Figma','Canva','Notion','Roblox','Epic Games','Electronic Arts','EA','Rockstar Games'];
+  var brandNames = new Set(KNOWN_BRANDS.map(function(co){return employer({co:co});}));
+  function recognizedBrand(job) { return brandNames.has(employer(job)); }
+  function payBands(value) {
+    var selected=String(value||'').split(',');
+    return ['low','mid','high'].filter(function(band){return selected.indexOf(band)>=0;}).join(',');
+  }
+  function togglePayBand(value, band) {
+    var selected=payBands(value).split(',').filter(Boolean),index=selected.indexOf(band);
+    if(['low','mid','high'].indexOf(band)<0)return payBands(value);
+    if(index<0)selected.push(band);else selected.splice(index,1);
+    return payBands(selected.join(','));
+  }
+  function payBandMatches(value, tier) { var bands=payBands(value);return !bands||bands.split(',').indexOf(tier)>=0; }
+  function orderFirst(items, mode, now) {
+    if(mode!=='Recently added'&&mode!=='Most popular')return items.slice();
+    var today=dayKey(now),groups=new Map();
+    items.forEach(function(job){
+      var day=addedDay(job.added),rank=mode==='Most popular'?(recognizedBrand(job)?'1':'0'):(day&&day<=today?day:'');
+      if(!groups.has(rank))groups.set(rank,[]);
+      groups.get(rank).push(job);
+    });
+    // Employer spacing stays within each date/brand group, so it cannot
+    // silently move an older or unrecognized job ahead of the selected order.
+    return Array.from(groups.keys()).sort().reverse().reduce(function(result,rank){return result.concat(spaced(groups.get(rank)));},[]);
+  }
   function spaced(items, constrained) {
     var pending=items.slice(), result=[], last=new Map(), names=new Map(), counts=new Map();
     items.forEach(function(j){var key=employer(j);names.set(j,key);counts.set(key,(counts.get(key)||0)+1);});
@@ -111,5 +138,5 @@
     try{root.sessionStorage.setItem(key,JSON.stringify(ids.slice(-LIMIT)));}catch(_){}
   }
   function clearHistory() { try {var key=storageKey('history');if(key)root.localStorage.removeItem(key);}catch(_){} }
-  return {senior:senior,annualRange:annualRange,salaryMatches:salaryMatches,dayKey:dayKey,addedDay:addedDay,recentDay:recentDay,shuffled:shuffled,employer:employer,spaced:spaced,history:history,record:record,dismiss:dismiss,demotions:demotions,clearHistory:clearHistory,identity:identity};
+  return {senior:senior,annualRange:annualRange,salaryMatches:salaryMatches,dayKey:dayKey,addedDay:addedDay,recentDay:recentDay,shuffled:shuffled,employer:employer,spaced:spaced,payBands:payBands,togglePayBand:togglePayBand,payBandMatches:payBandMatches,recognizedBrand:recognizedBrand,orderFirst:orderFirst,history:history,record:record,dismiss:dismiss,demotions:demotions,clearHistory:clearHistory,identity:identity};
 });

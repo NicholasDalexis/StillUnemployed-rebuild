@@ -292,7 +292,10 @@ body.su-dialog-open { overflow:hidden; }
 .su-filter-note .su-salary-range{width:100%}
 .su-filter-note .su-salary-slider{margin:10px 0!important}
 .su-filter-note .su-tune-feed{margin-top:14px}
-.su-filter-note [data-act="fr"],.su-filter-note [data-act="ws"]{min-height:44px;border:0}
+.su-filter-note [data-act="fr"],.su-filter-note [data-act="ws"]{box-sizing:border-box;height:44px;min-height:44px;border:0;line-height:1.15;display:inline-flex;align-items:center;justify-content:center}
+.su-sort-help{margin-top:8px;font:14px/1.5 var(--su-body);color:var(--su-muted)}
+.su-sort-help summary{min-height:44px;align-content:center;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.su-sort-help p{margin:0 0 8px}
 .su-filter-note [data-act="clearAll"]{min-height:44px;display:flex;align-items:center}
 
 /* QA 2.3.4: drawings support the copy without setting the entire row's height. */

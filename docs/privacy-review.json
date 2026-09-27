@@ -1,21 +1,20 @@
 {
-  "version": "2.6.9",
+  "version": "2.7.1",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-27T00:29:28.177Z",
+  "reviewedAt": "2026-09-27T03:14:16.792Z",
   "reviewer": "Codex root",
-  "sourceDigest": "49bdf5bd223abc90f3df0794025321bdefa28c02e5941fcb464a1a437afce126",
+  "sourceDigest": "12aa6d8af36cde63576f01c0c378e5fd580145807e2f1618bbf4fc550a7545d5",
   "sourceFileCount": 205,
-  "privacyChanged": true,
-  "termsChanged": true,
-  "baselineReview": "docs/privacy-reviews/2.6.8.json",
-  "scope": "Consented first-party signed identities, capped reset work, 400-day identifier-free daily totals, bounded LinkedIn post/link attribution, optional guest preferences and shared-link discovery. No new provider or permissions.",
+  "privacyChanged": false,
+  "termsChanged": false,
+  "baselineReview": "docs/privacy-reviews/2.7.0.json",
+  "scope": "Visual-only desktop pay-key selection: black check inside the existing colored square and tighter spacing. No collection, provider, permissions or filtering changes.",
   "checks": {
-    "disclosures": "Reviewed Privacy and Terms against source. Discloses signed site cookie, 90-day raw and 400-day totals, consent choice, guest preferences, broad ordering hints, recognized public marketing tags and measurement limits.",
-    "security": "Token-derived accounts; signed server-issued anonymous capability; origin, issuance/reset budgets; private authenticated owner dashboard; no email/search text/preference answers copied into analytics.",
-    "visual": "390x844 mobile filters and preference-return flow verified; hosted verification follows build."
+    "disclosures": "Current privacy and terms unchanged; existing pay-filter event and reminder disclosures remain applicable.",
+    "security": "No auth, backend or account-data changes."
   },
   "openItems": [
-    "Preview only. Production release and fresh production Google login remain pending.",
+    "Local candidate only. Hosted preview and production release, and fresh production Google login remain pending.",
     "Beehiiv provider-confirmation environment/webhook missing; SU-RM-065 subscriber suppression remains planned."
   ]
 }

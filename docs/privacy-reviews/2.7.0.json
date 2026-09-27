@@ -1,0 +1,20 @@
+{
+  "version": "2.7.0",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-27T02:25:43.666Z",
+  "reviewer": "Codex root",
+  "sourceDigest": "28ad66464ec3a732f3b05c009bc5e776060b7a34be595b233d191f68265060f6",
+  "sourceFileCount": 205,
+  "privacyChanged": true,
+  "termsChanged": false,
+  "baselineReview": "docs/privacy-reviews/2.6.9.json",
+  "scope": "Desktop pay-band filtering and chosen sorting; three distinct guest saves reminder threshold; faster advice artwork. No new provider, permissions or personal data collection.",
+  "checks": {
+    "disclosures": "Read both policies. Updated saved-reminder threshold and sort precedence. Brand-recognition help explicitly says this is not views or application counts. Pay-band interactions use the existing consent-gated pay-filter event; no free text or new identity fields.",
+    "security": "Existing auth readiness, guest ownership, receipt-before-display, alias deduplication and cancellation tests retained. No backend or access changes."
+  },
+  "openItems": [
+    "Local candidate only. Hosted preview and production release, and fresh production Google login remain pending.",
+    "Beehiiv provider-confirmation environment/webhook missing; SU-RM-065 subscriber suppression remains planned."
+  ]
+}

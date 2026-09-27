@@ -192,7 +192,7 @@ test('public themes and legacy cod pair filter control ink and paper, including 
   if(look==='cod')assert.equal(b.app.state.look,'original','retired cod links use the supported Original palette');
   assert.equal(b.document.body.style['--su-action-paper'],p.acc);assert.equal(b.document.body.style['--su-action-ink'],p.accInk);
   const state=b.document.getElementById('su-state');assert.equal(state.style.background,'var(--su-action-paper)');assert.equal(state.style.color,'var(--su-action-ink)');
-  for(const act of ['ws','fr']){const pills=b.overlay.querySelectorAll('[data-act="'+act+'"]');assert.equal(pills.length,act==='fr'?1:4);for(const el of pills){const active=el.getAttribute('aria-pressed')==='true';assert.equal(el.style.background,active?p.accInk:p.acc,look+' '+act+' background');assert.equal(el.style.color,active?p.acc:p.accInk,look+' '+act+' ink');}}
+  for(const act of ['ws','fr']){const pills=b.overlay.querySelectorAll('[data-act="'+act+'"]');assert.equal(pills.length,act==='fr'?2:4);for(const el of pills){const active=el.getAttribute('aria-pressed')==='true';assert.equal(el.style.background,active?p.accInk:p.acc,look+' '+act+' background');assert.equal(el.style.color,active?p.acc:p.accInk,look+' '+act+' ink');}}
  }
 });
 test('feed has advice without promotional signup cards; newsletter follows actual detail openings',()=>{

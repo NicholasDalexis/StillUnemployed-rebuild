@@ -30,7 +30,7 @@
     'experience-graduation': [[[0],'draw',0,950],[[1,2],'reply',950,700],[[3],'draw',1650,1100],[[4],'draw',2750,650]]
   };
   function animate(state, node, frames, delay, duration) {
-    var anim = node.animate(frames, {delay:delay,duration:duration,easing:'cubic-bezier(.22,.65,.3,1)',fill:'both',iterations:1});
+    var anim = node.animate(frames, {delay:delay/2,duration:duration/2,easing:'cubic-bezier(.22,.65,.3,1)',fill:'both',iterations:1});
     state.animations.push(anim);
     // Return to the unmodified static drawing, with no retained animation layers.
     anim.finished.then(function () { anim.cancel(); }, function () {});

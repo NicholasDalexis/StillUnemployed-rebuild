@@ -12,7 +12,7 @@ function fixture(options={}){
  const data=options.data||new Map(),timers=new Map(),events={},panels=[];
  const storage={getItem(key){if(mode==='throw-read')throw Error('blocked');return data.has(key)?data.get(key):null;},setItem(key,value){if(mode==='throw-write')throw Error('quota');if(mode!=='drop-write')data.set(key,String(value));},removeItem:key=>data.delete(key)};
  const document={hidden:false,querySelector(selector){if(blocked){assert.match(selector,/\.su-launch-toast/,'the actual launch toast blocks the reminder');return {}; }return null;},createElement(){const buttons={};return {setAttribute(){},querySelector(selector){return buttons[selector]||(buttons[selector]={addEventListener(type,fn){this[type]=fn;}});},remove(){const index=panels.indexOf(this);if(index>=0)panels.splice(index,1);}};},body:{appendChild(panel){panels.push(panel);}}};
- const root={document,localStorage:storage,sessionStorage:storage,Date:{now:()=>now},setTimeout(fn,delay){const id=nextTimer++;timers.set(id,{at:now+delay,fn});return id;},clearTimeout:id=>timers.delete(id),addEventListener(name,fn){(events[name]||(events[name]=[])).push(fn);},SUApp:{state:{saved:{one:true}}},SUAuth:{measurementReady:()=>ready,signedIn:()=>signedIn,signIn:()=>signins++}};
+ const root={document,localStorage:storage,sessionStorage:storage,Date:{now:()=>now},setTimeout(fn,delay){const id=nextTimer++;timers.set(id,{at:now+delay,fn});return id;},clearTimeout:id=>timers.delete(id),addEventListener(name,fn){(events[name]||(events[name]=[])).push(fn);},SUApp:{state:{saved:{one:true,two:true,three:true}}},SUAuth:{measurementReady:()=>ready,signedIn:()=>signedIn,signIn:()=>signins++}};
  root.window=root;vm.runInNewContext(runtimeSource,root);vm.runInNewContext(reminderSource,root);
  function advance(ms){const end=now+ms;for(;;){const item=[...timers.entries()].filter(([,t])=>t.at<=end).sort((a,b)=>a[1].at-b[1].at)[0];if(!item)break;timers.delete(item[0]);now=item[1].at;item[1].fn();}now=end;}
  function event(name,value={}){for(const fn of events[name]||[])fn(value);}
@@ -68,15 +68,27 @@ test('another tab recording the reminder cancels this tab without a duplicate pa
  const f=fixture();for(let i=0;i<3;i++)f.confirmed();f.data.set(receipt,'shown');f.event('storage',{key:receipt});f.advance(2000);assert.equal(f.panels.length,0);assert.equal(f.timers.size,0);
 });
 
-test('first new guest save offers cross-device sign-in once without consuming the application receipt',()=>{
+test('three guest saves offer sign-in once without consuming the application receipt',()=>{
  const f=fixture();assert.equal(f.root.SUSigninReminder.afterSave(),true);f.advance(850);
- assert.equal(f.panels.length,1);assert.match(f.panels[0].innerHTML,/Keep your saved jobs with you/);assert.match(f.panels[0].innerHTML,/any device/);
+ assert.equal(f.panels.length,1);assert.match(f.panels[0].innerHTML,/Sign in with Google so you can keep track of all your saves/);
  assert.equal(f.data.get(savedReceipt),'shown');assert.equal(f.data.has(receipt),false);
  f.panels[0].querySelector('[data-signin]').click({currentTarget:{}});assert.equal(f.signins,1);
  f.panels[0].querySelector('[data-dismiss]').click();assert.equal(f.root.SUSigninReminder.afterSave(),false);
  const reload=fixture({data:f.data});assert.equal(reload.root.SUSigninReminder.afterSave(),false);reload.advance(1000);assert.equal(reload.panels.length,0);
  for(let i=0;i<3;i++)f.confirmed();f.advance(850);assert.match(f.panels[0].innerHTML,/Three applications/);
- const upgraded=fixture({data:new Map([[receipt,'shown']])});assert.equal(upgraded.root.SUSigninReminder.afterSave(),true);upgraded.advance(850);assert.match(upgraded.panels[0].innerHTML,/saved jobs/);
+ const upgraded=fixture({data:new Map([[receipt,'shown']])});assert.equal(upgraded.root.SUSigninReminder.afterSave(),true);upgraded.advance(850);assert.match(upgraded.panels[0].innerHTML,/all your saves/);
+});
+test('first and second bookmarks stay quiet; the third distinct job schedules the reminder',()=>{
+ const f=fixture();f.root.SUApp.state.saved={one:true};assert.equal(f.root.SUSigninReminder.afterSave(),false);f.advance(1000);assert.equal(f.panels.length,0);
+ f.root.SUApp.state.saved.two=true;assert.equal(f.root.SUSigninReminder.afterSave(),false);f.advance(1000);assert.equal(f.panels.length,0);
+ f.root.SUApp.state.saved.three=true;assert.equal(f.root.SUSigninReminder.afterSave(),true);f.advance(850);assert.equal(f.panels.length,1);
+});
+test('alias URLs count as one saved job, and removing the third bookmark cancels pending delivery',()=>{
+ const f=fixture();f.root.SUJobIdentity=require('../../js/job-identity.js');
+ f.root.SUApp.state.saved={'https://boards.greenhouse.io/acme/jobs/123456':true,'https://job-boards.greenhouse.io/acme/jobs/123456?utm_source=linkedin':true,'https://example.com/job/second':true};
+ assert.equal(f.root.SUSigninReminder.afterSave(),false);
+ f.root.SUApp.state.saved['https://example.com/job/third']=true;assert.equal(f.root.SUSigninReminder.afterSave(),true);
+ delete f.root.SUApp.state.saved['https://example.com/job/third'];f.advance(850);assert.equal(f.panels.length,0);assert.equal(f.data.has(savedReceipt),false);
 });
 test('new save reminder skips signed-in users and cancels when no bookmark remains or navigation changes',()=>{
  const signed=fixture();signed.account('owner');assert.equal(signed.root.SUSigninReminder.afterSave(),false);signed.advance(1000);assert.equal(signed.panels.length,0);
@@ -96,10 +108,10 @@ test('saved sign-in waits for confirmed guest auth and remains quiet when its ma
  const otherTab=fixture();otherTab.root.SUSigninReminder.afterSave();otherTab.data.set(savedReceipt,'shown');otherTab.event('storage',{key:savedReceipt});otherTab.advance(1000);assert.equal(otherTab.panels.length,0);
 });
 test('sign-in reasons never stack or reset one another and save delivery has a bounded overlay wait',()=>{
- const f=fixture();f.root.SUSigninReminder.afterSave();f.advance(400);for(let i=0;i<3;i++)f.confirmed();f.advance(450);assert.equal(f.panels.length,1);assert.match(f.panels[0].innerHTML,/saved jobs/);assert.equal(f.data.has(receipt),false);
+ const f=fixture();f.root.SUSigninReminder.afterSave();f.advance(400);for(let i=0;i<3;i++)f.confirmed();f.advance(450);assert.equal(f.panels.length,1);assert.match(f.panels[0].innerHTML,/all your saves/);assert.equal(f.data.has(receipt),false);
  const blocked=fixture();blocked.block(true);blocked.root.SUSigninReminder.afterSave();blocked.advance(16000);blocked.block(false);blocked.advance(1000);assert.equal(blocked.panels.length,0);assert.equal(blocked.data.has(savedReceipt),false);
 });
-test('save shortcut cadence yields to the first guest sign-in note and resumes on the fifth save',()=>{
+test('save shortcut cadence yields to the third-job sign-in note and resumes on the fifth save',()=>{
  const f=fixture();vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../js/saved-reminder.js'),'utf8'),f.root);
  f.root.SUSavedReminder.afterSave();f.advance(850);assert.equal(f.panels.length,1);assert.equal(f.panels[0].id,'su-signin-reminder');
  f.panels[0].querySelector('[data-dismiss]').click();

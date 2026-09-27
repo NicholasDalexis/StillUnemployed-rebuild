@@ -1013,6 +1013,7 @@
       ws: 'Any',
       st: 'all',
       pr: 'Any',
+      payBands: '',
       salaryMin: '',
       salaryMax: '',
       recentSeed: String(Date.now()),
@@ -1367,6 +1368,9 @@
       return 'low';
     },
 
+    desktopPayBands: function () {
+      return !INTERNSHIPS && (window.matchMedia ? window.matchMedia('(min-width:701px)').matches : window.innerWidth > 700);
+    },
     matchesBase: function (j) {
       if (this.state.theme) {
         var def = Object.prototype.hasOwnProperty.call(this.themeDefs, this.state.theme) ? this.themeDefs[this.state.theme] : null;
@@ -1403,6 +1407,7 @@
       if (this.state.ws !== 'Any' && j.style !== this.state.ws) return false;
       if (this.state.st !== 'all' && (!window.SUStates || window.SUStates.extract(j.state, j.loc).indexOf(this.state.st) < 0) && !isRemoteAnywhere(j)) return false;
       if (!INTERNSHIPS && window.SUBoardExperience && !window.SUBoardExperience.salaryMatches(j.pay, Number(this.state.salaryMin), Number(this.state.salaryMax))) return false;
+      if(this.desktopPayBands() && window.SUBoardExperience && !window.SUBoardExperience.payBandMatches(this.state.payBands,this.payTier(j.pay)))return false;
       if (this.state.pr !== 'Any') {
         if(INTERNSHIPS)return (j.payStatus==='paid'?'Paid':j.payStatus==='unpaid'?'Unpaid':'Not disclosed')===this.state.pr;
         var t = this.payTier(j.pay);
@@ -1641,19 +1646,11 @@
       var self = this;
       var base = (this.state.savedOnly ? this.catalogJobs() : this.jobs).filter(function (j) { return self.matchesBase(j) && (self._unavailableLocal||[]).every(function(link){return !jobHasLink(j,link);}) && (self.state.savedOnly || (self._sharedJobLink && jobHasLink(j,self._sharedJobLink)) || !window.SUDiscovery || window.SUDiscovery.showHidden() || !window.SUDiscovery.hidden(j)); });
       var experience=window.SUBoardExperience;
-      this._recentDay='';
-      if(this.state.fr==='Recently added' && experience){
-        this._recentDay=experience.recentDay(this.jobs);
-        base=base.filter(function(j){return experience.addedDay(j.added)===self._recentDay && !!self._recentDay;});
-      }
       var cat = this.state.cat;
       var shown = base.filter(function (j) { return cat === 'all' || j.ind === cat; });
       if (this.state.savedOnly) shown = shown.filter(function (j) { return self.isSaved(j.link); });
 
-      if (this.state.fr === 'Recently added') {
-        if(experience)shown=experience.shuffled(shown,this.state.recentSeed);
-      }
-      else if(!INTERNSHIPS && window.SUPersonalization && window.SUAnalytics) {
+      if(this.state.fr==='Any' && !INTERNSHIPS && window.SUPersonalization && window.SUAnalytics) {
         var profileGeneration=window.SUAnalytics.generation();
         var catalogChanged=this._orderCatalog!==this.jobs;
         if(catalogChanged || (this._profileGeneration!==profileGeneration && (!this._feedInteracted || this._profileGeneration===undefined || this._profileGeneration===-1))){
@@ -1671,9 +1668,9 @@
         shown.sort(function(a,b){return order.indexOf(a)-order.indexOf(b);});
       }
 
-      if(!INTERNSHIPS && this.state.fr!=='Recently added' && window.SUDiscovery && window.SUPersonalization && !window.SUAnalytics){var discoveryOrder=window.SUDiscovery.order(this.jobs,window.SUPersonalization,{});shown.sort(function(a,b){return discoveryOrder.indexOf(a)-discoveryOrder.indexOf(b);});}
+      if(!INTERNSHIPS && this.state.fr==='Any' && window.SUDiscovery && window.SUPersonalization && !window.SUAnalytics){var discoveryOrder=window.SUDiscovery.order(this.jobs,window.SUPersonalization,{});shown.sort(function(a,b){return discoveryOrder.indexOf(a)-discoveryOrder.indexOf(b);});}
       if(INTERNSHIPS && this.state.fr!=='Recently added')shown.sort(function(a,b){return Number(internshipCanApply(b))-Number(internshipCanApply(a)) || Number(b.payStatus==='paid')-Number(a.payStatus==='paid');});
-      if(experience){
+      if(experience && this.state.fr==='Any'){
         // Apply only a snapshot of visit demotions, updated on deliberate filter changes.
         if(!this._activeDemotions)this._activeDemotions=experience.demotions();
         if(!this.state.q.trim()&&!this.state.savedOnly){
@@ -1682,6 +1679,7 @@
         }
         shown=experience.spaced(shown);
       }
+      if(experience && this.state.fr!=='Any')shown=experience.orderFirst(shown,this.state.fr);
       // An explicit shared posting stays first for this arrival, without
       // changing anyone's Saved, preferences or ordinary board ordering.
       if(this._sharedJobLink)shown.sort(function(a,b){return Number(jobHasLink(b,self._sharedJobLink))-Number(jobHasLink(a,self._sharedJobLink));});
@@ -1738,7 +1736,7 @@
       } catch (e) { /* Missing or malformed tab storage never blocks the board. */ }
     },
     setState: function (patch) {
-      if(window.SUBoardExperience && ['q','cat','ws','st','pr','salaryMin','salaryMax','fr','theme'].some(function(key){return Object.prototype.hasOwnProperty.call(patch,key);})){this._activeDemotions=window.SUBoardExperience.demotions();}
+      if(window.SUBoardExperience && ['q','cat','ws','st','pr','payBands','salaryMin','salaryMax','fr','theme'].some(function(key){return Object.prototype.hasOwnProperty.call(patch,key);})){this._activeDemotions=window.SUBoardExperience.demotions();}
       if (patch.feedbackOpen === false || (patch.feedbackLink && patch.feedbackLink !== this.state.feedbackLink)) this.clearFeedbackRedirect();
       if(patch.feedbackOpen === true && !this.state.feedbackOpen) { this._feedbackError=''; uxEvent('feedback_open'); }
       if(patch.reportedOpen===false)this._reportedPanel=null;
@@ -1819,7 +1817,7 @@
       var workStylesHtml = ['Any', 'Remote', 'Hybrid', 'In-person'].map(function (s) {
         var active = self.state.ws === s;
         var st = pillBase + (active ? ('background:' + ACC_INK + '; color:' + ACC + ';') : ('background:' + ACC + '; color:' + ACC_INK + ';'));
-        return '<div data-act="ws" data-val="' + esc(s) + '" aria-pressed="' + active + '" style="' + st + '">' + esc(s) + '</div>';
+        return '<button type="button" data-act="ws" data-val="' + esc(s) + '" aria-pressed="' + active + '" style="' + st + '">' + esc(s) + '</button>';
       }).join('');
 
       // ---- price pills ----
@@ -1840,8 +1838,8 @@
           '<label class="su-salary-slider">Maximum salary<input id="su-salary-max-slider" data-salary="salaryMax" data-unlimited="'+rangeMax+'" type="range" min="0" max="'+rangeMax+'" step="5000" value="'+(max||rangeMax)+'" style="--su-range-progress:'+((max||rangeMax)/rangeMax*100)+'%;" aria-valuetext="'+(max?'$'+max.toLocaleString('en-US'):'Any maximum')+'"></label></div>';
       }
 
-      // ---- freshness pills ("Recently added") ----
-      var freshHtml = ['Recently added'].map(function (f) {
+      // Explicit ordering; toggling either off returns to the remembered feed.
+      var freshHtml = ['Recently added','Most popular'].map(function (f) {
         var active = self.state.fr === f;
         var st = pillBase + (active ? ('background:' + ACC_INK + '; color:' + ACC + ';') : ('background:' + ACC + '; color:' + ACC_INK + ';'));
         return '<button type="button" data-act="fr" data-val="' + esc(active?'Any':f) + '" aria-pressed="' + active + '" style="' + st + '">' + esc(f) + '</button>';
@@ -2093,7 +2091,7 @@
       if (this.state.ws !== 'Any') chips.push({ label: this.state.ws, act: 'chipWs' });
       if(!INTERNSHIPS && (this.state.salaryMin||this.state.salaryMax))chips.push({label:'$'+(Number(this.state.salaryMin)||0).toLocaleString()+'–'+(this.state.salaryMax?'$'+Number(this.state.salaryMax).toLocaleString():'Any'),act:'chipPr'});
       if (this.state.pr !== 'Any') chips.push({ label: this.state.pr, act: 'chipPr' });
-      if (this.state.fr !== 'Any') chips.push({ label: this._recentDay ? 'Added '+this._recentDay : 'Recently added: no dates', act: 'chipFr' });
+      if (this.state.fr !== 'Any') chips.push({ label: this.state.fr, act: 'chipFr' });
       if (this.state.st !== 'all') chips.push({ label: window.SUStates ? window.SUStates.label(this.state.st) : this.state.st, act: 'chipSt' });
 
       var chipsHtml = chips.map(function (chip) {
@@ -2181,11 +2179,13 @@
           '<div data-act="toggleFilters" aria-label="Close filters" style="position: absolute; top: 12px; right: 12px; width: 26px; height: 26px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg class="su-close-icon" color="#5C4033" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>' +
           '</div><div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 0;">which state?</div>' +
           '<select id="su-state" aria-label="State" style="width: 100%; box-sizing: border-box; font-family: \'Indie Flower\', cursive; font-size: 17px; color: var(--su-action-ink); background: var(--su-action-paper); border: 1.5px solid currentColor; border-radius: 5px; padding: 9px 12px; cursor: pointer; outline: none; margin-top: 11px;">' + stateOpts + '</select>' +
-          '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px;">' + freshHtml + '</div>' +
           '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 18px;">how do you wanna work?</div>' +
           '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px;">' + workStylesHtml + '</div>' +
           '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 18px;">what\'s the pay?</div>' +
           '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px;">' + pricesHtml + '</div>' +
+          '<div class="su-sort-heading" style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 18px;">What do you want to see first?</div>' +
+          '<div class="su-sort-options" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px;">' + freshHtml + '</div>' +
+          '<details class="su-sort-help"><summary>What does “Most popular” mean?</summary><p>Big-name brands first, based on brand recognition. This isn’t a ranking of views or applications.</p></details>' +
           (window.SUDiscovery && window.SUDiscovery.preferencesHTML ? window.SUDiscovery.preferencesHTML() : '') +
           '<div data-act="clearAll" style="margin-top: 18px; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #B23A1E; cursor: pointer;">↺ reset all filters</div>' +
         '</section>';
@@ -2200,12 +2200,18 @@
       // One quiet row: pay context and secondary actions. Results stay announced offscreen.
       out += '<div class="su-board-meta" style="color:'+boardInk+';">';
       if(INTERNSHIPS) out += '<span class="su-internship-summary">Dates and details inside.</span>';
-      else out += '<div class="su-pay-key">' +
-        '<span class="pay-key-label" style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + payKeyInk + ';">pay key →</span>' +
-        '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.lowCard || 'var(--su-salary-low-paper)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">under $80K</span></div>' +
-        '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + (P.midCard || 'var(--su-salary-mid-paper)') + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$80–99K</span></div>' +
-        '<div style="display: flex; align-items: center; gap: 7px;"><span style="width: 16px; height: 16px; border-radius: 3px; background: ' + P.payHi + '; box-shadow: 1px 1px 2px rgba(44,33,24,.18);"></span><span style="font-family: \'Indie Flower\', cursive; font-size: 17px; color: ' + boardInk + ';">$100K+</span></div>' +
-      '</div>';
+      else {
+        var bands=window.SUBoardExperience?window.SUBoardExperience.payBands(this.state.payBands):'';
+        out+='<div class="su-pay-key"><span class="pay-key-label" style="color:'+payKeyInk+';">pay key →</span>';
+        [['low','under $80K',P.lowCard||'var(--su-salary-low-paper)'],['mid','$80–99K',P.midCard||'var(--su-salary-mid-paper)'],['high','$100K+',P.payHi]].forEach(function(band){
+          var active=bands.split(',').indexOf(band[0])>=0;
+          var label='<span class="su-pay-swatch" style="background:'+band[2]+';"></span><span>'+band[1]+'</span>';
+          var selectedLabel='<span class="su-pay-swatch" style="background:'+band[2]+';"><svg class="su-pay-selected" aria-hidden="true" width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="m4 10 4 4 8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>'+band[1]+'</span>';
+          out+='<button type="button" class="su-pay-band" data-act="payBand" data-val="'+band[0]+'" aria-pressed="'+active+'">'+selectedLabel+'</button><span class="su-pay-static">'+label+'</span>';
+        });
+        if(bands)out+='<button type="button" class="su-pay-reset" data-act="resetPayBands">↺ Reset</button>';
+        out+='</div>';
+      }
 
       out += '<span class="su-results-count su-sr-only" aria-live="polite">' + (this._loading ? '' : esc(showingLabel)) + '</span><div class="su-board-utilities">' +
         '<details id="su-board-menu" class="su-board-menu"><summary id="su-board-menu-trigger">Menu <svg aria-hidden="true" focusable="false" width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>' +
@@ -2816,6 +2822,7 @@
           if (act === 'cat') window.suTrack('filter', 'category', el.getAttribute('data-val') || '', '');
           else if (act === 'ws') window.suTrack('filter', 'workstyle', el.getAttribute('data-val') || '', '');
           else if (act === 'pr') window.suTrack('filter', 'pay', el.getAttribute('data-val') || '', '');
+          else if (act === 'payBand' || act === 'resetPayBands') window.suTrack('filter', 'pay', el.getAttribute('data-val') || '', '');
           else if (act === 'fr') window.suTrack('filter', 'freshness', el.getAttribute('data-val') || '', '');
         }
 
@@ -2953,7 +2960,9 @@
           case 'toggleCat': self.setState({ openPanel: self.state.openPanel === 'cat' ? null : 'cat' }); break;
           case 'toggleFilters': if(self.state.openPanel!=='filters')uxEvent('filters_open');self.setState({ openPanel: self.state.openPanel === 'filters' ? null : 'filters' }); break;
           case 'closeFilters': self.setState({openPanel:null});break;
-          case 'clearAll': self.setState({ q: '', cat: 'all', ws: 'Any', st: 'all', pr: 'Any', salaryMin:'', salaryMax:'', fr: 'Any', theme: null }); break;
+          case 'payBand': if(self.desktopPayBands()&&window.SUBoardExperience)self.setState({payBands:window.SUBoardExperience.togglePayBand(self.state.payBands,el.getAttribute('data-val'))});break;
+          case 'resetPayBands': self.setState({payBands:''});break;
+          case 'clearAll': self.setState({ q: '', cat: 'all', ws: 'Any', st: 'all', pr: 'Any', payBands:'', salaryMin:'', salaryMax:'', fr: 'Any', theme: null }); break;
 
           case 'cat': self.setState({ cat: el.getAttribute('data-val'), openPanel: null }); break;
           case 'ws': self.setState({ ws: el.getAttribute('data-val') }); break;
@@ -3407,12 +3416,13 @@
   function currentSection(){return INTERNSHIPS?'internships':'jobs';}
   function currentFeed(request){return request.epoch===feedEpoch && request.section===currentSection();}
   function sectionFilters(section, restored){
-    var defaults={q:'',cat:'all',ws:'Any',pr:'Any',salaryMin:'',salaryMax:'',st:'all',fr:'Any',recentSeed:String(Date.now()),savedOnly:false,theme:null};
+    var defaults={q:'',cat:'all',ws:'Any',pr:'Any',payBands:'',salaryMin:'',salaryMax:'',st:'all',fr:'Any',recentSeed:String(Date.now()),savedOnly:false,theme:null};
     if(restored && restored.state)Object.keys(defaults).forEach(function(key){
       if(key!=='savedOnly' && key!=='theme' && typeof restored.state[key]==='string')defaults[key]=restored.state[key];
     });
     if(section==='jobs' && restored && restored.state && Object.prototype.hasOwnProperty.call(App.themeDefs,restored.state.theme))defaults.theme=restored.state.theme;
     defaults.st=canonicalState(defaults.st);defaults.fr='Any';
+    defaults.payBands=section==='jobs'&&window.SUBoardExperience?window.SUBoardExperience.payBands(defaults.payBands):'';
     var prices=section==='internships'?['Any','Paid','Unpaid','Not disclosed']:['Any','Under $80K','$80–99K','$100K+'];
     if(prices.indexOf(defaults.pr)<0)defaults.pr='Any';
     if(section==='internships')defaults.salaryMin=defaults.salaryMax='';
@@ -3452,7 +3462,7 @@
     if(!changed&&!stale)return false;
     App.cancelSearchFill();
     clearTimeout(App._renderTimer);App._renderTimer=null;
-    Object.assign(App.state,{q:'',cat:'all',ws:'Any',pr:'Any',salaryMin:'',salaryMax:'',st:'all',fr:'Any',savedOnly:false,recentOpen:false});
+    Object.assign(App.state,{q:'',cat:'all',ws:'Any',pr:'Any',payBands:'',salaryMin:'',salaryMax:'',st:'all',fr:'Any',savedOnly:false,recentOpen:false});
     App._activeDemotions=null;App._unavailableLocal=[];App._availabilityBusy=false;App._availabilityAttempt=null;
     App._personalOrder=null;App._profileGeneration=-1;App._feedInteracted=false;
     if(document.getElementById('overlay-root'))App.renderOverlays();
@@ -3473,7 +3483,7 @@
     var restored=runtime.read(INTERNSHIPS?'internships':'jobs');
     if(restored){
       if(HOME_BOARD)Object.assign(App.state,sectionFilters(currentSection(),restored),{savedOnly:restored.state.savedOnly===true});
-      else Object.assign(App.state,restored.state,{st:canonicalState(restored.state.st),fr:'Any'});
+      else Object.assign(App.state,restored.state,{st:canonicalState(restored.state.st),fr:'Any',payBands:!INTERNSHIPS&&window.SUBoardExperience?window.SUBoardExperience.payBands(restored.state.payBands):''});
     }
     return restored;
   }
@@ -3575,6 +3585,12 @@
       App._stopModerationWatch=window.SUJobModeration.watch();
     }
     refreshFeed();
+    if(window.matchMedia){
+      var payViewport=window.matchMedia('(min-width:701px)');
+      var updatePayViewport=function(){if(App.state.payBands)App.render();};
+      if(payViewport.addEventListener)payViewport.addEventListener('change',updatePayViewport);
+      else if(payViewport.addListener)payViewport.addListener(updatePayViewport);
+    }
     window.addEventListener('su:auth-changed',function(){
       checkViewOwner();
       App._availabilityBusy=false;App._availabilityAttempt=null;App._activeDemotions=null;App._unavailableLocal=[];App.state.recentOpen=false;

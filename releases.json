@@ -1,7 +1,35 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.6.9",
+  "currentVersion": "2.7.1",
   "releases": [
+    {
+      "version": "2.7.1",
+      "date": "2026-09-26",
+      "title": "Compact pay-key selection",
+      "changes": [
+        "Replace desktop pay-band arrows with black checks inside the colored squares; retain underlines and reduce legend gaps."
+      ],
+      "public": {
+        "title": "A quieter pay key",
+        "changes": [
+          "Selected pay bands have a check inside their colored square, with tighter spacing."
+        ]
+      }
+    },
+    {
+      "version": "2.7.0",
+      "date": "2026-09-26",
+      "title": "Small improvements",
+      "changes": [
+        "Desktop pay-band unions and independent reset; recognizable-brand or newest-first ordering below pay; 44px work options; three distinct guest saves before sign-in reminder; advice motion twice as fast. Privacy reminder disclosure updated."
+      ],
+      "public": {
+        "title": "Find your kind of job faster",
+        "changes": [
+          "Filter desktop pay bands, choose newest jobs or big-name brands first, and see quicker advice illustrations."
+        ]
+      }
+    },
     {
       "version": "2.6.9",
       "date": "2026-09-26",
@@ -750,7 +778,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "49bdf5bd223abc90f3df0794025321bdefa28c02e5941fcb464a1a437afce126",
+    "digest": "12aa6d8af36cde63576f01c0c378e5fd580145807e2f1618bbf4fc550a7545d5",
     "fileCount": 205
   }
 }

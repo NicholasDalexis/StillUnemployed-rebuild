@@ -28,7 +28,7 @@
     var runtime=root.SUBoardRuntime;
     if(!runtime)return;
     var showShortcut=runtime.recordSave();
-    // The first guest save explains cross-device sign-in instead of stacking
+    // The third guest save explains cross-device sign-in instead of stacking
     // two notes. Later cadence saves still point to the existing Saved section.
     if(root.SUSigninReminder&&root.SUSigninReminder.afterSave()){hide();return;}
     if(!showShortcut)return;
