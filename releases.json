@@ -1,7 +1,24 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.4",
+  "currentVersion": "2.7.4.1",
   "releases": [
+    {
+      "version": "2.7.4.1",
+      "date": "2026-09-27",
+      "title": "Founder note and signup feedback",
+      "changes": [
+        "Restore Tracker About Nic and full advice close hit area.",
+        "Add notebook newsletter confirmation, preserve the job dialog and Gmail handoff; live provider completion acceptance remains pending on preview.",
+        "End signup loading when the connected Beehiiv frame reports readiness."
+      ],
+      "public": {
+        "title": "A few notebook fixes",
+        "changes": [
+          "Open the note behind this board from your Tracker.",
+          "Close advice notes by tapping anywhere on the X button."
+        ]
+      }
+    },
     {
       "version": "2.7.4",
       "date": "2026-09-27",
@@ -820,7 +837,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "b3b1903626b5a9abf182bee4aae65ae1e8fd4e8f96ea048f49fdcb899a0bca17",
-    "fileCount": 205
+    "digest": "2c60662f5ab0d7851594354db8cd5f439644e4c48d92545a61abb2719c0b1fa6",
+    "fileCount": 207
   }
 }

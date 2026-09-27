@@ -14,7 +14,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const VERSION = /^(?:0|[1-9]\d*)(?:\.(?:0|[1-9]\d*)\.[0-9])?$/;
+const VERSION = /^(?:0|[1-9]\d*)(?:\.(?:0|[1-9]\d*)\.[0-9](?:\.(?:0|[1-9]\d*))?)?$/;
 const esc = value => String(value).replace(/[&<>"']/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]));
 const label = version => 'Version ' + version;
 const anchor = version => 'version-' + version.replace(/\./g, '-');
@@ -84,6 +84,10 @@ export function nextVersion(version) {
   const parts = version.split('.').map(Number);
   if (!parts.every(Number.isSafeInteger)) throw new Error('Version number is too large');
   if (parts.length === 1) return version + '.1.0';
+  if (parts.length === 4) {
+    if (!Number.isSafeInteger(parts[3]+1)) throw new Error('Version number is too large');
+    return parts.slice(0,3).join('.')+'.'+(parts[3]+1);
+  }
   const [major, minor, patch] = parts;
   if (patch < 9) return `${major}.${minor}.${patch + 1}`;
   if (!Number.isSafeInteger(minor + 1)) throw new Error('Version number is too large');
@@ -121,13 +125,13 @@ export function easternDate(now = new Date()) {
   const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone:'America/New_York', year:'numeric', month:'2-digit', day:'2-digit' }).formatToParts(now).map(part => [part.type, part.value]));
   return `${parts.year}-${parts.month}-${parts.day}`;
 }
-export function bumpRelease(data, { notes, title = 'Small improvements', date = easternDate(), publicNotes = [], publicTitle } = {}) {
+export function bumpRelease(data, { notes, title = 'Small improvements', date = easternDate(), publicNotes = [], publicTitle, revision = false } = {}) {
   validateRelease(data);
   if (!Array.isArray(notes) || !notes.length || notes.some(note => typeof note !== 'string' || !note.trim())) throw new Error('--bump needs at least one --note');
   if (!Array.isArray(publicNotes) || publicNotes.some(note => typeof note !== 'string' || !note.trim())) throw new Error('Invalid public notes');
   if (publicNotes.length && (typeof publicTitle !== 'string' || !publicTitle.trim())) throw new Error('--public-note needs --public-title');
   if (publicTitle !== undefined && !publicNotes.length) throw new Error('--public-title needs at least one --public-note');
-  const version = nextVersion(data.currentVersion);
+  const version = revision && data.currentVersion.split('.').length === 3 ? data.currentVersion + '.1' : nextVersion(data.currentVersion);
   const release = { version, date, title, changes:notes.map(note => note.trim()) };
   if (publicNotes.length) release.public = { title:publicTitle.trim(), changes:publicNotes.map(note => note.trim()) };
   return validateRelease({ ...data, currentVersion:version, releases:[release, ...data.releases] });
@@ -282,6 +286,7 @@ function main(args) {
     if (arg === '--check' || arg === '--refresh' || arg === '--seal' || arg === '--bump') {
       if (options.mode) throw new Error('Choose one of --check, --refresh, --seal or --bump');
       mode = arg; options.mode = true;
+    } else if (arg === '--revision') { options.revision = true;
     } else if (arg === '--note' || arg === '--title' || arg === '--date' || arg === '--public-note' || arg === '--public-title') {
       const value = args[++i];
       if (!value || value.startsWith('--')) throw new Error(arg + ' needs a value');
@@ -291,7 +296,7 @@ function main(args) {
       else options[arg.slice(2)] = value;
     } else throw new Error('Unknown option: ' + arg);
   }
-  if (mode !== '--bump' && (options.notes.length || options.publicNotes.length || options.publicTitle || options.title || options.date)) throw new Error('Release notes, title and date require --bump');
+  if (mode !== '--bump' && (options.revision || options.notes.length || options.publicNotes.length || options.publicTitle || options.title || options.date)) throw new Error('Release notes, title and date require --bump');
   const result = applyRelease(ROOT, { ...options, check:mode === '--check', seal:mode === '--seal', bump:mode === '--bump' });
   console.log(label(result.version) + (mode === '--check' ? ' checked.' : result.changed.length ? ' updated: ' + result.changed.join(', ') : ' already current.'));
 }

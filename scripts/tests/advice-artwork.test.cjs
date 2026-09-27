@@ -190,3 +190,10 @@ test('an observed newsletter error offers a retry without closing or replacing t
  assert.equal(b.app.state.adviceOpen,'experience-graduation');assert.equal(b.overlay.querySelector('iframe'),frame);
  b.fireWindow('su:data-sync');assert.equal(b.overlay.querySelector('iframe'),frame);
 });
+
+
+test('provider readiness ends a missed iframe load without treating it as a subscription',()=>{
+ const b=board();b.init();b.app.setState({adviceOpen:'show-dont-ask'});
+ const wrap=b.overlay.querySelector('.su-newsletter-frame'),frame=wrap.querySelector('iframe'),status=wrap.querySelector('[role="status"]'),retry=wrap.querySelector('.su-newsletter-retry');
+ b.fire('su:newsletter-ready',frame);assert.equal(wrap.getAttribute('aria-busy'),'false');assert.equal(status.hidden,true);assert.equal(retry.hidden,true);assert.equal(b.app.state.adviceOpen,'show-dont-ask');
+});

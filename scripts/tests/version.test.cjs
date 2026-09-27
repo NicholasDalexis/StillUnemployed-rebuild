@@ -22,7 +22,7 @@ test('public releases start at 2 then 2.1.0 and carry each patch digit after 9',
 
 test('invalid or ambiguous release numbers are rejected', async () => {
   const { nextVersion } = await versionTool;
-  for (const version of ['', '2.1', '2.1.10', '2.01.1', '-2.1.1', 'Version 2', '2.1.1-beta', '2.5.0.0', null, 2]) assert.throws(() => nextVersion(version));
+  for (const version of ['', '2.1', '2.1.10', '2.01.1', '-2.1.1', 'Version 2', '2.1.1-beta', '2.5.0.01', '2.5.0.1.1', null, 2]) assert.throws(() => nextVersion(version));
 });
 
 test('the approved three-part sequence carries through 2.5.0 without changing earlier history or the major', async () => {
@@ -348,3 +348,5 @@ test('the CLI accepts separate private and public copy without exposing full his
     assert.equal(applyRelease(dir,{check:true}).version,'2.1.0');
   } finally {fixture.clean();}
 });
+
+test("four-part small releases preserve the three-part history",async()=>{const {nextVersion,bumpRelease}=await versionTool; const data={...initial(),currentVersion:"2.7.4",releases:[{...initial().releases[0],version:"2.7.4"}]};const next=bumpRelease(data,{notes:["Small UI fix"],revision:true});assert.equal(next.currentVersion,"2.7.4.1");assert.deepEqual(next.releases.slice(1),data.releases);assert.equal(nextVersion("2.7.4.1"),"2.7.4.2");assert.equal(nextVersion("2.7.4.9"),"2.7.4.10");});

@@ -98,6 +98,7 @@ function board({search='',saved={},tracker=[],look='original',response,fetchErro
  const context={window,document,localStorage,location,history,fetch,URL,URLSearchParams,Date:Clock,Math,Set,Map,console:quiet,
   navigator:{share:async value=>{shared.push(value);}},btoa:s=>Buffer.from(s,'binary').toString('base64'),atob:s=>Buffer.from(s,'base64').toString('binary'),
   setTimeout:(fn,delay)=>{timers.push({fn,delay});return timers.length;},clearTimeout(id){if(timers[id-1])timers[id-1].cancelled=true;},setInterval:()=>0,clearInterval(){},requestAnimationFrame:()=>0,performance:{now:()=>0},getComputedStyle:el=>({visibility:el.style.visibility||'visible'})};
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../js/founder-note.js'),'utf8'),context);
  const instrumented=source.replace('window.SUApp = App;','window.SUApp = App; window.boardHelpers = {parseCSV, rowsToJobs, deriveState, suShareJob};');
  assert.notEqual(instrumented,source,'debug export hook is present');vm.runInNewContext(instrumented,context,{filename:'js/app.js'});
  return{app:window.SUApp,helpers:window.boardHelpers,grid,overlay,document,window,location,history,localStorage,storageOps,tracking,requests,opened,shared,fire,fireWindow,runTimers(delay){for(const timer of timers.filter(t=>t.delay===delay&&!t.cancelled))timer.fn();},
@@ -576,3 +577,5 @@ test('missing, malformed and unavailable shared links never open another or stal
   if(opts.fetchError)assert.equal(b.app._loadError,true);else assert.match(b.grid.textContent,/shared job.*(invalid|no longer available)/i);
  }
 });
+
+test("the advice circle is a native full-target close button",()=>{const b=board();b.init();b.app.setState({adviceOpen:"first-come"});const close=b.overlay.querySelector("button[data-act=\"closeAdvice\"]");assert(close);close.click();assert.equal(b.app.state.adviceOpen,null);});

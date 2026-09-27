@@ -52,6 +52,24 @@
   global.addEventListener('su:consent-changed',function(){if(!allowed())revoke().catch(function(){});else {epoch++;cache.clear();}});
   global.addEventListener('su:auth-changed',function(event){if(event.detail&&event.detail.accountChanged)revoke().catch(function(){});});
   global.addEventListener('online',function(){if(!allowed()||saved().some(function(r){return r.revoked;}))revoke().catch(function(){});});
+  // Only the live, known Beehiiv frame may confirm. A view, click, load,
+  // submit attempt or another window's message never means a signup succeeded.
+  global.addEventListener('message',function(event){
+    if(event.origin!=='https://subscribe-forms.beehiiv.com'||!document.querySelectorAll)return;
+    var frame=Array.from(document.querySelectorAll('iframe[data-newsletter-context]')).find(function(f){return f.isConnected&&f.contentWindow===event.source&&frames.has(f);});
+    if(!frame)return;
+    if(event.data==='childReady'){event.source.postMessage('parentReady',event.origin);if(frame.dispatchEvent&&global.Event)frame.dispatchEvent(new global.Event('su:newsletter-ready'));return;}
+    var data=event.data;if(!data||typeof data!=='object')return;
+    if(data.type==='beehiiv:child-loaded'){event.source.postMessage({type:'beehiiv:parent-loaded'},event.origin);if(frame.dispatchEvent&&global.Event)frame.dispatchEvent(new global.Event('su:newsletter-ready'));return;}
+    if(data.type==='beehiiv:styles'||data.type==='beehiiv:challenge'){
+      var height=parseFloat(data.payload&&data.payload.height);
+      if(Number.isFinite(height)&&height>=40&&height<=650)frame.style.height=Math.ceil(height)+'px';
+      return;
+    }
+    if(!['iframe.subscription_created','iframe.subscription_confirmed','iframe.subscribed','iframe.form_success'].includes(data.event))return;
+    var state=frames.get(frame);if(state.confirmed)return;state.confirmed=true;
+    if(global.SUNewsletterSuccess)global.SUNewsletterSuccess.open(frame);
+  });
   global.SUNewsletter={load:load,revoke:revoke};
   if(!allowed()||saved().some(function(r){return r.revoked;}))revoke().catch(function(){});
 })(window);

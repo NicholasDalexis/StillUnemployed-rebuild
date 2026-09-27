@@ -348,7 +348,7 @@
 
       // ---- top nav (same structure as the jobs board: aboutcard + centered post-its) ----
       out += '<div style="max-width: 1240px; margin: 0 auto; padding: 26px 40px 0; position: relative; height: 100px; box-sizing: border-box;">' +
-        '<button type="button" data-act="goHome" class="aboutcard" aria-label="Home" style="position: absolute; top: 22px; left: 40px; display: flex; align-items: center; gap: 12px; background: #E7D2A8; border:0; text-align:left; border-radius: 16px; padding: 9px 16px 9px 9px; cursor: pointer; box-shadow: 0 6px 18px rgba(44,33,24,0.16);">' +
+        '<button type="button" data-act="openFounder" class="aboutcard" aria-label="About Nic" style="position: absolute; top: 22px; left: 40px; display: flex; align-items: center; gap: 12px; background: #E7D2A8; border:0; text-align:left; border-radius: 16px; padding: 9px 16px 9px 9px; cursor: pointer; box-shadow: 0 6px 18px rgba(44,33,24,0.16);">' +
           '<span style="display:block; width: 66px; height: 42px; border-radius: 11px; overflow: hidden; flex: none;">' +
             '<img src="assets/5037150f-ce24-477c-bae7-ef884fbc5849.jpg" alt="Nic" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 16%; transform: scale(1.55); transform-origin: 50% 26%;">' +
           '</span>' +
@@ -633,7 +633,7 @@
         var el = e.target.closest('[data-act]');
         if (!el) return;
         switch (el.getAttribute('data-act')) {
-          case 'goHome': location.href = './index.html'; break;
+          case 'openFounder': if(window.SUFounderNote)window.SUFounderNote.open(el); break;
           case 'addRow': self.addRow(); break;
           case 'retrySync': self.retrySave(); break;
           case 'dismissDraft': delete self.noteDrafts[el.getAttribute('data-id')]; self.render(); break;

@@ -330,3 +330,5 @@ test('guest report asks for sign-in and Escape returns focus without creating a 
  const t=tracker([application]);t.app.openReport('existing');assert.match(t.board.html,/Sign in to send a report/);assert.equal(t.rowControl('BUTTON','existing','sendReport'),undefined);
  t.emit('keydown',t.document.activeElement,{key:'Escape'});assert.equal(t.app.reportIntent,null);assert.equal(t.document.activeElement,t.rowControl('BUTTON','existing','openReport'));
 });
+
+test('tracker founder badge opens About Nic without leaving the tracker',()=>{const t=tracker();let clicked; t.window.SUFounderNote={open:target=>clicked=target};const button=t.board.querySelectorAll('[data-id], [data-act]').find(n=>n.getAttribute('data-act')==='openFounder');assert(button);assert.equal(button.getAttribute('aria-label'),'About Nic');t.emit('click',button);assert.equal(clicked,button);});
