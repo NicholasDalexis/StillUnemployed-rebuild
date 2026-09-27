@@ -1,0 +1,4 @@
+html{min-height:100%;background:#f4eedf;color:#2c2118;font-family:Arial,sans-serif}
+body{min-height:100vh;margin:0;display:grid;place-items:center;padding:20px;box-sizing:border-box;background-image:radial-gradient(#e7d9ba 1px,transparent 1px);background-size:12px 12px}
+main{max-width:440px;padding:36px 42px;background:#fcfaf3;border:1px solid #d6cbb7;box-shadow:7px 14px 35px #2c211833;line-height:1.55}
+h1{font-size:48px;margin:0 0 18px}p{font-size:18px;margin:0 0 18px}a{color:#aa3e25;font-weight:700}

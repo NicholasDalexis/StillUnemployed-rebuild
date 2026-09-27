@@ -454,7 +454,12 @@
 
   // Dedicated StillUnemployed form. Beehiiv styling and success behavior are
   // shared by every site using a form ID; Recipe owns its separate form.
-  var NEWSLETTER_URL = 'https://subscribe-forms.beehiiv.com/d3ffa100-9fdf-498d-b096-a6c5f8a4deaa';
+  // Preview has its own Beehiiv form with a success-only redirect back to this
+  // site. Keep production on its existing form until the preview flow is proven.
+  var NEWSLETTER_URL = 'https://subscribe-forms.beehiiv.com/' +
+    (location.hostname === 'preview--stillunemployed.netlify.app'
+      ? '7ec0cada-36c7-4dfc-974f-dbb3c83e48db'
+      : 'd3ffa100-9fdf-498d-b096-a6c5f8a4deaa');
   function newsletterHtml(cta, context) {
     context=context||{};
     return '<div class="su-newsletter-frame" aria-busy="true">' +
@@ -2565,7 +2570,7 @@
               '<div style="margin-top: 20px;">' + adviceWhyHtml(_an.why) + '</div>' +
               '<div data-newsletter-id="'+this._adviceInvitation.id+'" data-newsletter-revision="'+this._adviceInvitation.revision+'" style="margin-top: 24px; border-top: 1.5px dashed rgba(44,33,24,0.22); padding-top: 16px;">' +
                 '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 17px; color: #2C2118; line-height: 1.4;">' + esc(this._adviceInvitation.text) + '</div>' +
-                newsletterHtml('note:' + _an.id,{placement:'advice',cta:this._adviceInvitation.id,exposure:this._adviceInvitation.exposure}) +
+                newsletterHtml('note:' + _an.id,{placement:'advice',noteId:_an.id,cta:this._adviceInvitation.id,exposure:this._adviceInvitation.exposure}) +
                 newsletterFooter() +
               '</div>' +
             '</div>' +
@@ -2631,6 +2636,7 @@
         else if (previousKey === dialogKey && previousFocus && (previousFocus.id || (previousFocus.act && previousFocus.act !== 'stop'))) restoreIntent(previousFocus);
         if (!dialog.contains(document.activeElement)) dialog.focus({ preventScroll:true });
       } else if (previousDialog) { restoreIntent(this._dialogReturn); this._dialogReturn = null; }
+      if(window.SUNewsletterSuccess)window.SUNewsletterSuccess.tryResume();
       if (!dialog && !this._sharedWanted && window.SUWelcome) window.SUWelcome.maybeShow();
     },
 
@@ -3535,6 +3541,11 @@
       // job link retains its existing Jobs meaning over the tab's previous mode.
       if(new URLSearchParams(location.search).has('job'))INTERNSHIPS=false;
       if(INTERNSHIPS)App.state.theme=null;
+    }
+    if(window.SUNewsletterSuccess){
+      var subscribedContext=window.SUNewsletterSuccess.pendingContext();
+      if(subscribedContext&&subscribedContext.placement==='advice'&&ADVICE_NOTES.some(function(note){return note.id===subscribedContext.noteId;}))App.state.adviceOpen=subscribedContext.noteId;
+      if(subscribedContext&&subscribedContext.placement==='signup-card')App.state.signupOpen='the exact recipe that got me my job at Instagram';
     }
     // A Google sign-in return resumes its existing question before any introduction.
     App.restoreFeedbackRedirect();

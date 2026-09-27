@@ -149,6 +149,15 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
+# Only our own board may frame this confirmation page if Beehiiv ever changes
+# its redirect target from the parent tab to the embedded frame.
+[[headers]]
+  for = "/newsletter-confirmed.html"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    Content-Security-Policy = "default-src 'none'; script-src 'self'; style-src 'self'; frame-ancestors 'self'; base-uri 'none'; form-action 'none'"
+    Cache-Control = "no-store"
+
 [[headers]]
   for = "/css/*"
   [headers.values]

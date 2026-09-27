@@ -1,7 +1,14 @@
 /* Signup confirmation sits above, and never replaces, the current job/advice. */
 (function(global){
   'use strict';
-  var doc=global.document,dialog,returnTo;
+  var doc=global.document,dialog,returnTo,RESUME_KEY='su_newsletter_resume_v1';
+  function pendingContext(){
+    try{
+      var saved=JSON.parse(global.sessionStorage.getItem(RESUME_KEY)||'null');
+      if(!saved||!saved.context||Date.now()-saved.at>600000||Date.now()<saved.at){global.sessionStorage.removeItem(RESUME_KEY);return null;}
+      return saved.context;
+    }catch(_){return null;}
+  }
   var closeIcon='<svg class="su-close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>';
   function open(frame){
     if(!frame||!frame.isConnected)return;
@@ -22,5 +29,14 @@
     }
     returnTo=frame; if(!dialog.open)dialog.showModal();dialog.querySelector('h2').focus({preventScroll:true});
   }
-  global.SUNewsletterSuccess={open:open};
+  function tryResume(){
+    var wanted=pendingContext();if(!wanted)return;
+    var frame=Array.from(doc.querySelectorAll('#overlay-root iframe[data-newsletter-context]')).find(function(candidate){
+      try{var context=JSON.parse(candidate.getAttribute('data-newsletter-context'));return context.placement===wanted.placement&&(!wanted.link||context.link===wanted.link)&&(!wanted.noteId||context.noteId===wanted.noteId);}catch(_){return false;}
+    });
+    if(!frame)return;
+    try{global.sessionStorage.removeItem(RESUME_KEY);}catch(_){}
+    open(frame);
+  }
+  global.SUNewsletterSuccess={open:open,pendingContext:pendingContext,tryResume:tryResume};
 })(window);

@@ -5,7 +5,7 @@ const turn=()=>new Promise(resolve=>setImmediate(resolve));
 function harness({consent=true,excluded=false,mode='ok'}={}){
  const storage={},events=[],requests=[],issued=[],listeners={},observers=[],timers=[],liveFrames=[],confirmed=[];let activeConsent=consent;
  const doc={hidden:false,activeElement:null,querySelectorAll:()=>liveFrames};
- const win={SUNewsletterSuccess:{open:frame=>confirmed.push(frame)},crypto:crypto.webcrypto,SUAnalytics:{choices:()=>({analytics:activeConsent}),excluded:()=>excluded,emit:(name,params)=>events.push({name,...params}),newsletterRequest:async(token,context,signal)=>{issued.push({token,context});if(mode==='fail')throw Error('offline');if(mode==='timeout')return new Promise((_,reject)=>signal.addEventListener('abort',()=>reject(Error('timeout'))));return {campaign:'su_'+token,jobId:context.link?'b'.repeat(64):undefined};}},addEventListener:(n,f)=>{listeners[n]=f;}};
+ const win={location:{origin:'https://preview--stillunemployed.netlify.app'},SUNewsletterSuccess:{open:frame=>confirmed.push(frame)},crypto:crypto.webcrypto,SUAnalytics:{choices:()=>({analytics:activeConsent}),excluded:()=>excluded,emit:(name,params)=>events.push({name,...params}),newsletterRequest:async(token,context,signal)=>{issued.push({token,context});if(mode==='fail')throw Error('offline');if(mode==='timeout')return new Promise((_,reject)=>signal.addEventListener('abort',()=>reject(Error('timeout'))));return {campaign:'su_'+token,jobId:context.link?'b'.repeat(64):undefined};}},addEventListener:(n,f)=>{listeners[n]=f;}};
  class Observer{constructor(callback){this.callback=callback;observers.push(this);}observe(frame){this.frame=frame;}disconnect(){this.disconnected=true;}}
  win.IntersectionObserver=Observer;
  vm.runInNewContext(source,{window:win,document:doc,URL,Uint8Array,AbortController,IntersectionObserver:Observer,localStorage:{getItem:k=>storage[k]||null,setItem:(k,v)=>{storage[k]=v;},removeItem:k=>{delete storage[k];}},setTimeout:(fn,ms)=>{timers.push({fn,ms});return timers.length;},clearTimeout:()=>{},fetch:async(url,options)=>{requests.push({url,body:JSON.parse(options.body)});return {ok:true};}});
@@ -19,13 +19,52 @@ test('withdrawal revokes existing receipts; opting back in cannot attribute focu
 test('account change revokes issued context and in-flight load cannot keep attribution',async()=>{const h=harness(),frame={isConnected:true};h.load(frame);h.auth();await turn();assert.equal(frame.src,BASE);assert.equal(h.events.length,0);assert.ok(h.requests.some(r=>r.body.action==='revoke'));});
 test('detached form does not start a provider request',async()=>{const h=harness(),frame={isConnected:false};h.load(frame);await turn();assert.equal(frame.src,undefined);});
 
-test('confirmation accepts only exact completion from the connected form and ignores submit attempts',async()=>{
+test('confirmation accepts only same-origin success receipt from the connected frame',async()=>{
  const h=harness({consent:false}),source={postMessage(){}},frame={isConnected:true,contentWindow:source,style:{}};h.load(frame);await turn();
- const message=(event,origin='https://subscribe-forms.beehiiv.com',from=source)=>h.listeners.message({origin,source:from,data:{event}});
- for(const event of ['iframe.form_view','iframe.form_submit','iframe.form_start','iframe.click','subscription_created'])message(event);
- message('iframe.subscription_created','https://evil.invalid');message('iframe.subscription_created',undefined,{});assert.equal(h.confirmed.length,0);
- message('iframe.subscription_created');message('iframe.subscription_created');assert.equal(h.confirmed.length,1);assert.equal(h.confirmed[0],frame);assert.equal(h.events.length,0,'UI feedback is not a webhook-confirmed analytics conversion');
+ const message=(data,origin='https://preview--stillunemployed.netlify.app',from=source)=>h.listeners.message({origin,source:from,data});
+ for(const event of ['iframe.form_view','iframe.form_submit','iframe.subscription_created'])message({event},'https://subscribe-forms.beehiiv.com');
+ message({type:'su:newsletter-confirmed',path:'/newsletter-confirmed.html'},'https://evil.invalid');
+ message({type:'su:newsletter-confirmed',path:'/newsletter-confirmed.html'},undefined,{});
+ message({type:'su:newsletter-confirmed',path:'/other.html'});assert.equal(h.confirmed.length,0);
+ message({type:'su:newsletter-confirmed',path:'/newsletter-confirmed.html'});
+ message({type:'su:newsletter-confirmed',path:'/newsletter-confirmed.html'});
+ assert.equal(h.confirmed.length,1);assert.equal(h.confirmed[0],frame);assert.equal(h.events.length,0,'UI feedback is not a webhook-confirmed analytics conversion');
  const next={isConnected:false,contentWindow:{},style:{}};h.load(next);message('iframe.subscription_created',undefined,next.contentWindow);assert.equal(h.confirmed.length,1);
+});
+test('receipt page sends only its fixed success message to a same-origin parent',()=>{
+ const receipt=fs.readFileSync(require.resolve('../../js/newsletter-confirmed.js'),'utf8'),sent=[];
+ const parent={postMessage:(...args)=>sent.push(args)},win={parent,location:{origin:'https://preview--stillunemployed.netlify.app'}};
+ vm.runInNewContext(receipt,{window:win});assert.equal(sent.length,1);
+ assert.equal(sent[0][0].type,'su:newsletter-confirmed');assert.equal(sent[0][0].path,'/newsletter-confirmed.html');
+ assert.equal(sent[0][1],win.location.origin);
+ sent.length=0;win.parent=win;vm.runInNewContext(receipt,{window:win});assert.equal(sent.length,0);
+});
+test('Beehiiv parent-tab redirect restores the exact board and selected job after success',()=>{
+ const receipt=fs.readFileSync(require.resolve('../../js/newsletter-confirmed.js'),'utf8'),storage={
+  su_newsletter_return_v1:JSON.stringify({at:Date.now(),url:'https://preview--stillunemployed.netlify.app/jobs.html?theme=beauty',context:{placement:'job-detail',link:'https://example.com/job?id=9'}})
+ },visited=[];
+ const sessionStorage={getItem:k=>storage[k]||null,setItem:(k,v)=>{storage[k]=v;},removeItem:k=>{delete storage[k];}};
+ const win={sessionStorage,location:{origin:'https://preview--stillunemployed.netlify.app',replace:url=>visited.push(url)}};win.parent=win;
+ vm.runInNewContext(receipt,{window:win,URL,Date,btoa,unescape,encodeURIComponent});
+ assert.equal(visited.length,1);const url=new URL(visited[0]);assert.equal(url.pathname,'/jobs.html');assert.equal(url.searchParams.get('theme'),'beauty');
+ assert.equal(atob(url.searchParams.get('job')),'https://example.com/job?id=9');
+ assert.equal(JSON.parse(storage.su_newsletter_resume_v1).context.placement,'job-detail');assert.equal(storage.su_newsletter_return_v1,undefined);
+});
+test('unrecognized success return cannot navigate the browser',()=>{
+ const receipt=fs.readFileSync(require.resolve('../../js/newsletter-confirmed.js'),'utf8'),visited=[];
+ const storage={su_newsletter_return_v1:JSON.stringify({at:Date.now(),url:'https://evil.invalid/jobs.html',context:{placement:'job-detail',link:'https://example.com/job'}})};
+ const win={sessionStorage:{getItem:k=>storage[k]||null,setItem:(k,v)=>{storage[k]=v;},removeItem:k=>{delete storage[k];}},location:{origin:'https://preview--stillunemployed.netlify.app',replace:url=>visited.push(url)}};win.parent=win;
+ vm.runInNewContext(receipt,{window:win,URL,Date,btoa,unescape,encodeURIComponent});assert.equal(visited.length,0);assert.equal(storage.su_newsletter_resume_v1,undefined);
+});
+test('returned board restores the thank-you layer over the matching job note',()=>{
+ const source=fs.readFileSync(require.resolve('../../js/newsletter-success.js'),'utf8');
+ const context={placement:'job-detail',link:'https://example.com/job'},storage={su_newsletter_resume_v1:JSON.stringify({at:Date.now(),context})};
+ const frame={isConnected:true,getAttribute:()=>JSON.stringify(context)},controls={addEventListener(){},focus(){}},dialog={open:false,setAttribute(){},querySelector:()=>controls,addEventListener(){},showModal(){this.open=true;}};
+ const doc={body:{appendChild(){}},createElement:()=>dialog,querySelectorAll:()=>[frame]};
+ const win={document:doc,navigator:{userAgent:'Mozilla/5.0',platform:'MacIntel',maxTouchPoints:0},sessionStorage:{getItem:k=>storage[k]||null,removeItem:k=>{delete storage[k];}}};
+ vm.runInNewContext(source,{window:win,Date,Array});
+ assert.equal(win.SUNewsletterSuccess.pendingContext().placement,'job-detail');
+ win.SUNewsletterSuccess.tryResume();assert.equal(dialog.open,true);assert.equal(storage.su_newsletter_resume_v1,undefined);
 });
 test('provider handshake and bounded resize do not confirm a signup',async()=>{
  const h=harness(),sent=[],source={postMessage:(...x)=>sent.push(x)},frame={isConnected:true,contentWindow:source,style:{}};h.load(frame);await turn();

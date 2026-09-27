@@ -1,7 +1,11 @@
 /* Optional newsletter measurement. Form submission stays inside Beehiiv. */
 (function(global){
   'use strict';
-  var KEY='su_newsletter_receipts_v1',ENDPOINT='/.netlify/functions/newsletter-attribution',epoch=0,cache=new Map(),frames=new WeakMap();
+  var KEY='su_newsletter_receipts_v1',RETURN_KEY='su_newsletter_return_v1',ENDPOINT='/.netlify/functions/newsletter-attribution',epoch=0,cache=new Map(),frames=new WeakMap();
+  function remember(state){
+    if(global.location.hostname!=='preview--stillunemployed.netlify.app')return;
+    try{global.sessionStorage.setItem(RETURN_KEY,JSON.stringify({at:Date.now(),url:global.location.href,context:state.context}));}catch(_){}
+  }
   function allowed(){var a=global.SUAnalytics;return !!(a&&a.choices().analytics&&!a.excluded());}
   function saved(){try{return JSON.parse(localStorage.getItem(KEY)||'[]').filter(function(r){return /^[a-f0-9]{64}$/.test(r.token)&&r.at>Date.now()-30*86400000;});}catch(_){return [];}}
   function write(rows){try{if(rows.length)localStorage.setItem(KEY,JSON.stringify(rows));else localStorage.removeItem(KEY);return true;}catch(_){return false;}}
@@ -30,6 +34,7 @@
     var generation=epoch,key=JSON.stringify([context.placement,context.cta,context.exposure]),state=cache.get(key);
     if(!state){state={epoch:epoch,context:context,impressed:false,engaged:false,result:null,promise:receipt(context)};cache.set(key,state);if(cache.size>100)cache.delete(cache.keys().next().value);}
     frames.set(frame,state);
+    if(frame.closest&&frame.closest('#overlay-root'))remember(state);
     state.promise.then(function(result){
       if(!frame.isConnected)return;
       state.result=generation===epoch&&allowed()?result:null;
@@ -48,16 +53,24 @@
     });
   }
   function record(state,name){if(!allowed()||state.epoch!==epoch)return;if(!state.result){if(name==='newsletter_engagement')global.SUAnalytics.emit('newsletter_click',{});return;}global.SUAnalytics.emit(name,{placement:state.context.placement,cta:state.context.cta,jobId:state.result.jobId,newsletterReceipt:state.result.campaign.slice(3),revision:state.context.cta==='N16'?2:1});}
-  global.addEventListener('blur',function(){setTimeout(function(){var state=frames.get(document.activeElement);if(state&&!state.engaged){state.engaged=true;record(state,'newsletter_engagement');}},0);});
+  global.addEventListener('blur',function(){setTimeout(function(){var state=frames.get(document.activeElement);if(state){remember(state);if(!state.engaged){state.engaged=true;record(state,'newsletter_engagement');}}},0);});
   global.addEventListener('su:consent-changed',function(){if(!allowed())revoke().catch(function(){});else {epoch++;cache.clear();}});
   global.addEventListener('su:auth-changed',function(event){if(event.detail&&event.detail.accountChanged)revoke().catch(function(){});});
   global.addEventListener('online',function(){if(!allowed()||saved().some(function(r){return r.revoked;}))revoke().catch(function(){});});
-  // Only the live, known Beehiiv frame may confirm. A view, click, load,
-  // submit attempt or another window's message never means a signup succeeded.
+  // Beehiiv's inline success toast remains inside its cross-origin frame. Its
+  // published redirect reaches our same-origin receipt only after a successful
+  // submit. A view, click, load or submit attempt never confirms a signup.
   global.addEventListener('message',function(event){
-    if(event.origin!=='https://subscribe-forms.beehiiv.com'||!document.querySelectorAll)return;
+    if(!document.querySelectorAll)return;
     var frame=Array.from(document.querySelectorAll('iframe[data-newsletter-context]')).find(function(f){return f.isConnected&&f.contentWindow===event.source&&frames.has(f);});
     if(!frame)return;
+    if(event.origin===global.location.origin){
+      if(!event.data||event.data.type!=='su:newsletter-confirmed'||event.data.path!=='/newsletter-confirmed.html')return;
+      var confirmed=frames.get(frame);if(confirmed.confirmed)return;confirmed.confirmed=true;
+      if(global.SUNewsletterSuccess)global.SUNewsletterSuccess.open(frame);
+      return;
+    }
+    if(event.origin!=='https://subscribe-forms.beehiiv.com')return;
     if(event.data==='childReady'){event.source.postMessage('parentReady',event.origin);if(frame.dispatchEvent&&global.Event)frame.dispatchEvent(new global.Event('su:newsletter-ready'));return;}
     var data=event.data;if(!data||typeof data!=='object')return;
     if(data.type==='beehiiv:child-loaded'){event.source.postMessage({type:'beehiiv:parent-loaded'},event.origin);if(frame.dispatchEvent&&global.Event)frame.dispatchEvent(new global.Event('su:newsletter-ready'));return;}
@@ -66,9 +79,6 @@
       if(Number.isFinite(height)&&height>=40&&height<=650)frame.style.height=Math.ceil(height)+'px';
       return;
     }
-    if(!['iframe.subscription_created','iframe.subscription_confirmed','iframe.subscribed','iframe.form_success'].includes(data.event))return;
-    var state=frames.get(frame);if(state.confirmed)return;state.confirmed=true;
-    if(global.SUNewsletterSuccess)global.SUNewsletterSuccess.open(frame);
   });
   global.SUNewsletter={load:load,revoke:revoke};
   if(!allowed()||saved().some(function(r){return r.revoked;}))revoke().catch(function(){});

@@ -1,21 +1,21 @@
 {
-  "version": "2.7.4.1",
+  "version": "2.7.4.2",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-27T21:53:32.432Z",
+  "reviewedAt": "2026-09-27T22:57:21.631Z",
   "reviewer": "Codex root",
-  "sourceDigest": "2c60662f5ab0d7851594354db8cd5f439644e4c48d92545a61abb2719c0b1fa6",
-  "sourceFileCount": 207,
+  "sourceDigest": "08e8e2a8d0d4eaceab39dcc2fcdeeb5f6a65fabd1fe4c4d9dba977228fe7864a",
+  "sourceFileCount": 210,
   "privacyChanged": false,
   "termsChanged": false,
-  "baselineReview": "docs/privacy-reviews/2.7.4.json",
-  "scope": "Shared About Nic UI for Tracker, expanded advice close hit area, notebook signup confirmation and existing Gmail handoff, verified provider-origin/source handshake readiness and bounded iframe resizing. No new provider, permissions, analytics payload or stored email.",
+  "baselineReview": "docs/privacy-review.json (2.7.4.1 receipt)",
+  "scope": "Preview-only Beehiiv form split and success redirect; session-tab return marker restores the current public job or advice note, then shows the existing StillUnemployed confirmation. No stored email or new analytics payload.",
   "checks": {
-    "disclosures": "Privacy and terms reviewed. Existing optional Beehiiv signup, attribution consent and no Gmail account access remain unchanged.",
-    "security": "Reject unregistered frames and wrong origins or sources. Load, form focus, submit attempts and readiness messages never count as subscription success; signed webhook remains conversion authority."
+    "disclosures": "Reviewed privacy.html and terms.html. Existing Beehiiv subscription, optional attribution, public job context, and browser-tab session controls cover this flow. The return marker is tab-local, expires after 10 minutes, and contains no email.",
+    "security": "Production form unchanged. Preview redirect limited to same-origin board routes, scoped callback CSP, and no client success inference from focus or submit attempt. Signed Beehiiv webhook remains conversion authority."
   },
   "openItems": [
-    "Live Beehiiv terminal completion event and welcome-email delivery remain unverified without an authorized signup.",
-    "Physical iPhone Gmail Open/Cancel check pending.",
-    "Preview requested; production remains 2.7.4."
+    "Hosted preview form load and redirect QA pending.",
+    "End-to-end real subscribe and physical iPhone Gmail Open/Cancel remain unverified.",
+    "Production configuration and readiness check required before future promotion."
   ]
 }
