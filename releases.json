@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.4.2",
+  "currentVersion": "2.7.4.3",
   "releases": [
+    {
+      "version": "2.7.4.3",
+      "date": "2026-09-27",
+      "title": "Keep signup confirmation on its job",
+      "changes": [
+        "A Beehiiv success return retains the same job note and does not advance the every-other-job prompt counter."
+      ],
+      "public": {
+        "title": "Signup feedback",
+        "changes": [
+          "The confirmation stays with the job you were viewing."
+        ]
+      }
+    },
     {
       "version": "2.7.4.2",
       "date": "2026-09-27",
@@ -852,7 +866,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "08e8e2a8d0d4eaceab39dcc2fcdeeb5f6a65fabd1fe4c4d9dba977228fe7864a",
+    "digest": "59dcfb70524cdfdbdee7b0125e26a6c70b4b690b77321e8d99be44e85693d9f8",
     "fileCount": 210
   }
 }

@@ -138,6 +138,15 @@
   }
   function beginJobDetail(comp, link) {
     if (!comp.catalogJobs().some(function(job){return jobHasLink(job,link);})) return;
+    var returning=window.SUNewsletterSuccess&&window.SUNewsletterSuccess.pendingContext();
+    if(returning&&returning.placement==='job-detail'&&sameJobLink(returning.link,link)){
+      // Beehiiv returns through a page reload. Keep the signup note present for
+      // its thank-you layer without counting the return as a second job open.
+      comp._detailRecipe=true;
+      comp._detailRecipeInvitation=NEWSLETTER_INVITATIONS.find(function(item){return item.id===returning.cta;})||NEWSLETTER_INVITATIONS[0];
+      comp._detailRecipeCopy=comp._detailRecipeInvitation.text;
+      return;
+    }
     if(window.SUBoardExperience)window.SUBoardExperience.record(comp.catalogJobs().find(function(job){return jobHasLink(job,link);}), 'viewed');
     try { detailOpens = Number(sessionStorage.getItem('su_detail_opens')) || 0; } catch (_) {}
     detailOpens = Math.max(0, detailOpens) + 1;
