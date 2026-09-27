@@ -1,7 +1,35 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.2",
+  "currentVersion": "2.7.4",
   "releases": [
+    {
+      "version": "2.7.4",
+      "date": "2026-09-27",
+      "title": "Small improvements",
+      "changes": [
+        "Complete source-bound display summaries for new internships and preserve historical display regression fixtures. Supersedes unpublished local 2.7.3 candidate; includes its internship publication and validation fixes."
+      ],
+      "public": {
+        "title": "More internships to explore",
+        "changes": [
+          "New summer 2027 internships, including Google and DoorDash."
+        ]
+      }
+    },
+    {
+      "version": "2.7.3",
+      "date": "2026-09-27",
+      "title": "Small improvements",
+      "changes": [
+        "Publish verified Google Summer 2027 internships, DoorDash and other current admissions from a fresh native export. Preserve unchanged prior source receipts and honor current Sheet removals; fix Not listed pay basis and long multi-location eligibility validation."
+      ],
+      "public": {
+        "title": "More internships to explore",
+        "changes": [
+          "New summer 2027 internships, including Google and DoorDash."
+        ]
+      }
+    },
     {
       "version": "2.7.2",
       "date": "2026-09-27",
@@ -792,7 +820,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "72fd9f0f1fe39f02eb9550208a65b3da16b6a6cb783c7fe14f23fcad72703982",
+    "digest": "b3b1903626b5a9abf182bee4aae65ae1e8fd4e8f96ea048f49fdcb899a0bca17",
     "fileCount": 205
   }
 }

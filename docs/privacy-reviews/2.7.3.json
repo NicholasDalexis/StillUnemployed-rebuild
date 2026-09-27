@@ -1,13 +1,13 @@
 {
-  "version": "2.7.4",
+  "version": "2.7.3",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-27T19:48:35.620Z",
+  "reviewedAt": "2026-09-27T19:48:11.860Z",
   "reviewer": "Codex root",
   "sourceDigest": "b3b1903626b5a9abf182bee4aae65ae1e8fd4e8f96ea048f49fdcb899a0bca17",
   "sourceFileCount": 205,
   "privacyChanged": false,
   "termsChanged": false,
-  "baselineReview": "docs/privacy-reviews/2.7.3.json",
+  "baselineReview": "docs/privacy-reviews/2.7.2.json",
   "scope": "Offline public internship snapshot refresh and incremental exporter. Original verification dates preserved; native closures honored. Normalize Not listed basis; bounded longer location and eligibility. No new account collection, provider, permissions or live-feed architecture. Add concise source-bound presentation summaries without changing full employer facts.",
   "checks": {
     "disclosures": "Reviewed student opportunity, eligibility, employer verification, pay-period and source freshness disclosures. No fresh-check claim for carried rows.",

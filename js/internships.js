@@ -7,7 +7,7 @@
   var PAY=['paid','unpaid','not_disclosed'];
   var BASIS=['hour','week','month','program','annualized_year','not_listed'];
   var CREDIT=['required','available','school_approval_required','not_offered','not_listed'];
-  var TEXT={co:200,role:300,link:2000,loc:500,ind:100,desc:12000,pay:600,style:100,exp:500,state:500,eligibility:8000,cycle:500,deadline:500,applicationsOpen:500,startDate:500,timingSourceUrl:2000};
+  var TEXT={co:200,role:300,link:2000,loc:1000,ind:100,desc:12000,pay:600,style:100,exp:500,state:1000,eligibility:8000,cycle:500,deadline:500,applicationsOpen:500,startDate:500,timingSourceUrl:2000};
   var DATES=['deadlineISO','applicationsOpenISO','startDateISO'];
   function object(v){return !!v&&typeof v==='object'&&!Array.isArray(v);}
   function text(v,max,required){return typeof v==='string'&&v.length<=max&&!/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(v)&&(!required||!!v.trim());}
@@ -154,11 +154,11 @@
     if(job.payStatus==='paid'&&job.payBasis&&job.payBasis!=='not_listed'&&foundBases.length&&!foundBases.includes(job.payBasis))return false;
     if(job.collegeCredit!==undefined&&!CREDIT.includes(job.collegeCredit))return false;
     if(job.duties!==undefined&&!list(job.duties,3,600))return false;
-    if(job.eligibilityFlags!==undefined&&!list(job.eligibilityFlags,30,1000))return false;
+    if(job.eligibilityFlags!==undefined&&!list(job.eligibilityFlags,100,1000))return false;
     if(job.benefits!==undefined&&!list(job.benefits,30,1000))return false;
     if(version===2){
       if(!['open','upcoming'].includes(job.applicationStatus)||job.verification.status!==job.applicationStatus||!safeUrl(job.verification.sourceUrl)||!safeUrl(job.timingSourceUrl))return false;
-      if(!BASIS.includes(job.payBasis)||!CREDIT.includes(job.collegeCredit)||!list(job.duties,3,600)||(job.applicationStatus==='open'&&!job.duties.length)||!list(job.eligibilityFlags,30,1000)||!list(job.benefits,30,1000))return false;
+      if(!BASIS.includes(job.payBasis)||!CREDIT.includes(job.collegeCredit)||!list(job.duties,3,600)||(job.applicationStatus==='open'&&!job.duties.length)||!list(job.eligibilityFlags,100,1000)||!list(job.benefits,30,1000))return false;
       if(job.applicationStatus==='upcoming'&&(job.verification.sourceAnnounced!==true||job.verification.upcomingApproved!==true))return false;
       if(job.applicationStatus==='open'&&job.applicationsOpenISO&&dateValue(job.applicationsOpenISO)>dateValue(job.verification.checkedAt))return false;
       if(job.verification.reviewerType==='human'&&(!Number.isFinite(dateValue(job.verification.humanVerifiedAt,true))||dateValue(job.verification.humanVerifiedAt)>now+300000))return false;

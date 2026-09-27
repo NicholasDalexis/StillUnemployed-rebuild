@@ -4,7 +4,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { randomUUID } from 'node:crypto';
+import { randomUUID, createHash } from 'node:crypto';
+import { isDeepStrictEqual } from 'node:util';
 import projection from './lib/internship-projection.cjs';
 import internships from '../js/internships.js';
 import identity from '../js/job-identity.js';
@@ -23,7 +24,29 @@ const object = value => !!value && typeof value === 'object' && !Array.isArray(v
 const within = (parent, child) => child === parent || child.startsWith(parent + path.sep);
 const fail = message => { throw new Error(message); };
 
-export function createSnapshot(input, { now = Date.now() } = {}) {
+// Carry forward only the exact already-published facts from this repository's
+// snapshot. Preserve its real verification dates; this is not a new source check.
+function carryForward(values, headers, admission, previous, now) {
+  if (!previous || admission.previousSnapshotSha256 !== createHash('sha256').update(previous.bytes).digest('hex')) fail('Carry-forward requires the exact previous public snapshot.');
+  const record = Object.fromEntries(headers.map((key,index) => [projection.HEADERS.find(name => name.toLowerCase() === key), values[index]]));
+  const matches = internships.jobs(previous.data, now).filter(job => job.link === record.Link);
+  if (matches.length !== 1) fail('Carry-forward requires one previously approved identity.');
+  const prior = internships.publicJob(matches[0]);
+  const receipt = { publicationApproved:true, officialSourceChecked:true, sourceLink:record.Link,
+    sourceUrl:prior.verification.sourceUrl, checkedAt:prior.verification.checkedAt,
+    timingSourceUrl:prior.timingSourceUrl, applicationStatus:prior.applicationStatus,
+    creditEvidence:'Preserved previously approved public credit facts' };
+  for (const key of ['applicationsOpenISO','startDateISO','deadlineISO']) if (prior[key] !== undefined) receipt[key] = prior[key];
+  if (prior.applicationStatus === 'upcoming') Object.assign(receipt, {sourceAnnounced:true,cohortEvidence:prior.cycle,
+    announcementEvidence:'Previously approved announcement',brandApproval:{basis:'Previously approved brand',reference:admission.previousSnapshotSha256}});
+  let projected;
+  try { projected = projection.projectRow(record, receipt, {now}); } catch { fail('Carry-forward facts are invalid.'); }
+  projected.verification = prior.verification;
+  if (!isDeepStrictEqual(projected, prior)) fail('Changed public facts require a fresh source check.');
+  return prior;
+}
+
+export function createSnapshot(input, { now = Date.now(), previous = null } = {}) {
   const source = input?.source, provenance = source?.provenance;
   if (!object(input) || !object(source) || source.schemaVersion !== 2 || !object(provenance)) fail('A schema2 operational source and provenance receipt are required.');
   if (Object.entries(EXPECTED_SOURCE).some(([key, value]) => provenance[key] !== value)) fail('Source must be the approved operational Internships workbook and tab.');
@@ -38,7 +61,7 @@ export function createSnapshot(input, { now = Date.now() } = {}) {
   if (new Set(headers).size !== headers.length || projection.HEADERS.some(name => !headers.includes(name.toLowerCase()))) fail('Operational headers do not match the Internships contract.');
   if (!Array.isArray(source.rows) || !Array.isArray(input.admissions) || source.rows.length !== input.admissions.length) fail('Each source row requires a corresponding admission or null.');
   const activeIndex = headers.indexOf('active/dead'), statusIndex = headers.indexOf('application status'), linkIndex = headers.indexOf('link');
-  const rows = [], admissions = [];
+  const rows = [], admissions = [], carried = [], freshIndices = [];
   const rowsByIdentity = new Map();
   source.rows.forEach((values, index) => {
     if (!Array.isArray(values) || values.length !== headers.length) fail('Every source row must match the full operational header width.');
@@ -50,19 +73,29 @@ export function createSnapshot(input, { now = Date.now() } = {}) {
     }
     // Removal and unreviewed states take precedence over any older admission.
     if (values[activeIndex] !== 'Active' || !['Open', 'Upcoming'].includes(values[statusIndex])) return;
+    const decision = input.admissions[index];
+    if (decision?.publicationApproved === false && decision.availability === 'unknown' && decision.sourceLink === values[linkIndex]) {
+      if (!decision.reason?.trim() || internships.jobs(previous?.data, now).some(job => job.link === values[linkIndex])) fail('Only an unpublished unverified identity may remain pending.');
+      return;
+    }
+    if (input.admissions[index]?.carryForward === true) {
+      carried.push({index, job:carryForward(values, headers, input.admissions[index], previous, now)});
+      return;
+    }
     const checkedAt = internships.dateValue(input.admissions[index]?.checkedAt, true);
     if (!Number.isFinite(checkedAt) || checkedAt < now - PUBLICATION_FRESHNESS_MS || checkedAt > now + CLOCK_SKEW_MS || checkedAt > exportedAt + CLOCK_SKEW_MS) fail('Publication validation failed. Included source checks must be from the last 24 hours and precede the operational export.');
-    rows.push(values);admissions.push(input.admissions[index]);
+    rows.push(values);admissions.push(input.admissions[index]);freshIndices.push(index);
   });
   let feed;
   try { feed = projection.projectFeed({ schemaVersion:2, headers:source.headers, rows }, admissions, { now }); }
   catch { fail('Publication validation failed. Check included rows, admission receipts and canonical duplicates.'); }
+  feed.jobs = [...feed.jobs.map((job,index) => ({index:freshIndices[index],job})), ...carried].sort((a,b) => a.index-b.index).map(entry => entry.job);
   if (!feed.jobs.length && input.publication.allowEmpty !== true) fail('Empty replacement requires publication.allowEmpty: true after explicit review.');
   // Only approved public fields and a non-sensitive monotonic export time leave
   // this boundary. Never copy the input envelope, provenance IDs or receipts.
   const snapshot = { schemaVersion:2, status:'verified', sourceExportedAt:new Date(exportedAt).toISOString(), jobs:feed.jobs };
-  if (internships.jobs(snapshot, now).length !== rows.length) fail('The final public snapshot did not validate completely.');
-  return { snapshot, included:rows.length, excluded:source.rows.length - rows.length };
+  if (internships.jobs(snapshot, now).length !== rows.length + carried.length) fail('The final public snapshot did not validate completely.');
+  return { snapshot, included:rows.length + carried.length, excluded:source.rows.length - rows.length - carried.length, carried:carried.length };
 }
 
 function readInput(inputPath, root) {
@@ -102,9 +135,10 @@ function comparePrevious(previous, snapshot, bytes) {
 // there is intentionally no --output flag and no network or deployment path.
 export function publish({ inputPath, check = false, root = ROOT, now = Date.now() }) {
   root = fs.realpathSync(root);
-  const result = createSnapshot(readInput(inputPath, root), { now });
-  const bytes = JSON.stringify(result.snapshot, null, 2) + '\n';
   const output = path.join(root, OUTPUT);
+  const previous = existingSnapshot(output);
+  const result = createSnapshot(readInput(inputPath, root), { now, previous });
+  const bytes = JSON.stringify(result.snapshot, null, 2) + '\n';
   if (check) {
     const unchanged = comparePrevious(existingSnapshot(output), result.snapshot, bytes);
     return { mode:'check', included:result.included, excluded:result.excluded, unchanged };
@@ -115,7 +149,9 @@ export function publish({ inputPath, check = false, root = ROOT, now = Date.now(
   try {
     try { lockFd = fs.openSync(lock, 'wx', 0o600); }
     catch { fail('Another publication may be running. Inspect the local publication lock before retrying.'); }
-    const unchanged = comparePrevious(existingSnapshot(output), result.snapshot, bytes);
+    const current = existingSnapshot(output);
+    if (current?.bytes !== previous?.bytes) fail('Public snapshot changed during preparation; reconcile before publication.');
+    const unchanged = comparePrevious(current, result.snapshot, bytes);
     if (!unchanged) {
       try {
         tempFd = fs.openSync(temp, 'wx', 0o644);
@@ -138,7 +174,7 @@ export function publish({ inputPath, check = false, root = ROOT, now = Date.now(
 
 function main(args) {
   if (args.length === 1 && args[0] === '--help') {
-    console.log('Usage: node scripts/publish-internships.mjs --input /absolute/private/export.json [--check]\nWrites only internships-data.json after complete validation. No network, deployment or version changes.\nEnvelope: source {schemaVersion:2, provenance {spreadsheetId, sheetId, sheetTitle, exportedAt, fullSnapshot:true}, headers, rows}, admissions [receipt or null per row], publication {approved:true, allowEmpty:false}.\nExport and included source checks must be from the last 24 hours; checks must precede the export, allowing 5 minutes of clock skew. Reconcile canonical duplicates across all source statuses.\nUse publication.allowEmpty:true only for an explicitly reviewed empty replacement. Obtain a fresh complete export after Sheet removals.');
+    console.log('Usage: node scripts/publish-internships.mjs --input /absolute/private/export.json [--check]\nWrites only internships-data.json after complete validation. No network, deployment or version changes.\nEnvelope: source {schemaVersion:2, provenance {spreadsheetId, sheetId, sheetTitle, exportedAt, fullSnapshot:true}, headers, rows}, admissions [receipt or null per row], publication {approved:true, allowEmpty:false}.\nExport and newly admitted or changed source checks must be from the last 24 hours; checks must precede the export, allowing 5 minutes of clock skew. Unchanged previously approved rows may use {carryForward:true, previousSnapshotSha256} to preserve their original verification dates. Holds/removals always take precedence. Reconcile canonical duplicates across all source statuses.\nUse publication.allowEmpty:true only for an explicitly reviewed empty replacement. Obtain a fresh complete export after Sheet removals.');
     return;
   }
   let inputPath, check = false;

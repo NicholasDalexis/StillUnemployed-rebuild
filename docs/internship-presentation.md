@@ -55,3 +55,26 @@ are recorded separately from this implementation contract.
 The endpoint does not collect account data, preferences or analytics. It fetches
 only three public employer-listing fields using a fixed server-side URL. Private
 Golden notes, admission rationale and source artifacts never enter the feed.
+
+## Incremental offline publication, September 27, 2026
+
+Author: Codex. Source: Nic's adopted P0 board-reliability request and the current
+native export. Status: local implementation; hosted publication verified separately.
+
+The fresh-receipt requirement above remains mandatory for new admissions and
+changed public facts. An unchanged previously approved row may instead carry
+forward from the exact prior snapshot SHA-256. The exporter reprojects the current
+Sheet row and compares every public fact, preserves original verification dates,
+and rejects changed facts or an identity absent from the prior approved snapshot.
+This does not claim a fresh employer check. A fresh complete export remains
+required; native holds, closures, absence and removals always take precedence.
+An explicitly unresolved new identity may remain unpublished with a private
+reason; this cannot silently remove an already approved identity.
+
+The Sheet's capitalized `Not listed` pay basis is accepted without inferring a
+period. Public location/state text stays bounded at 1,000 characters, and
+eligibility stays bounded at 8,000 characters with at most 100 supplied lines.
+This accommodates multi-location student postings while retaining validation.
+No live-feed architecture, source writer, provider, collection or spending change.
+
+-Codex

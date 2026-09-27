@@ -4,7 +4,7 @@
 const I=require('../../js/internships.js');
 const HEADERS=['Company','Job Title','Link','Location','Type','Salary','Years of Experience','Category','Description','Pick','Active/Dead','Date Added','Dead Date','TL;DR','Date Posted','Cycle','Eligibility Flags','College Credit','Pay Basis','Pay Status','Benefits','Application Status','Applications Open','Start Date','Application Deadline','Timing Source','Upcoming Brand Basis'];
 const credits={'Required':'required','Available':'available','School approval required':'school_approval_required','Not offered':'not_offered','Not listed':'not_listed'};
-const bases={'hour':'hour','week':'week','month':'month','program':'program','annualized year':'annualized_year','not listed':'not_listed'};
+const bases={'hour':'hour','week':'week','month':'month','program':'program','annualized year':'annualized_year','not listed':'not_listed','Not listed':'not_listed'};
 const payStates={'Paid':'paid','Unpaid':'unpaid','Not disclosed':'not_disclosed'};
 const applicationStates={'Open':'open','Upcoming':'upcoming','Closed':'closed','Unknown':'unknown'};
 function nonempty(v){return typeof v==='string'&&!!v.trim();}

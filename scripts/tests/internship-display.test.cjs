@@ -5,6 +5,7 @@ const I=require('../../js/internships.js');
 const sourceFeed=require('../../internships-data.json');
 const displayCopy=require('../../netlify/functions/lib/internship-display.json');
 const feed={...sourceFeed,jobs:sourceFeed.jobs.map(job=>I.withPresentation(job,displayCopy[job.link]))};
+const historical=require('./fixtures/internship-display-historical.json').jobs.map(job=>I.withPresentation(job,displayCopy[job.link]));
 const words=value=>value.trim().split(/\s+/).length;
 
 test('all admitted internship records have four concise display bullets without changing full employer facts',()=>{
@@ -23,7 +24,7 @@ test('all admitted internship records have four concise display bullets without 
 });
 
 test('presentation summaries retain critical admitted program conditions and unknown locations without inventing them',()=>{
-  const select=(company,role='')=>{const job=feed.jobs.find(job=>job.co.includes(company)&&job.role.includes(role));assert(job,company);return job;};
+  const select=(company,role='')=>{const job=[...feed.jobs,...historical].find(job=>job.co.includes(company)&&job.role.includes(role));assert(job,company);return job;};
   assert.match(I.detailBullets(select('WEBTOON')).at(-1),/20–29 hours\/week.*graduates preferred, not required/i);
   assert.match(I.detailBullets(select('Too Lost')).at(-1),/college[- ]credit (?:eligibility )?required/i);
   assert.equal(I.locationLabel(select('Henkel')),'Location not listed');

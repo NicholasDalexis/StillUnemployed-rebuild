@@ -235,3 +235,50 @@ test('CLI rejects undeclared output/network flags and publishes only to its own 
   const result = run(['--input', b.inputPath]);assert.equal(result.status, 0, result.stderr);
   assert.equal(JSON.parse(result.stdout).included, 1);assert.equal(JSON.parse(fs.readFileSync(b.output, 'utf8')).jobs.length, 1);
 });
+
+
+test('carry-forward preserves real check dates and rejects changed, new or unbound records', async t => {
+  const {createHash}=require('node:crypto');
+  const old=row(), fresh=row({Link:'https://example.org/new-internship',Company:'New Studio'});
+  const input=envelope([old,fresh]); const b=sandbox(t,input);
+  const prior=(await api).createSnapshot(envelope([old]),{now:NOW}).snapshot;
+  prior.jobs[0].verification.checkedAt='2030-08-01T15:00:00Z';prior.sourceExportedAt='2030-08-01T16:00:00Z';
+  const bytes=JSON.stringify(prior)+'\n';fs.writeFileSync(b.output,bytes);
+  input.admissions[0]={carryForward:true,previousSnapshotSha256:createHash('sha256').update(bytes).digest('hex')};b.write(input);
+  assert.equal((await b.invoke({check:true})).included,2);
+  await b.invoke();let result=JSON.parse(fs.readFileSync(b.output,'utf8'));
+  assert.equal(result.jobs.find(j=>j.link===old.Link).verification.checkedAt,'2030-08-01T15:00:00Z');
+  fs.writeFileSync(b.output,bytes);input.source.rows[0][P.HEADERS.indexOf('Salary')]='$999/hour';b.write(input);
+  await assert.rejects(b.invoke(),/Changed public facts/);
+  input.source.rows[0]=P.HEADERS.map(key=>old[key]);input.admissions[0].previousSnapshotSha256='0'.repeat(64);b.write(input);
+  await assert.rejects(b.invoke(),/exact previous public snapshot/);
+  input.admissions[0].previousSnapshotSha256=createHash('sha256').update(bytes).digest('hex');input.source.rows[0][P.HEADERS.indexOf('Link')]='https://example.org/unapproved';b.write(input);
+  await assert.rejects(b.invoke(),/previously approved identity/);
+});
+
+test('fresh Sheet removal overrides carry-forward and an absent prior row is not restored', async t => {
+  const {createHash}=require('node:crypto');const old=row(),fresh=row({Link:'https://example.org/new'});
+  const input=envelope([old,fresh]);const b=sandbox(t,input);
+  const prior=(await api).createSnapshot(envelope([old]),{now:NOW}).snapshot;prior.sourceExportedAt='2030-08-01T16:00:00Z';
+  const bytes=JSON.stringify(prior)+'\n';fs.writeFileSync(b.output,bytes);
+  input.admissions[0]={carryForward:true,previousSnapshotSha256:createHash('sha256').update(bytes).digest('hex')};
+  input.source.rows[0][P.HEADERS.indexOf('Active/Dead')]='Hold';b.write(input);
+  await b.invoke();assert.deepEqual(JSON.parse(fs.readFileSync(b.output,'utf8')).jobs.map(j=>j.link),[fresh.Link]);
+});
+
+
+test('new unresolved source may stay unpublished without removing a previously approved listing', async t => {
+  const record=row(), other=row({Link:'https://example.org/pending'});const input=envelope([record,other]);
+  input.admissions[1]={publicationApproved:false,availability:'unknown',sourceLink:other.Link,reason:'Exact employer application not verified'};
+  const b=sandbox(t,input);assert.equal((await b.invoke({check:true})).included,1);
+  const prior=(await api).createSnapshot(envelope([other]),{now:NOW}).snapshot;
+  fs.writeFileSync(b.output,JSON.stringify(prior));await assert.rejects(b.invoke(),/Only an unpublished/);
+});
+
+
+test('long multi-location internship and capitalized Not listed basis survive repeated validation', async () => {
+  const record=row({Location:'Mountain View, CA; '.repeat(35), 'Pay Basis':'Not listed', Salary:'$94K-125K (pay period not listed)', 'Eligibility Flags':Array.from({length:40},(_,i)=>'Verified requirement '+i).join('\n')});
+  const result=(await api).createSnapshot(envelope([record]),{now:NOW});
+  assert.equal(result.included,1);assert.equal(result.snapshot.jobs[0].payBasis,'not_listed');
+  assert.equal(result.snapshot.jobs[0].eligibilityFlags.length,40);assert.equal(result.snapshot.jobs[0].loc,record.Location);
+});
