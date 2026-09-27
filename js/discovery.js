@@ -6,10 +6,10 @@
   // Preserve existing account history without reading or advancing visit receipts.
   var RETURNING_PICKS_ENABLED=false;
   function clean(value,max){return String(value||'').replace(/[\u0000-\u001f\u007f]/g,' ').trim().slice(0,max);}
-  function profile(value){value=value||{};return {major:clean(value.major,100),location:clean(value.location,100),info:clean(value.info,300)};}
+  function profile(value){value=value||{};return {major:clean(value.major,100),industry:clean(value.industry,100),location:clean(value.location,100),info:clean(value.info,300)};}
   function studyText(value){return String(value||'').toLowerCase().replace(/[’']/g,'').replace(/[^a-z0-9]+/g,' ').trim();}
   function studyPhrase(haystack,needle){var phrase=studyText(needle);return (phrase.length>=3||phrase==='ux'||phrase==='ui')&&(' '+studyText(haystack)+' ').indexOf(' '+phrase+' ')>=0;}
-  function fieldBoost(value){var text=studyText(profile(value).major+' '+profile(value).info),out={};
+  function fieldBoost(value){var text=studyText(profile(value).major+' '+profile(value).industry+' '+profile(value).info),out={};
     function matches(words){return words.some(function(word){return studyPhrase(text,word);});}
     function add(fields){fields.forEach(function(f,i){out[f]=(out[f]||0)+(i?1:3);});}
     if(matches(['marketing','business','business administration','advertising','communication','communications','public relations','mass communication','mass communications','social media','strategic communication','strategic communications']))add(['Marketing','Creative']);
@@ -37,8 +37,9 @@
   }
   function create(root){var App,first=true,started=false,account=null,showHidden=false,form=false,draft=null,undo=null,message='',visitReady=false,recommendations=[],recOpen=false,promptDismissed=false,preferenceResult='',formError='',messageTimer=null;
     function signed(){return !!(root.SUAuth&&root.SUAuth.signedIn()&&(!root.SUAuth.accountCurrent||root.SUAuth.accountCurrent())&&root.SUStore&&root.SUStore.owner());}
-    function data(){if(signed())return root.SUStore.discovery();try{return JSON.parse(root.localStorage.getItem('su_discovery_guest')||'{}');}catch(e){return {};}}
-    function write(k,v){if(signed())return root.SUStore.setDiscovery(k,v);if(k.indexOf('job:')!==0)return false;var d=data();d[k]=v;root.localStorage.setItem('su_discovery_guest',JSON.stringify(d));return true;}
+    function transitioning(){return !!(root.SUAuth&&root.SUAuth.signedIn()&&!signed());}
+    function data(){if(transitioning())return {};if(signed())return root.SUStore.discovery();try{return JSON.parse(root.localStorage.getItem('su_discovery_guest')||'{}');}catch(e){return {};}}
+    function write(k,v){if(transitioning())return false;if(signed())return root.SUStore.setDiscovery(k,v);if(k.indexOf('job:')!==0&&['profile','promptAnswered'].indexOf(k)<0)return false;var d=data();d[k]=v;root.localStorage.setItem('su_discovery_guest',JSON.stringify(d));return true;}
     function canonical(link){return root.SUJobIdentity.keys(link)[0]||link;}
     function key(link){return 'job:'+encodeURIComponent(canonical(link)).replace(/[!'()*]/g,function(c){return '%'+c.charCodeAt(0).toString(16).toUpperCase();});}
     function disposition(job){var d=data(),k=key(job.link);if(d[k])return d[k];var found=Object.keys(d).find(function(k){return k.indexOf('job:')===0&&d[k]&&root.SUJobIdentity.equivalent(d[k].link,job.link);});return found?d[found]:null;}
@@ -52,21 +53,30 @@
         write('visits',{count:number,lastAt:now,previousAt:previousAt,seen:ids.slice(0,2000),snapshotComplete:ids.length<=2000,remindedDay:recommendations.length?Math.floor(now/DAY):(last.remindedDay||0)});
       }else write('visits',Object.assign({},last,{lastAt:now}));
     }
-    function useProfile(){return signed()?profile(data().profile):profile();}
-    function order(jobs,P,interest){if(!signed()||!root.SUAnalytics||!root.SUAnalytics.choices||!root.SUAnalytics.choices().personalization)interest={};var prefs=useProfile(),boost=fieldBoost(prefs),major=prefs.major.toLowerCase();
+    function useProfile(){return profile(data().profile);}
+    function order(jobs,P,interest){
+      var personalize=!!(root.SUAnalytics&&root.SUAnalytics.choices&&root.SUAnalytics.choices().personalization);
+      if(!personalize)interest={};
+      else if(!signed()&&!transitioning()){
+        interest={};var history=root.SUBoardExperience&&root.SUBoardExperience.history?root.SUBoardExperience.history():[];
+        history.forEach(function(item){var job=jobs.find(function(j){return root.SUJobIdentity.equivalent(j.link,item.link);}),weight={viewed:1,saved:3,applied:5}[item.action];if(job&&weight)interest[canonical(job.link)]=Object.assign(P.classify(job),{weight:weight,at:item.at});});
+      }
+      var prefs=useProfile(),boost=fieldBoost(prefs),major=prefs.major.toLowerCase();
       // A posting can explicitly welcome a major outside the small adjacency dictionary.
       var directFields={};if(major.length>=3)jobs.forEach(function(j){if(studyPhrase(j.desc||'',major))directFields[P.classify(j).field]=true;});
       Object.keys(directFields).forEach(function(field){boost[field]=(boost[field]||0)+3;});
       var ranked=P.rank(jobs,interest,{fieldBoost:boost});
-      if(first&&!signed())ranked=starter(jobs,P);
+      if(first&&!signed()&&!Object.keys(boost).length&&!Object.keys(interest||{}).length)ranked=starter(jobs,P);
       else if(!Object.keys(P.preferences(interest||{},Date.now()).fields).length&&!Object.keys(boost).length)ranked=starter(jobs,P);
-      if(prefs.location){var query=prefs.location.toLowerCase(),groups={};function group(j){var m=P.classify(j);return m.field+'|'+m.role;}ranked.forEach(function(j){(groups[group(j)]||(groups[group(j)]=[])).push(j);});Object.keys(groups).forEach(function(k){groups[k].sort(function(a,b){return Number(String(b.loc||'').toLowerCase().indexOf(query)>=0)-Number(String(a.loc||'').toLowerCase().indexOf(query)>=0);});});ranked=ranked.map(function(j){return groups[group(j)].shift();});}
+      if(prefs.location){var query=prefs.location.toLowerCase(),groups={},states=root.SUStates?root.SUStates.searchQuery(prefs.location).states:[];
+        function match(j){var codes=root.SUStates?root.SUStates.extract(j.state,j.loc):[];return String(j.loc||'').toLowerCase().indexOf(query)>=0||states.some(function(code){return codes.indexOf(code)>=0;});}
+        function group(j){var m=P.classify(j);return m.field+'|'+m.role;}ranked.forEach(function(j){(groups[group(j)]||(groups[group(j)]=[])).push(j);});Object.keys(groups).forEach(function(k){groups[k].sort(function(a,b){return Number(match(b))-Number(match(a));});});ranked=ranked.map(function(j){return groups[group(j)].shift();});}
       return ranked;
     }
     function blocked(){return !!(App&&(App.state.detailOpen||App.state.feedbackOpen||App.state.adviceOpen||App.state.signupOpen||App.state.lookOpen||App.state.modalOpen))||!!root.document.querySelector('dialog[open], [role="dialog"][aria-modal="true"]:not(#overlay-root *)');}
-    function preferencesOpen(){return signed()&&form&&!blocked();}
+    function preferencesOpen(){return form&&!blocked()&&!transitioning();}
     function modalHTML(esc){
-        var v=draft||useProfile();return '<form class="su-discovery-note su-preferences" id="su-discovery-form" data-act="stop" tabindex="-1" aria-labelledby="su-preferences-title"><button type="button" class="su-discovery-close" data-discovery="close" aria-label="Close preferences"><svg class="su-close-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg></button><h2 id="su-preferences-title">Tune your feed</h2><p>We’ll remember these interests between visits to help order your jobs. Every answer is optional; these hints never filter roles out.</p><label for="su-major">Major or area of study <span>(optional)</span></label><input id="su-major" name="major" maxlength="100" value="'+esc(v.major)+'" placeholder="e.g. communications"><label for="su-location">Preferred location <span>(optional)</span></label><input id="su-location" name="location" maxlength="100" value="'+esc(v.location)+'" placeholder="e.g. Chicago"><details class="su-preferences-more"'+(v.info?' open':'')+'><summary>Anything else you want to explore? <span>(optional)</span></summary><label for="su-info">Roles or interests</label><textarea id="su-info" name="info" maxlength="300" placeholder="Roles or creative skills you enjoy">'+esc(v.info)+'</textarea><p class="su-discovery-small">These hints help sort your jobs. You can edit or clear them anytime. Skip sensitive details.</p></details><p class="su-preferences-error" role="status">'+esc(formError)+'</p><div class="su-discovery-tools su-preferences-actions"><button type="submit">Save preferences</button><button type="button" data-discovery="skip">Skip for now</button></div></form>';
+        var v=draft||useProfile();return '<form class="su-discovery-note su-preferences" id="su-discovery-form" data-act="stop" tabindex="-1" aria-labelledby="su-preferences-title"><button type="button" class="su-discovery-close" data-discovery="close" aria-label="Close preferences"><svg class="su-close-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg></button><h2 id="su-preferences-title">Tune your feed</h2><label for="su-major">What was your major in college? <span>(optional)</span></label><input id="su-major" name="major" maxlength="100" value="'+esc(v.major)+'" placeholder="e.g. communications"><label for="su-industry">What industry do you want a job in? <span>(optional)</span></label><input id="su-industry" name="industry" maxlength="100" value="'+esc(v.industry)+'" placeholder="e.g. social media or PR"><label for="su-location">Preferred city or state <span>(optional)</span></label><input id="su-location" name="location" maxlength="100" value="'+esc(v.location)+'" placeholder="e.g. Chicago, IL or Ohio"><details class="su-preferences-more"'+(v.info?' open':'')+'><summary>Anything else you want to explore? <span>(optional)</span></summary><label for="su-info">Roles or interests</label><input id="su-info" name="info" maxlength="300" value="'+esc(v.info)+'" placeholder="Roles or creative skills you enjoy"></details><p class="su-preferences-error" role="status">'+esc(formError)+'</p><div class="su-discovery-tools su-preferences-actions"><button type="submit">Save preferences</button><button type="button" data-discovery="skip">Skip for now</button>'+(!signed()?'<button type="button" data-discovery="signin">Sign in with Google</button>':'')+'</div></form>';
     }
     function track(name){if(root.SUAnalytics&&typeof root.SUAnalytics.emit==='function')root.SUAnalytics.emit(name,{});}
     function closePreferences(){
@@ -75,7 +85,7 @@
       render();
     }
     function resultText(){
-      if(!preferenceResult)return message;
+      if(!preferenceResult)return message;if(!signed())return (preferenceResult==='cleared'?'Preferences cleared':'Preferences saved')+' on this device.';
       var state=root.SUAuth&&root.SUAuth.syncState?root.SUAuth.syncState():'saving';
       var done=preferenceResult==='cleared'?'Preferences cleared':'Preferences saved';
       if(state==='synced')return done+' in your account.';
@@ -89,7 +99,7 @@
       var total=hiddenCount();
       return '<button type="button" data-discovery="hidden" aria-pressed="'+showHidden+'"'+(total?'':' disabled')+'>'+esc('Hidden jobs')+' ('+total+')</button>';
     }
-    function preferencesHTML(){return signed()?'<button type="button" id="su-preferences-open" class="su-tune-feed" data-discovery="settings" aria-haspopup="dialog">Tune your feed →</button>':'';}
+    function preferencesHTML(){return '<button type="button" id="su-preferences-open" class="su-tune-feed" data-discovery="settings" aria-haspopup="dialog">Tune your feed →</button>';}
     function html(esc){
       if(!message&&!preferenceResult)return '';
       return '<section class="su-discovery su-discovery-feedback'+(preferenceResult?'':' su-compact-feedback')+'" aria-label="Board update"><p role="status"><span id="su-preference-status">'+esc(resultText())+'</span>'+(preferenceResult?' <button type="button" id="su-preference-retry" data-discovery="retry"'+(root.SUAuth.syncState&&root.SUAuth.syncState()==='error'?'':' hidden')+'>Retry sync</button>':'')+(undo&&message==='Added to Tracker.'?' <a class="su-tracker-sticky" href="/tracker.html">Tracker →</a>':'')+(undo?' <button type="button" data-discovery="undo">Undo</button>':'')+'</p></section>';
@@ -105,12 +115,13 @@
       root.addEventListener('su:account-ready',function(){rememberVisit();render();});
       root.addEventListener('su:data-sync',function(){if(account!==(root.SUStore&&root.SUStore.owner()))auth();else rememberVisit();});
       root.document.addEventListener('input',function(e){if(e.target.closest&&e.target.closest('#su-discovery-form'))draft=readForm();});
-      function readForm(){var f=root.document.getElementById('su-discovery-form');return profile(f?{major:f.elements.major.value,location:f.elements.location.value,info:f.elements.info.value}:{});}
-      root.document.addEventListener('submit',function(e){if(e.target.id!=='su-discovery-form')return;e.preventDefault();if(!signed())return;try{if(!write('profile',readForm()))throw Error('Not saved');write('promptAnswered',true);form=false;draft=null;promptDismissed=true;preferenceResult='saved';message='';track('preference_save');render();}catch(err){track('preference_error');formError='Could not save preferences. Your answers are still here. Please try again.';render();}});
-      root.document.addEventListener('click',function(e){var button=e.target.closest&&e.target.closest('[data-discovery]');if(!button)return;e.preventDefault();var action=button.getAttribute('data-discovery');if(!signed()&&['hidden','undo','restore'].indexOf(action)<0)return;try{
+      function readForm(){var f=root.document.getElementById('su-discovery-form');return profile(f?{major:f.elements.major.value,industry:f.elements.industry?f.elements.industry.value:'',location:f.elements.location.value,info:f.elements.info.value}:{});}
+      root.document.addEventListener('submit',function(e){if(e.target.id!=='su-discovery-form')return;e.preventDefault();try{var preferences=readForm();if(!write('profile',preferences))throw Error('Not saved');write('promptAnswered',true);form=false;draft=null;promptDismissed=true;preferenceResult='saved';message='';track('preference_save');['major','industry','location','info'].forEach(function(key){if(preferences[key])track('preference_'+key+'_saved');});render();}catch(err){track('preference_error');formError='Could not save preferences. Your answers are still here. Please try again.';render();}});
+      root.document.addEventListener('click',function(e){var button=e.target.closest&&e.target.closest('[data-discovery]');if(!button)return;e.preventDefault();var action=button.getAttribute('data-discovery');try{
+        if(action==='signin'){if(root.SUAuth&&root.SUAuth.signIn)root.SUAuth.signIn(button);return;}
         if(action==='settings'){
           // The modal returns to the visible Filters trigger after its panel closes.
-          if(App.state.openPanel&&App.closeBoardPanels){var opener=root.document.querySelector('[data-act="toggleFilters"]');App.closeBoardPanels();if(opener)opener.focus({preventScroll:true});}
+          // Retain Filters underneath this sheet so Skip/X returns to it.
           clearMessageTimer();track('preference_open');form=true;draft=null;message='';formError='';preferenceResult='';
         }
         if(action==='close'){closePreferences();return;}
@@ -122,7 +133,8 @@
         if(action==='undo'&&undo){write(undo.key,undo.previous);undo=null;message='Restored to your board. Tracker entries are unchanged.';expireMessage();}
         if(action==='restore'){var keyToRestore=button.getAttribute('data-key'),old=data()[keyToRestore];if(old)write(keyToRestore,Object.assign({},old,{hidden:false}));}
         if(RETURNING_PICKS_ENABLED&&(action==='recommend'||action==='dismiss-recos')){var visits=data().visits||{};write('visits',Object.assign({},visits,{remindedDay:Math.floor(Date.now()/DAY)}));if(action==='dismiss-recos')recommendations=[];else recOpen=!recOpen;}
-        if(action==='settings'&&App.renderOverlays)App.renderOverlays();else render();if(action==='settings'){var panel=root.document.getElementById('su-discovery-form');if(panel){panel.focus({preventScroll:true});}}
+        if(action==='settings'&&App.renderOverlays)App.renderOverlays();else render();if(action==='signin'){if(root.SUAuth&&root.SUAuth.signIn)root.SUAuth.signIn(button);return;}
+        if(action==='settings'){var panel=root.document.getElementById('su-discovery-form');if(panel){panel.focus({preventScroll:true});}}
       }catch(err){if(action==='clear')track('preference_error');message='This change could not be saved. Please try again.';formError=message;render();}});
       account=root.SUStore&&root.SUStore.owner();rememberVisit();
     }

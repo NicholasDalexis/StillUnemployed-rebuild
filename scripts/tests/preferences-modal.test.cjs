@@ -76,14 +76,14 @@ function preferencesUI(t) {
   t.after(() => { if (connection) connection.stop(); });
   function form() {
     const node = b.document.getElementById('su-discovery-form');
-    if (node && !node.defaultsReady) { node.elements.info.value = node.elements.info.textContent;node.defaultsReady = true; }
+    if (node && !node.defaultsReady) { node.defaultsReady = true; }
     return node;
   }
   function open() {
     const trigger = b.grid.querySelector('[data-act="toggleFilters"]');
-    assert(trigger);trigger.focus();trigger.click();
+    assert(trigger);trigger.focus();if(b.app.state.openPanel!=='filters')trigger.click();
     const button = b.document.getElementById('su-preferences-open');assert(button);button.focus();button.click();
-    assert.equal(b.app.state.openPanel, null, 'choosing preferences closes Filters first');return form();
+    assert.equal(b.app.state.openPanel, 'filters', 'preferences preserve Filters underneath');return form();
   }
   function input(name, value) { const node = form().elements[name];node.value = value;node.focus();b.fire('input', node);return node; }
   function action(name) { const node = b.document.querySelector('[data-discovery="'+name+'"]');assert(node, name);node.click(); }
@@ -103,9 +103,9 @@ test('preferences open in the shared modal layer and all dismissal paths restore
     if (close === 'Escape') u.b.fire('keydown', form, { key:'Escape' });
     else if (close === 'backdrop') u.b.overlay.children[0].click();
     else u.action(close);
-    assert.equal(u.form(), null, close);assert.equal(u.b.grid.inert, false);
-    assert.equal(u.b.document.body.classList.contains('su-dialog-open'), false);
-    assert.equal(u.b.document.activeElement, u.b.grid.querySelector('[data-act="toggleFilters"]'));
+    assert.equal(u.form(), null, close);assert.equal(u.b.grid.inert, true);
+    assert.equal(u.b.document.body.classList.contains('su-dialog-open'), true);
+    assert.equal(u.b.app.state.openPanel,'filters');assert.equal(u.b.document.activeElement,u.b.document.getElementById('su-preferences-open'));u.b.overlay.querySelector('[data-act="toggleFilters"]').click();
     assert.equal(u.store.discovery().promptAnswered, true);
   }
 });
@@ -121,7 +121,7 @@ test('keyboard focus wraps, interior clicks stay open and remote rerenders prese
   input.focus();const remote = S.create(memoryStorage());remote.activate('alice');remote.setDiscovery('profile', { major:'Remote update' });
   u.store.receive(remote.snapshot());u.b.fireWindow('su:profile-ready');
   assert.equal(u.form(), form);assert.equal(form.elements.info.value, 'Unsubmitted private draft');
-  assert.equal(u.b.document.activeElement, input);assert.deepEqual(u.emitted.map(e=>e.name), ['preference_open']);
+  assert.equal(u.b.document.activeElement, input);assert.deepEqual(u.emitted.map(e=>e.name), ['filters_open','preference_open']);
   u.action('close');u.open();assert.equal(u.form().elements.info.value, '');
   assert.equal(u.form().elements.major.value, 'Remote update', 'closing discards only the unsubmitted draft');
 });
@@ -132,8 +132,8 @@ test('an account change closes the old draft and the next account opens only its
   for (let i = 0;i < 3;i++) u.root.SUDiscovery.dismiss(u.b.app.jobs[i].link, 'applied');
   u.b.app.render();assert.equal(u.form(), null, 'confirmation counts cannot trigger a new-account form');u.open();
   assert.equal(u.form().elements.major.value, '');u.input('info', 'Bob draft');
-  u.sign(null);assert.equal(u.form(), null);assert.equal(u.b.grid.inert, false);
-  assert.equal(u.b.document.getElementById('su-preferences-open'), null);
+  u.sign(null);assert.equal(u.form(), null);assert.equal(u.b.grid.inert, true);
+  assert(u.b.document.getElementById('su-preferences-open'),'guests can tune the device-local feed');
   u.sign('alice');u.open();assert.equal(u.form().elements.major.value, '');
   assert.equal(u.form().elements.info.value, '');
 });
@@ -154,7 +154,7 @@ test('failed saves display an error inside the preserved modal without losing an
   const original = u.store.setDiscovery;
   u.store.setDiscovery = () => { throw new Error('Quota exceeded'); };
   u.submit();assert.equal(u.form(), form);assert.match(form.querySelector('.su-preferences-error').textContent, /Could not save/);
-  assert.equal(form.elements.info.value, 'Keep this draft');assert.deepEqual(u.emitted.map(e=>e.name), ['preference_open','preference_error']);
+  assert.equal(form.elements.info.value, 'Keep this draft');assert.deepEqual(u.emitted.map(e=>e.name), ['filters_open','preference_open','preference_error']);
   u.action('close');assert.equal(u.form(), null, 'storage failure never traps the visitor');
   u.store.setDiscovery = original;
 });
@@ -163,9 +163,9 @@ test('Skip for now remains a dismissal when the browser cannot persist the promp
   const u = preferencesUI(t);u.open();u.input('major', 'Unsubmitted answer');
   u.store.setDiscovery = () => { throw new Error('Quota exceeded'); };
   u.action('skip');assert.equal(u.form(), null, 'an optional question must stay skippable when storage fails');
-  assert.equal(u.b.grid.inert, false);assert.equal(u.b.document.body.classList.contains('su-dialog-open'), false);
-  assert.equal(u.b.document.activeElement, u.b.grid.querySelector('[data-act="toggleFilters"]'));
-  assert.deepEqual(u.emitted.map(e=>e.name), ['preference_open'], 'a failed persistent skip is not reported as saved');
+  assert.equal(u.b.grid.inert, true);assert.equal(u.b.document.body.classList.contains('su-dialog-open'), true);
+  assert.equal(u.b.app.state.openPanel,'filters');assert.equal(u.b.document.activeElement,u.b.document.getElementById('su-preferences-open'));u.b.overlay.querySelector('[data-act="toggleFilters"]').click();
+  assert.deepEqual(u.emitted.map(e=>e.name), ['filters_open','preference_open'], 'a failed persistent skip is not reported as saved');
   u.b.app.render();assert.equal(u.form(), null, 'this visit does not immediately repeat a dismissed prompt');
 });
 
@@ -185,13 +185,13 @@ test('save and clear acknowledge local persistence separately from confirmed syn
   finish();hold = false;await pending;await tick();
   assert.equal(u.b.document.getElementById('su-preference-status').textContent, 'Preferences saved in your account.');
   u.open();u.input('major','');u.input('location','');u.input('info','');fail = true;u.submit();await connection.flush();
-  assert.deepEqual(u.store.discovery().profile,{major:'',location:'',info:''});
+  assert.deepEqual(u.store.discovery().profile,{major:'',industry:'',location:'',info:''});
   assert.equal(u.b.document.getElementById('su-preference-status').textContent, 'Preferences saved on this device. Account sync paused.');
   assert.equal(u.b.document.getElementById('su-preference-retry').hidden, false);
   fail = false;u.action('retry');assert.equal(u.retries, 1);await connection.flush();
   assert.equal(u.b.document.getElementById('su-preference-status').textContent, 'Preferences saved in your account.');
   assert.equal(u.b.document.getElementById('su-preference-retry').hidden, true);
-  assert.deepEqual(u.emitted.map(event => [event.name, Object.keys(event.payload)]), [['preference_open', []], ['preference_save', []], ['preference_open', []], ['preference_save', []]]);
+  assert.deepEqual(u.emitted.map(event => [event.name, Object.keys(event.payload)]), [['filters_open', []], ['preference_open', []], ['preference_save', []], ['preference_major_saved', []], ['preference_info_saved', []], ['preference_open', []], ['preference_save', []]]);
 });
 
 test('a delayed old-account save cannot restore an old status or draft after switching accounts', async t => {

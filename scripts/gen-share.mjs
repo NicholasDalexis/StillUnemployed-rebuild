@@ -293,7 +293,7 @@ export function stub(job, slug, themeKey, site = SITE) {
 <meta name="twitter:description" content="${esc(desc)}">
 <meta name="twitter:image" content="${img}">
 <meta http-equiv="refresh" content="0; url=${esc(url)}">
-<script>location.replace(${JSON.stringify(url)});</script>
+<script>(function(){var target=new URL(${JSON.stringify(url)},location.origin),incoming=new URLSearchParams(location.search);['utm_source','utm_medium','utm_campaign','utm_id','utm_content'].forEach(function(key){var value=incoming.get(key);if(value&&value.length<=120)target.searchParams.set(key,value);});location.replace(target.href);})();</script>
 </head><body style="font-family:sans-serif;padding:40px;color:#2C2118;">Taking you to the ${job.internship?'internship':'job'} on StillUnemployed.com…</body></html>`;
 }
 

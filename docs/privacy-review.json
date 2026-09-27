@@ -1,20 +1,21 @@
 {
-  "version": "2.6.8",
+  "version": "2.6.9",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-23T16:28:04.714Z",
+  "reviewedAt": "2026-09-27T00:29:28.177Z",
   "reviewer": "Codex root",
-  "sourceDigest": "485f5303ef11933776b862072685f1db5113c3bd8a864953c7298acecabcd137",
-  "sourceFileCount": 202,
-  "privacyChanged": false,
-  "termsChanged": false,
-  "baselineReview": "docs/privacy-reviews/2.6.7.json",
-  "scope": "Preview-only spelling correction in the shared board headline; no behavior or data changes.",
+  "sourceDigest": "49bdf5bd223abc90f3df0794025321bdefa28c02e5941fcb464a1a437afce126",
+  "sourceFileCount": 205,
+  "privacyChanged": true,
+  "termsChanged": true,
+  "baselineReview": "docs/privacy-reviews/2.6.8.json",
+  "scope": "Consented first-party signed identities, capped reset work, 400-day identifier-free daily totals, bounded LinkedIn post/link attribution, optional guest preferences and shared-link discovery. No new provider or permissions.",
   "checks": {
-    "disclosures": "Reviewed Privacy and Terms against the one-word correction; no wording change needed.",
-    "security": "No permissions, dependencies, endpoints, storage or data use changed.",
-    "visual": "Verify Jobs and Internships rotating headline on hosted preview."
+    "disclosures": "Reviewed Privacy and Terms against source. Discloses signed site cookie, 90-day raw and 400-day totals, consent choice, guest preferences, broad ordering hints, recognized public marketing tags and measurement limits.",
+    "security": "Token-derived accounts; signed server-issued anonymous capability; origin, issuance/reset budgets; private authenticated owner dashboard; no email/search text/preference answers copied into analytics.",
+    "visual": "390x844 mobile filters and preference-return flow verified; hosted verification follows build."
   },
   "openItems": [
-    "Hosted preview readback pending; production excluded."
+    "Preview only. Production release and fresh production Google login remain pending.",
+    "Beehiiv provider-confirmation environment/webhook missing; SU-RM-065 subscriber suppression remains planned."
   ]
 }

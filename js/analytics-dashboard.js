@@ -6,10 +6,10 @@
   if (root && root.document) api.mount(root);
 })(typeof window !== 'undefined' ? window : null, function () {
   'use strict';
-  var COUNT_KEYS = ['events', 'visits', 'visitors', 'signups', 'logins', 'job_opens', 'saves', 'apply_clicks', 'reported_applied', 'tracker_users'];
+  var COUNT_KEYS = ['events', 'visits', 'visitors', 'signups', 'logins', 'login_users', 'job_opens', 'saves', 'apply_clicks', 'reported_applied', 'tracker_users'];
   var THEME_NAMES = {original:'Original',girly:'For the girlies',poker:'Casino',mermaid:'Mermaidcore',bratt:'bratt',noir:'Black Cat',beauty:'Beauty',chess:'Chess'};
   function themeRows(rows) { return rows.map(function(row){return {label:THEME_NAMES[row.label] || row.label,count:row.count};}); }
-  var EVENT_NAMES = {tldr_open:'TL;DR openings',newsletter_impression:'Visible newsletter form exposures',newsletter_engagement:'Newsletter form focus',newsletter_submitted:'Subscriptions received by Beehiiv',newsletter_confirmed:'Provider-confirmed newsletter signups',preference_save:'Preference save actions',preference_clear:'Preference clear actions',preference_skip:'Preference skip actions',feedback_not_fit:'Not a fit responses',
+  var EVENT_NAMES = {tldr_open:'TL;DR openings',newsletter_impression:'Visible newsletter form exposures',newsletter_engagement:'Newsletter form focus',newsletter_submitted:'Subscriptions received by Beehiiv',newsletter_confirmed:'Provider-confirmed newsletter signups',share_arrival:'Shared job arrivals',share_missing:'Shared posting no longer live',share_invalid:'Invalid shared links',filters_open:'Filter popup opens',preference_major_saved:'Saves with a major',preference_industry_saved:'Saves with an industry',preference_location_saved:'Saves with a location',preference_info_saved:'Saves with extra interests',preference_save:'Preference save actions',preference_clear:'Preference clear actions',preference_skip:'Preference skip actions',feedback_not_fit:'Not a fit responses',
     preferred_source_click:'Google source selector link clicks',feedback_open:'Feedback notes shown',feedback_dismiss:'Feedback notes dismissed',feedback_unavailable:'Reported unavailable responses',
     feed_ready:'Completed feed loads',feed_load_error:'Feed loading failures',feed_retry:'Feed retry actions',feed_refresh:'Feed refresh starts',search_empty:'Searches with no matches',
     signin_start:'Sign-in starts',signin_cancel:'Sign-in cancellations',signin_error:'Sign-in failures',signout_complete:'Completed sign-outs',signout_error:'Sign-out failures',sync_error:'Sync failures',sync_retry:'Sync retry actions',sync_recovered:'Sync recoveries',
@@ -36,6 +36,7 @@
     ['cta','placement','job'].forEach(function(k){out[k]=Array.isArray(value[k])?value[k].slice(0,150).filter(function(r){return r&&typeof r.label==='string';}).map(function(r){return {label:r.label.slice(0,160),impressions:count(r.impressions),converted:count(r.converted),rate:rate(r.rate)};}):[];});
     return out;
   }
+  function groups(value,keys){return Array.isArray(value)?value.slice(0,150).filter(function(r){return r&&typeof r.label==='string';}).map(function(r){var out={label:r.label.slice(0,160)};keys.forEach(function(k){out[k]=count(r[k]);});return out;}):[];}
   function normalize(raw) {
     if (!raw || typeof raw !== 'object' || !raw.totals || !Array.isArray(raw.daily) || raw.tracking !== 'consent-only') throw new Error('invalid-response');
     var totals = {}; COUNT_KEYS.forEach(function (key) { totals[key] = count(raw.totals[key]); });
@@ -47,11 +48,14 @@
       daily: raw.daily.slice(0, 92).filter(function (d) { return d && /^\d{4}-\d{2}-\d{2}$/.test(d.date) && Number.isFinite(Date.parse(d.date)); }).map(function (d) {
         return { date: d.date, visits: count(d.visits), job_opens: count(d.job_opens), apply_clicks: count(d.apply_clicks) };
       }).sort(function (a, b) { return a.date.localeCompare(b.date); }),
+      acquisition:list(raw.acquisition),campaigns:list(raw.campaigns),marketingLinks:groups(raw.marketingLinks,['views','visits','visitors','tldr','apply']),
+      jobFunnels:groups(raw.jobFunnels,['impressions','tldr','apply','reported','saves','arrivals']),advice:groups(raw.advice,['impressions','opens']),
+      trajectory:raw.trajectory?{startsAt:count(raw.trajectory.startsAt),retentionDays:count(raw.trajectory.retentionDays),daily:Array.isArray(raw.trajectory.daily)?raw.trajectory.daily.slice(0,400).filter(function(d){return d&&/^\d{4}-\d{2}-\d{2}$/.test(d.date);}).map(function(d){return {date:d.date,visitors:count(d.visitors),visits:count(d.visits),counts:d.counts||{}};}).sort(function(a,b){return a.date.localeCompare(b.date);}):[]}:null,
       fields: list(raw.fields), roles: list(raw.roles), themes: list(raw.themes), events: list(raw.events), jobs: list(raw.jobs), companies: list(raw.companies),
       themeVotes: raw.themeVotes && Array.isArray(raw.themeVotes.up) && Array.isArray(raw.themeVotes.down) ? {up:list(raw.themeVotes.up),down:list(raw.themeVotes.down)} : null,
       pageTiming: Array.isArray(raw.pageTiming) ? raw.pageTiming.slice(0, 20).filter(function (x) { return x && ['home','board','internships','tracker','privacy','terms','suggest','other'].indexOf(x.label) >= 0; }).map(function (x) { return { label: x.label, count: count(x.count), meanActiveSeconds: count(x.meanActiveSeconds) }; }) : [],
       timing: { returned: count(timing.returned), unknown: count(timing.unknown), capped: count(timing.capped), meanAwaySeconds: count(timing.meanAwaySeconds) },
-      privacy: { rawRetentionDays: count(privacy.rawRetentionDays), minimumCohort: count(privacy.minimumCohort) },
+      privacy: { aggregateRetentionDays:count(privacy.aggregateRetentionDays),rawRetentionDays: count(privacy.rawRetentionDays), minimumCohort: count(privacy.minimumCohort) },
       coverage: { complete: raw.coverage ? raw.coverage.complete === true : null }
     };
   }
@@ -112,12 +116,12 @@
     function el(id) { return doc.getElementById(id); }
     if (!el('dashboard-data')) return;
     function node(tag, text, cls) { var n = doc.createElement(tag); if (text !== undefined) n.textContent = text; if (cls) n.className = cls; return n; }
-    function text(id, value) { el(id).textContent = value; }
+    function text(id, value) { if(el(id))el(id).textContent = value; }
     function state(kind, title, detail) { el('service-state').hidden = !kind; el('service-state').dataset.state = kind || ''; text('state-title', title || ''); text('state-detail', detail || ''); }
     function cancel() { request += 1; if (controller) controller.abort(); controller = null; }
     function clear() { data = null; if(el('newsletter-summary'))el('newsletter-summary').textContent='';if(el('newsletter-breakdown'))el('newsletter-breakdown').replaceChildren();el('dashboard-data').hidden = true; el('freshness').hidden = true; ['metrics','daily-chart','daily-axis','daily-table','journey','fields','roles','themes','theme-likes','theme-dislikes','popular-jobs','companies','page-timing','events','timing-stats','away-average','trend-summary','freshness','cohort-note','retention-note'].forEach(function (id) { el(id).replaceChildren(); }); text('question-answer', 'Try a suggested question to get started.'); el('question').value = ''; }
     function bars(id, rows, empty) {
-      var parent = el(id); parent.replaceChildren();
+      var parent = el(id); if(!parent)return;parent.replaceChildren();
       if (!rows.length) { parent.appendChild(node('li', empty || 'No reportable groups in this window. Empty groups may be below the privacy threshold.', 'empty-chart')); return; }
       var max = rows.reduce(function (n, r) { return Math.max(n, r.count || 0); }, 0);
       rows.forEach(function (row) { var li = node('li'), labels = node('div', undefined, 'bar-labels'), track = node('div', undefined, 'bar-track'), fill = node('div', undefined, 'bar-fill'); labels.append(node('span', row.label), node('strong', format(row.count))); fill.style.setProperty('--bar-size', percent(row.count, max) + '%'); track.setAttribute('aria-hidden', 'true'); track.appendChild(fill); li.append(labels, track); parent.appendChild(li); });
@@ -134,9 +138,15 @@
       var isStale = stale(data.generatedAt); el('freshness').dataset.stale = String(!demo && isStale);
       text('freshness', demo ? 'SYNTHETIC PREVIEW · All counts are invented. Dates and windows are illustrative.' : (isStale ? 'STALE OR UNKNOWN REFRESH TIME · ' : '') + (data.generatedAt ? 'Generated ' + new Date(data.generatedAt).toLocaleString() + ' · ' : 'Refresh time unavailable · ') + (data.windowDays ? 'Last ' + data.windowDays + ' days · ' : '') + 'UTC daily buckets · Consented activity only');
       el('metrics').replaceChildren();
-      [['visits','Visits','Recorded browsing sessions'], ['visitors','Visitors','Distinct analytics visitors'], ['job_opens','Job opens','Cards explored'], ['signups','New accounts','New accounts with analytics consent'], ['tracker_users','Tracker users','Distinct analytics visitors']].forEach(function (m) { var card = node('div', undefined, 'metric'); card.append(node('p', m[1], 'metric-label'), node('strong', format(data.totals[m[0]]), 'metric-value'), node('p', m[2], 'metric-note')); el('metrics').appendChild(card); });
+      [['visits','Visits','Recorded browsing sessions'], ['visitors','Visitors','Distinct analytics visitors'], ['job_opens','Job opens','Cards explored'], ['signups','New accounts','New accounts with analytics consent'], ['tracker_users','Tracker users','Distinct analytics visitors'],['logins','Google sign-ins','Successful consented sign-in events'],['login_users','Signed-in visitors','Distinct identities with a recorded sign-in']].forEach(function (m) { var card = node('div', undefined, 'metric'); card.append(node('p', m[1], 'metric-label'), node('strong', format(data.totals[m[0]]), 'metric-value'), node('p', m[2], 'metric-note')); el('metrics').appendChild(card); });
       ['fields','roles'].forEach(function (id) { bars(id, data[id]); });
       bars('events',eventRows(data.events));
+      bars('acquisition',data.acquisition);bars('campaigns',data.campaigns);
+      function table(id,rows,keys){var body=el(id);if(!body)return;body.replaceChildren();if(!rows.length){var tr=node('tr'),td=node('td','No reportable rows. Missing or withheld groups are not zero.');td.colSpan=keys.length+1;tr.appendChild(td);body.appendChild(tr);return;}rows.forEach(function(row){var tr=node('tr'),th=node('th',row.label||row.date);th.scope='row';tr.appendChild(th);keys.forEach(function(k){tr.appendChild(node('td',format(row[k])));});body.appendChild(tr);});}
+      table('marketing-links',data.marketingLinks,['views','visits','visitors','tldr','apply']);table('job-funnels',data.jobFunnels,['impressions','tldr','apply','reported','saves','arrivals']);table('advice-results',data.advice,['impressions','opens']);
+      var trajectory=data.trajectory;
+      text('trajectory-summary',trajectory&&trajectory.startsAt?'Daily totals collected since '+new Date(trajectory.startsAt).toLocaleDateString()+'. Retained for up to '+format(trajectory.retentionDays)+' days. No historical measurements are reconstructed. Daily visitor counts cannot be summed into unique people.':'Daily archive starts with this update. Earlier dates are unmeasured, not zero.');
+      table('trajectory-table',trajectory?trajectory.daily.map(function(d){return {date:d.date,visits:d.visits,visitors:d.visitors,job_opens:count(d.counts.job_open)||0,apply_clicks:count(d.counts.apply_click)||0,reported_applied:count(d.counts.application_reported)||0,newsletter_confirmed:data.newsletter===null?null:(count(d.counts.newsletter_confirmed)||0)};}):[],['visits','visitors','job_opens','apply_clicks','reported_applied','newsletter_confirmed']);
       if(el('newsletter-summary')){
         var n=data.newsletter;
         text('newsletter-summary',n?format(n.impressions)+' visible form exposures · '+format(n.submitted)+' subscriptions received by Beehiiv · '+format(n.confirmed)+' confirmed signups · '+(typeof n.rate==='number'&&Number.isFinite(n.rate)?(n.rate*100).toFixed(1)+'% matched exposure conversion':'Conversion rate unavailable'):'Newsletter confirmation tracking is not active for this report. Missing data is not zero.');
@@ -160,7 +170,7 @@
       el('daily-table').replaceChildren(); data.daily.forEach(function (d) { var tr = node('tr'), th = node('th', d.date); th.scope = 'row'; tr.appendChild(th); ['visits','job_opens','apply_clicks'].forEach(function (key) { tr.appendChild(node('td', format(d[key]))); }); el('daily-table').appendChild(tr); }); drawTrend();
       text('away-average', duration(data.timing.meanAwaySeconds)); el('timing-stats').replaceChildren(); [['Returned','returned'],['No observed return','unknown'],['Reached 15-minute cap','capped']].forEach(function (r) { var div = node('div'); div.append(node('dt', r[0]), node('dd', format(data.timing[r[1]]))); el('timing-stats').appendChild(div); });
       text('cohort-note', data.privacy.minimumCohort !== null ? 'Field, role, theme, job, company and page-timing groups with fewer than ' + data.privacy.minimumCohort + ' distinct visitors are withheld. Theme votes apply this threshold separately to each like/dislike direction. Visible bars do not show the whole audience.' : 'Small groups are withheld. The reporting threshold was not returned.');
-      text('retention-note', data.privacy.rawRetentionDays !== null ? 'Reporting/use window and retention target: up to ' + data.privacy.rawRetentionDays + ' days. Physical deletion depends on the cleanup schedule and may lag.' : 'The reporting/use window and retention target were not returned.');
+      text('retention-note', data.privacy.rawRetentionDays !== null ? 'Reporting/use window and retention target: up to ' + data.privacy.rawRetentionDays + ' days. Physical deletion depends on the cleanup schedule and may lag. Daily totals without identifiers are retained up to '+format(data.privacy.aggregateRetentionDays)+' days.' : 'The reporting/use window and retention target were not returned.');
       text('question-answer', 'Try a suggested question to get started.');
       if (data.coverage.complete === false) state('error', 'This response is incomplete.', 'Some measurements could not be returned. Treat the visible numbers as partial and refresh to try again.');
       else if (!demo && data.totals.events === 0) state('empty', 'No recorded activity in this window.', 'The service returned successfully. Collection may be new, visitors may not have opted in, or instrumentation may need checking.');

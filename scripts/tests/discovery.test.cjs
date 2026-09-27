@@ -88,3 +88,13 @@ test('dismissal notice expires after five seconds, resets for a new action and n
 });
 
 test('study synonyms are positive hints and phrase boundaries avoid incidental text matches',()=>{for(const major of ['B.F.A. in visual communications','Communication','Mass communications','Cognitive Science','Information Systems','Photojournalism'])assert.ok(Object.keys(D.fieldBoost({major})).length,major);assert.equal(D.studyPhrase('Work with partners and departments','art'),false);assert.equal(D.studyPhrase('We welcome Fine Arts and related majors','fine arts'),true);assert.deepEqual(D.fieldBoost({major:'Department of transportation'}),{});});
+
+
+test('communications and marketing broaden to adjacent fields without excluding other jobs',()=>{
+ for(const major of ['communications','marketing']){const boost=D.fieldBoost({major});assert(boost.Marketing);const f=fixture();f.ls.setItem('su_discovery_guest',JSON.stringify({profile:{major}}));const jobs=[job('Photography',1),job('Social',2,'$80K','Community Specialist'),job('PR & Partnerships',3,'$80K','Public Relations Coordinator')];const result=f.d.order(jobs,P,{});assert.equal(result.length,3);assert.notEqual(result[0].ind,'Photography');}
+});
+test('guest city plus state boosts statewide same-field postings and does not leak into a signed-in account',()=>{
+ const f=fixture();f.root.SUStates=require('../../js/us-states.js');f.ls.setItem('su_discovery_guest',JSON.stringify({profile:{location:'Smalltown, Ohio',major:'marketing'}}));
+ const jobs=[{...job('Brand & Marketing',1),state:'NY',loc:'New York, NY'},{...job('Brand & Marketing',2),state:'OH',loc:'Cleveland, OH'}];
+ assert.equal(f.d.order(jobs,P,{})[0].state,'OH');f.sign('alice');assert.equal(f.d.order(jobs,P,{})[0].state,'NY');f.sign(null);assert.equal(f.d.order(jobs,P,{})[0].state,'OH');
+});

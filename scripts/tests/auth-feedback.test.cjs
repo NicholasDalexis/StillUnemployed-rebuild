@@ -77,7 +77,7 @@ async function feedbackUI(options={}) {
     bootTimeout(){for(const t of timers.values())if(t.ms===20000)t.fn();},
     syncStatus(next){syncCallback(next);},fireWindow(name,event={}){for(const fn of windowEvents[name]||[])fn(event);},
     finishSignout(){authListener(null);resolveSignout();},failSignout(){rejectSignout(Error('offline'));},
-    signIn(user){authListener(user);},finishPopup(){if(resolvePopup)resolvePopup();},
+    signIn(user){authListener(user);},finishPopup(user){if(resolvePopup)resolvePopup(user?{user}:undefined);},
     failPopup(code){rejectPopup({code});},
     dialog:()=>b.overlay.querySelector('[role="dialog"]')};
 }
@@ -339,4 +339,15 @@ test('public signIn action starts the existing popup once and never signs out an
  ui.signIn({uid:'qa',email:'qa@example.invalid',emailVerified:true});
  assert.equal(ui.nav().querySelector('.su-auth-label').textContent,'Account');assert.equal(ui.nav().querySelector('.su-auth-qa').hidden,false);
  ui.auth.signIn(ui.nav());await tick();assert.equal(ui.calls.popups,1);assert.equal(ui.calls.signouts,0);assert.equal(ui.calls.confirms,0);
+});
+
+
+test('successful Google login is counted once after both popup and account activation, in either callback order',async()=>{
+ for(const first of ['popup','account']){
+  const ui=await feedbackUI();const user={uid:'measured-user',getIdToken:async()=> 'synthetic'};ui.google().click();
+  if(first==='popup'){ui.finishPopup(user);await tick();assert.equal(ui.calls.events.filter(e=>e.name==='auth_login').length,0);ui.signIn(user);}
+  else{ui.signIn(user);assert.equal(ui.calls.events.filter(e=>e.name==='auth_login').length,0);ui.finishPopup(user);}
+  await tick();assert.equal(ui.auth.measurementReady(),true);assert.equal(ui.calls.events.filter(e=>e.name==='auth_login').length,1);
+  ui.signIn(user);await tick();assert.equal(ui.calls.events.filter(e=>e.name==='auth_login').length,1,'ordinary auth refresh is not a new login');
+ }
 });

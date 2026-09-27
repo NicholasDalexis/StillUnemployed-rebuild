@@ -21,7 +21,9 @@
 .su-recent-note h2{font:30px/1.1 var(--su-hand);margin:0 44px 8px 0}
 .su-recent-note>p{color:var(--su-muted)}
 .su-recent-note ul{list-style:none;padding:0;margin:16px 0}
-.su-recent-note li{display:flex;align-items:flex-start;flex-direction:column;gap:4px;padding:14px 0;border-top:1px dashed var(--su-muted);overflow-wrap:anywhere}
+.su-recent-note li{display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px dashed var(--su-muted);overflow-wrap:anywhere}
+.su-recent-copy{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
+.su-recent-note li>button{flex:none;font-size:16px;padding:6px 10px}
 .su-recent-note li strong{font-weight:700}
 .su-recent-note li small{color:var(--su-muted);font-size:12px}
 .su-recent-note button{min-height:44px;border:0;background:var(--su-yellow-paper);color:var(--su-ink);padding:6px 12px;font:18px var(--su-hand);cursor:pointer;border-radius:3px}

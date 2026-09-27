@@ -16,7 +16,7 @@ test('rendering a filter or save update does not change the selected headline',(
   assert.equal(before,Heading.render(false,'original',1));
   assert(before.includes('worth fixing your '));
   assert(Heading.render(true,'original',0).includes('<h1>Internships worth the '));
-  assert(Heading.render(true,'original',0).includes('screenshot.'));
+  assert(Heading.render(true,'original',0).includes('screenshot'));
 });
 
 test('dedicated boards have plain headings, while homepage choices operate inline',()=>{
@@ -36,5 +36,5 @@ test('dedicated boards have plain headings, while homepage choices operate inlin
 test('untrusted look or section values cannot create external destinations or markup',()=>{
   assert.equal(Heading.href('https://evil.example','javascript:alert(1)'),'/jobs.html?theme=original');
   assert(!Heading.render(false,'"><img src=x onerror=alert(1)>',0).includes('<img'));
-  for(const variant of [-1,5,'2',null,NaN])assert(Heading.render(false,'original',variant).includes('screenshot.'));
+  for(const variant of [-1,5,'2',null,NaN])assert(Heading.render(false,'original',variant).includes('screenshot'));
 });

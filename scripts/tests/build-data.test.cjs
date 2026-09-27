@@ -49,7 +49,7 @@ test('generated redirect preserves Unicode job URL, base64 plus and slash, and t
   assert.match(base64, /\+/);
   assert.match(base64, /\//);
   const html = stub({ co: 'Example', link, pay: '$85K', loc: 'Remote' }, 'abc', 'mermaid', 'https://preview.example');
-  const redirect = JSON.parse(html.match(/location\.replace\(("[^"]+")\)/)[1]);
+  const redirect = JSON.parse(html.match(/new URL\(("[^"]+")/)[1]);
   const url = new URL(redirect, 'https://preview.example');
   assert.equal(Buffer.from(url.searchParams.get('job'), 'base64').toString('utf8'), link);
   assert.equal(url.searchParams.get('theme'), 'mermaid');
@@ -148,7 +148,7 @@ test('home and share loaders collapse confirmed aliases after eligibility, retai
     for (const entry of entries) {
       const html = build.stub(job, entry.slug, 'poker', 'https://preview.example');
       assert(html.includes('/j/poker/' + entry.slug + '.html'));
-      const redirect = JSON.parse(html.match(/location\.replace\(("[^"]+")\)/)[1]);
+      const redirect = JSON.parse(html.match(/new URL\(("[^"]+")/)[1]);
       assert.equal(Buffer.from(new URL(redirect, 'https://preview.example').searchParams.get('job'), 'base64').toString(), pair.links[0]);
     }
   }

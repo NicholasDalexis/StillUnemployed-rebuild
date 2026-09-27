@@ -10,6 +10,8 @@ var SUSuggest = (function () {
 
   function validate(rawUrl, rawContext) {
     var link = String(rawUrl || '').trim(), context = String(rawContext || '').trim(), parsed;
+    if(/^\/\//.test(link))return {field:'url',error:'Paste a public job link, such as company.com/jobs/123.'};
+    if(link&&!/^[a-z][a-z0-9+.-]*:/i.test(link))link='https://'+link;
     if (!link || link.length > MAX_URL) return { field: 'url', error: 'Paste a job link up to 2,048 characters long.' };
     if (!/^https:\/\//i.test(link) || /[\s<>"\\\u0000-\u001f\u007f]/.test(link)) {
       return { field: 'url', error: 'Use the complete public posting link, starting with https://.' };
@@ -17,6 +19,7 @@ var SUSuggest = (function () {
     try { parsed = new URL(link); } catch (e) { return { field: 'url', error: 'That link looks incomplete. Copy it from the employer’s posting and try again.' }; }
     var host = parsed.hostname.toLowerCase().replace(/\.$/, '');
     var labels = host.split('.');
+    if(/\.(con|comm|cmo|comn)$/.test(host))return {field:'url',error:'That domain may have a typo. Check the .com ending and try again.'};
     var badLabel = labels.some(function (label) { return !/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(label); });
     if (parsed.username || parsed.password || parsed.port || host.indexOf('.') < 0 ||
         badLabel || !/^[a-z0-9.-]+$/.test(host) || /^[0-9.]+$/.test(host) ||

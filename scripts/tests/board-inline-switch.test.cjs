@@ -141,7 +141,7 @@ test('CSV parser keeps its legacy array contract and only returns closure metada
 const analyticsFixturePath=path.join(__dirname,'analytics-client.test.cjs');
 const analyticsSource=fs.readFileSync(analyticsFixturePath,'utf8');
 const analyticsFixture={exports:{}};
-vm.runInNewContext(analyticsSource.slice(0,analyticsSource.indexOf('\ntest('))+'\nmodule.exports={harness,storage};',{module:analyticsFixture,require:createRequire(analyticsFixturePath),TextEncoder,Uint8Array},{filename:analyticsFixturePath});
+vm.runInNewContext(analyticsSource.slice(0,analyticsSource.indexOf('\ntest('))+'\nmodule.exports={harness,storage};',{module:analyticsFixture,require:createRequire(analyticsFixturePath),TextEncoder,Uint8Array,URL,URLSearchParams},{filename:analyticsFixturePath});
 test('slower analytics hashing cannot replace the active board catalog or strand its current action',async()=>{
   const h=analyticsFixture.exports.harness(analyticsFixture.exports.storage({su_consent_v3:'granted'}));
   const crypto=require('node:crypto'),hashes=[];

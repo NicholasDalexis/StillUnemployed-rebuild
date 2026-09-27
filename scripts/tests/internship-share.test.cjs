@@ -79,7 +79,7 @@ test('served generated internship HTML/PNG pairs retain section, theme, exact en
   for(const theme of themes){
    const response=await fetch(served+sharePath(theme));assert.equal(response.status,200);assert.equal(response.headers.get('cache-control'),'no-store');const html=await response.text();
    assert.match(html,/Example &lt;Studio&gt;/);assert.match(html,/Design &amp; editorial Intern/);assert.match(html,/canonical" href="https:\/\/stillunemployed.com\/internships"/);assert.match(html,/robots" content="noindex, nofollow"/);assert.doesNotMatch(html,/JobPosting|DO_NOT_PUBLISH/);
-   const target=new URL(JSON.parse(html.match(/location\.replace\(("[^"]+")\)/)[1]),served);assert.equal(target.pathname,'/internships.html');assert.equal(target.searchParams.get('theme'),theme);assert.equal(Buffer.from(target.searchParams.get('job'),'base64').toString(),link);
+   const target=new URL(JSON.parse(html.match(/new URL\(("[^"]+")/)[1]),served);assert.equal(target.pathname,'/internships.html');assert.equal(target.searchParams.get('theme'),theme);assert.equal(Buffer.from(target.searchParams.get('job'),'base64').toString(),link);
    const imageURL=html.match(/property="og:image" content="([^"]+)"/)[1];assert.equal(imageURL,served+sharePath(theme,true));const image=await fetch(imageURL);assert.equal(image.status,200);assert.equal(image.headers.get('content-type'),'image/png');assert.equal(Buffer.from(await image.arrayBuffer()).readUInt32BE(16),1200);
    for(const entry of Source.shareEntries({_aliases:[link,alias]})){const legacy=fs.readFileSync(path.join(out,theme,entry.slug+'.html'),'utf8');assert.match(legacy,/\/jobs\.html\?job=/);assert.doesNotMatch(legacy,/\/internships\.html\?job=/);}
   }

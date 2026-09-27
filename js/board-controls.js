@@ -27,6 +27,7 @@
     return true;
   }
   function closeOutsidePanel(target) {
+    if(hasDialog())return;
     if (!closest(target, '[data-su-panel],[data-act="toggleCat"],[data-act="toggleFilters"]')) closePanels(false);
   }
   function cancelLeave() { if (leaveTimer !== null) global.clearTimeout(leaveTimer);leaveTimer = null; }
@@ -130,6 +131,7 @@
   function onKeyDown(event) {
     keyboard = true;
     if (event.key !== 'Escape') return;
+    if(hasDialog())return;
     hide(true);
     if (menu && menu.open) { event.preventDefault();event.stopPropagation();closeMenu(true); }
     else if (closePanels(true)) { event.preventDefault();event.stopPropagation(); }

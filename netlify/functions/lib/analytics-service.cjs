@@ -6,6 +6,8 @@ const bundled=require('../../../jobs-data.json');
 const {loadJobs}=require('./job-source.cjs');
 const DAY=86400000;
 const Newsletter=require('./newsletter-attribution.cjs');
+const Anonymous=require('./analytics-identity.cjs');
+const Trends=require('./analytics-trends.cjs');
 let jobsCache=null,jobsCacheAt=0;
 async function liveCatalog(){
   if(jobsCache&&Date.now()-jobsCacheAt<300000)return jobsCache;
@@ -50,8 +52,7 @@ async function collect(request,d) {
   // No event, rate, signup or recommendation writes for verified QA accounts.
   // Browser-supplied email/admin properties never enter this decision.
   if(excludedAccount(decoded,d.env))return {accepted:0,excluded:true};
-  if(!uid&&!/^[a-zA-Z0-9_-]{16,64}$/.test(input.visitor||''))throw error(400,'Invalid visitor');
-  const actor=hmac(d.env,uid?'account:'+uid:'guest:'+input.visitor);
+  const actor=hmac(d.env,uid?'account:'+uid:'guest:'+Anonymous.requireIdentity(request,d));
   if(d.getJobs&&input.events.some(e=>e.jobId))d.jobs=await d.getJobs();
   const cleaned=input.events.map(e=>{if(!Number.isFinite(e.occurredAt)||Math.abs(d.now()-e.occurredAt)>300000)throw error(400,'Expired event');return Core.cleanEvent(e,d.jobs);});
   if(cleaned.some(e=>e.name.startsWith('auth_'))&&!uid)throw error(401,'Authentication required');
@@ -61,6 +62,7 @@ async function collect(request,d) {
   const rateRef=d.db.doc('suAnalyticsRates/'+hmac(d.env,request.headers['x-nf-client-connection-ip']||actor));
   return d.db.runTransaction(async tx=>{
     const snapshot=await tx.get(ref),rate=await tx.get(rateRef),old=snapshot.exists?snapshot.data():{};
+    const trendRef=Trends.ref(d),trend=choices.analytics===true?await tx.get(trendRef):null;
     const current=rate.exists?rate.data():{},window=Math.floor(now/60000);
     const used=current.window===window?(current.count||0):0;
     if(used+cleaned.length>300)throw error(429,'Please retry later');
@@ -69,9 +71,10 @@ async function collect(request,d) {
     const newsletterDocs=await Promise.all(input.events.map(e=>Newsletter.TOKEN.test(e.newsletterReceipt||'')?tx.get(d.db.doc('suAnalyticsEvents/newsletter-receipt-'+e.newsletterReceipt)):null));
     let profile=old.expiresAt && Number(old.expiresAt.toMillis?old.expiresAt.toMillis():old.expiresAt)<=now ? {} : old.jobs||{};
     Object.keys(profile).forEach(id=>{if(!Number.isFinite(profile[id].at)||profile[id].at<=now-90*DAY)delete profile[id];});
-    let accepted=0,signupRecorded=!!old.signupRecorded;
+    let accepted=0,signupRecorded=!!old.signupRecorded,seenIds=new Set(),measured=[];
     for(let i=0;i<cleaned.length;i++) {
-      if(eventDocs[i].exists || (Number.isFinite(input.events[i].occurredAt) && input.events[i].occurredAt <= (old.resetAt||0)))continue;
+      if(eventDocs[i].exists || seenIds.has(cleaned[i].id) || (Number.isFinite(input.events[i].occurredAt) && input.events[i].occurredAt <= (old.resetAt||0)))continue;
+      seenIds.add(cleaned[i].id);
       const e=cleaned[i];
       if(['newsletter_impression','newsletter_engagement'].includes(e.name)){
         if(choices.analytics!==true)continue;
@@ -87,14 +90,17 @@ async function collect(request,d) {
       const receipt={at:now,expiresAt,actor,session:input.session,id:e.id,analytics:choices.analytics===true};
       if(choices.analytics===true)Object.assign(receipt,e);
       tx.set(eventRefs[i],receipt);accepted++;
+      if(choices.analytics===true)measured.push(e);
       if(choices.analytics===true&&e.name==='auth_login'&&!signupRecorded&&account) {
         const created=Date.parse(account.metadata.creationTime);
         if(now-created>=0&&now-created<300000) {
-          tx.set(d.db.doc('suAnalyticsEvents/'+Core.hash(actor+':signup')),{...receipt,id:'server-signup',name:'auth_signup',page:e.page});signupRecorded=true;
+          tx.set(d.db.doc('suAnalyticsEvents/'+Core.hash(actor+':signup')),{...receipt,id:'server-signup',name:'auth_signup',page:e.page});signupRecorded=true;measured.push({name:'auth_signup',page:e.page});
         }
       }
     }
-    tx.set(ref,{jobs:profile,signupRecorded,resetAt:old.resetAt||0,expiresAt,nextSignalExpiryAt:nextSignalExpiry(profile,now+90*DAY),updatedAt:now});
+    const rollup=Trends.add(trend&&trend.exists?trend.data():null,measured,now,old.measurement,input.session);
+    if(measured.length)tx.set(trendRef,rollup.value);
+    tx.set(ref,{jobs:profile,signupRecorded,measurement:measured.length?rollup.seen:old.measurement||{},resetAt:old.resetAt||0,expiresAt,nextSignalExpiryAt:nextSignalExpiry(profile,now+90*DAY),updatedAt:now});
     tx.set(rateRef,{window,count:used+cleaned.length,expiresAt:new Date(now+DAY)});
     return {accepted,receivedAt:new Date(now).toISOString()};
   });
@@ -102,15 +108,21 @@ async function collect(request,d) {
 async function profile(request,d) {
   Core.authorizeOrigin(request,d.env);const decoded=await verifiedIdentity(request,d,request.httpMethod!=='DELETE'),uid=decoded?decoded.uid:null;
   if(request.httpMethod!=='DELETE'&&excludedAccount(decoded,d.env))return {jobs:{},updatedAt:null,excluded:true};
-  const input=request.httpMethod==='DELETE'?body(request):{};if(!uid&&!/^[a-zA-Z0-9_-]{16,64}$/.test(input.visitor||''))throw error(401,'Identity required');
-  const actor=hmac(d.env,uid?'account:'+uid:'guest:'+input.visitor),ref=d.db.doc('suAnalyticsProfiles/'+actor);
+  const input=request.httpMethod==='DELETE'?body(request):{};
+  const guest=Anonymous.read(request,d);
+  const actor=hmac(d.env,uid?'account:'+uid:'guest:'+Anonymous.requireIdentity(request,d)),ref=d.db.doc('suAnalyticsProfiles/'+actor);
   if(request.httpMethod==='DELETE') {
     const actors=[actor];
-    if(uid&&/^[a-zA-Z0-9_-]{16,64}$/.test(input.visitor||'')){const guest=hmac(d.env,'guest:'+input.visitor);if(guest!==actor)actors.push(guest);}
+    if(uid&&guest)actors.push(hmac(d.env,'guest:'+guest));
+    const rateRef=d.db.doc('suAnalyticsRates/reset-'+hmac(d.env,request.headers['x-nf-client-connection-ip']||actor)),now=d.now();
+    await d.db.runTransaction(async tx=>{const snap=await tx.get(rateRef),window=Math.floor(now/60000),used=snap.exists&&snap.data().window===window?snap.data().count:0;if(used>=5)throw error(429,'Please retry later');tx.set(rateRef,{window,count:used+1,expiresAt:new Date(now+DAY)});});
     let deleted=0;
     for(const target of actors){
-      await d.db.doc('suAnalyticsProfiles/'+target).set({jobs:{},resetAt:d.now(),updatedAt:d.now(),expiresAt:new Date(d.now()+90*DAY),nextSignalExpiryAt:new Date(d.now()+90*DAY)},{merge:true});
-      while(true){const docs=await d.db.collection('suAnalyticsEvents').where('actor','==',target).limit(400).get();if(docs.empty)break;const batch=d.db.batch();docs.docs.forEach(doc=>batch.delete(doc.ref));await batch.commit();deleted+=docs.size;if(deleted>=20000)throw error(503,'Reset is still processing. Please retry.');}
+      const targetRef=d.db.doc('suAnalyticsProfiles/'+target);
+      const exists=await d.db.runTransaction(async tx=>{const snap=await tx.get(targetRef);if(!snap.exists)return false;tx.set(targetRef,{...snap.data(),jobs:{},resetAt:now,updatedAt:now,expiresAt:new Date(now+90*DAY),nextSignalExpiryAt:new Date(now+90*DAY)});return true;});
+      if(!exists)continue;
+      for(let pass=0;pass<5;pass++){const docs=await d.db.collection('suAnalyticsEvents').where('actor','==',target).limit(400).get();if(docs.empty)break;const batch=d.db.batch();docs.docs.forEach(doc=>batch.delete(doc.ref));await batch.commit();deleted+=docs.size;}
+      if(!(await d.db.collection('suAnalyticsEvents').where('actor','==',target).limit(1).get()).empty)throw error(503,'Reset is still processing. Please retry.');
     }
     return {reset:true,deleted};
   }
@@ -139,9 +151,9 @@ async function newsletter(request,d){
   if(input.consent?.analytics!==true)throw error(403,'Analytics consent required');
   const decoded=await verifiedIdentity(request,d);
   if(excludedAccount(decoded,d.env))return {excluded:true};
-  if(!/^[a-zA-Z0-9_-]{16,64}$/.test(input.session||'')||!Newsletter.TOKEN.test(input.token||'')||(!decoded&&!/^[a-zA-Z0-9_-]{16,64}$/.test(input.visitor||''))||!Number.isFinite(input.occurredAt)||Math.abs(now-input.occurredAt)>300000)throw error(400,'Invalid receipt');
+  if(!/^[a-zA-Z0-9_-]{16,64}$/.test(input.session||'')||!Newsletter.TOKEN.test(input.token||'')||!Number.isFinite(input.occurredAt)||Math.abs(now-input.occurredAt)>300000)throw error(400,'Invalid receipt');
   if(input.jobId&&d.getJobs)d.jobs=await d.getJobs();
-  const context=Newsletter.context(input,d.jobs),actor=hmac(d.env,decoded?'account:'+decoded.uid:'guest:'+input.visitor);
+  const context=Newsletter.context(input,d.jobs),actor=hmac(d.env,decoded?'account:'+decoded.uid:'guest:'+Anonymous.requireIdentity(request,d));
   const page=['home','board','internships'].includes(input.page)?input.page:'other';
   const ref=d.db.doc('suAnalyticsEvents/newsletter-receipt-'+input.token),profileRef=d.db.doc('suAnalyticsProfiles/'+actor),rateRef=d.db.doc('suAnalyticsRates/newsletter-'+hmac(d.env,request.headers['x-nf-client-connection-ip']||actor));
   return d.db.runTransaction(async tx=>{
@@ -165,7 +177,8 @@ async function admin(request,d) {
   const docs=await d.db.collection('suAnalyticsEvents').where('at','>=',d.now()-days*DAY).limit(20001).get();
   if(docs.size>20000)throw error(503,'This window is too large; choose fewer days');
   const rows=docs.docs.map(doc=>doc.data()).filter(e=>e.analytics===true && e.name && e.at<=d.now());
-  return {...Core.reduceRows(rows,days,d.now()),newsletter:d.env.SU_NEWSLETTER_ATTRIBUTION_ENABLED==='true'?Newsletter.aggregate(rows):null,coverage:{label:'Only visitors who opted into analytics',dimensionSuppression:'Dimension groups with fewer than 5 visitors are withheld',complete:true}};
+  const trendDocs=await d.db.collection('suAnalyticsDaily').where('at','>=',d.now()-400*DAY).limit(401).get();
+  return {...Core.reduceRows(rows,days,d.now()),trajectory:{retentionDays:400,startsAt:trendDocs.empty?null:Math.min(...trendDocs.docs.map(x=>x.data().startedAt)),label:'Daily opted-in activity since this measurement update; daily visitors cannot be summed into unique people',daily:trendDocs.docs.map(x=>{const {date,counts,sources,visitors,visits}=x.data();return {date,counts,sources,visitors,visits};}).sort((a,b)=>a.date.localeCompare(b.date))},newsletter:d.env.SU_NEWSLETTER_ATTRIBUTION_ENABLED==='true'?Newsletter.aggregate(rows):null,coverage:{label:'Only visitors who opted into analytics',dimensionSuppression:'Dimension groups with fewer than 5 visitors are withheld',complete:true}};
 }
 async function cleanup(d) {
   let deleted=0,pruned=0;
@@ -186,16 +199,16 @@ async function cleanup(d) {
     }
   }
 
-  for(const collection of ['suAnalyticsEvents','suAnalyticsProfiles','suAnalyticsRates']) {
+  for(const collection of ['suAnalyticsEvents','suAnalyticsProfiles','suAnalyticsRates','suAnalyticsDaily']) {
     // Bounded scheduling work. Read paths independently reject expired records.
     for(let pass=0;pass<5;pass++){const rows=await d.db.collection(collection).where('expiresAt','<=',new Date(d.now())).limit(400).get();if(rows.empty)break;const batch=d.db.batch();rows.docs.forEach(doc=>batch.delete(doc.ref));await batch.commit();deleted+=rows.size;}
   }
-  for(const collection of ['suAnalyticsEvents','suAnalyticsProfiles','suAnalyticsRates']){const remainder=await d.db.collection(collection).where('expiresAt','<=',new Date(d.now())).limit(1).get();if(!remainder.empty)throw error(503,'Retention backlog requires another run');}
+  for(const collection of ['suAnalyticsEvents','suAnalyticsProfiles','suAnalyticsRates','suAnalyticsDaily']){const remainder=await d.db.collection(collection).where('expiresAt','<=',new Date(d.now())).limit(1).get();if(!remainder.empty)throw error(503,'Retention backlog requires another run');}
   const due=await d.db.collection('suAnalyticsProfiles').where('nextSignalExpiryAt','<=',new Date(d.now())).limit(1).get();if(!due.empty)throw error(503,'Signal retention backlog requires another run');
   return {deleted,pruned};
 }
 function handler(action,methods){return async request=>{
-  const headers={'Content-Type':'application/json','Cache-Control':'private, no-store','Vary':'Origin, Authorization','X-Content-Type-Options':'nosniff'};
+  const headers={'Content-Type':'application/json','Cache-Control':'private, no-store','Vary':'Origin, Authorization, Cookie','X-Content-Type-Options':'nosniff'};
   try{if(!methods.includes(request.httpMethod))throw error(405,'Method not allowed');const result=await action(request,dependencies());return {statusCode:200,headers,body:JSON.stringify(result)};}catch(e){return {statusCode:e.status||503,headers,body:JSON.stringify({error:e.status?e.message:'Analytics service unavailable'})};}
 };}
 module.exports={dependencies,identity,excludedAccount,collect,profile,newsletter,admin,cleanup,handler,hmac};

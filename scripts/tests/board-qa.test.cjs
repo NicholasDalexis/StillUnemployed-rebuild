@@ -130,13 +130,13 @@ test('state filters distinguish restricted remote jobs from unrestricted US remo
 });
 test('reset all filters clears search, category and both salary bounds',()=>{
  const b=board();b.init();b.app.setState({q:'nothing matches',cat:'Social',ws:'Hybrid',st:'NY',pr:'$100K+',salaryMin:'45000',salaryMax:'95000',fr:'Recently added',theme:'social',openPanel:'filters'});
- b.grid.querySelector('[data-act="clearAll"]').click();
+ b.overlay.querySelector('[data-act="clearAll"]').click();
  for(const [key,value]of Object.entries({q:'',cat:'all',ws:'Any',st:'all',pr:'Any',salaryMin:'',salaryMax:'',fr:'Any',theme:null}))assert.equal(b.app.state[key],value,key);assert.equal(b.app.computeShown().shown.length,1);
  assert.equal(b.document.getElementById('su-salary-min').value,'');assert.equal(b.document.getElementById('su-salary-max').value,'');
 });
 test('salary text blur cannot swallow the next Reset click or restore its cleared value',()=>{
  const b=board();b.init();b.app.setState({openPanel:'filters'});
- const min=b.document.getElementById('su-salary-min'),reset=b.grid.querySelector('[data-act="clearAll"]'),before=b.grid.writes;
+ const min=b.document.getElementById('su-salary-min'),reset=b.overlay.querySelector('[data-act="clearAll"]'),before=b.grid.writes;
  min.focus();min.value='45000';b.fire('input',min);
  b.fire('pointerdown',reset);b.fire('change',min);b.fire('focusout',min,{relatedTarget:reset});reset.focus();
  b.runTimers(0);assert.equal(b.grid.writes,before);assert.equal(reset.isConnected,true);assert.equal(b.app.state.salaryMin,'45000');
@@ -184,7 +184,7 @@ test('typed comma salary values preserve annual overlap and refuse invalid or ho
  field=b.document.getElementById('su-salary-max');field.value='100,000';b.fire('change',field);assert.equal(b.app.state.salaryMax,'100000');assert.deepEqual(Array.from(b.app.computeShown().shown,j=>j.link).sort(),['https://example.com/low','https://example.com/overlap']);
  field=b.document.getElementById('su-salary-max');field.value='not a number';b.fire('change',field);assert.equal(field.getAttribute('aria-invalid'),'true');assert.equal(b.app.state.salaryMax,'100000');
  field.value='';b.fire('change',field);assert.equal(b.app.state.salaryMax,'');
- b.grid.querySelector('[data-act="clearAll"]').click();assert.equal(b.app.computeShown().shown.length,4);
+ b.overlay.querySelector('[data-act="clearAll"]').click();assert.equal(b.app.computeShown().shown.length,4);
 });
 test('public themes and legacy cod pair filter control ink and paper, including state and selected pills',()=>{
  for(const look of Object.keys(themeArt.themes).concat('cod')){
@@ -192,7 +192,7 @@ test('public themes and legacy cod pair filter control ink and paper, including 
   if(look==='cod')assert.equal(b.app.state.look,'original','retired cod links use the supported Original palette');
   assert.equal(b.document.body.style['--su-action-paper'],p.acc);assert.equal(b.document.body.style['--su-action-ink'],p.accInk);
   const state=b.document.getElementById('su-state');assert.equal(state.style.background,'var(--su-action-paper)');assert.equal(state.style.color,'var(--su-action-ink)');
-  for(const act of ['ws','fr']){const pills=b.grid.querySelectorAll('[data-act="'+act+'"]');assert(pills.length>1);for(const el of pills){const active=el.getAttribute('aria-pressed')==='true';assert.equal(el.style.background,active?p.accInk:p.acc,look+' '+act+' background');assert.equal(el.style.color,active?p.acc:p.accInk,look+' '+act+' ink');}}
+  for(const act of ['ws','fr']){const pills=b.overlay.querySelectorAll('[data-act="'+act+'"]');assert.equal(pills.length,act==='fr'?1:4);for(const el of pills){const active=el.getAttribute('aria-pressed')==='true';assert.equal(el.style.background,active?p.accInk:p.acc,look+' '+act+' background');assert.equal(el.style.color,active?p.acc:p.accInk,look+' '+act+' ink');}}
  }
 });
 test('feed has advice without promotional signup cards; newsletter follows actual detail openings',()=>{
@@ -284,12 +284,13 @@ test('a saved alias still matches when only its representative remains in the cu
  b.app.toggleSave(pair.links[0]);assert.deepEqual(JSON.parse(b.localStorage.getItem('su_saved_jobs')),{[pair.links[0]]:true});
 });
 
-test('an old alias share highlights the representative and alias details remain available',()=>{
- const pair=aliasPairs[1],b=board({search:'?job='+encodeURIComponent(Buffer.from(pair.links[1]).toString('base64'))});
- b.init(pair.links.map(link=>job({co:pair.co,role:pair.role,link})));b.runTimers(900);
- const card=b.grid.querySelector('.note[data-link]');assert.equal(card.getAttribute('data-link'),pair.links[0]);assert.equal(card.scrolled,true);
- b.app.setState({detailOpen:true,detailLink:pair.links[1]});
+test('an old alias share opens the live representative immediately without scrolling',async()=>{
+ const pair=aliasPairs[1],b=board({search:'?job='+encodeURIComponent(Buffer.from(pair.links[1]).toString('base64')),response:{ok:true,status:200,text:async()=>csv(pair.links.map(link=>row({Company:pair.co,'Job Title':pair.role,Link:link})))}});
+ await b.boot();assert.equal(b.app.state.detailOpen,true);
+ const card=b.grid.querySelector('.note[data-link]');assert.equal(card.getAttribute('data-link'),pair.links[0]);assert.equal(card.scrolled,undefined);
  assert.equal(b.overlay.querySelector('[data-act="detailApply"]').getAttribute('data-link'),pair.links[0]);
+ b.overlay.querySelector('[data-act="closeDetail"]').click();assert.equal(b.app.computeShown().shown[0].link,pair.links[0]);
+ b.app.setState({detailOpen:true,detailLink:pair.links[1]});assert.equal(b.overlay.querySelector('[data-act="detailApply"]').getAttribute('data-link'),pair.links[0]);
 });
 
 test('applying through a URL alias preserves an existing tracker application and its notes',()=>{
@@ -523,7 +524,7 @@ function viewBoard(options={}) {
  b.window.SUBoardRuntime=require('../../js/board-runtime.js')(b.window);
  return{...b,session,runtime:b.window.SUBoardRuntime,scrolls};
 }
-const restoredView={q:'design',cat:'Social',ws:'Remote',pr:'$100K+',st:'NY',fr:'Full-time',savedOnly:true};
+const restoredView={q:'design',cat:'Social',ws:'Remote',pr:'$100K+',st:'NY',fr:'Any',savedOnly:true};
 const defaultView={q:'',cat:'all',ws:'Any',pr:'Any',st:'all',fr:'Any',savedOnly:false};
 function viewFields(state){return Object.fromEntries(Object.keys(defaultView).map(key=>[key,state[key]]));}
 
@@ -558,5 +559,20 @@ test('same-owner view survives an initial feed failure and explicit URL state st
   const b=viewBoard({search:address.search||''});b.location.hash=address.hash||'';b.runtime.save('jobs',restoredView);await b.boot();b.fireWindow('su:auth-changed');
   assert.deepEqual(viewFields(b.app.state),defaultView);assert.equal(b.location.search,address.search||'');assert.equal(b.location.hash,address.hash||'');
   if(address.search)assert.equal(b.app.state.theme,'poker');
+ }
+});
+
+
+test('shared jobs wait for the fresh catalog then open without scrolling and remain first after closing',async()=>{
+ const link='https://example.com/job/shared';let finish;const response={ok:true,text:()=>new Promise(resolve=>{finish=resolve;})};
+ const b=board({search:'?job='+encodeURIComponent(Buffer.from(link).toString('base64')),response});const pending=b.boot();await tick();
+ assert.equal(!!b.app.state.detailOpen,false);finish(csv([row({Link:'https://example.com/other'}),row({Link:link,Company:'Shared'})]));await pending;await tick();
+ assert.equal(b.app.state.detailOpen,true);assert.equal(b.app.state.detailLink,link);const card=b.grid.querySelector('.note[data-act="openJob"]');assert.equal(card.getAttribute('data-link'),link);assert.notEqual(card.scrolled,true);assert.equal(b.opened.length,0);
+ b.app.setState({detailOpen:false});assert.equal(b.grid.querySelector('.note[data-act="openJob"]').getAttribute('data-link'),link);
+});
+test('missing, malformed and unavailable shared links never open another or stale posting',async()=>{
+ for(const opts of [{search:'?job=not-base64!'}, {search:'?job='+encodeURIComponent(Buffer.from('https://example.com/missing').toString('base64'))}, {search:'?job='+encodeURIComponent(Buffer.from('https://example.com/job').toString('base64')),fetchError:Error('offline')}]){
+  const b=board(opts);await b.boot();assert.equal(!!b.app.state.detailOpen,false);assert.equal(b.opened.length,0);
+  if(opts.fetchError)assert.equal(b.app._loadError,true);else assert.match(b.grid.textContent,/shared job.*(invalid|no longer available)/i);
  }
 });

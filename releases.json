@@ -1,7 +1,24 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.6.8",
+  "currentVersion": "2.6.9",
   "releases": [
+    {
+      "version": "2.6.9",
+      "date": "2026-09-26",
+      "title": "Discovery, shared jobs and measurement",
+      "changes": [
+        "Centered accessible Filters popup, concise optional study/industry/location preferences, adjacent-field ranking, guest-device isolation, job suggestion validation, compact Recently viewed and plain resume headlines.",
+        "Cold shared jobs and internships resolve only against the current catalog, open the correct TLDR without scrolling and pin the shared card first.",
+        "Successful Google login measurement, stable advice IDs, signed anonymous identity and bounded reset work, consented 400-day daily totals, LinkedIn post/link attribution and private job/advice report breakdowns. Muse public API stays disabled."
+      ],
+      "public": {
+        "title": "Find your fit faster",
+        "changes": [
+          "Filters open in their own popup. Tune your feed with optional interests, and scan Recently viewed more easily.",
+          "Shared job links open the job details directly, with that posting first on the board."
+        ]
+      }
+    },
     {
       "version": "2.6.8",
       "date": "2026-09-23",
@@ -733,7 +750,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "485f5303ef11933776b862072685f1db5113c3bd8a864953c7298acecabcd137",
-    "fileCount": 202
+    "digest": "49bdf5bd223abc90f3df0794025321bdefa28c02e5941fcb464a1a437afce126",
+    "fileCount": 205
   }
 }

@@ -1,5 +1,6 @@
 'use strict';
 const crypto=require('node:crypto');
+const Trends=require('./analytics-trends.cjs');
 const DAY=86400000;
 const CTA=new Set(['N01','N02','N06','N07','N08','N09','N10','N11','N12','N13','N14','N16','N18','N19','N20','N21','N22','N23','N24','N26','home-recipe','signup-card']);
 const CTA_LABELS={"N01": "More notes like this, every week.", "N02": "Once you get the job, unsub.", "N06": "The advice I wish I’d had.", "N07": "A little job hunt perspective.", "N08": "My rejection notes, in your inbox.", "N09": "Before your next application.", "N10": "Skip a few of my mistakes.", "N11": "What I’d do differently now.", "N12": "I wrote down what worked.", "N13": "One email. Less second-guessing.", "N14": "Lessons I learned the hard way.", "N16": "Get the job, then unsub.", "N18": "Still applying? I have a few notes.", "N19": "I wish someone had sent me this.", "N20": "Steal my notes. I’m serious.", "N21": "Save yourself a few of my mistakes.", "N22": "A little help between rejection emails.", "N23": "For the days you want to give up.", "N24": "I have a few thoughts on this job market.", "N26": "I learned a few things. Want them?", "home-recipe": "Get the next one in your inbox", "signup-card": "Feed signup card"};
@@ -49,9 +50,11 @@ async function receive(request,d){
     const subscriber=crypto.createHmac('sha256',d.env.SU_ANALYTICS_SECRET).update('beehiiv:'+data.id).digest('hex');
     const submittedRef=d.db.doc('suAnalyticsEvents/newsletter-submitted-'+subscriber),confirmedRef=d.db.doc('suAnalyticsEvents/newsletter-confirmed-'+subscriber);
     const submitted=await tx.get(submittedRef),confirmed=await tx.get(confirmedRef);
+    const trendRef=Trends.ref(d,eventAt),trend=await tx.get(trendRef),measured=[];
     const base={...receipt.context,actor:receipt.actor,session:receipt.session,page:receipt.page,at:eventAt,expiresAt:new Date(eventAt+90*DAY),analytics:true,exposureAt:receipt.viewedAt||receipt.at,exposureId:crypto.createHash('sha256').update(token).digest('hex')};
-    if(!submitted.exists)tx.set(submittedRef,{...base,id:'newsletter-submitted-'+subscriber,name:'newsletter_submitted'});
-    if(data.status==='active'&&!confirmed.exists)tx.set(confirmedRef,{...base,id:'newsletter-confirmed-'+subscriber,name:'newsletter_confirmed'});
+    if(!submitted.exists){tx.set(submittedRef,{...base,id:'newsletter-submitted-'+subscriber,name:'newsletter_submitted'});measured.push({name:'newsletter_submitted'});}
+    if(data.status==='active'&&!confirmed.exists){tx.set(confirmedRef,{...base,id:'newsletter-confirmed-'+subscriber,name:'newsletter_confirmed'});measured.push({name:'newsletter_confirmed'});}
+    if(measured.length)tx.set(trendRef,Trends.add(trend.exists?trend.data():null,measured,eventAt).value);
     return {accepted:true};
   });
 }

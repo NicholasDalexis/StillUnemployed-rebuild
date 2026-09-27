@@ -9,10 +9,10 @@
   <link rel="stylesheet" href="/css/brand.css?v=1">
   <link rel="stylesheet" href="/css/suggest.css?v=2">
   <script src="/js/personalization.js?v=237" defer></script>
-  <script src="/js/analytics.js?v=2.5.7" defer></script>
+  <script src="/js/analytics.js?v=269" defer></script>
 <script src="/js/newsletter-attribution.js?v=1" defer></script>
   <script src="/js/ga.js?v=235" defer></script>
-  <script src="/js/suggest.js?v=1" defer></script>
+  <script src="/js/suggest.js?v=269" defer></script>
 </head>
 <body>
   <div class="suggest-wrap">
@@ -22,8 +22,7 @@
     </header>
     <main id="main" class="suggest-paper">
       <p class="suggest-kicker">a little help goes a long way</p>
-      <h1>Suggest a job.</h1>
-      <p class="suggest-intro">Found a role worth sharing? Send the employer's job link. We'll review it before it appears on the board.</p>
+      <h1>Suggest a job</h1>
 
       <form id="suggest-form" name="job-suggestions-v2" method="POST" action="/suggest" data-netlify="true" netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="job-suggestions-v2">
@@ -32,9 +31,8 @@
           <label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label>
         </p>
         <div class="suggest-field">
-          <label for="suggest-url">Employer's job link</label>
-          <p id="suggest-url-help" class="suggest-hint">The public posting on the company's website or hiring platform, rather than a social post.</p>
-          <input id="suggest-url" name="job-url" type="url" inputmode="url" placeholder="https://company.com/careers/job" required maxlength="2048" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="suggest-url-help">
+          <label for="suggest-url">Link to job</label>
+          <input id="suggest-url" name="job-url" type="text" inputmode="url" placeholder="https://company.com/careers/job" required maxlength="2048" autocomplete="off" autocapitalize="off" spellcheck="false">
         </div>
         <div class="suggest-field">
           <label for="suggest-context">Anything we should know? <span class="suggest-optional">Optional</span></label>

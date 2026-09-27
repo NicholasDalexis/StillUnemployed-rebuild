@@ -268,17 +268,19 @@ test('internship Saved and Tracker retain existing raw URL identities across can
   assert.deepEqual(JSON.parse(b.localStorage.getItem('su_tracker')), [oldTracker], 'confirmation does not duplicate or overwrite an existing equivalent tracker record');
 });
 
-test('sharing an internship returns to the internship feed with the same URL identity and selected theme', () => {
+test('sharing an internship opens the live TLDR without scrolling with the same URL identity and theme', async () => {
   const row = listing(), b = ui([row], { look:'poker' });
   b.detail(row.link).querySelector('[data-act="detailShare"]').click();
   assert.equal(b.shared.length, 1);const shared = new URL(b.shared[0].url);
   assert.match(shared.pathname, /^\/j\/internships\/poker\/[a-z0-9]+\.html$/);assert.equal(shared.searchParams.get('theme'), 'poker');
   assert.equal(Buffer.from(shared.searchParams.get('job'), 'base64').toString('utf8'), row.link);
-  const next = ui([row], { search:shared.search });
-  assert.equal(next.app.state.look, 'poker');next.runTimers(900);
-  assert.equal(next.card(row.link).scrolled, true, 'the incoming share highlights its matching internship');
-  assert.equal(next.card(row.link).style.outline, '3px solid #D8502E');
-  next.detail(row.link);assert.equal(next.app.state.detailLink, row.link);
+  const next = board({ search:shared.search, response:{ok:true,json:async()=>({schemaVersion:2,status:'verified',jobs:[row]})} });
+  next.window.SUInternships=I;next.window.SUPayDisplay=Pay;await next.boot();
+  assert.equal(next.app.state.look,'poker');assert.equal(next.app.state.detailOpen,true);
+  assert.equal(next.app.state.detailLink,row.link);assert(next.overlay.querySelector('[role="dialog"]'));
+  const card=next.grid.querySelector('.note[data-act="openJob"]');assert.equal(card.getAttribute('data-link'),row.link);
+  assert.notEqual(card.scrolled,true,'no incoming share scroll animation');
+  next.app.setState({detailOpen:false});assert.equal(next.grid.querySelector('.note[data-act="openJob"]').getAttribute('data-link'),row.link);
 });
 
 test('employer text renders as text, without introducing executable markup or account/reviewer fields', () => {

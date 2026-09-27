@@ -29,7 +29,15 @@
   window.SUAuth = { signedIn:function(){return !!user;}, signIn:signIn, qaAdmin:qaAdmin, accountCurrent:accountCurrent, measurementExcluded:measurementExcluded, measurementReady:function(){return authReady&&!signingIn&&!signingOut&&(!user||accountCurrent());}, syncReady:function(){return accountCurrent()&&syncState==='synced';}, syncState:function(){return syncState;}, retrySync:function(){if(user&&syncState==='error'){track('sync_retry');startSync();}}, getToken:function(force){return accountCurrent() ? user.getIdToken(force===true) : Promise.reject(new Error('Sign in required'));} };
   function track(name) { if(window.SUAnalytics&&typeof window.SUAnalytics.emit==='function')window.SUAnalytics.emit(name,{}); }
   function notifyAuth(){var changed=false;try{var owner=user?user.uid:'guest',prior=sessionStorage.getItem('su_analytics_auth_owner');changed=prior!==null&&prior!==owner;sessionStorage.setItem('su_analytics_auth_owner',owner);}catch(e){}if(window.dispatchEvent && typeof CustomEvent !== 'undefined')window.dispatchEvent(new CustomEvent('su:auth-changed',{detail:{signedIn:!!user,accountChanged:changed}}));}
-  function loginResult(result){if(result && window.SUAnalytics)window.SUAnalytics.emit('auth_login',{});return result;}
+  var pendingLoginUid=null;
+  function deliverLogin(){
+    if(!pendingLoginUid||!user||pendingLoginUid!==user.uid||!window.SUAuth.measurementReady()||!window.SUAnalytics)return;
+    pendingLoginUid=null;
+    // Firebase's state callback clears the previous account's event queue.
+    // Record completion only after that handoff and the popup have settled.
+    track('auth_login');
+  }
+  function loginResult(result){if(result&&result.user){pendingLoginUid=result.user.uid;deliverLogin();}return result;}
   var feedbackFocus = null;
   var bootTimer, authUnsubscribe;
   function status(next, error) {
@@ -145,7 +153,7 @@
       if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
         signInError(e);
       } else track('signin_cancel');
-    }).finally(function () { signingIn = false; if(!user&&signInGeneration===sessionGeneration&&syncState==='signing-in')status('signed-out');else render(); });
+    }).finally(function () { signingIn = false; if(!user&&signInGeneration===sessionGeneration&&syncState==='signing-in')status('signed-out');else render();deliverLogin(); });
   }
   function mount() {
     // Nav rows and feedback notes can be rebuilt. Keep one auth control per slot,
@@ -244,6 +252,7 @@
       notifyAuth();
       if (user) startSync(); else status('signed-out');
       render();
+      deliverLogin();
     }, function (e) { if(attempt!==bootAttempt)return;clearTimeout(bootTimer);authReady=false;sessionGeneration++;if(session)session.stop();session=null;status('error',e); });
     render();
   }).catch(function (e) { if(attempt !== bootAttempt)return;clearTimeout(bootTimer);loadingSdk = false; authMessage = 'Sign-in could not load. Tap Google to retry.'; status('error', e); });

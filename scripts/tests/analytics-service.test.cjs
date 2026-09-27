@@ -42,7 +42,7 @@ const uxActions=['preferred_source_click','feedback_open','feedback_dismiss','fe
  'sync_error','sync_retry','sync_recovered','preference_open','preference_error','newsletter_dismiss','bookmark_open','view_restored','render_error'];
 test('UX counts accept guests, remove optional data, deduplicate, and never claim a Google selection or application',async()=>{
  const d=deps(),r=request('alice',uxActions.map(name=>({name,jobId,theme:'poker',status:'Applied',seconds:99,outboundId:'private-outbound',message:'private failure',url:'https://private.invalid',query:'private question'})),{consent:{analytics:true,personalization:false}});
- delete r.headers.authorization;
+ delete r.headers.authorization;const issued=await require('../../netlify/functions/lib/analytics-identity.cjs').issue({...r,headers:{...r.headers,'x-nf-client-connection-ip':'192.0.2.10'}},d);r.headers.cookie=issued.cookie.split(';')[0];
  assert.equal((await S.collect(r,d)).accepted,uxActions.length);assert.equal((await S.collect(r,d)).accepted,0);
  const out=await S.admin({...request('owner'),httpMethod:'GET'},d);
  assert.deepEqual(out.events,uxActions.map(label=>({label,count:1})));
@@ -104,3 +104,52 @@ test('an unverified or client-declared admin email cannot trigger the trusted me
 
 test('preview collector excludes requests even when its origin is explicitly allowed',async()=>{const d=deps(),r=request();d.env.CONTEXT='branch-deploy';d.env.SU_ALLOWED_ORIGINS='https://preview--stillunemployed.netlify.app';r.headers.origin=d.env.SU_ALLOWED_ORIGINS;assert.deepEqual(await S.collect(r,d),{accepted:0,excluded:true});assert.equal(d.db.data.size,0);});
 test('production collector cannot count a preview-origin request',async()=>{const d=deps(),r=request();d.env.CONTEXT='production';d.env.SU_ALLOWED_ORIGINS+=' ,https://preview--stillunemployed.netlify.app';r.headers.origin='https://preview--stillunemployed.netlify.app';assert.deepEqual(await S.collect(r,d),{accepted:0,excluded:true});assert.equal(d.db.data.size,0);});
+
+
+const Anonymous=require('../../netlify/functions/lib/analytics-identity.cjs');
+test('forged anonymous identities and reset targets perform zero Firestore work',async()=>{
+ const d=deps();const req=request('alice',[{name:'page_view'}],{consent:{analytics:true,personalization:false}});delete req.headers.authorization;
+ for(const cookie of ['', '__Host-su_measurement='+ 'a'.repeat(32)+'.'+(now+10000)+'.'+'a'.repeat(43)]){
+  req.headers.cookie=cookie;await assert.rejects(()=>S.collect(req,d),e=>e.status===401);
+  await assert.rejects(()=>S.profile({...req,httpMethod:'DELETE'},d),e=>e.status===401);
+  assert.equal(d.db.data.size,0);
+ }
+});
+test('signed guest identity ignores caller visitor, validates expiry, and enforces mint/reset budgets',async()=>{
+ const d=deps(),req=request('alice',[{name:'page_view'}],{consent:{analytics:true,personalization:false}});delete req.headers.authorization;req.headers['x-nf-client-connection-ip']='192.0.2.9';
+ const issued=await Anonymous.issue(req,d);assert.match(issued.cookie,/Secure; HttpOnly; SameSite=Strict/);req.headers.cookie=issued.cookie.split(';')[0];
+ assert.equal((await S.collect(req,d)).accepted,1);const other=JSON.parse(req.body);other.visitor='forged-another-browser';other.events[0].id='second-guest-event';req.body=JSON.stringify(other);assert.equal((await S.collect(req,d)).accepted,1);
+ assert.equal((await S.admin({...request('owner'),httpMethod:'GET'},d)).totals.visitors,1);
+ assert.equal(Anonymous.read(req,{...d,now:()=>now+91*86400000}),null);
+ for(let i=0;i<5;i++)await S.profile({...req,httpMethod:'DELETE'},d);await assert.rejects(()=>S.profile({...req,httpMethod:'DELETE'},d),e=>e.status===429);
+ const before=d.db.data.size;for(let i=1;i<300;i++)await Anonymous.issue({...req,headers:{...req.headers,cookie:''}},d);
+ await assert.rejects(()=>Anonymous.issue({...req,headers:{...req.headers,cookie:''}},d),e=>e.status===429);assert.equal(d.db.data.size,before,'issuance never creates event/profile rows');
+});
+test('nonexistent signed guest reset does not create a profile or query events',async()=>{
+ const d=deps(),req={httpMethod:'DELETE',headers:{origin:'https://stillunemployed.com','x-nf-client-connection-ip':'192.0.2.8'},body:'{}'};
+ const issued=await Anonymous.issue(req,d);req.headers.cookie=issued.cookie.split(';')[0];d.db.collection=()=>{throw Error('Unexpected event query');};
+ assert.deepEqual(await S.profile(req,d),{reset:true,deleted:0});assert.equal([...d.db.data.keys()].some(k=>k.startsWith('suAnalyticsProfiles/')),false);
+});
+test('daily trends survive 90-day raw expiry without identity or written answers and expire after 400 days',async()=>{
+ const d=deps();const req=request('alice',[{name:'page_view'},{name:'job_open',jobId},{name:'job_open',jobId,id:'testevent1234567891'}]);
+ assert.equal((await S.collect(req,d)).accepted,2);assert.equal((await S.collect(req,d)).accepted,0);
+ const daily=[...d.db.data].find(([k])=>k.startsWith('suAnalyticsDaily/'))[1];assert.equal(daily.counts.job_open,1);assert.equal(daily.visits,1);assert.equal(daily.visitors,1);assert.doesNotMatch(JSON.stringify(daily),/alice|session123|visitor123|jobId|Designer/);
+ const day91={...d,now:()=>now+91*86400000};await S.cleanup(day91);assert.equal([...d.db.data.keys()].some(k=>k.startsWith('suAnalyticsEvents/')),false);
+ const out=await S.admin({...request('owner'),httpMethod:'GET'},day91);assert.equal(out.trajectory.daily.length,1);assert.equal(out.trajectory.daily[0].counts.job_open,1);assert.equal(out.newsletter,null,'unconfigured newsletter is not zero');
+ await S.cleanup({...d,now:()=>now+401*86400000});assert.equal([...d.db.data.keys()].some(k=>k.startsWith('suAnalyticsDaily/')),false);
+});
+test('every advice addition has a recognized analytics identifier while caller-written text is discarded',()=>{
+ const A=require('../../js/advice-content.js');for(const note of A.additions){const e=C.cleanEvent({name:'advice_open',page:'board',id:'advice-event-123456',adviceId:note.id,notes:'private'},{});assert.equal(e.adviceId,note.id);assert.equal(e.notes,undefined);}
+});
+
+
+test('LinkedIn post-slot attribution is bounded, cohort suppressed, and separates footer from job',()=>{
+ const context={source:'linkedin',campaign:'early_career_daily_jobs',post:'20260928_design',linkSlot:'job_1_abcdef0123456789'};
+ const event=C.cleanEvent({id:'marketing-event-123',name:'page_view',page:'board',...context},{});assert.equal(event.post,context.post);
+ const bad=C.cleanEvent({...event,post:'secret@example.invalid'},{});assert.equal(bad.post,undefined);assert.equal(bad.linkSlot,undefined);
+ const rows=[];for(let i=0;i<5;i++)for(const name of ['page_view','tldr_open','apply_click'])rows.push({...event,id:name+i,actor:'actor'+i,session:'session'+i,name,at:now});
+ assert.deepEqual(C.reduceRows(rows,30,now).marketingLinks,[{label:'20260928_design / job_1_abcdef0123456789',views:5,tldr:5,apply:5,visitors:5,visits:5}]);
+ assert.deepEqual(C.reduceRows(rows.slice(0,12),30,now).marketingLinks,[]);
+ rows.push({...rows[0],linkSlot:'board_footer'});assert.equal(C.reduceRows(rows,30,now).marketingLinks.length,1);
+ assert.doesNotMatch(JSON.stringify(C.reduceRows(rows,30,now).marketingLinks),/actor|session/);
+});

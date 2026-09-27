@@ -53,11 +53,12 @@ for(const internships of [false,true])for(const panelName of ['cat','filters']){
     b.fire('click',b.grid.querySelector(`[data-act="${action}"]`));
     assert.equal(b.app.internships,internships);
     assert.equal(b.app.state.openPanel,panelName,'the real toggle opens the requested panel');
-    const panel=b.grid.querySelector(`[data-su-panel="${panelName}"]`);
+    const panel=(panelName==='filters'?b.overlay:b.grid).querySelector(`[data-su-panel="${panelName}"]`);
     const menu=b.grid.querySelector('#su-board-menu');
     const summary=menu.querySelector('#su-board-menu-trigger');
     assert(panel&&summary&&summary.isConnected);
     assert.equal(menu.getAttribute('open'),null,'the summary is still visible with its menu closed');
+    if(panelName==='filters'){assert.equal(panel.getAttribute('role'),'dialog');assert.equal(panel.getAttribute('aria-modal'),'true');b.fire('click',panel.querySelector('[data-act="toggleFilters"]'));assert.equal(b.app.state.openPanel,null);assert.equal(b.overlay.querySelector('[role="dialog"]'),null);return;}
     const panelLayer=outerPositionedLayer(panel);
     assert(menuLayer(menu)<panelLayer,
       `closed summary layer ${menuLayer(menu)} must stay below panel layer ${panelLayer}, even where they overlap`);

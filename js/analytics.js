@@ -4,13 +4,30 @@
   var queue=[],pending=[],catalog={},catalogGeneration=0,profile={},generation=0,authEpoch=0,flushBusy=false;
   var visitor=null,session=null,sessionAt=0,seen={},outbound=null,lastActivity=Date.now(),activeAt=Date.now(),activeSeconds=0;
   var ENDPOINT='/.netlify/functions/analytics-events',PROFILE='/.netlify/functions/analytics-profile';
+  var anonymousReady=false,anonymousPending=null,acquisition=null;
+  function sourceContext(){
+    if(acquisition)return acquisition;
+    var out={source:'direct'},p=new URLSearchParams(location.search||''),source=p.get('utm_source');
+    if(['linkedin','instagram','threads','jobhuntrecipe'].indexOf(source)>=0){out.source=source;var campaign=p.get('utm_campaign');if(/^(su_daily_jobs|su_internship_friday)_\d{8}$/.test(campaign||''))out.campaign=campaign;
+      if(source==='linkedin'&&campaign==='early_career_daily_jobs'){out.campaign=campaign;var post=p.get('utm_id'),slot=p.get('utm_content');if(/^\d{8}_[a-z][a-z0-9_-]{0,31}$/.test(post||'')&&/^(board_footer|job_[1-5]_[a-f0-9]{8,64})$/.test(slot||'')){out.post=post;out.linkSlot=slot;}}
+    }
+    else {try{var host=new URL(document.referrer||'').hostname;if(/(^|\.)linkedin\.com$/.test(host))out.source='linkedin';else if(/(^|\.)instagram\.com$/.test(host))out.source='instagram';else if(host&&!/^(www\.)?stillunemployed\.com$/.test(host))out.source='referral';}catch(_){}}
+    try{var prior=JSON.parse(sessionStorage.getItem('su_analytics_source')||'null');if(out.source==='direct'&&prior&&Date.now()-prior.at<1800000)out=prior.context;sessionStorage.setItem('su_analytics_source',JSON.stringify({at:Date.now(),context:out}));}catch(_){}
+    acquisition=out;return out;
+  }
+  async function ensureAnonymous(){
+    if(signedIn()||anonymousReady)return true;
+    if(!choices().analytics||!consentEnabled())return false;
+    if(!anonymousPending)anonymousPending=fetch('/.netlify/functions/analytics-identity',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({analytics:true})}).then(async function(r){anonymousReady=r.ok&&(await r.json()).ready===true;return anonymousReady;}).catch(function(){return false;}).finally(function(){anonymousPending=null;});
+    return anonymousPending;
+  }
   // Count decisions and recoveries without attaching job data or private errors.
   // Opening Google's selector never confirms that a source was selected there.
   var COUNT_ONLY_EVENTS=['preference_save','preference_clear','preference_skip','feedback_not_fit',
     'preferred_source_click','feedback_open','feedback_dismiss','feedback_unavailable',
     'feed_ready','feed_load_error','feed_retry','feed_refresh','search_empty',
     'signin_start','signin_cancel','signin_error','signout_complete','signout_error','sync_error','sync_retry','sync_recovered',
-    'preference_open','preference_error','newsletter_dismiss','bookmark_open','view_restored','render_error'];
+    'preference_open','preference_error','newsletter_dismiss','bookmark_open','view_restored','render_error','share_invalid','share_missing','filters_open','preference_major_saved','preference_industry_saved','preference_location_saved','preference_info_saved'];
   function stored(k){try{return localStorage.getItem(k);}catch(e){return null;}}
   function put(k,v){try{if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){}}
   function choices(){return {analytics:stored('su_consent_v3')==='granted'&&!navigator.globalPrivacyControl,personalization:stored('su_personalization_v1')==='granted'};}
@@ -33,7 +50,7 @@
     var c=choices();if(!c.analytics && !({job_open:1,job_save:1,apply_click:1,application_reported:1})[name])return;
     var e={id:randomId(),name:name,page:page(),occurredAt:Date.now()};
     // Explicit keys only. Never copy strings from DOM labels, forms or URLs.
-    if(!countOnly)['jobId','theme','filter','status','seconds','capped','vote','outboundId','placement','cta','revision','newsletterReceipt'].forEach(function(k){if(params&&params[k]!==undefined)e[k]=params[k];});
+    if(!countOnly){Object.assign(e,sourceContext());['jobId','theme','filter','status','seconds','capped','vote','outboundId','placement','cta','revision','newsletterReceipt','adviceId'].forEach(function(k){if(params&&params[k]!==undefined)e[k]=params[k];});}
     queue.push(e);if(queue.length>120)queue.shift();
     if(queue.length>=20)flush();
   }
@@ -42,9 +59,11 @@
     flushBusy=true;var epoch=authEpoch,batch=queue.splice(0,30),c=choices(),auth=signedIn(),headers={'Content-Type':'application/json'};
     try{
       if(auth)headers.Authorization='Bearer '+await window.SUAuth.getToken();
+      else if(!await ensureAnonymous())throw new Error('identity');
       if(epoch!==authEpoch||!consentEnabled())return;
       var response=await fetch(ENDPOINT,{method:'POST',headers:headers,body:JSON.stringify({events:batch,session:session,visitor:visitor,consent:{analytics:c.analytics,personalization:c.personalization&&auth}}),keepalive:true,credentials:'same-origin'});
       if(!response.ok){
+        if(!auth&&response.status===401){anonymousReady=false;throw new Error('identity');}
         if(response.status===429 || response.status>=500)throw new Error('delivery');
         if(epoch===authEpoch)window.dispatchEvent(new CustomEvent('su:analytics-status',{detail:{state:'discarded',status:response.status}}));
         return;
@@ -89,7 +108,7 @@
     authEpoch++;var resetEpoch=authEpoch;queue=[];pending=[];seen={};outbound=null;profile={};generation++;
     if(window.SUNewsletter)await window.SUNewsletter.revoke();
     if(resetEpoch!==authEpoch)throw new Error('Account changed. Please retry from your current account.');
-    if(signedIn()||visitor||stored('su_analytics_visitor')){var headers={'Content-Type':'application/json'};if(signedIn())headers.Authorization='Bearer '+await window.SUAuth.getToken();if(resetEpoch!==authEpoch)throw new Error('Account changed. Please retry from your current account.');var r=await fetch(PROFILE,{method:'DELETE',headers:headers,body:JSON.stringify({visitor:visitor||stored('su_analytics_visitor')}),credentials:'same-origin'});if(!r.ok)throw new Error('Reset could not finish. Please try again.');}
+    if(signedIn()||visitor||stored('su_analytics_visitor')){var headers={'Content-Type':'application/json'};if(signedIn())headers.Authorization='Bearer '+await window.SUAuth.getToken();if(resetEpoch!==authEpoch)throw new Error('Account changed. Please retry from your current account.');var r=await fetch(PROFILE,{method:'DELETE',headers:headers,body:'{}',credentials:'same-origin'});if(!r.ok)throw new Error('Reset could not finish. Please try again.');}
     if(resetEpoch!==authEpoch)throw new Error('Account changed. Please retry from your current account.');
     if(window.SUBoardExperience&&typeof window.SUBoardExperience.clearHistory==='function')window.SUBoardExperience.clearHistory();
     put('su_analytics_visitor',null);visitor=null;window.dispatchEvent(new CustomEvent('su:profile-ready',{detail:{generation:generation,reset:true}}));
@@ -99,6 +118,7 @@
     var epoch=authEpoch,headers={'Content-Type':'application/json'},item=context.link?catalog[keyFor(context.link)]:null;
     if(context.placement==='job-detail'&&!item)return null;
     if(signedIn())headers.Authorization='Bearer '+await window.SUAuth.getToken();
+    else if(!await ensureAnonymous())return null;
     if(epoch!==authEpoch||!choices().analytics||!consentEnabled())return null;
     var response=await fetch('/.netlify/functions/newsletter-attribution',{method:'POST',headers:headers,signal:signal,credentials:'same-origin',body:JSON.stringify({token:token,occurredAt:Date.now(),session:session,visitor:visitor,consent:{analytics:true},page:page(),placement:context.placement,cta:context.cta,jobId:item?item.id:undefined})});
     if(!response.ok)return null;
@@ -117,7 +137,7 @@
     }
     var maps={save:'job_save','tracker-add':'tracker_add','tracker-export':'tracker_export','tracker-status':'tracker_status',look:'theme_change',filter:'filter_change',search:'search_used',note_open:'advice_open',note_view:'advice_impression',signup_open:'newsletter_open',signup_cta:'newsletter_click',note_cta:'newsletter_click'};
     if(action==='save'){jobEvent('job_save',link);return;}
-    if(maps[action])emit(maps[action],action==='look'?{theme:company}:action==='filter'?{filter:company}:action==='tracker-status'?{status:role}:{});
+    if(maps[action])emit(maps[action],action==='look'?{theme:company}:action==='filter'?{filter:company}:action==='tracker-status'?{status:role}:/^note_(open|view|cta)$/.test(action)?{adviceId:String(company)}:{});
   };
   window.addEventListener('su:auth-changed',function(event){authEpoch++;queue=[];pending=[];seen={};profile={};outbound=null;generation++;activeSeconds=0;activeAt=Date.now();lastActivity=Date.now();if(event.detail&&event.detail.accountChanged){session=null;try{sessionStorage.removeItem('su_analytics_session');}catch(e){}}loadProfile();if(choices().analytics){emit('page_view',{});if(page()==='tracker')emit('tracker_open',{});if(page()==='privacy')emit('privacy_open',{});}});
   window.addEventListener('su:consent-changed',function(){authEpoch++;queue=[];pending=[];seen={};profile={};outbound=null;generation++;activeSeconds=0;activeAt=Date.now();lastActivity=Date.now();if(!choices().analytics){put('su_analytics_visitor',null);visitor=null;session=null;try{sessionStorage.removeItem('su_analytics_session');}catch(e){}}loadProfile();if(choices().analytics)emit('page_view',{});});

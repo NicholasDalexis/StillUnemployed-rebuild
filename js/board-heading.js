@@ -15,11 +15,11 @@
   var KEY = 'su_headline_previous_v1';
   var looks = { original:'original', poker:'casino', girly:'girlies', mermaid:'mermaid', bratt:'bratt', noir:'blackcat', beauty:'beauty', chess:'chess' };
   var copy = [
-    { start:'worth the ', marked:'screenshot.' },
-    { start:'worth fixing your ', marked:'resume for.' },
-    { start:'worth ', marked:'saving.' },
-    { start:'worth ', marked:'bookmarking.' },
-    { start:'to save ', marked:'before you forget.' }
+    { start:'worth the ', marked:'screenshot' },
+    { start:'worth fixing your ', marked:'resume for' },
+    { start:'worth ', marked:'saving' },
+    { start:'worth ', marked:'bookmarking' },
+    { start:'to save ', marked:'before you forget' }
   ];
   function next(storage) {
     var chosen = 0;

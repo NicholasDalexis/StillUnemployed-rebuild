@@ -176,11 +176,11 @@ test('real discovery actions share the count row in Board menu, separate from th
     const actions=menu.querySelectorAll('a,button'); assert.equal(actions.length,3);
     assert(menu.querySelector('[data-discovery="hidden"]')); assert(menu.querySelector('a[href="./suggest.html"]')); assert.equal(menu.querySelector('a[href="/versions.html"]'),null);assert(menu.querySelector('[data-act="openRecent"]'));
     assert.equal(menu.querySelector('[data-act="openModal"]'),null);
-    assert.equal(menu.querySelector('[data-discovery="settings"]'),null);b.app.setState({openPanel:'filters'});assert.equal(!!b.grid.querySelector('[data-discovery="settings"]'),signedIn);
+    assert.equal(menu.querySelector('[data-discovery="settings"]'),null);b.app.setState({openPanel:'filters'});assert(b.overlay.querySelector('[data-discovery="settings"]'));
     for(const action of ['toggleSavedOnly','toggleLook']) assert.equal(menu.querySelector('[data-act="'+action+'"]'),null);
     assert(!b.grid.querySelector('.su-main-nav').contains(menu));
     assert.equal(b.grid.querySelector('[data-discovery="recommend"]'),null);
-    assert.equal(b.overlay.querySelector('[role="dialog"]'),null,'preferences never auto-open on init');
+    assert.equal(b.document.getElementById('su-discovery-form'),null,'preferences never auto-open on init');
   }
 });
 
