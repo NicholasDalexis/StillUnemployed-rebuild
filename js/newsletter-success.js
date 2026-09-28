@@ -14,8 +14,8 @@
     if(!frame||!frame.isConnected)return;
     if(!dialog){
       dialog=doc.createElement('dialog');dialog.id='su-newsletter-success';dialog.className='su-newsletter-success';
-      dialog.setAttribute('aria-labelledby','su-newsletter-thanks');dialog.setAttribute('aria-describedby','su-newsletter-welcome');
-      dialog.innerHTML='<div class="su-newsletter-success-paper"><button type="button" class="su-newsletter-success-close" aria-label="Close confirmation">'+closeIcon+'</button><h2 id="su-newsletter-thanks" tabindex="-1">Thanks!</h2><p id="su-newsletter-welcome">Welcome email sent. <span>Free resume</span> template inside!</p><a class="su-newsletter-go" href="https://mail.google.com/" target="_blank" rel="noopener noreferrer">Let’s go <svg width="30" height="22" viewBox="0 0 52 30" aria-hidden="true"><path d="M3 18Q24 5 46 15M36 5l12 10-13 9" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>';
+      dialog.setAttribute('aria-labelledby','su-newsletter-title');dialog.setAttribute('aria-describedby','su-newsletter-message');
+      dialog.innerHTML='<div class="su-newsletter-success-paper"><button type="button" class="su-newsletter-success-close" aria-label="Close confirmation">'+closeIcon+'</button><h2 id="su-newsletter-title" tabindex="-1">Welcome email sent!</h2><p id="su-newsletter-message">Check promotions or spam folder!</p><a class="su-newsletter-go" href="https://mail.google.com/" target="_blank" rel="noopener noreferrer">Let’s go <svg width="30" height="22" viewBox="0 0 52 30" aria-hidden="true"><path d="M3 18Q24 5 46 15M36 5l12 10-13 9" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></a><p class="su-newsletter-success-ps">p.s <span>Free Resume</span> template attached</p></div>';
       doc.body.appendChild(dialog);
       dialog.querySelector('button').addEventListener('click',function(){dialog.close();});
       // Dismiss before the app handoff. Whether iOS chooses Open or Cancel,

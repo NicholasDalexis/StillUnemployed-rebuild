@@ -1,21 +1,20 @@
 {
-  "version": "2.7.4.5",
+  "version": "2.7.5.1",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-28T01:33:06Z",
+  "reviewedAt": "2026-09-28T02:06:07Z",
   "reviewer": "Codex root",
-  "sourceDigest": "85522b6d85f8079b539f02fea32da4e35ae1b7c15c05d1746662e7d0e9f217ca",
+  "sourceDigest": "6dba4154929a860a5f27598219d094f8beb9e58ee33ba88df64d12401b216ea5",
   "sourceFileCount": 210,
   "privacyChanged": false,
   "termsChanged": false,
-  "baselineReview": "docs/privacy-review.json (2.7.4.4 receipt)",
-  "scope": "Preview-only newsletter confirmation copy and return-state cleanup. A completed job signup now restores the job note without starting a second Beehiiv form. No new data or provider.",
+  "baselineReview": "docs/privacy-review.json (2.7.4.5 preview receipt) and production 2.7.5 receipt",
+  "scope": "Preview-only welcome-confirmation copy; merged the four verified internships already public on production 2.7.5. No new data, provider, authentication, or newsletter submission behavior.",
   "checks": {
-    "disclosures": "Reviewed privacy.html and terms.html. No new collection, retention, disclosure, or account behavior; the successful return makes one fewer Beehiiv form request.",
-    "security": "The signed-up state is established only by the existing same-origin success receipt. Job identity must match before restoring the confirmation. Production form and redirect remain unchanged."
+    "disclosures": "Reviewed privacy.html and terms.html newsletter and data-handling sections; neither policy text changed. This copy and published-card merge do not add collection, retention, disclosure, or account behavior.",
+    "security": "The successful-signup receipt and same-job restoration logic are unchanged. The Beehiiv form IDs, production form, and redirect settings are unchanged."
   },
   "openItems": [
-    "Real preview signup returned to the branded Thanks dialog in 2.7.4.3; 2.7.4.5 return cleanup awaits hosted visual QA.",
-    "Physical iPhone Gmail Open/Cancel remains unverified.",
-    "Production configuration and readiness check required before future promotion."
+    "Fresh hosted provider return on this exact preview revision and physical iPhone Gmail Open/Cancel remain unverified.",
+    "Production promotion requires readiness check, including the production Beehiiv form and redirect configuration."
   ]
 }

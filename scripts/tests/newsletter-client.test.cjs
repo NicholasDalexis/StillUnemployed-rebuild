@@ -67,7 +67,9 @@ test('returned board restores the thank-you layer over the matching job without 
  assert.equal(win.SUNewsletterSuccess.pendingContext().placement,'job-detail');
  win.SUNewsletterSuccess.tryResume();assert.equal(dialog.open,true);assert.equal(storage.su_newsletter_resume_v1,undefined);
  assert.equal(win.SUNewsletterSuccess.confirmed(),true);
- assert.doesNotMatch(dialog.innerHTML,/P\.S\.|Promotions|Spam folder/);
+ assert.match(dialog.innerHTML,/<h2 id="su-newsletter-title" tabindex="-1">Welcome email sent!<\/h2>/);
+ assert.match(dialog.innerHTML,/<p id="su-newsletter-message">Check promotions or spam folder!<\/p>/);
+ assert.match(dialog.innerHTML,/Let’s go .*<p class="su-newsletter-success-ps">p\.s <span>Free Resume<\/span> template attached<\/p>/);
 });
 test('an inline success hides the completed signup while keeping its note available',()=>{
  const source=fs.readFileSync(require.resolve('../../js/newsletter-success.js'),'utf8');

@@ -1,7 +1,35 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.4.5",
+  "currentVersion": "2.7.5.1",
   "releases": [
+    {
+      "version": "2.7.5.1",
+      "date": "2026-09-27",
+      "title": "Newsletter confirmation copy",
+      "changes": [
+        "Lead signup confirmation with Welcome email sent, place the promotions or spam reminder above the Gmail action, and place the underlined Free Resume note beneath it. Includes the four verified internships already published in production 2.7.5."
+      ],
+      "public": {
+        "title": "A clearer welcome note",
+        "changes": [
+          "The signup confirmation puts the email reminder first and the resume template note below the Gmail link."
+        ]
+      }
+    },
+    {
+      "version": "2.7.5",
+      "date": "2026-09-27",
+      "title": "Internship board publication",
+      "changes": [
+        "Publish four verified Summer 2027 internship cards from the operational Internships sheet with preserved existing cards and one unresolved source-only hold."
+      ],
+      "public": {
+        "title": "New internships",
+        "changes": [
+          "Four new design and marketing internships are now on the board."
+        ]
+      }
+    },
     {
       "version": "2.7.4.5",
       "date": "2026-09-27",
@@ -894,7 +922,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "85522b6d85f8079b539f02fea32da4e35ae1b7c15c05d1746662e7d0e9f217ca",
+    "digest": "6dba4154929a860a5f27598219d094f8beb9e58ee33ba88df64d12401b216ea5",
     "fileCount": 210
   }
 }
