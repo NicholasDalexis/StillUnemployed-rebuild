@@ -3,7 +3,7 @@
   'use strict';
   var KEY='su_newsletter_receipts_v1',RETURN_KEY='su_newsletter_return_v1',ENDPOINT='/.netlify/functions/newsletter-attribution',epoch=0,cache=new Map(),frames=new WeakMap();
   function remember(state){
-    if(global.location.hostname!=='preview--stillunemployed.netlify.app')return;
+    if(['https://stillunemployed.com','https://www.stillunemployed.com','https://preview--stillunemployed.netlify.app'].indexOf(global.location.origin)<0)return;
     try{global.sessionStorage.setItem(RETURN_KEY,JSON.stringify({at:Date.now(),url:global.location.href,context:state.context}));}catch(_){}
   }
   function allowed(){var a=global.SUAnalytics;return !!(a&&a.choices().analytics&&!a.excluded());}

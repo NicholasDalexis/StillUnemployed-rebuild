@@ -2659,7 +2659,7 @@
         '<p role="status" style="margin:12px 0;">'+esc(panel.error||panel.message||(panel.loading?'Loading reported jobs…':''))+'</p>';
       if(panel.data&&!panel.loading){
         if(!panel.data.records.length)html+='<p>No reported jobs to restore.</p>';
-        panel.data.records.forEach(function(row){html+='<section style="padding:16px 0;border-top:1px solid #C7BAA0;"><strong>'+esc(row.co||'Company not listed')+'</strong><div>'+esc(row.role||'Role not listed')+'</div><button type="button" data-act="restoreReportedJob" data-val="'+esc(row.id)+'"'+(panel.busy||panel.stale||panel.data.scope!=='preview'?' disabled':'')+' style="'+button+'margin-top:10px;">'+(panel.busy===row.id?'Restoring…':'Restore to board')+'</button></section>';});
+        panel.data.records.forEach(function(row){html+='<section style="padding:16px 0;border-top:1px solid #C7BAA0;"><strong>'+esc(row.co||'Company not listed')+'</strong><div>'+esc(row.role||'Role not listed')+'</div><button type="button" data-act="restoreReportedJob" data-val="'+esc(row.id)+'"'+(panel.busy||panel.stale||['preview','production'].indexOf(panel.data.scope)<0?' disabled':'')+' style="'+button+'margin-top:10px;">'+(panel.busy===row.id?'Restoring…':'Restore to board')+'</button></section>';});
       }
       html+='<button type="button" data-act="refreshReportedJobs"'+(panel.loading||panel.busy?' disabled':'')+' style="'+button+'margin-top:12px;">'+(panel.loading?'Loading…':'Refresh list')+'</button></div></div>';
       return html;
@@ -2678,7 +2678,7 @@
       window.SUJobModeration.admin({current:current}).then(function(data){if(!current())return;panel.loading=false;panel.stale=false;panel.data=data;self.renderOverlays();}).catch(function(e){if(!current())return;panel.loading=false;panel.error=e.message;self.renderOverlays();});
     },
     restoreReportedJob: function(id){
-      var self=this,panel=this._reportedPanel;if(!panel||panel.owner!==moderationOwner()||panel.loading||panel.busy||panel.stale||panel.data?.scope!=='preview')return;
+      var self=this,panel=this._reportedPanel;if(!panel||panel.owner!==moderationOwner()||panel.loading||panel.busy||panel.stale||['preview','production'].indexOf(panel.data?.scope)<0)return;
       var row=panel.data.records.find(function(row){return row.id===id;});if(!row)return;
       var attempt=panel.attempts[id];if(!attempt){try{attempt={id:window.crypto.randomUUID(),revision:panel.data.revision};panel.attempts[id]=attempt;}catch(_){panel.error='Could not prepare restore. Please retry.';this.renderOverlays();return;}}
       var ownedFocus=document.activeElement?.getAttribute('data-val')===id;

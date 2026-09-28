@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.5.2",
+  "currentVersion": "2.7.5.3",
   "releases": [
+    {
+      "version": "2.7.5.3",
+      "date": "2026-09-27",
+      "title": "Small improvements",
+      "changes": [
+        "Production readiness: preserve newsletter return context on exact production origins and enable authorized owner Restore on production, retaining all backend checks."
+      ]
+    },
     {
       "version": "2.7.5.2",
       "date": "2026-09-27",
@@ -936,7 +944,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "63f3ea92ff8fe3f0adafc8df64ecf86b88291f47f6cce650813a35fd61c4f018",
+    "digest": "0ec07f774e4bfc71b84049bb69987891d1260a02acc3c3cf9ad92569340c6f67",
     "fileCount": 210
   }
 }

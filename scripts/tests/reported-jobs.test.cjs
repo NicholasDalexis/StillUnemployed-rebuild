@@ -42,8 +42,23 @@ test('late list/restore completions are discarded after close or account change,
  const b=board(),load=deferred();b.window.SUJobModeration.admin=()=>load.promise;await b.boot();b.app.openReportedJobs();b.owner('other-owner');load.resolve(projection());await tick();assert.equal(b.app._reportedPanel,null);assert.equal(b.overlay.querySelector('[role="dialog"]'),null);
  b.window.SUJobModeration.admin=async()=>projection();const pending=deferred();let options;b.window.SUJobModeration.mutate=(_a,_l,o)=>{options=o;return pending.promise;};b.app.openReportedJobs();await tick();b.app.restoreReportedJob(recordId);b.app.closeReportedJobs();assert.equal(options.current(),false);pending.resolve({revision:10});await tick();assert.equal(b.overlay.querySelector('[role="dialog"]'),null);assert.equal(b.app._reportedPanel,null);
 });
-test('list failures stay retryable, production disables restore and Escape clears private panel state',async()=>{
+test('list failures stay retryable, unknown scopes disable restore and Escape clears private panel state',async()=>{
  const b=board();b.window.SUJobModeration.admin=async()=>{throw Error('Could not load reported jobs. Please retry.');};await b.boot();b.app.openReportedJobs();await tick();assert.match(b.overlay.textContent,/Could not load/);assert(b.overlay.querySelector('[data-act="refreshReportedJobs"]'));
- b.window.SUJobModeration.admin=async()=>projection({scope:'production'});b.app.loadReportedJobs();await tick();assert.equal(b.overlay.querySelector('[data-act="restoreReportedJob"]').disabled,true);b.app.restoreReportedJob(recordId);assert.equal(b.app._reportedPanel.busy,null);
+ b.window.SUJobModeration.admin=async()=>projection({scope:'unknown'});b.app.loadReportedJobs();await tick();assert.equal(b.overlay.querySelector('[data-act="restoreReportedJob"]').disabled,true);b.app.restoreReportedJob(recordId);assert.equal(b.app._reportedPanel.busy,null);
  b.fire('keydown',b.document.activeElement,{key:'Escape'});assert.equal(b.app._reportedPanel,null);
+});
+test('production owner can restore from Reported jobs only after a durable acknowledgment, with owner and revision safeguards',async()=>{
+ const b=board(),calls=[],pending=deferred();
+ b.window.SUJobModeration.admin=async()=>projection({scope:'production'});b.window.SUJobModeration.mutate=(action,target,options)=>{calls.push({action,target,options});return pending.promise;};
+ await b.boot();b.app.openReportedJobs();await tick();
+ const saved=b.localStorage.getItem('su_saved_jobs'),tracker=b.localStorage.getItem('su_tracker'),button=b.overlay.querySelector('[data-act="restoreReportedJob"]');assert.equal(button.disabled,false);button.click();
+ assert.equal(calls.length,1);assert.equal(calls[0].action,'restore');assert.equal(calls[0].target,link);assert.equal(calls[0].options.expectedRevision,9);assert.equal(calls[0].options.current(),true);
+ assert.equal(b.overlay.querySelector('[data-act="restoreReportedJob"]').disabled,true);assert.equal(b.app._reportedPanel.data.records.length,1,'the row remains until the server confirms the restore');
+ pending.resolve({restored:true,revision:10,scope:'production'});await tick();assert.equal(b.app._reportedPanel.data.records.length,0);assert.match(b.overlay.textContent,/Report cleared/);assert.equal(b.localStorage.getItem('su_saved_jobs'),saved);assert.equal(b.localStorage.getItem('su_tracker'),tracker);
+ b.admin(false);b.app.restoreReportedJob(recordId);b.app.openReportedJobs();assert.equal(calls.length,1,'losing owner access cannot restore another row');assert.equal(b.app._reportedPanel,null);
+});
+test('production reported-list transport accepts only its production scope and current owner',async()=>{
+ const f=transport({host:'stillunemployed.com',handler:()=>response(admin({scope:'production'}))});const result=await f.module.admin();assert.equal(result.scope,'production');assert.equal(result.records.length,1);
+ const wrong=transport({host:'stillunemployed.com',handler:()=>response(admin({scope:'preview'}))});await assert.rejects(wrong.module.admin(),/verify reported/);
+ const denied=transport({host:'stillunemployed.com'});denied.root.SUAuth.qaAdmin=()=>false;await assert.rejects(denied.module.admin(),/Account changed/);assert.equal(denied.calls.length,0);
 });
