@@ -56,15 +56,28 @@ test('unrecognized success return cannot navigate the browser',()=>{
  const win={sessionStorage:{getItem:k=>storage[k]||null,setItem:(k,v)=>{storage[k]=v;},removeItem:k=>{delete storage[k];}},location:{origin:'https://preview--stillunemployed.netlify.app',replace:url=>visited.push(url)}};win.parent=win;
  vm.runInNewContext(receipt,{window:win,URL,Date,btoa,unescape,encodeURIComponent});assert.equal(visited.length,0);assert.equal(storage.su_newsletter_resume_v1,undefined);
 });
-test('returned board restores the thank-you layer over the matching job note',()=>{
+test('returned board restores the thank-you layer over the matching job without a second signup frame',()=>{
  const source=fs.readFileSync(require.resolve('../../js/newsletter-success.js'),'utf8');
  const context={placement:'job-detail',link:'https://example.com/job'},storage={su_newsletter_resume_v1:JSON.stringify({at:Date.now(),context})};
- const frame={isConnected:true,getAttribute:()=>JSON.stringify(context)},controls={addEventListener(){},focus(){}},dialog={open:false,setAttribute(){},querySelector:()=>controls,addEventListener(){},showModal(){this.open=true;}};
- const doc={body:{appendChild(){}},createElement:()=>dialog,querySelectorAll:()=>[frame]};
+ const controls={addEventListener(){},focus(){}},dialog={isConnected:true,open:false,setAttribute(){},querySelector:()=>controls,addEventListener(){},showModal(){this.open=true;}};
+ const action={getAttribute:()=>context.link,closest:()=>dialog};
+ const doc={body:{appendChild(){}},createElement:()=>dialog,querySelectorAll:()=>[],querySelector:()=>action};
  const win={document:doc,navigator:{userAgent:'Mozilla/5.0',platform:'MacIntel',maxTouchPoints:0},sessionStorage:{getItem:k=>storage[k]||null,removeItem:k=>{delete storage[k];}}};
  vm.runInNewContext(source,{window:win,Date,Array});
  assert.equal(win.SUNewsletterSuccess.pendingContext().placement,'job-detail');
  win.SUNewsletterSuccess.tryResume();assert.equal(dialog.open,true);assert.equal(storage.su_newsletter_resume_v1,undefined);
+ assert.equal(win.SUNewsletterSuccess.confirmed(),true);
+ assert.doesNotMatch(dialog.innerHTML,/P\.S\.|Promotions|Spam folder/);
+});
+test('an inline success hides the completed signup while keeping its note available',()=>{
+ const source=fs.readFileSync(require.resolve('../../js/newsletter-success.js'),'utf8');
+ const controls={addEventListener(){},focus(){}},dialog={open:false,setAttribute(){},querySelector:()=>controls,addEventListener(){},showModal(){this.open=true;}};
+ const note={isConnected:true,focus(){}},capture={hidden:false},frame={isConnected:true,closest:selector=>selector==='[data-newsletter-id]'?capture:note};
+ const doc={body:{appendChild(){}},createElement:()=>dialog};
+ const win={document:doc,navigator:{userAgent:'Mozilla/5.0',platform:'MacIntel',maxTouchPoints:0}};
+ vm.runInNewContext(source,{window:win,Date,Array});
+ win.SUNewsletterSuccess.open(frame);
+ assert.equal(dialog.open,true);assert.equal(capture.hidden,true);assert.equal(win.SUNewsletterSuccess.confirmed(),true);
 });
 test('provider handshake and bounded resize do not confirm a signup',async()=>{
  const h=harness(),sent=[],source={postMessage:(...x)=>sent.push(x)},frame={isConnected:true,contentWindow:source,style:{}};h.load(frame);await turn();

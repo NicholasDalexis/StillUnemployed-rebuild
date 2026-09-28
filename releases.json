@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.4.4",
+  "currentVersion": "2.7.4.5",
   "releases": [
+    {
+      "version": "2.7.4.5",
+      "date": "2026-09-27",
+      "title": "Newsletter confirmation return cleanup",
+      "changes": [
+        "Remove the P.S. line from the signup confirmation and reopen a shared job without starting a second signup form after a successful Beehiiv return."
+      ],
+      "public": {
+        "title": "A cleaner signup confirmation",
+        "changes": [
+          "The thank-you note is shorter, and your job card stays open after signup without another email form."
+        ]
+      }
+    },
     {
       "version": "2.7.4.4",
       "date": "2026-09-27",
@@ -880,7 +894,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "f57e923f751d85d4ed74dba22fc504fbf1995fbefafdc805367c754356febf03",
+    "digest": "85522b6d85f8079b539f02fea32da4e35ae1b7c15c05d1746662e7d0e9f217ca",
     "fileCount": 210
   }
 }

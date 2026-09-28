@@ -1,20 +1,20 @@
 {
-  "version": "2.7.4.4",
+  "version": "2.7.4.5",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-27T23:24:00.575Z",
+  "reviewedAt": "2026-09-28T01:33:06Z",
   "reviewer": "Codex root",
-  "sourceDigest": "f57e923f751d85d4ed74dba22fc504fbf1995fbefafdc805367c754356febf03",
+  "sourceDigest": "85522b6d85f8079b539f02fea32da4e35ae1b7c15c05d1746662e7d0e9f217ca",
   "sourceFileCount": 210,
   "privacyChanged": false,
   "termsChanged": false,
-  "baselineReview": "docs/privacy-review.json (2.7.4.3 receipt)",
-  "scope": "Preview-only focus styling for the existing newsletter success dialog. No new data or provider.",
+  "baselineReview": "docs/privacy-review.json (2.7.4.4 receipt)",
+  "scope": "Preview-only newsletter confirmation copy and return-state cleanup. A completed job signup now restores the job note without starting a second Beehiiv form. No new data or provider.",
   "checks": {
-    "disclosures": "Reviewed privacy.html and terms.html. Styling-only change; no new collection, retention, disclosure, or account behavior.",
-    "security": "The heading keeps programmatic focus for screen-reader context; action controls retain their visible keyboard focus treatment. Production form and redirect remain unchanged."
+    "disclosures": "Reviewed privacy.html and terms.html. No new collection, retention, disclosure, or account behavior; the successful return makes one fewer Beehiiv form request.",
+    "security": "The signed-up state is established only by the existing same-origin success receipt. Job identity must match before restoring the confirmation. Production form and redirect remain unchanged."
   },
   "openItems": [
-    "Real preview signup returned to the branded Thanks dialog in 2.7.4.3; 2.7.4.4 styling awaits hosted visual QA.",
+    "Real preview signup returned to the branded Thanks dialog in 2.7.4.3; 2.7.4.5 return cleanup awaits hosted visual QA.",
     "Physical iPhone Gmail Open/Cancel remains unverified.",
     "Production configuration and readiness check required before future promotion."
   ]

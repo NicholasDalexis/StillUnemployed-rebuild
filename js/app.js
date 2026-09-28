@@ -140,18 +140,18 @@
     if (!comp.catalogJobs().some(function(job){return jobHasLink(job,link);})) return;
     var returning=window.SUNewsletterSuccess&&window.SUNewsletterSuccess.pendingContext();
     if(returning&&returning.placement==='job-detail'&&sameJobLink(returning.link,link)){
-      // Beehiiv returns through a page reload. Keep the signup note present for
-      // its thank-you layer without counting the return as a second job open.
-      comp._detailRecipe=true;
-      comp._detailRecipeInvitation=NEWSLETTER_INVITATIONS.find(function(item){return item.id===returning.cta;})||NEWSLETTER_INVITATIONS[0];
-      comp._detailRecipeCopy=comp._detailRecipeInvitation.text;
+      // The receipt returns to this job, not to another signup form. The
+      // thank-you layer can attach to the job dialog itself.
+      comp._detailRecipe=false;
+      comp._detailRecipeInvitation=null;
+      comp._detailRecipeCopy='';
       return;
     }
     if(window.SUBoardExperience)window.SUBoardExperience.record(comp.catalogJobs().find(function(job){return jobHasLink(job,link);}), 'viewed');
     try { detailOpens = Number(sessionStorage.getItem('su_detail_opens')) || 0; } catch (_) {}
     detailOpens = Math.max(0, detailOpens) + 1;
     try { sessionStorage.setItem('su_detail_opens', String(detailOpens)); } catch (_) {}
-    comp._detailRecipe = detailOpens % 2 === 0;
+    comp._detailRecipe = detailOpens % 2 === 0 && !(window.SUNewsletterSuccess&&window.SUNewsletterSuccess.confirmed());
     comp._detailRecipeInvitation = comp._detailRecipe && !comp._recipeHidden ? nextNewsletterInvitation() : null;
     comp._detailRecipeCopy = comp._detailRecipeInvitation ? comp._detailRecipeInvitation.text : '';
     if(window.SUAnalytics)window.SUAnalytics.job('tldr_open',link);
