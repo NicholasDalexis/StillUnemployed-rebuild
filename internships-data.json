@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-09-27T19:39:19.160Z",
+  "sourceExportedAt": "2026-09-28T01:40:37.995Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -2046,6 +2046,162 @@
         "status": "open",
         "checkedAt": "2026-09-27T10:45:00.000Z",
         "sourceUrl": "https://careersatdoordash.com/jobs/product-design-intern-summer-2027/8176863/",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Figma",
+      "role": "Brand Design Intern (Summer 2027)",
+      "link": "https://job-boards.greenhouse.io/figma/jobs/6144755004",
+      "loc": "San Francisco, CA",
+      "ind": "Graphic / Visual Design",
+      "desc": "Support Figma Brand Studio campaigns, visual identity and scalable brand systems with mentorship.",
+      "pay": "$29/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "San Francisco, CA",
+      "eligibility": "Portfolio with 2–3 accessible projects (school, personal or internship work); working Figma proficiency; visual communication and feedback skills. Must work from San Francisco Hub. Application asks US work authorization, sponsorship need and graduation date if currently enrolled.",
+      "cycle": "Summer 2027",
+      "deadline": "October 2, 2026, 5:00 PM PT",
+      "applicationsOpen": "Not listed",
+      "startDate": "June 1 or June 14, 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/figma/jobs/6144755004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Create brand work for campaigns and launches.",
+        "Explore typography, imagery and visual directions.",
+        "Build scalable brand toolkits with team feedback."
+      ],
+      "eligibilityFlags": [
+        "Portfolio with 2–3 accessible projects (school, personal or internship work); working Figma proficiency; visual communication and feedback skills. Must work from San Francisco Hub. Application asks US work authorization, sponsorship need and graduation date if currently enrolled."
+      ],
+      "benefits": [
+        "Housing stipend and travel reimbursement."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-28T01:40:22.215Z",
+        "sourceUrl": "https://boards-api.greenhouse.io/v1/boards/figma/jobs/6144755004?questions=true",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Gallup",
+      "role": "Product Design Intern — Summer 2027",
+      "link": "https://job-boards.greenhouse.io/gallup/jobs/4394610009",
+      "loc": "Omaha, NE; onsite Monday–Thursday, remote Friday",
+      "ind": "UI/UX & Product Design",
+      "desc": "Design Gallup digital-product experiences through research, concepts and collaboration with designers and engineers.",
+      "pay": "$25–30/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Omaha, NE; onsite Monday–Thursday, remote Friday",
+      "eligibility": "Currently enrolled in a bachelor's program in HCI, graphic/product/interaction design, computer science or related field at a college within 250 miles of Omaha. Expected graduation August 2027–May 2028. Portfolio required; prior internship preferred. Available 40 hours/week for 12 summer weeks; Omaha onsite Monday–Thursday. US work eligibility; no visa sponsorship.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Summer 2027; exact dates not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/gallup/jobs/4394610009",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Explore user needs and product design concepts.",
+        "Contribute to scoped digital-product design projects.",
+        "Refine work through mentorship and feedback."
+      ],
+      "eligibilityFlags": [
+        "Currently enrolled in a bachelor's program in HCI, graphic/product/interaction design, computer science or related field at a college within 250 miles of Omaha. Expected graduation August 2027–May 2028. Portfolio required; prior internship preferred. Available 40 hours/week for 12 summer weeks; Omaha onsite Monday–Thursday. US work eligibility; no visa sponsorship."
+      ],
+      "benefits": [
+        "Potential school-year work up to 20 hours/week and full-time offer, both dependent on business needs; onsite campus amenities."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-28T01:40:22.332Z",
+        "sourceUrl": "https://boards-api.greenhouse.io/v1/boards/gallup/jobs/4394610009?questions=true",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Hydrite",
+      "role": "Marketing Intern (Summer 2027)",
+      "link": "https://job-boards.greenhouse.io/hydritechemicalco/jobs/8185945",
+      "loc": "Brookfield, WI",
+      "ind": "Brand / Marketing",
+      "desc": "Support Hydrite marketing with content writing, graphics, website updates, product photography and events.",
+      "pay": "Paid; amount not disclosed",
+      "style": "",
+      "exp": "Not listed",
+      "state": "Brookfield, WI",
+      "eligibility": "Pursuing Marketing, Communications, Graphic Design, Digital Media, PR, Web Design or related degree. Microsoft Office proficiency and valid driver's license with excellent record required; Adobe Creative Suite preferred. Application asks US authorization without present or future sponsorship.",
+      "cycle": "Summer 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Summer 2027; exact dates not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/hydritechemicalco/jobs/8185945",
+      "payStatus": "paid",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Write website, email and marketing content.",
+        "Design social, print and digital graphics.",
+        "Support product photography and event coordination."
+      ],
+      "eligibilityFlags": [
+        "Pursuing Marketing, Communications, Graphic Design, Digital Media, PR, Web Design or related degree. Microsoft Office proficiency and valid driver's license with excellent record required; Adobe Creative Suite preferred. Application asks US authorization without present or future sponsorship."
+      ],
+      "benefits": [
+        "Professional development workshops, networking, project showcase, paid volunteer time and company events; specific cash pay not disclosed."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-28T01:40:22.475Z",
+        "sourceUrl": "https://boards-api.greenhouse.io/v1/boards/hydritechemicalco/jobs/8185945?questions=true",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Dev Technology",
+      "role": "Social Media Marketing Intern (Summer 2027)",
+      "link": "https://job-boards.greenhouse.io/devtechnology/jobs/8726281002",
+      "loc": "Reston, VA; onsite at least two days/week",
+      "ind": "Marketing / Social / PR",
+      "desc": "Create social content, graphics and communications for a federal technology contractor's summer internship program.",
+      "pay": "$21–30/hour (estimated)",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Reston, VA; onsite at least two days/week",
+      "eligibility": "Rising junior or senior pursuing bachelor's degree in Communications, Marketing, Digital Marketing/Graphic Design or related field; rising senior preferred. Writing examples, Adobe/Canva and social-platform experience. US citizenship required, able to obtain public-trust or higher clearance; no work visa or Green Card status accepted by application. Commute to Reston at least two days/week, 10–12-week commitment; no housing/relocation assistance.",
+      "cycle": "Summer 2027; 10–12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Summer 2027; exact dates not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/devtechnology/jobs/8726281002",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Create social campaigns and video content.",
+        "Design graphics for web and events.",
+        "Draft newsletter, press and communications material."
+      ],
+      "eligibilityFlags": [
+        "Rising junior or senior pursuing bachelor's degree in Communications, Marketing, Digital Marketing/Graphic Design or related field; rising senior preferred. Writing examples, Adobe/Canva and social-platform experience. US citizenship required, able to obtain public-trust or higher clearance; no work visa or Green Card status accepted by application. Commute to Reston at least two days/week, 10–12-week commitment; no housing/relocation assistance."
+      ],
+      "benefits": [
+        "Intern cohort, group technical project and presentation, corporate learning; broader company benefits may not apply to interns."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-28T01:40:22.651Z",
+        "sourceUrl": "https://boards-api.greenhouse.io/v1/boards/devtechnology/jobs/8726281002?questions=true",
         "reviewerType": "source_check"
       }
     }

@@ -1,20 +1,19 @@
 {
-  "version": "2.7.4",
+  "version": "2.7.5",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-27T19:48:35.620Z",
+  "reviewedAt": "2026-09-28T01:50:24.907Z",
   "reviewer": "Codex root",
-  "sourceDigest": "b3b1903626b5a9abf182bee4aae65ae1e8fd4e8f96ea048f49fdcb899a0bca17",
+  "sourceDigest": "b1f927f4cea7b3ba637546f95b5031749dc793c6ca8bca0fa9e593d908a38c91",
   "sourceFileCount": 205,
   "privacyChanged": false,
   "termsChanged": false,
-  "baselineReview": "docs/privacy-reviews/2.7.3.json",
-  "scope": "Offline public internship snapshot refresh and incremental exporter. Original verification dates preserved; native closures honored. Normalize Not listed basis; bounded longer location and eligibility. No new account collection, provider, permissions or live-feed architecture. Add concise source-bound presentation summaries without changing full employer facts.",
+  "baselineReview": "docs/privacy-review.json (2.7.4 receipt)",
+  "scope": "Production-baseline internship snapshot update: four newly verified Summer 2027 cards, 43 existing cards preserved unchanged, one unresolved source-only Monumental identity held. No new account, analytics, provider or private-data behavior.",
   "checks": {
-    "disclosures": "Reviewed student opportunity, eligibility, employer verification, pay-period and source freshness disclosures. No fresh-check claim for carried rows.",
-    "security": "Exact prior snapshot digest and public-fact comparison; new/changed admissions require fresh source checks. Private source exports outside repository. Hosted suppression and owner authorization unchanged."
+    "disclosures": "Reviewed privacy.html and terms.html. Current third-party student-opportunity and availability terms cover the added listings; no wording change needed.",
+    "security": "Private full source export, official employer application evidence and admission envelope remain outside the public repository. Published snapshot contains approved public fields only. Hosted preview and production verification required."
   },
   "openItems": [
-    "Hosted publication pending.",
-    "Automatic sanitized live Internship feed remains a proposal."
+    "Confirm exact public cards and application links on production after release."
   ]
 }
