@@ -1,20 +1,20 @@
 {
-  "version": "2.7.5.1",
+  "version": "2.7.5.2",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-28T02:06:07Z",
+  "reviewedAt": "2026-09-28T02:36:40.850Z",
   "reviewer": "Codex root",
-  "sourceDigest": "6dba4154929a860a5f27598219d094f8beb9e58ee33ba88df64d12401b216ea5",
+  "sourceDigest": "63f3ea92ff8fe3f0adafc8df64ecf86b88291f47f6cce650813a35fd61c4f018",
   "sourceFileCount": 210,
   "privacyChanged": false,
   "termsChanged": false,
-  "baselineReview": "docs/privacy-review.json (2.7.4.5 preview receipt) and production 2.7.5 receipt",
-  "scope": "Preview-only welcome-confirmation copy; merged the four verified internships already public on production 2.7.5. No new data, provider, authentication, or newsletter submission behavior.",
+  "baselineReview": "docs/privacy-review.json (2.7.5.1 preview receipt)",
+  "scope": "Preview newsletter return first-paint and focus fix. Uses the same ten-minute public note context, now consumed from session storage immediately after display and held only in memory until note restoration. No email, new provider, backend or analytics conversion added.",
   "checks": {
-    "disclosures": "Reviewed privacy.html and terms.html newsletter and data-handling sections; neither policy text changed. This copy and published-card merge do not add collection, retention, disclosure, or account behavior.",
-    "security": "The successful-signup receipt and same-job restoration logic are unchanged. The Beehiiv form IDs, production form, and redirect settings are unchanged."
+    "disclosures": "Read existing newsletter and browser storage disclosures in privacy.html and terms.html. No new collection, retention or disclosure. Storage marker lifetime reduced; UI confirmation remains separate from webhook conversion.",
+    "security": "Same-origin callback/connected-frame restrictions preserved. Invalid timestamps and unsupported placements stay inert. Confirmation can close before feed readiness without replay or focus theft."
   },
   "openItems": [
-    "Fresh hosted provider return on this exact preview revision and physical iPhone Gmail Open/Cancel remain unverified.",
-    "Production promotion requires readiness check, including the production Beehiiv form and redirect configuration."
+    "Fresh hosted provider submission and physical iPhone Gmail Open/Cancel are not retested in this patch.",
+    "Production promotion still needs its own readiness check and distinct Beehiiv form/redirect verification."
   ]
 }

@@ -2643,7 +2643,7 @@
         dialog.setAttribute('aria-label', { detail:'Job details', advice:'Job hunt advice', signup:'Newsletter signup', feedback:'Application feedback', look:'Choose a theme', founder:'About Nic', preferences:'Tune your feed', filters:'Filters', reported:'Reported jobs', recent:'Recently viewed' }[dialogKey] || 'Details');
         if(dialogKey==='filters'&&previousKey==='preferences')restoreIntent({id:'su-preferences-open'});
         else if (previousKey === dialogKey && previousFocus && (previousFocus.id || (previousFocus.act && previousFocus.act !== 'stop'))) restoreIntent(previousFocus);
-        if (!dialog.contains(document.activeElement)) dialog.focus({ preventScroll:true });
+        if (!(window.SUNewsletterSuccess&&window.SUNewsletterSuccess.isOpen())&&!dialog.contains(document.activeElement)) dialog.focus({ preventScroll:true });
       } else if (previousDialog) { restoreIntent(this._dialogReturn); this._dialogReturn = null; }
       if(window.SUNewsletterSuccess)window.SUNewsletterSuccess.tryResume();
       if (!dialog && !this._sharedWanted && window.SUWelcome) window.SUWelcome.maybeShow();

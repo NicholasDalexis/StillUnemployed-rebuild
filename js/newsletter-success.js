@@ -2,16 +2,28 @@
 (function(global){
   'use strict';
   var doc=global.document,dialog,returnTo,confirmedThisVisit=false,RESUME_KEY='su_newsletter_resume_v1';
-  function pendingContext(){
+  var restoring=readContext(),restored=false;
+  function readContext(){
     try{
       var saved=JSON.parse(global.sessionStorage.getItem(RESUME_KEY)||'null');
-      if(!saved||!saved.context||Date.now()-saved.at>600000||Date.now()<saved.at){global.sessionStorage.removeItem(RESUME_KEY);return null;}
+      if(!saved||!Number.isFinite(saved.at)||!saved.context||['job-detail','advice','signup-card'].indexOf(saved.context.placement)<0||Date.now()-saved.at>600000||Date.now()<saved.at){global.sessionStorage.removeItem(RESUME_KEY);return null;}
       return saved.context;
     }catch(_){return null;}
+  }
+  function pendingContext(){return restored?null:restoring;}
+  function isOpen(){return !!(dialog&&dialog.open);}
+  function attach(frame){
+    var capture=frame.closest&&frame.closest('[data-newsletter-id]');
+    if(capture)capture.hidden=true;
+    returnTo=frame.closest&&frame.closest('[data-act="stop"]')||frame;
+    if(dialog)dialog.removeAttribute('data-restoring');
   }
   var closeIcon='<svg class="su-close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>';
   function open(frame){
     if(!frame||!frame.isConnected)return;
+    show();attach(frame);
+  }
+  function show(){
     if(!dialog){
       dialog=doc.createElement('dialog');dialog.id='su-newsletter-success';dialog.className='su-newsletter-success';
       dialog.setAttribute('aria-labelledby','su-newsletter-title');dialog.setAttribute('aria-describedby','su-newsletter-message');
@@ -28,9 +40,7 @@
       dialog.addEventListener('click',function(e){if(e.target===dialog)dialog.close();});
     }
     confirmedThisVisit=true;
-    var capture=frame.closest&&frame.closest('[data-newsletter-id]');
-    if(capture)capture.hidden=true;
-    returnTo=frame.closest&&frame.closest('[data-act="stop"]')||frame;
+    if(restoring&&!restored)dialog.setAttribute('data-restoring','');
     if(!dialog.open)dialog.showModal();dialog.querySelector('h2').focus({preventScroll:true});
   }
   function tryResume(){
@@ -43,8 +53,15 @@
       if(action&&action.getAttribute('data-link')===wanted.link)frame=action.closest('[data-act="stop"]');
     }
     if(!frame)return;
-    try{global.sessionStorage.removeItem(RESUME_KEY);}catch(_){}
-    open(frame);
+    restored=true;attach(frame);
+    // It may have been dismissed while the catalog was loading. Never reopen it.
+
   }
-  global.SUNewsletterSuccess={open:open,pendingContext:pendingContext,tryResume:tryResume,confirmed:function(){return confirmedThisVisit;}};
+  global.SUNewsletterSuccess={open:open,pendingContext:pendingContext,tryResume:tryResume,isOpen:isOpen,confirmed:function(){return confirmedThisVisit;}};
+  // This small script runs at the start of body, before the board can paint.
+  // Feed readiness controls the note underneath, never signup feedback.
+  if(restoring){
+    show();
+    try{global.sessionStorage.removeItem(RESUME_KEY);}catch(_){}
+  }
 })(window);

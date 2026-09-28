@@ -404,6 +404,7 @@ body.su-dialog-open { overflow:hidden; }
 .su-tracker-founder { border:0; padding:0; background:transparent; color:var(--su-ink); max-width:none; max-height:none; width:100%; height:100%; }
 .su-tracker-founder::backdrop { background:transparent; }
 .su-newsletter-success { padding:0; border:1px solid #D6CBB7; border-radius:5px; width:500px; max-width:calc(100% - 32px); max-height:calc(100dvh - 40px); overflow:auto; background:var(--su-paper); color:var(--su-ink); box-shadow:var(--su-note-shadow); }
+.su-newsletter-success[data-restoring]::backdrop { background:#827B6F; }
 .su-newsletter-success::backdrop { background:rgba(44,33,24,.38); backdrop-filter:blur(3px); }
 .su-newsletter-success-paper { position:relative; padding:34px 32px 30px 44px; background-image:linear-gradient(90deg,transparent 25px,rgba(214,80,46,.4) 25px,rgba(214,80,46,.4) 26px,transparent 26px),repeating-linear-gradient(180deg,transparent 0 39px,var(--su-rule) 39px 40px); }
 .su-newsletter-success-close { position:absolute; top:8px; right:8px; display:flex; align-items:center; justify-content:center; width:44px; height:44px; padding:0; border:0; background:transparent; color:var(--su-ink); cursor:pointer; }
