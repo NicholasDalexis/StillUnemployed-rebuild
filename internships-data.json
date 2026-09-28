@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-09-28T01:40:37.995Z",
+  "sourceExportedAt": "2026-09-28T18:14:51.000Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -2202,6 +2202,201 @@
         "status": "open",
         "checkedAt": "2026-09-28T01:40:22.651Z",
         "sourceUrl": "https://boards-api.greenhouse.io/v1/boards/devtechnology/jobs/8726281002?questions=true",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Caterpillar",
+      "role": "2027 Summer Corporate Intern - Communications",
+      "link": "https://careers.caterpillar.com/en/jobs/r0000380423/2027-summer-corporate-intern-communications/",
+      "loc": "Peoria, IL or Irving, TX; onsite five days/week",
+      "ind": "Communications / PR",
+      "desc": "Create internal and external communications, social content and campaign materials while measuring engagement.",
+      "pay": "$21.00–37.50/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Peoria, IL or Irving, TX; onsite five days/week",
+      "eligibility": "Full-time student at a four-year accredited college/university or graduate school in Communications, PR, English, Journalism or Marketing at application and throughout program; minimum 3.0 GPA, no rounding. Resume and unofficial transcript required. Onsite five days/week in Peoria, IL or Irving, TX; no visa sponsorship; drug screen conditional offer.",
+      "cycle": "Summer 2027; May 17–August 6",
+      "deadline": "2026-10-29",
+      "applicationsOpen": "Not listed",
+      "startDate": "2027-05-17",
+      "timingSourceUrl": "https://careers.caterpillar.com/en/jobs/r0000380423/2027-summer-corporate-intern-communications/",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Write and edit communications for websites, presentations and internal channels.",
+        "Support campaigns and stakeholder messaging.",
+        "Track communications metrics and learn from the results."
+      ],
+      "eligibilityFlags": [
+        "Full-time student at a four-year accredited college/university or graduate school in Communications, PR, English, Journalism or Marketing at application and throughout program; minimum 3.0 GPA, no rounding. Resume and unofficial transcript required. Onsite five days/week in Peoria, IL or Irving, TX; no visa sponsorship; drug screen conditional offer."
+      ],
+      "benefits": [
+        "Potential eligible PTO, holidays, volunteer day, housing stipend, relocation assistance, medical and voluntary benefits; eligibility varies."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-28T18:06:00Z",
+        "sourceUrl": "https://careers.caterpillar.com/en/jobs/r0000380423/2027-summer-corporate-intern-communications/",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Radio Flyer",
+      "role": "Graphic Design and Marketing Intern - Summer 2027",
+      "link": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=8f7904d5-afa2-4f7b-994a-d4aaec6c669f&jobId=539522&lang=en_US&source=CC2",
+      "loc": "Chicago, IL",
+      "ind": "Graphic Design / Marketing",
+      "desc": "Design campaign, social, packaging and launch visuals while writing e-commerce content for Radio Flyer.",
+      "pay": "$21–25/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Chicago, IL",
+      "eligibility": "Ideal candidate is a junior or senior majoring in Graphic Design, Visual Communications or Marketing with 3.0+ GPA. Adobe Illustrator, Photoshop and InDesign proficiency; portfolio PDF or online portfolio required. Chicago role; onsite/offsite shoots.",
+      "cycle": "Summer 2027; exact dates not listed",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Summer 2027; exact date not listed",
+      "timingSourceUrl": "https://www.radioflyer.com/pages/open-positions",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Design campaign, social, packaging and product-launch visuals.",
+        "Write product and e-commerce copy.",
+        "Assist with photo and video shoots."
+      ],
+      "eligibilityFlags": [
+        "Ideal candidate is a junior or senior majoring in Graphic Design, Visual Communications or Marketing with 3.0+ GPA. Adobe Illustrator, Photoshop and InDesign proficiency; portfolio PDF or online portfolio required. Chicago role; onsite/offsite shoots."
+      ],
+      "benefits": [
+        "May offer relocation stipend outside Chicagoland; paid leave under Chicago ordinance."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-28T18:08:00Z",
+        "sourceUrl": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=8f7904d5-afa2-4f7b-994a-d4aaec6c669f&jobId=539522&lang=en_US&source=CC2",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Radio Flyer",
+      "role": "Industrial Design Intern - Summer 2027",
+      "link": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=8f7904d5-afa2-4f7b-994a-d4aaec6c669f&jobId=539496&lang=en_US&source=CC2",
+      "loc": "Chicago, IL",
+      "ind": "Industrial / Product Design",
+      "desc": "Research, sketch and prototype new toy and mobility products with Radio Flyer's product-development team.",
+      "pay": "$22–26/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Chicago, IL",
+      "eligibility": "Ideal candidate is an upperclass Industrial Design student with 3.0+ GPA and prior internship experience; strong sketching and CAD, preferably Rhino or Solidworks Surfacing. Portfolio PDF or online portfolio required. Chicago role.",
+      "cycle": "Summer 2027; exact dates not listed",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Summer 2027; exact date not listed",
+      "timingSourceUrl": "https://www.radioflyer.com/pages/open-positions",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Conduct competitive research, user observation and concept validation.",
+        "Sketch and develop CAD surfaces and renderings.",
+        "Build physical prototypes with the product team."
+      ],
+      "eligibilityFlags": [
+        "Ideal candidate is an upperclass Industrial Design student with 3.0+ GPA and prior internship experience; strong sketching and CAD, preferably Rhino or Solidworks Surfacing. Portfolio PDF or online portfolio required. Chicago role."
+      ],
+      "benefits": [
+        "May offer relocation stipend outside Chicagoland; paid leave under Chicago ordinance."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-28T18:09:00Z",
+        "sourceUrl": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=8f7904d5-afa2-4f7b-994a-d4aaec6c669f&jobId=539496&lang=en_US&source=CC2",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Stellantis",
+      "role": "2027 Product Design Office (PDO) – Design Visual Communication Internship",
+      "link": "https://careers.stellantis.com/job/23787236/2027-product-design-office-pdo-design-visual-communication-internship-auburn-hills-mi/",
+      "loc": "Auburn Hills, MI",
+      "ind": "Visual Storytelling / Design",
+      "desc": "Create storyboards, renderings and visual narratives around future vehicle concepts and mobility experiences.",
+      "pay": "Paid; amount not disclosed",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Auburn Hills, MI",
+      "eligibility": "Current student pursuing relevant design-related bachelor's degree or higher (transportation, communication, film, interaction or entertainment design); freshman year completed by Spring 2027. 40 hours/week onsite, willing to relocate, authorized to work in US, no present/future immigration sponsorship. PDF portfolio required; proficiency with Adobe, Blender, Unreal, VRED, Vizcom or equivalents.",
+      "cycle": "Summer 2027; May–August",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May–August 2027; exact dates not listed",
+      "timingSourceUrl": "https://myjobs.adp.com/stellantisexternalcx/cx/job-details?rb=SYMPHONYTALENT&reqId=5001221975406",
+      "payStatus": "paid",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop narrative design studies and storyboards for future vehicle concepts.",
+        "Create mood boards, renderings, animation and video.",
+        "Present cohesive brand and experience stories."
+      ],
+      "eligibilityFlags": [
+        "Current student pursuing relevant design-related bachelor's degree or higher (transportation, communication, film, interaction or entertainment design); freshman year completed by Spring 2027. 40 hours/week onsite, willing to relocate, authorized to work in US, no present/future immigration sponsorship. PDF portfolio required; proficiency with Adobe, Blender, Unreal, VRED, Vizcom or equivalents."
+      ],
+      "benefits": [
+        "Mentorship, workshops, paid US holidays, employee vehicle discount; relocation assistance may be available to eligible interns."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-28T18:07:00Z",
+        "sourceUrl": "https://careers.stellantis.com/job/23787236/2027-product-design-office-pdo-design-visual-communication-internship-auburn-hills-mi/",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Henkel",
+      "role": "Marketing Intern: Summer - Fall 2027 (6 month duration)",
+      "link": "https://www.henkel.com/careers/find-your-job-apply/2239594-2239594",
+      "loc": "United States; exact city not listed",
+      "ind": "Brand / Marketing",
+      "desc": "Build brand, digital and go-to-market work for Henkel adhesive brands through content, media and e-commerce analysis.",
+      "pay": "$22–27/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "United States; exact city not listed",
+      "eligibility": "Undergraduate or graduate/master's student in Marketing, Communications, Business Administration or Advertising, graduating 2027 or 2028. Full-time six-month placement; own transportation required. Separate requisition req87837 from existing Spring–Summer req87743.",
+      "cycle": "Summer–Fall 2027; May 24–December",
+      "deadline": "Applications while listed; recruiting through early March 2027 or until filled",
+      "applicationsOpen": "September 2026 recruiting period; exact opening day not listed",
+      "startDate": "2027-05-24",
+      "timingSourceUrl": "https://www.henkel.com/careers/find-your-job-apply/2239594-2239594",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Support brand strategy, media planning and competitive analysis.",
+        "Create and organize content and digital assets.",
+        "Analyze marketing data and support e-commerce growth."
+      ],
+      "eligibilityFlags": [
+        "Undergraduate or graduate/master's student in Marketing, Communications, Business Administration or Advertising, graduating 2027 or 2028. Full-time six-month placement; own transportation required. Separate requisition req87837 from existing Spring–Summer req87743."
+      ],
+      "benefits": [
+        "Housing stipend or relocation support eligibility; learning platform, leadership networking, feedback and intern events."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-28T18:05:00Z",
+        "sourceUrl": "https://www.henkel.com/careers/find-your-job-apply/2239594-2239594",
         "reviewerType": "source_check"
       }
     }

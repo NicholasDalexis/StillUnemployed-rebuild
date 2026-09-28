@@ -1,17 +1,17 @@
 {
-  "version": "2.7.5.3",
+  "version": "2.7.5.4",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-28T03:59:27.159Z",
+  "reviewedAt": "2026-09-28T18:17:19Z",
   "reviewer": "Codex root",
-  "sourceDigest": "0ec07f774e4bfc71b84049bb69987891d1260a02acc3c3cf9ad92569340c6f67",
+  "sourceDigest": "7a298119f4f269570d1b774fc1925a10f60763c8bcba7a4078da3efe1bd531dd",
   "sourceFileCount": 210,
-  "privacyChanged": true,
+  "privacyChanged": false,
   "termsChanged": false,
-  "baselineReview": "docs/privacy-reviews/2.7.5.2.json",
-  "scope": "Production promotion of approved newsletter welcome/return and Tracker/advice fixes, with exact production origin return storage and owner Restore UI parity.",
+  "baselineReview": "docs/privacy-reviews/2.7.5.3.json",
+  "scope": "Five source-verified internship cards added to the existing static catalog; privacy and terms pages unchanged.",
   "checks": {
-    "disclosures": "Privacy now explicitly describes ten-minute tab-local public return context without email, separate from analytics, and production owner unlisting/restoration. Terms reviewed: authorized owner visibility controls already disclosed; no wording change.",
-    "security": "Exact HTTPS origin allowlist; callback expiry/same-origin validation; production moderation still requires verified owner and revision. Preview/production provider forms remain distinct. No new service, subscriber submission, optional analytics change or live moderation write."
+    "disclosures": "Read the current Privacy and Terms pages in full. Their student opportunity, third-party employer link, pay and application disclaimers cover this data-only catalog update. Neither policy page changed.",
+    "security": "No change to account, analytics, moderation, reporting, newsletter or provider behavior. Public snapshot projection excludes private source receipts and preserves current Sheet status gating."
   },
   "openItems": [
     "Actual new subscriber delivery and physical iPhone Gmail Open/Cancel are not retested; hosted callback replay is distinct from provider delivery."
