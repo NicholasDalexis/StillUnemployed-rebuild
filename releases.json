@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.5.4",
+  "currentVersion": "2.7.5.5",
   "releases": [
+    {
+      "version": "2.7.5.5",
+      "date": "2026-09-29",
+      "title": "Small improvements",
+      "changes": [
+        "Retire Workiva R12318 and R12249 after verified deadline and exact requisition closure"
+      ]
+    },
     {
       "version": "2.7.5.4",
       "date": "2026-09-28",
@@ -958,7 +966,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "7a298119f4f269570d1b774fc1925a10f60763c8bcba7a4078da3efe1bd531dd",
+    "digest": "e9247e361bc73fbbd22326a7564ea503d579ca0e0bb26d2601af44fe87a3cbad",
     "fileCount": 210
   }
 }

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-09-28T18:14:51.000Z",
+  "sourceExportedAt": "2026-09-29T15:15:50.000Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -1299,98 +1299,6 @@
         "status": "open",
         "checkedAt": "2026-09-06T21:44:24.528Z",
         "sourceUrl": "https://www.htyweb.org/employment-auditions-internship/",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Workiva",
-      "role": "Spring & Summer 2027 Intern - Brand Design",
-      "link": "https://workiva.wd503.myworkdayjobs.com/careers/job/USA---Remote/Spring---Summer-2027-Intern---Brand-Design_R12318",
-      "loc": "United States (remote; optional office-hub hybrid)",
-      "ind": "Graphic Design",
-      "desc": "Create branded digital and print assets, maintain visual consistency and contribute design ideas to marketing projects.",
-      "pay": "$22.00-22.00 (unit not listed)",
-      "style": "Remote",
-      "exp": "Not listed",
-      "state": "United States (remote; optional office-hub hybrid)",
-      "eligibility": "Currently enrolled in a degree-seeking program; Graphic Design, Marketing or a related program preferred.\nPortfolio website or PDF work samples and Figma design proficiency required.\nAdobe Creative Suite, Microsoft Office and Keynote experience preferred, alongside communication, organization, independent time management and multitasking skills.\nUnited States remote opportunity; optional hybrid work for candidates near an office hub. Reliable internet required; minimal travel.\nSpring start January 4, 2027: 15-20 hours/week maximum. Summer start May 17, 2027: 40 hours/week maximum. Indicate availability in application.\nEmployer description says applications close September 27; ATS header says September 28. Use the earlier date when planning.",
-      "cycle": "Spring or Summer 2027",
-      "deadline": "September 27, 2026 in description; September 28, 2026 in ATS header",
-      "applicationsOpen": "Not announced",
-      "startDate": "Spring: January 4, 2027; Summer: May 17, 2027",
-      "timingSourceUrl": "https://workiva.wd503.myworkdayjobs.com/careers/job/USA---Remote/Spring---Summer-2027-Intern---Brand-Design_R12318",
-      "payStatus": "paid",
-      "payBasis": "not_listed",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Design web, social, event and print marketing assets.",
-        "Develop materials reflecting Workiva brand standards.",
-        "Maintain iconography and refine presentations for consistent visual identity."
-      ],
-      "eligibilityFlags": [
-        "Currently enrolled in a degree-seeking program; Graphic Design, Marketing or a related program preferred.",
-        "Portfolio website or PDF work samples and Figma design proficiency required.",
-        "Adobe Creative Suite, Microsoft Office and Keynote experience preferred, alongside communication, organization, independent time management and multitasking skills.",
-        "United States remote opportunity; optional hybrid work for candidates near an office hub. Reliable internet required; minimal travel.",
-        "Spring start January 4, 2027: 15-20 hours/week maximum. Summer start May 17, 2027: 40 hours/week maximum. Indicate availability in application.",
-        "Employer description says applications close September 27; ATS header says September 28. Use the earlier date when planning."
-      ],
-      "benefits": [
-        "401(k) participation and match.",
-        "Paid sick leave.",
-        "Opportunity to extend learning through additional internship seasons."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-27T19:24:35.649Z",
-        "sourceUrl": "https://workiva.wd503.myworkdayjobs.com/careers/job/USA---Remote/Spring---Summer-2027-Intern---Brand-Design_R12318",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Workiva",
-      "role": "Spring 2027 Intern - Creative Production",
-      "link": "https://workiva.wd503.myworkdayjobs.com/careers/job/USA---Remote/Spring-2027-Intern---Creative-Production_R12249",
-      "loc": "United States (remote); New York City also listed",
-      "ind": "Video & Creative",
-      "desc": "Produce and edit photography, video and audio content and support podcasts, webinars and other live events.",
-      "pay": "$21.00-21.00 (unit not listed)",
-      "style": "Remote",
-      "exp": "Not listed",
-      "state": "United States (remote); New York City also listed",
-      "eligibility": "Currently enrolled in a degree-seeking program; Marketing, Business, Graphic Design, Management Information Systems or a related program preferred.\nExperience with digital technology and editing software such as Adobe Audition, Premiere, After Effects, Final Cut X or iMovie preferred.\nCommunication, organization, independent work, multitasking and deadline-management skills preferred.\nUnited States remote opportunity, with New York City also listed and optional hybrid work near office hubs. Reliable internet required; minimal travel.\nSpring start January 4, 2027; 15-20 hours/week maximum. Title and listed start specify Spring even though generic introduction mentions Spring or Summer.\nEmployer description says applications close September 27; ATS header says September 28. Use the earlier date when planning.",
-      "cycle": "Spring 2027",
-      "deadline": "September 27, 2026 in description; September 28, 2026 in ATS header",
-      "applicationsOpen": "Not announced",
-      "startDate": "January 4, 2027",
-      "timingSourceUrl": "https://workiva.wd503.myworkdayjobs.com/careers/job/USA---Remote/Spring-2027-Intern---Creative-Production_R12249",
-      "payStatus": "paid",
-      "payBasis": "not_listed",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Create photography and video content using production software and equipment.",
-        "Record and edit audio, footage, effects and color in post-production.",
-        "Help produce podcasts, webinars and company events."
-      ],
-      "eligibilityFlags": [
-        "Currently enrolled in a degree-seeking program; Marketing, Business, Graphic Design, Management Information Systems or a related program preferred.",
-        "Experience with digital technology and editing software such as Adobe Audition, Premiere, After Effects, Final Cut X or iMovie preferred.",
-        "Communication, organization, independent work, multitasking and deadline-management skills preferred.",
-        "United States remote opportunity, with New York City also listed and optional hybrid work near office hubs. Reliable internet required; minimal travel.",
-        "Spring start January 4, 2027; 15-20 hours/week maximum. Title and listed start specify Spring even though generic introduction mentions Spring or Summer.",
-        "Employer description says applications close September 27; ATS header says September 28. Use the earlier date when planning."
-      ],
-      "benefits": [
-        "401(k) participation and match.",
-        "Paid sick leave.",
-        "Opportunity to extend learning through additional internship seasons."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-27T19:24:35.683Z",
-        "sourceUrl": "https://workiva.wd503.myworkdayjobs.com/careers/job/USA---Remote/Spring-2027-Intern---Creative-Production_R12249",
         "reviewerType": "source_check"
       }
     },
