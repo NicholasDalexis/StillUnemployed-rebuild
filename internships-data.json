@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-09-29T15:15:50.000Z",
+  "sourceExportedAt": "2026-09-30T18:47:31.323Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -2305,6 +2305,568 @@
         "status": "open",
         "checkedAt": "2026-09-28T18:05:00Z",
         "sourceUrl": "https://www.henkel.com/careers/find-your-job-apply/2239594-2239594",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Figma",
+      "role": "Product Design Intern (2027)",
+      "link": "https://boards.greenhouse.io/figma/jobs/6180005004?gh_jid=6180005004",
+      "loc": "San Francisco, CA • New York, NY",
+      "ind": "UI/UX & Product Design",
+      "desc": "Own product features from initial ideas through shipped designs.",
+      "pay": "$46/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "San Francisco, CA • New York, NY",
+      "eligibility": "Application asks for expected graduation date if enrolled; no required degree, graduation window or numeric experience minimum stated.\nSan Francisco or New York hub; weekly attendance schedule not listed.\nUS work authorization question; in-person onboarding and cameras on for video interviews required.\nVisual/interaction design and shipped-project experience; prototyping/code.\nPortfolio link and access information required; application asks about visa sponsorship.",
+      "cycle": "Summer 2027; exact dates not listed",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Summer 2027; exact date not listed",
+      "timingSourceUrl": "https://boards.greenhouse.io/figma/jobs/6180005004?gh_jid=6180005004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Own product features from initial ideas through shipped designs.",
+        "Collaborate with product, research, marketing and engineering.",
+        "Create flows, prototypes and high-fidelity visuals; participate in critiques."
+      ],
+      "eligibilityFlags": [
+        "Application asks for expected graduation date if enrolled; no required degree, graduation window or numeric experience minimum stated.",
+        "San Francisco or New York hub; weekly attendance schedule not listed.",
+        "US work authorization question; in-person onboarding and cameras on for video interviews required.",
+        "Visual/interaction design and shipped-project experience; prototyping/code.",
+        "Portfolio link and access information required; application asks about visa sponsorship."
+      ],
+      "benefits": [
+        "Housing stipend and travel reimbursement."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-30T18:29:35.062Z",
+        "sourceUrl": "https://boards.greenhouse.io/figma/jobs/6180005004?gh_jid=6180005004",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Figma",
+      "role": "Software Engineer Intern (Summer 2027)",
+      "link": "https://boards.greenhouse.io/figma/jobs/6143238004?gh_jid=6143238004",
+      "loc": "San Francisco, CA • New York, NY",
+      "ind": "Software Engineering",
+      "desc": "Join a product, backend/infrastructure or security engineering team.",
+      "pay": "$55/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Francisco, CA • New York, NY",
+      "eligibility": "Application asks for expected graduation date if enrolled; no required degree, graduation window or numeric experience minimum stated.\nSan Francisco or New York hub; weekly attendance schedule not listed.\nUS work authorization question; in-person onboarding and cameras on for video interviews required.\nClean code in a general-purpose language and core CS/data-structure/algorithm knowledge.\nSchool, work or personal projects can demonstrate technical experience.\nStarts May 3, May 17, June 1 or June 14 (Summer 2027 cohort); exact length not listed.",
+      "cycle": "Summer 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 3, May 17, June 1 or June 14, 2027",
+      "timingSourceUrl": "https://boards.greenhouse.io/figma/jobs/6143238004?gh_jid=6143238004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Join a product, backend/infrastructure or security engineering team.",
+        "Build and test features or infrastructure with a mentor.",
+        "Collaborate in code reviews and ship an internship project."
+      ],
+      "eligibilityFlags": [
+        "Application asks for expected graduation date if enrolled; no required degree, graduation window or numeric experience minimum stated.",
+        "San Francisco or New York hub; weekly attendance schedule not listed.",
+        "US work authorization question; in-person onboarding and cameras on for video interviews required.",
+        "Clean code in a general-purpose language and core CS/data-structure/algorithm knowledge.",
+        "School, work or personal projects can demonstrate technical experience.",
+        "Starts May 3, May 17, June 1 or June 14 (Summer 2027 cohort); exact length not listed."
+      ],
+      "benefits": [
+        "Housing stipend and travel reimbursement."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-30T18:29:35.062Z",
+        "sourceUrl": "https://boards.greenhouse.io/figma/jobs/6143238004?gh_jid=6143238004",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Figma",
+      "role": "Data Engineer Intern (2027)",
+      "link": "https://boards.greenhouse.io/figma/jobs/6178851004?gh_jid=6178851004",
+      "loc": "San Francisco, CA • New York, NY",
+      "ind": "Data Engineering",
+      "desc": "Build and document product/business data pipelines.",
+      "pay": "$46/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Francisco, CA • New York, NY",
+      "eligibility": "Application asks for expected graduation date if enrolled; no required degree, graduation window or numeric experience minimum stated.\nSan Francisco or New York hub; weekly attendance schedule not listed.\nUS work authorization question; in-person onboarding and cameras on for video interviews required.\nPython or similar language, SQL and data-pipeline/ETL or large-dataset experience.",
+      "cycle": "2027; season and exact dates not listed",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://boards.greenhouse.io/figma/jobs/6178851004?gh_jid=6178851004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build and document product/business data pipelines.",
+        "Create trusted datasets and improve pipeline scalability.",
+        "Own a scoped project with engineering and analyst mentorship."
+      ],
+      "eligibilityFlags": [
+        "Application asks for expected graduation date if enrolled; no required degree, graduation window or numeric experience minimum stated.",
+        "San Francisco or New York hub; weekly attendance schedule not listed.",
+        "US work authorization question; in-person onboarding and cameras on for video interviews required.",
+        "Python or similar language, SQL and data-pipeline/ETL or large-dataset experience."
+      ],
+      "benefits": [
+        "Housing stipend and travel reimbursement."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-30T18:29:35.061Z",
+        "sourceUrl": "https://boards.greenhouse.io/figma/jobs/6178851004?gh_jid=6178851004",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Figma",
+      "role": "Data Science Intern (2027)",
+      "link": "https://boards.greenhouse.io/figma/jobs/6178857004?gh_jid=6178857004",
+      "loc": "San Francisco, CA • New York, NY",
+      "ind": "Data Science & Analytics",
+      "desc": "Analyze product, user and business data.",
+      "pay": "$46/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Francisco, CA • New York, NY",
+      "eligibility": "Application asks for expected graduation date if enrolled; no required degree, graduation window or numeric experience minimum stated.\nSan Francisco or New York hub; weekly attendance schedule not listed.\nUS work authorization question; in-person onboarding and cameras on for video interviews required.\nSQL plus Python/R, statistics and quantitative reasoning.\nResearch, coursework/projects or prior work can demonstrate analysis experience.",
+      "cycle": "2027; season and exact dates not listed",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://boards.greenhouse.io/figma/jobs/6178857004?gh_jid=6178857004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Analyze product, user and business data.",
+        "Design experiments, metrics and models for product decisions.",
+        "Own a scoped analysis project with a manager and mentor."
+      ],
+      "eligibilityFlags": [
+        "Application asks for expected graduation date if enrolled; no required degree, graduation window or numeric experience minimum stated.",
+        "San Francisco or New York hub; weekly attendance schedule not listed.",
+        "US work authorization question; in-person onboarding and cameras on for video interviews required.",
+        "SQL plus Python/R, statistics and quantitative reasoning.",
+        "Research, coursework/projects or prior work can demonstrate analysis experience."
+      ],
+      "benefits": [
+        "Housing stipend and travel reimbursement."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-30T18:29:35.061Z",
+        "sourceUrl": "https://boards.greenhouse.io/figma/jobs/6178857004?gh_jid=6178857004",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Figma",
+      "role": "PhD Intern, Data Science (2027)",
+      "link": "https://boards.greenhouse.io/figma/jobs/6200626004?gh_jid=6200626004",
+      "loc": "San Francisco, CA • New York, NY",
+      "ind": "Data Science & Applied AI",
+      "desc": "Frame an end-to-end data-science research project.",
+      "pay": "$68/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Francisco, CA • New York, NY",
+      "eligibility": "Application asks for expected graduation date if enrolled; no required degree, graduation window or numeric experience minimum stated.\nSan Francisco or New York hub; weekly attendance schedule not listed.\nUS work authorization question; in-person onboarding and cameras on for video interviews required.\nCurrently pursuing a PhD in a listed quantitative field, including HCI, economics, CS or statistics.\nIndependent research milestone; research-method fluency, Python/R and SQL.\nPotential to continue work toward publication after the internship.",
+      "cycle": "2027; season and exact dates not listed",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://boards.greenhouse.io/figma/jobs/6200626004?gh_jid=6200626004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Frame an end-to-end data-science research project.",
+        "Evaluate experiments, statistical/ML models and analytical methods.",
+        "Communicate results and recommendations for Figma products or strategy."
+      ],
+      "eligibilityFlags": [
+        "Application asks for expected graduation date if enrolled; no required degree, graduation window or numeric experience minimum stated.",
+        "San Francisco or New York hub; weekly attendance schedule not listed.",
+        "US work authorization question; in-person onboarding and cameras on for video interviews required.",
+        "Currently pursuing a PhD in a listed quantitative field, including HCI, economics, CS or statistics.",
+        "Independent research milestone; research-method fluency, Python/R and SQL.",
+        "Potential to continue work toward publication after the internship."
+      ],
+      "benefits": [
+        "Housing stipend and travel reimbursement."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-30T18:29:35.062Z",
+        "sourceUrl": "https://boards.greenhouse.io/figma/jobs/6200626004?gh_jid=6200626004",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Workshop",
+      "role": "Product Design Intern (Summer 2027)",
+      "link": "https://job-boards.greenhouse.io/workshop/jobs/5237950007",
+      "loc": "Omaha, Nebraska, United States",
+      "ind": "UI/UX & Product Design",
+      "desc": "Design user-centered internal-communications features.",
+      "pay": "Pay not disclosed",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Omaha, Nebraska, United States",
+      "eligibility": "Omaha office-based hybrid role; specific attendance schedule not listed.\nNo degree/enrollment, numeric years or graduation window stated.\nAccessible design judgment, attention to craft, collaboration and curiosity about AI.\nApplication asks current/future US visa sponsorship.",
+      "cycle": "Summer 2027; exact dates not listed",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Summer 2027; exact date not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/workshop/jobs/5237950007",
+      "payStatus": "not_disclosed",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Design user-centered internal-communications features.",
+        "Research, wireframe and prototype AI-assisted experiences.",
+        "Iterate in design critiques and ship polished solutions with mentorship."
+      ],
+      "eligibilityFlags": [
+        "Omaha office-based hybrid role; specific attendance schedule not listed.",
+        "No degree/enrollment, numeric years or graduation window stated.",
+        "Accessible design judgment, attention to craft, collaboration and curiosity about AI.",
+        "Application asks current/future US visa sponsorship."
+      ],
+      "benefits": [
+        "Mentorship from experienced designers; exact pay and other benefits not listed."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-30T18:29:35.854Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/workshop/jobs/5237950007",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Workshop",
+      "role": "Software Engineer Intern (Summer 2027)",
+      "link": "https://job-boards.greenhouse.io/workshop/jobs/5237900007",
+      "loc": "Omaha, Nebraska, United States",
+      "ind": "Software Engineering",
+      "desc": "Build customer-facing product features with engineers and designers.",
+      "pay": "Pay not disclosed",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Omaha, Nebraska, United States",
+      "eligibility": "Omaha office-based hybrid role; specific attendance schedule not listed.\nBasic programming foundations; no degree/enrollment, numeric years or graduation window stated.\nCuriosity, collaboration and interest in modern software development.\nApplication asks current/future US visa sponsorship.",
+      "cycle": "Summer 2027; exact dates not listed",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Summer 2027; exact date not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/workshop/jobs/5237900007",
+      "payStatus": "not_disclosed",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build customer-facing product features with engineers and designers.",
+        "Ship production code and learn software engineering practices.",
+        "Explore AI-assisted development tools with mentorship."
+      ],
+      "eligibilityFlags": [
+        "Omaha office-based hybrid role; specific attendance schedule not listed.",
+        "Basic programming foundations; no degree/enrollment, numeric years or graduation window stated.",
+        "Curiosity, collaboration and interest in modern software development.",
+        "Application asks current/future US visa sponsorship."
+      ],
+      "benefits": [
+        "Engineering mentorship and access to AI development tools."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-30T18:29:35.855Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/workshop/jobs/5237900007",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Robinhood",
+      "role": "Growth Marketing Intern (Summer 2027)",
+      "link": "https://boards.greenhouse.io/robinhood/jobs/8192367?t=gh_src=&gh_jid=8192367",
+      "loc": "Menlo Park, CA",
+      "ind": "Growth & Performance Marketing",
+      "desc": "Manage paid-search and paid-social campaigns.",
+      "pay": "$33/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Menlo Park, CA",
+      "eligibility": "Expected graduation Winter 2027/Summer 2028.\nOffice attendance at least three days/week.\nApplication asks US work authorization and current/future visa sponsorship; no blanket no-sponsorship policy stated.\nPursuing or recently completed a quantitative degree such as finance, economics or statistics.\nCampaign/data analysis; SQL familiarity preferred.",
+      "cycle": "Summer 2027; exact dates not listed",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Summer 2027; exact date not listed",
+      "timingSourceUrl": "https://boards.greenhouse.io/robinhood/jobs/8192367?t=gh_src=&gh_jid=8192367",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Manage paid-search and paid-social campaigns.",
+        "Analyze spend, acquisition costs and return on ad spend.",
+        "Build dashboards and test creative, targeting and bidding strategies."
+      ],
+      "eligibilityFlags": [
+        "Expected graduation Winter 2027/Summer 2028.",
+        "Office attendance at least three days/week.",
+        "Application asks US work authorization and current/future visa sponsorship; no blanket no-sponsorship policy stated.",
+        "Pursuing or recently completed a quantitative degree such as finance, economics or statistics.",
+        "Campaign/data analysis; SQL familiarity preferred."
+      ],
+      "benefits": [
+        "Lifestyle wallet, AI tools/skill-building, paid time off, holidays/sick time, catered meals and location-dependent commuter benefits (subject to eligibility)."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-30T18:29:38.492Z",
+        "sourceUrl": "https://boards.greenhouse.io/robinhood/jobs/8192367?t=gh_src=&gh_jid=8192367",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Robinhood",
+      "role": "Crypto Partnership Intern (Summer 2027)",
+      "link": "https://boards.greenhouse.io/robinhood/jobs/8193710?t=gh_src=&gh_jid=8193710",
+      "loc": "New York, NY",
+      "ind": "Partnerships & Business Development",
+      "desc": "Research and evaluate crypto ecosystem partnerships.",
+      "pay": "$33/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "New York, NY",
+      "eligibility": "Expected graduation Winter 2027/Summer 2028.\nOffice attendance at least three days/week.\nApplication asks US work authorization and current/future visa sponsorship; no blanket no-sponsorship policy stated.\nCurrently enrolled undergraduate or graduate in business, finance, economics, CS or related field.\nCrypto/blockchain/DeFi knowledge and strong analytical/communication skills.",
+      "cycle": "Summer 2027; exact dates not listed",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Summer 2027; exact date not listed",
+      "timingSourceUrl": "https://boards.greenhouse.io/robinhood/jobs/8193710?t=gh_src=&gh_jid=8193710",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Research and evaluate crypto ecosystem partnerships.",
+        "Support vendor agreements and co-marketing campaigns.",
+        "Work across product, engineering and legal teams; explore AI tools."
+      ],
+      "eligibilityFlags": [
+        "Expected graduation Winter 2027/Summer 2028.",
+        "Office attendance at least three days/week.",
+        "Application asks US work authorization and current/future visa sponsorship; no blanket no-sponsorship policy stated.",
+        "Currently enrolled undergraduate or graduate in business, finance, economics, CS or related field.",
+        "Crypto/blockchain/DeFi knowledge and strong analytical/communication skills."
+      ],
+      "benefits": [
+        "Lifestyle wallet, AI tools/skill-building, paid time off, holidays/sick time, catered meals and location-dependent commuter benefits (subject to eligibility)."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-30T18:29:36.916Z",
+        "sourceUrl": "https://boards.greenhouse.io/robinhood/jobs/8193710?t=gh_src=&gh_jid=8193710",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Gallup",
+      "role": "AI/ML Research Intern — Summer 2027",
+      "link": "https://job-boards.greenhouse.io/gallup/jobs/4395921009",
+      "loc": "San Francisco",
+      "ind": "Applied AI & Machine Learning",
+      "desc": "Research and reproduce emerging AI/ML approaches.",
+      "pay": "$45–50/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "San Francisco",
+      "eligibility": "Enrolled at a college/university within 80 miles of San Francisco.\nGraduation August 2027–May 2028 preferred; 2029 graduates also considered.\n40 hours/week for 12 weeks in summer 2027; onsite Monday–Thursday, optional remote Friday.\nUS work eligibility required; no employment visa sponsorship.\nApplication requires education and projected graduation date.\nBachelor’s or graduate degree in CS, data science, ML or related quantitative field.\nPython and hands-on ML/AI experimentation through research, coursework or substantial projects required.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Summer 2027; exact date not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/gallup/jobs/4395921009",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Research and reproduce emerging AI/ML approaches.",
+        "Build prototypes and evaluate models using experiments and benchmarks.",
+        "Document methods, findings and reproducible technical recommendations."
+      ],
+      "eligibilityFlags": [
+        "Enrolled at a college/university within 80 miles of San Francisco.",
+        "Graduation August 2027–May 2028 preferred; 2029 graduates also considered.",
+        "40 hours/week for 12 weeks in summer 2027; onsite Monday–Thursday, optional remote Friday.",
+        "US work eligibility required; no employment visa sponsorship.",
+        "Application requires education and projected graduation date.",
+        "Bachelor’s or graduate degree in CS, data science, ML or related quantitative field.",
+        "Python and hands-on ML/AI experimentation through research, coursework or substantial projects required."
+      ],
+      "benefits": [
+        "Potential for up to 20 hours/week during school year and a full-time offer after graduation, subject to business needs/performance."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-30T18:29:42.166Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/gallup/jobs/4395921009",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Gallup",
+      "role": "Software Engineer Intern — Summer 2027",
+      "link": "https://job-boards.greenhouse.io/gallup/jobs/4395897009",
+      "loc": "San Francisco",
+      "ind": "Software Engineering",
+      "desc": "Build front-end and back-end customer experiences.",
+      "pay": "$45–50/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "San Francisco",
+      "eligibility": "Enrolled at a college/university within 80 miles of San Francisco.\nGraduation August 2027–May 2028 preferred; 2029 graduates also considered.\n40 hours/week for 12 weeks in summer 2027; onsite Monday–Thursday, optional remote Friday.\nUS work eligibility required; no employment visa sponsorship.\nApplication requires education and projected graduation date.\nAssociate, bachelor’s or graduate degree in CS, MIS or related field.\nClassroom/project/internship/work coding in JavaScript, TypeScript, React, Python, SQL or another language.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Summer 2027; exact date not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/gallup/jobs/4395897009",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build front-end and back-end customer experiences.",
+        "Explore AI and emerging technology through prototypes.",
+        "Collaborate with engineers to test and improve software."
+      ],
+      "eligibilityFlags": [
+        "Enrolled at a college/university within 80 miles of San Francisco.",
+        "Graduation August 2027–May 2028 preferred; 2029 graduates also considered.",
+        "40 hours/week for 12 weeks in summer 2027; onsite Monday–Thursday, optional remote Friday.",
+        "US work eligibility required; no employment visa sponsorship.",
+        "Application requires education and projected graduation date.",
+        "Associate, bachelor’s or graduate degree in CS, MIS or related field.",
+        "Classroom/project/internship/work coding in JavaScript, TypeScript, React, Python, SQL or another language."
+      ],
+      "benefits": [
+        "Potential for up to 20 hours/week during school year and a full-time offer after graduation, subject to business needs/performance."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-30T18:29:43.751Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/gallup/jobs/4395897009",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Deeplocal",
+      "role": "Design Intern - Winter / Spring 2027",
+      "link": "https://job-boards.greenhouse.io/deeplocal/jobs/8147967",
+      "loc": "Pittsburgh",
+      "ind": "Spatial & Experience Design",
+      "desc": "Translate brand concepts into 3D models and renderings.",
+      "pay": "$20–29/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Pittsburgh",
+      "eligibility": "In-person at Pittsburgh/Sharpsburg studio.\n3D modeling and rendering proficiency, spatial/physical interaction design and visual concept skills.\nCommunication/collaboration; marketing-concept experience strongly preferred; UX/UI/motion a plus.\nWebsite/portfolio required; application asks US work authorization and future visa sponsorship.\nNo numeric years or explicit degree/enrollment minimum stated; pay depends in part on current year of study.",
+      "cycle": "Winter/Spring 2027; typically January–April",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "January–April 2027 (typical)",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/deeplocal/jobs/8147967",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Translate brand concepts into 3D models and renderings.",
+        "Design spatial interactions, environments and physical objects.",
+        "Support pitches with research, decks, mood boards and visual designs."
+      ],
+      "eligibilityFlags": [
+        "In-person at Pittsburgh/Sharpsburg studio.",
+        "3D modeling and rendering proficiency, spatial/physical interaction design and visual concept skills.",
+        "Communication/collaboration; marketing-concept experience strongly preferred; UX/UI/motion a plus.",
+        "Website/portfolio required; application asks US work authorization and future visa sponsorship.",
+        "No numeric years or explicit degree/enrollment minimum stated; pay depends in part on current year of study."
+      ],
+      "benefits": [
+        "Hands-on learning and mentorship from experienced creative/technical staff."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-30T18:29:47.165Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/deeplocal/jobs/8147967",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Monumental Sports & Entertainment",
+      "role": "Internship: Digital Editing (Part-Time/Seasonal)",
+      "link": "https://job-boards.greenhouse.io/monumentalsports/jobs/5223794007",
+      "loc": "Washington, District of Columbia, United States",
+      "ind": "Video & Social Content",
+      "desc": "Create and edit Washington Wizards social-first video.",
+      "pay": "$18.40/hour",
+      "style": "In-person",
+      "exp": "1+ year",
+      "state": "Washington, District of Columbia, United States",
+      "eligibility": "1+ year of social content creation with quick-turn video emphasis.\nAdobe Premiere, TikTok/Reels editing, NBA knowledge and video-work portfolio required.\nApplication asks availability up to 25 hours/week September–May.\nEvening, weekend, holiday and short-notice event availability required.\nNo completed degree or enrollment minimum stated; exact start/end dates and year not listed.",
+      "cycle": "Part-time/seasonal; September–May availability (year not stated)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/monumentalsports/jobs/5223794007",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Create and edit Washington Wizards social-first video.",
+        "Cover games, practices and player events; log footage.",
+        "Track trends and optimize content performance with Digital/Productions teams."
+      ],
+      "eligibilityFlags": [
+        "1+ year of social content creation with quick-turn video emphasis.",
+        "Adobe Premiere, TikTok/Reels editing, NBA knowledge and video-work portfolio required.",
+        "Application asks availability up to 25 hours/week September–May.",
+        "Evening, weekend, holiday and short-notice event availability required.",
+        "No completed degree or enrollment minimum stated; exact start/end dates and year not listed."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-09-30T18:29:45.423Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/monumentalsports/jobs/5223794007",
         "reviewerType": "source_check"
       }
     }

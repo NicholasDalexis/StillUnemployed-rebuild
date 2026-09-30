@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.5.5",
+  "currentVersion": "2.7.5.6",
   "releases": [
+    {
+      "version": "2.7.5.6",
+      "date": "2026-09-30",
+      "title": "Small improvements",
+      "changes": [
+        "Added thirteen exact-employer-verified student internships; full source export and preserved prior card receipts. No data-flow or legal wording change."
+      ],
+      "public": {
+        "title": "New internships",
+        "changes": [
+          "Thirteen new internships in design, marketing, software, data and AI."
+        ]
+      }
+    },
     {
       "version": "2.7.5.5",
       "date": "2026-09-29",
@@ -966,7 +980,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "e9247e361bc73fbbd22326a7564ea503d579ca0e0bb26d2601af44fe87a3cbad",
+    "digest": "c44df944d06423024d09baee5015eacf5d5658f85ffaf86dcbbbd3eebf0b2d87",
     "fileCount": 210
   }
 }

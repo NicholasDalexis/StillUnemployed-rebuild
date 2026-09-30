@@ -1,0 +1,19 @@
+{
+  "version": "2.7.5.5",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-09-29T15:18:00Z",
+  "reviewer": "Codex root",
+  "sourceDigest": "e9247e361bc73fbbd22326a7564ea503d579ca0e0bb26d2601af44fe87a3cbad",
+  "sourceFileCount": 210,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "baselineReview": "docs/privacy-reviews/2.7.5.4.json",
+  "scope": "Two employer-verified closed Workiva internships removed from the reviewed static snapshot; privacy and terms pages unchanged.",
+  "checks": {
+    "disclosures": "Read the current Privacy and Terms pages in full. Their third-party employer availability and student-opportunity cautions remain accurate for this two-card retirement. Neither policy page changed.",
+    "security": "No change to account, analytics, moderation, reporting, newsletter or provider behavior. The publication input stays private; public snapshot excludes source receipts and preserves current Sheet status gating."
+  },
+  "openItems": [
+    "Actual new subscriber delivery and physical iPhone Gmail Open/Cancel are not retested; hosted callback replay is distinct from provider delivery."
+  ]
+}
