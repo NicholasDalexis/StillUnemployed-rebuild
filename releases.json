@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.5.6",
+  "currentVersion": "2.7.6",
   "releases": [
+    {
+      "version": "2.7.6",
+      "date": "2026-09-30",
+      "title": "Elevate Media company link",
+      "changes": [
+        "Link the existing company credit on Home, Jobs, Internships, Tracker, Privacy and Terms to https://elevatemedia.ai/. Preserve the production 2.7.5.6 feature set. Reserve ordinary web version 2.7.6 separately from concurrent mobile-only 2.7.5 revision checkpoints."
+      ]
+    },
     {
       "version": "2.7.5.6",
       "date": "2026-09-30",
@@ -980,7 +988,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "c44df944d06423024d09baee5015eacf5d5658f85ffaf86dcbbbd3eebf0b2d87",
+    "digest": "6917e1247018bbf3ff2dfdadcaf183027c3bf34ccb316f6ea40dd9699c18419f",
     "fileCount": 210
   }
 }

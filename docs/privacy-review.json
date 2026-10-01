@@ -1,19 +1,20 @@
 {
-  "version": "2.7.5.6",
+  "version": "2.7.6",
   "status": "local-reviewed",
-  "reviewedAt": "2026-09-30T18:51:57.429Z",
+  "reviewedAt": "2026-10-01T02:54:51.643Z",
   "reviewer": "Codex root",
-  "sourceDigest": "c44df944d06423024d09baee5015eacf5d5658f85ffaf86dcbbbd3eebf0b2d87",
+  "sourceDigest": "6917e1247018bbf3ff2dfdadcaf183027c3bf34ccb316f6ea40dd9699c18419f",
   "sourceFileCount": 210,
   "privacyChanged": false,
   "termsChanged": false,
-  "baselineReview": "docs/privacy-reviews/2.7.5.5.json",
-  "scope": "Thirteen new student internships added through exact employer/ATS checks and narrow native readback. Prior public facts retain original verification dates. No account, analytics, moderation, newsletter or provider behavior changes.",
+  "baselineReview": "docs/privacy-reviews/2.7.5.6.json",
+  "scope": "Company footer links on six pages, with release number 2.7.6. Production 2.7.5.6 functionality and approved catalog retained.",
   "checks": {
     "disclosures": "Read current Privacy and Terms pages completely, including retention and student/pay/timing disclaimers. Reviewed, no wording change needed. No legal opinion or compliance certification.",
-    "security": "Data-only allowlisted publication; private full source and admission receipts remain outside repository. Held source-only record excluded. Exact employer pay and unknown posting dates preserved."
+    "security": "External HTTPS company link only. No additional tracking parameters, scripts, permissions or forms."
   },
   "openItems": [
-    "Physical mobile OAuth, account deletion and new subscriber delivery not retested by this data-only release."
-  ]
+    "Full account, moderation, subscriber-delivery and physical-device QA not repeated for this footer-only release."
+  ],
+  "notes": "Reviewed Privacy and Terms. This footer-only company link introduces no data collection, analytics, backend or provider change. Policy wording retained."
 }
