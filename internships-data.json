@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-09-30T18:47:31.323Z",
+  "sourceExportedAt": "2026-10-01T15:45:30.415Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -983,49 +983,6 @@
         "status": "open",
         "checkedAt": "2026-09-06T21:44:38.907Z",
         "sourceUrl": "https://mavenagency.com/2026-fall-public-relations-internship/",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "AccuWeather",
-      "role": "Social Media Intern (Fall 2026)",
-      "link": "https://job-boards.greenhouse.io/accuweather/jobs/8081615",
-      "loc": "United States (remote)",
-      "ind": "Social",
-      "desc": "Create weather content, source user videos and analyze social engagement.",
-      "pay": "Paid; amount not disclosed",
-      "style": "Remote",
-      "exp": "Not listed",
-      "state": "United States (remote)",
-      "eligibility": "Pursuing a four-year bachelor’s degree in Journalism, Marketing or a related writing-focused field.\nSocial-platform experience, basic image editing and strong communication skills.\nAble to learn scientific and meteorological concepts and explain them to an audience.\nApproximately 20 hours/week for five months; morning/daytime preferred, some evenings may be accommodated, and evenings/weekends may be required.\nApplication asks about unrestricted United States work rights and present/future visa sponsorship.",
-      "cycle": "Fall 2026; five months",
-      "deadline": "Not listed",
-      "applicationsOpen": "Not announced",
-      "startDate": "Not listed",
-      "timingSourceUrl": "https://job-boards.greenhouse.io/accuweather/jobs/8081615",
-      "payStatus": "paid",
-      "payBasis": "not_listed",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Pitch weather-related social content and source user videos with permission.",
-        "Monitor conversations and engage with the weather community.",
-        "Analyze social performance, competitor activity and emerging trends."
-      ],
-      "eligibilityFlags": [
-        "Pursuing a four-year bachelor’s degree in Journalism, Marketing or a related writing-focused field.",
-        "Social-platform experience, basic image editing and strong communication skills.",
-        "Able to learn scientific and meteorological concepts and explain them to an audience.",
-        "Approximately 20 hours/week for five months; morning/daytime preferred, some evenings may be accommodated, and evenings/weekends may be required.",
-        "Application asks about unrestricted United States work rights and present/future visa sponsorship."
-      ],
-      "benefits": [
-        "Not listed"
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-06T21:40:23.600Z",
-        "sourceUrl": "https://job-boards.greenhouse.io/accuweather/jobs/8081615",
         "reviewerType": "source_check"
       }
     },

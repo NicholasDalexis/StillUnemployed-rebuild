@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.6",
+  "currentVersion": "2.7.7",
   "releases": [
+    {
+      "version": "2.7.7",
+      "date": "2026-10-01",
+      "title": "Small improvements",
+      "changes": [
+        "Retire AccuWeather 8081615 and Capitals Media Relations 5211651007 after exact employer closure notices; preserve all other internship cards and the 2.7.6 product release."
+      ]
+    },
     {
       "version": "2.7.6",
       "date": "2026-09-30",
@@ -988,7 +996,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "6917e1247018bbf3ff2dfdadcaf183027c3bf34ccb316f6ea40dd9699c18419f",
+    "digest": "551f621b49123d17ae3f7ab953791c3a639ad1e934267ed7bdbb59fc133518b9",
     "fileCount": 210
   }
 }

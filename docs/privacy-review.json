@@ -1,20 +1,20 @@
 {
-  "version": "2.7.6",
+  "version": "2.7.7",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-01T02:54:51.643Z",
+  "reviewedAt": "2026-10-01T15:56:18Z",
   "reviewer": "Codex root",
-  "sourceDigest": "6917e1247018bbf3ff2dfdadcaf183027c3bf34ccb316f6ea40dd9699c18419f",
+  "sourceDigest": "551f621b49123d17ae3f7ab953791c3a639ad1e934267ed7bdbb59fc133518b9",
   "sourceFileCount": 210,
   "privacyChanged": false,
   "termsChanged": false,
-  "baselineReview": "docs/privacy-reviews/2.7.5.6.json",
-  "scope": "Company footer links on six pages, with release number 2.7.6. Production 2.7.5.6 functionality and approved catalog retained.",
+  "baselineReview": "docs/privacy-reviews/2.7.6.json",
+  "scope": "Evidence-backed retirement of two existing native internships; refreshed public snapshot has 62 unchanged carry-forward cards. Retains the current 2.7.6 company footer links.",
   "checks": {
-    "disclosures": "Read current Privacy and Terms pages completely, including retention and student/pay/timing disclaimers. Reviewed, no wording change needed. No legal opinion or compliance certification.",
-    "security": "External HTTPS company link only. No additional tracking parameters, scripts, permissions or forms."
+    "disclosures": "Read current Privacy and Terms completely, including retention and internship pay/timing disclaimers. No disclosure change required for this data-only retirement. This is not legal certification.",
+    "security": "No new collection, provider, permission, tracking, application submission, or account flow. Only existing catalog suppression and validated publication."
   },
   "openItems": [
-    "Full account, moderation, subscriber-delivery and physical-device QA not repeated for this footer-only release."
+    "Full account, moderation, subscriber-delivery and physical-device QA not repeated for this data-only release."
   ],
-  "notes": "Reviewed Privacy and Terms. This footer-only company link introduces no data collection, analytics, backend or provider change. Policy wording retained."
+  "notes": "Data-only release. Employer closure evidence and exact native cell readback are retained privately; no private review metadata enters public assets."
 }
