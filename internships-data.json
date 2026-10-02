@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-01T15:45:30.415Z",
+  "sourceExportedAt": "2026-10-02T15:27:04.184Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -367,13 +367,13 @@
       "style": "In-person",
       "exp": "Not listed",
       "state": "San Francisco, CA or New York, NY; hub based",
-      "eligibility": "Based out of the San Francisco or New York hub; start January 4, 2027.\nClean-code experience in a general-purpose language and core computer-science concepts, including data structures and algorithms.\nTechnical problem-solving through school, work or personal projects.\nExperience using AI-assisted tools to write, debug and optimize code.\nStrong communication, collaboration and willingness to learn.\nApplication asks for work authorization and, if currently enrolled, expected graduation date. No explicit enrollment mandate or graduation window is stated.\nVideo interviews require cameras on, subject to accommodations; hired applicants attend in-person onboarding.\nDuration and deadline are not stated.",
+      "eligibility": "Based out of the San Francisco or New York hub; start January 5, 2027.\nClean-code experience in a general-purpose language and core computer-science concepts, including data structures and algorithms.\nTechnical problem-solving through school, work or personal projects.\nPreferred, not required: experience using AI-assisted tools to write, debug and optimize code.\nStrong communication, collaboration and willingness to learn.\nApplication asks for work authorization and, if currently enrolled, expected graduation date. No explicit enrollment mandate or graduation window is stated.\nVideo interviews require cameras on, subject to accommodations; hired applicants attend in-person onboarding.\nDuration and deadline are not stated.",
       "cycle": "Winter 2027; duration not listed",
       "deadline": "Not listed",
       "applicationsOpen": "Not listed",
-      "startDate": "January 4, 2027",
+      "startDate": "January 5, 2027",
       "timingSourceUrl": "https://boards-api.greenhouse.io/v1/boards/figma/jobs/6131089004?questions=true",
-      "startDateISO": "2027-01-04",
+      "startDateISO": "2027-01-05",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -384,10 +384,10 @@
         "Write tests and documentation, maintain code and participate in peer review."
       ],
       "eligibilityFlags": [
-        "Based out of the San Francisco or New York hub; start January 4, 2027.",
+        "Based out of the San Francisco or New York hub; start January 5, 2027.",
         "Clean-code experience in a general-purpose language and core computer-science concepts, including data structures and algorithms.",
         "Technical problem-solving through school, work or personal projects.",
-        "Experience using AI-assisted tools to write, debug and optimize code.",
+        "Preferred, not required: experience using AI-assisted tools to write, debug and optimize code.",
         "Strong communication, collaboration and willingness to learn.",
         "Application asks for work authorization and, if currently enrolled, expected graduation date. No explicit enrollment mandate or graduation window is stated.",
         "Video interviews require cameras on, subject to accommodations; hired applicants attend in-person onboarding.",
@@ -399,7 +399,7 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-09-06T21:47:20.046Z",
+        "checkedAt": "2026-10-02T15:13:37.415Z",
         "sourceUrl": "https://boards-api.greenhouse.io/v1/boards/figma/jobs/6131089004?questions=true",
         "reviewerType": "source_check"
       }

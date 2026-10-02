@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7",
+  "currentVersion": "2.7.7.1",
   "releases": [
+    {
+      "version": "2.7.7.1",
+      "date": "2026-10-02",
+      "title": "Correct Figma Winter 2027 program facts",
+      "changes": [
+        "Update the existing Figma internship start to January 5 and mark AI-tool experience as preferred, with fresh exact employer and native readback evidence."
+      ]
+    },
     {
       "version": "2.7.7",
       "date": "2026-10-01",
@@ -996,7 +1004,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "551f621b49123d17ae3f7ab953791c3a639ad1e934267ed7bdbb59fc133518b9",
+    "digest": "5f60501a94a339f71c3672724c9484d720ac0c5db1dd39d8e152608463c4d59c",
     "fileCount": 210
   }
 }

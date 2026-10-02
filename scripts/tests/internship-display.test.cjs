@@ -29,7 +29,7 @@ test('presentation summaries retain critical admitted program conditions and unk
   assert.match(I.detailBullets(select('Too Lost')).at(-1),/college[- ]credit (?:eligibility )?required/i);
   assert.equal(I.locationLabel(select('Henkel')),'Location not listed');
   assert.equal(I.locationLabel(select('Adobe')),'Multiple locations');
-  assert.match(I.detailBullets(select('Figma')).at(-1),/January 4|Jan(?:uary)?\.? 4/);
+  assert.match(I.detailBullets(select('Figma')).at(-1),/January 5|Jan(?:uary)?\.? 5/);
 });
 
 test('a fresh liveness timestamp alone retains the reviewed summary, while changed source facts invalidate it',()=>{
