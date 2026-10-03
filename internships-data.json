@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-02T15:27:04.184Z",
+  "sourceExportedAt": "2026-10-03T18:39:38.069Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -1256,45 +1256,6 @@
         "status": "open",
         "checkedAt": "2026-09-06T21:44:24.528Z",
         "sourceUrl": "https://www.htyweb.org/employment-auditions-internship/",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Love's Travel Stops",
-      "role": "User Experience Research Intern (Summer 2027)",
-      "link": "https://jobs.loves.com/user-experience-research-intern-summer-2027/job/490417",
-      "loc": "Oklahoma City, OK; hybrid, onsite presence required",
-      "ind": "UI/UX & Product Design",
-      "desc": "Support UX research for an in-house mobile app and other platforms, from study planning to presenting findings.",
-      "pay": "Pay not disclosed",
-      "style": "Hybrid",
-      "exp": "Not listed",
-      "state": "Oklahoma City, OK; hybrid, onsite presence required",
-      "eligibility": "High school diploma or equivalent required. Currently enrolled at a four-year university, sophomore or above, pursuing a relevant bachelor degree such as Psychology, HCI, Design, Cognitive Science or Computer Science. Must be onsite in Oklahoma City during the hybrid internship. Microsoft Office knowledge required. Prior internship and research/design portfolio are pluses, not required. Typical physical demands include prolonged sitting and occasional lifting up to 25 pounds. Weekly hours and work authorization restrictions not listed.",
-      "cycle": "Summer 2027",
-      "deadline": "Not listed",
-      "applicationsOpen": "Not announced",
-      "startDate": "Summer 2027",
-      "timingSourceUrl": "https://jobs.loves.com/user-experience-research-intern-summer-2027/job/490417",
-      "payStatus": "not_disclosed",
-      "payBasis": "not_listed",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Plan research studies and prepare interview guides.",
-        "Assist usability testing, interviews, and eye tracking.",
-        "Analyze results and present findings to stakeholders."
-      ],
-      "eligibilityFlags": [
-        "High school diploma or equivalent required. Currently enrolled at a four-year university, sophomore or above, pursuing a relevant bachelor degree such as Psychology, HCI, Design, Cognitive Science or Computer Science. Must be onsite in Oklahoma City during the hybrid internship. Microsoft Office knowledge required. Prior internship and research/design portfolio are pluses, not required. Typical physical demands include prolonged sitting and occasional lifting up to 25 pounds. Weekly hours and work authorization restrictions not listed."
-      ],
-      "benefits": [
-        "Mentor program, classroom skills training, structured feedback, executive Q&A, networking, business tours and leadership presentation. Financial benefits not listed."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-27T19:24:35.822Z",
-        "sourceUrl": "https://jobs.loves.com/user-experience-research-intern-summer-2027/job/490417",
         "reviewerType": "source_check"
       }
     },
@@ -2824,6 +2785,599 @@
         "status": "open",
         "checkedAt": "2026-09-30T18:29:45.423Z",
         "sourceUrl": "https://job-boards.greenhouse.io/monumentalsports/jobs/5223794007",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Robinhood",
+      "role": "Data Science Intern (Summer 2027)",
+      "link": "https://boards.greenhouse.io/robinhood/jobs/8241738?t=gh_src=&gh_jid=8241738",
+      "loc": "Menlo Park, CA",
+      "ind": "Data Science",
+      "desc": "Analyze brokerage product growth and user behavior.",
+      "pay": "$44/hour",
+      "style": "Hybrid",
+      "exp": "See eligibility",
+      "state": "Menlo Park, CA",
+      "eligibility": "Current full-time graduate student in a quantitative field; graduation Winter 2027 or Spring 2028.\nStatistical analysis/machine learning, Python and SQL, visualization and project execution skills required.\nAt least 3 days/week in Menlo Park; fintech experience preferred.",
+      "cycle": "Summer 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://boards.greenhouse.io/robinhood/jobs/8241738?t=gh_src=&gh_jid=8241738",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Analyze brokerage product growth and user behavior.",
+        "Design A/B experiments and causal-inference analyses.",
+        "Build metrics, dashboards and data narratives with cross-functional teams."
+      ],
+      "eligibilityFlags": [
+        "Current full-time graduate student in a quantitative field; graduation Winter 2027 or Spring 2028.",
+        "Statistical analysis/machine learning, Python and SQL, visualization and project execution skills required.",
+        "At least 3 days/week in Menlo Park; fintech experience preferred."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-03T18:07:11.902Z",
+        "sourceUrl": "https://boards.greenhouse.io/robinhood/jobs/8241738?t=gh_src=&gh_jid=8241738",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Robinhood",
+      "role": "Software Engineering Intern, Android (Summer 2027)",
+      "link": "https://boards.greenhouse.io/robinhood/jobs/8142961?t=gh_src=&gh_jid=8142961",
+      "loc": "Menlo Park, CA; New York, NY",
+      "ind": "Software Engineering",
+      "desc": "Build Android product features from concept to shipping.",
+      "pay": "$60/hour",
+      "style": "Hybrid",
+      "exp": "See eligibility",
+      "state": "Menlo Park, CA; New York, NY",
+      "eligibility": "Currently enrolled full-time in a degree-seeking program; expected graduation Winter 2027 or Spring 2028.\nAt least 3 days/week in the named office; exact summer start/end dates not listed.\nSoftware fundamentals, Android app experience and Kotlin/RxJava/Dagger familiarity required; visually driven UI/UX interest.",
+      "cycle": "Summer 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://boards.greenhouse.io/robinhood/jobs/8142961?t=gh_src=&gh_jid=8142961",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build Android product features from concept to shipping.",
+        "Collaborate with design and an engineering mentor.",
+        "Explore UI/UX using Kotlin, RxJava, Retrofit/OkHttp, Dagger and Room."
+      ],
+      "eligibilityFlags": [
+        "Currently enrolled full-time in a degree-seeking program; expected graduation Winter 2027 or Spring 2028.",
+        "At least 3 days/week in the named office; exact summer start/end dates not listed.",
+        "Software fundamentals, Android app experience and Kotlin/RxJava/Dagger familiarity required; visually driven UI/UX interest."
+      ],
+      "benefits": [
+        "Dedicated mentorship and AI skill-building.",
+        "Quarterly lifestyle wallet; company holidays, PTO and sick time.",
+        "Catered meals, stocked kitchens and geo-specific commuter benefits."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-03T18:07:12.929Z",
+        "sourceUrl": "https://boards.greenhouse.io/robinhood/jobs/8142961?t=gh_src=&gh_jid=8142961",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Robinhood",
+      "role": "Software Engineering Intern, Backend (Summer 2027)",
+      "link": "https://boards.greenhouse.io/robinhood/jobs/8123225?t=gh_src=&gh_jid=8123225",
+      "loc": "Bellevue, WA; Menlo Park, CA; New York, NY",
+      "ind": "Software Engineering",
+      "desc": "Own a backend project from scoping through launch.",
+      "pay": "$60/hour",
+      "style": "Hybrid",
+      "exp": "See eligibility",
+      "state": "Bellevue, WA; Menlo Park, CA; New York, NY",
+      "eligibility": "Currently enrolled full-time in a degree-seeking program; expected graduation Winter 2027 or Spring 2028.\nAt least 3 days/week in the named office; exact summer start/end dates not listed.\nCS fundamentals and relevant internships, hackathons or personal projects; Python/Django or Go and relational-database familiarity.",
+      "cycle": "Summer 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://boards.greenhouse.io/robinhood/jobs/8123225?t=gh_src=&gh_jid=8123225",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Own a backend project from scoping through launch.",
+        "Build, test and release scalable financial-platform services.",
+        "Work with a mentor and cross-functional teams using Python/Django, Go and data infrastructure."
+      ],
+      "eligibilityFlags": [
+        "Currently enrolled full-time in a degree-seeking program; expected graduation Winter 2027 or Spring 2028.",
+        "At least 3 days/week in the named office; exact summer start/end dates not listed.",
+        "CS fundamentals and relevant internships, hackathons or personal projects; Python/Django or Go and relational-database familiarity."
+      ],
+      "benefits": [
+        "Dedicated mentorship and AI skill-building.",
+        "Quarterly lifestyle wallet; company holidays, PTO and sick time.",
+        "Catered meals, stocked kitchens and geo-specific commuter benefits."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-03T18:07:12.954Z",
+        "sourceUrl": "https://boards.greenhouse.io/robinhood/jobs/8123225?t=gh_src=&gh_jid=8123225",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Robinhood",
+      "role": "Software Engineering Intern, iOS (Summer 2027)",
+      "link": "https://boards.greenhouse.io/robinhood/jobs/8142959?t=gh_src=&gh_jid=8142959",
+      "loc": "Menlo Park, CA; New York, NY",
+      "ind": "Software Engineering",
+      "desc": "Build iOS and watchOS products using Swift.",
+      "pay": "$60/hour",
+      "style": "Hybrid",
+      "exp": "See eligibility",
+      "state": "Menlo Park, CA; New York, NY",
+      "eligibility": "Currently enrolled full-time in a degree-seeking program; expected graduation Winter 2027 or Spring 2028.\nAt least 3 days/week in the named office; exact summer start/end dates not listed.\nStrong product sense, UIKit knowledge, communication and collaboration with product designers required.",
+      "cycle": "Summer 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://boards.greenhouse.io/robinhood/jobs/8142959?t=gh_src=&gh_jid=8142959",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build iOS and watchOS products using Swift.",
+        "Own features through design feedback, implementation and launch.",
+        "Collaborate with designers and engineers on polished mobile experiences."
+      ],
+      "eligibilityFlags": [
+        "Currently enrolled full-time in a degree-seeking program; expected graduation Winter 2027 or Spring 2028.",
+        "At least 3 days/week in the named office; exact summer start/end dates not listed.",
+        "Strong product sense, UIKit knowledge, communication and collaboration with product designers required."
+      ],
+      "benefits": [
+        "Dedicated mentorship and AI skill-building.",
+        "Quarterly lifestyle wallet; company holidays, PTO and sick time.",
+        "Catered meals, stocked kitchens and geo-specific commuter benefits."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-03T18:07:13.353Z",
+        "sourceUrl": "https://boards.greenhouse.io/robinhood/jobs/8142959?t=gh_src=&gh_jid=8142959",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Robinhood",
+      "role": "Software Engineering Intern, Web (Summer 2027)",
+      "link": "https://boards.greenhouse.io/robinhood/jobs/8142963?t=gh_src=&gh_jid=8142963",
+      "loc": "Menlo Park, CA; New York, NY",
+      "ind": "Software Engineering",
+      "desc": "Architect consumer features and reusable React UI patterns.",
+      "pay": "$60/hour",
+      "style": "Hybrid",
+      "exp": "See eligibility",
+      "state": "Menlo Park, CA; New York, NY",
+      "eligibility": "Currently enrolled full-time in a degree-seeking program; expected graduation Winter 2027 or Spring 2028.\nAt least 3 days/week in the named office; exact summer start/end dates not listed.\nJavaScript and/or React Native fluency, CS fundamentals, user empathy and design intuition; Python/Django or Go a plus.",
+      "cycle": "Summer 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://boards.greenhouse.io/robinhood/jobs/8142963?t=gh_src=&gh_jid=8142963",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Architect consumer features and reusable React UI patterns.",
+        "Build and test brokerage products with cross-functional partners.",
+        "Develop frameworks and tools that empower other developers."
+      ],
+      "eligibilityFlags": [
+        "Currently enrolled full-time in a degree-seeking program; expected graduation Winter 2027 or Spring 2028.",
+        "At least 3 days/week in the named office; exact summer start/end dates not listed.",
+        "JavaScript and/or React Native fluency, CS fundamentals, user empathy and design intuition; Python/Django or Go a plus."
+      ],
+      "benefits": [
+        "Dedicated mentorship and AI skill-building.",
+        "Quarterly lifestyle wallet; company holidays, PTO and sick time.",
+        "Catered meals, stocked kitchens and geo-specific commuter benefits."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-03T18:07:13.443Z",
+        "sourceUrl": "https://boards.greenhouse.io/robinhood/jobs/8142963?t=gh_src=&gh_jid=8142963",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Gallup",
+      "role": "Data Engineering Intern — Summer 2027",
+      "link": "https://job-boards.greenhouse.io/gallup/jobs/4395454009",
+      "loc": "Omaha, NE",
+      "ind": "Data Engineering",
+      "desc": "Build data tooling and modernize Python/SQL pipelines.",
+      "pay": "$25–$30/hour",
+      "style": "Hybrid",
+      "exp": "See eligibility",
+      "state": "Omaha, NE",
+      "eligibility": "Enrolled in an associate, bachelor’s or graduate program in a relevant field at a college/university within 250 miles of Omaha.\nSQL, Python, relational data modeling and AI-assisted development experience required.\n40 hours/week for 12 weeks in Summer 2027; onsite Monday–Thursday, remote Friday option.\nUS work eligibility required; no employment visa sponsorship. Graduation August 2027–May 2028 preferred.",
+      "cycle": "Summer 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/gallup/jobs/4395454009",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build data tooling and modernize Python/SQL pipelines.",
+        "Troubleshoot data quality and validate data across systems.",
+        "Collaborate with technical leaders and stakeholders using AI-enabled development tools."
+      ],
+      "eligibilityFlags": [
+        "Enrolled in an associate, bachelor’s or graduate program in a relevant field at a college/university within 250 miles of Omaha.",
+        "SQL, Python, relational data modeling and AI-assisted development experience required.",
+        "40 hours/week for 12 weeks in Summer 2027; onsite Monday–Thursday, remote Friday option.",
+        "US work eligibility required; no employment visa sponsorship. Graduation August 2027–May 2028 preferred."
+      ],
+      "benefits": [
+        "Mentorship from senior technical leaders.",
+        "Possible school-year work up to 20 hours/week and full-time offer, subject to business needs/performance.",
+        "Omaha campus amenities including cafeteria and fitness center."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-03T18:07:13.840Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/gallup/jobs/4395454009",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Monumental Sports & Entertainment",
+      "role": "Internship: Social Media (Part-Time/Seasonal)",
+      "link": "https://job-boards.greenhouse.io/monumentalsports/jobs/5197686007",
+      "loc": "Washington, District of Columbia, United States",
+      "ind": "Video & Social Content",
+      "desc": "Create social-first Capital City Go-Go content and capture game/event photo-video.",
+      "pay": "$18.40/hour",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "Washington, District of Columbia, United States",
+      "eligibility": "Current undergraduate/graduate student or recent graduate; professional social-media publishing and video editing experience required.\n25 hours/week September 2026–May 2027; most Capital City Go-Go games plus evening, weekend and holiday availability.\nNBA knowledge and strong communication/organization required; photography preferred and Adobe experience a plus.",
+      "cycle": "Part-time/seasonal; September 2026–May 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "September 2026 (season already underway)",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/monumentalsports/jobs/5197686007",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Create social-first Capital City Go-Go content and capture game/event photo-video.",
+        "Draft, schedule and publish across social platforms.",
+        "Track trends, analytics, content calendars and digital assets."
+      ],
+      "eligibilityFlags": [
+        "Current undergraduate/graduate student or recent graduate; professional social-media publishing and video editing experience required.",
+        "25 hours/week September 2026–May 2027; most Capital City Go-Go games plus evening, weekend and holiday availability.",
+        "NBA knowledge and strong communication/organization required; photography preferred and Adobe experience a plus."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-03T18:07:15.969Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/monumentalsports/jobs/5197686007",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "AccuWeather",
+      "role": "Creative Writer Intern: Forecasting and Communications",
+      "link": "https://job-boards.greenhouse.io/accuweather/jobs/8189209",
+      "loc": "State College, PA",
+      "ind": "Writing & Communications",
+      "desc": "Work with forecasters and the Writing Committee to improve consumer forecast descriptions.",
+      "pay": "Pay not disclosed",
+      "style": "Not listed",
+      "exp": "See eligibility",
+      "state": "State College, PA",
+      "eligibility": "Bachelor’s degree in communications, writing or a closely related field required.\nCurrent graduate student in a writing-related discipline, or equivalent advanced/professional writing experience.\nExceptional writing/editing, technical translation and collaborative revision skills required.\nExact term, start date, hours and pay not listed; location State College, PA.",
+      "cycle": "Internship; term not listed",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/accuweather/jobs/8189209",
+      "payStatus": "not_disclosed",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Work with forecasters and the Writing Committee to improve consumer forecast descriptions.",
+        "Develop precise, vivid and scientifically accurate language and standards.",
+        "Test new approaches and revise from meteorologist and stakeholder feedback."
+      ],
+      "eligibilityFlags": [
+        "Bachelor’s degree in communications, writing or a closely related field required.",
+        "Current graduate student in a writing-related discipline, or equivalent advanced/professional writing experience.",
+        "Exceptional writing/editing, technical translation and collaborative revision skills required.",
+        "Exact term, start date, hours and pay not listed; location State College, PA."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-03T18:07:16.196Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/accuweather/jobs/8189209",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "DoorDash",
+      "role": "Machine Learning Intern (Masters) - Summer 2027",
+      "link": "https://job-boards.greenhouse.io/doordashusa/jobs/8204111",
+      "loc": "San Francisco, CA;  Sunnyvale, CA ; New York City, NY; Seattle, WA",
+      "ind": "AI & Machine Learning",
+      "desc": "Research applied ML/AI for discovery, ads, forecasting, fulfillment and search.",
+      "pay": "$130,600–$192,000 USD (I4); $159,800–$235,000 USD (I5); $193,800–$285,000 USD (I6; base pay; period not stated)",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "San Francisco, CA;  Sunnyvale, CA ; New York City, NY; Seattle, WA",
+      "eligibility": "Current master’s student in CS, ML, NLP, statistics, information sciences or a related field; graduation Fall 2027–Summer 2028.\n12-week Summer 2027 program in SF, Sunnyvale, NYC or Seattle.\nMastery of a systems language or ML framework; research/analytical experience, communication and teamwork required.\nPublished base-pay ranges have no explicit period; no annual/hourly conversion made. Applications accepted on an ongoing basis.",
+      "cycle": "Summer 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/doordashusa/jobs/8204111",
+      "payStatus": "paid",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Research applied ML/AI for discovery, ads, forecasting, fulfillment and search.",
+        "Analyze data and build ML models to improve product experiences.",
+        "Write sustainable code and collaborate across engineering research teams."
+      ],
+      "eligibilityFlags": [
+        "Current master’s student in CS, ML, NLP, statistics, information sciences or a related field; graduation Fall 2027–Summer 2028.",
+        "12-week Summer 2027 program in SF, Sunnyvale, NYC or Seattle.",
+        "Mastery of a systems language or ML framework; research/analytical experience, communication and teamwork required.",
+        "Published base-pay ranges have no explicit period; no annual/hourly conversion made. Applications accepted on an ongoing basis."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-03T18:07:16.386Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/doordashusa/jobs/8204111",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "DoorDash",
+      "role": "Machine Learning Intern (PhD) - Summer 2027",
+      "link": "https://job-boards.greenhouse.io/doordashusa/jobs/8233953",
+      "loc": "San Francisco, CA;  Sunnyvale, CA ; New York City, NY; Seattle, WA",
+      "ind": "AI & Machine Learning",
+      "desc": "Research applied ML/AI for discovery, ads, forecasting, fulfillment and search.",
+      "pay": "$130,600–$192,000 USD (I4); $159,800–$235,000 USD (I5); $193,800–$285,000 USD (I6; base pay; period not stated)",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "San Francisco, CA;  Sunnyvale, CA ; New York City, NY; Seattle, WA",
+      "eligibility": "Current PhD student in CS, ML, NLP, statistics, information sciences or a related field; graduation Fall 2027–Summer 2028.\n12-week Summer 2027 program in SF, Sunnyvale, NYC or Seattle.\nMastery of a systems language or ML framework; research/analytical experience, communication and teamwork required.\nPublished base-pay ranges have no explicit period; no annual/hourly conversion made. Applications accepted on an ongoing basis.",
+      "cycle": "Summer 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/doordashusa/jobs/8233953",
+      "payStatus": "paid",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Research applied ML/AI for discovery, ads, forecasting, fulfillment and search.",
+        "Analyze data and build ML models to improve product experiences.",
+        "Write sustainable code and collaborate across engineering research teams."
+      ],
+      "eligibilityFlags": [
+        "Current PhD student in CS, ML, NLP, statistics, information sciences or a related field; graduation Fall 2027–Summer 2028.",
+        "12-week Summer 2027 program in SF, Sunnyvale, NYC or Seattle.",
+        "Mastery of a systems language or ML framework; research/analytical experience, communication and teamwork required.",
+        "Published base-pay ranges have no explicit period; no annual/hourly conversion made. Applications accepted on an ongoing basis."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-03T18:07:16.519Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/doordashusa/jobs/8233953",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "DoorDash",
+      "role": "Software Engineer, Intern (Summer 2027) - US",
+      "link": "https://job-boards.greenhouse.io/doordashusa/jobs/8171041",
+      "loc": "New York, NY; San Francisco, CA; Sunnyvale, CA; Los Angeles, CA; Seattle, WA",
+      "ind": "Software Engineering",
+      "desc": "Develop, maintain and ship product features with mentor and team support.",
+      "pay": "$107,400–$158,000 USD (base pay; period not stated)",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "New York, NY; San Francisco, CA; Sunnyvale, CA; Los Angeles, CA; Seattle, WA",
+      "eligibility": "Pursuing BS/MS in CS or equivalent; graduation Fall 2027–Summer 2028 and no more than 2 years of full-time work experience.\n12-week in-person program; available to start May or June 2027 in NYC, SF, Sunnyvale, LA or Seattle.\nUS work authorization required; F-1 CPT students eligible, J-1 students not supported.\nDatabases, algorithms/data structures, object-oriented programming, version control and unit testing required.",
+      "cycle": "Summer 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May or June 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/doordashusa/jobs/8171041",
+      "payStatus": "paid",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop, maintain and ship product features with mentor and team support.",
+        "Solve customer problems across consumer, merchant and dasher experiences.",
+        "Participate in intern learning and present summer work."
+      ],
+      "eligibilityFlags": [
+        "Pursuing BS/MS in CS or equivalent; graduation Fall 2027–Summer 2028 and no more than 2 years of full-time work experience.",
+        "12-week in-person program; available to start May or June 2027 in NYC, SF, Sunnyvale, LA or Seattle.",
+        "US work authorization required; F-1 CPT students eligible, J-1 students not supported.",
+        "Databases, algorithms/data structures, object-oriented programming, version control and unit testing required."
+      ],
+      "benefits": [
+        "Mentorship, leadership speaker series, intern social events and final project presentation; general regular-employee benefits are not confirmed for interns."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-03T18:07:16.531Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/doordashusa/jobs/8171041",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Riot Games",
+      "role": "Software Engineering Intern - Summer 2027 (Remote)",
+      "link": "https://www.riotgames.com/en/work-with-us/job/8222014?gh_jid=8222014",
+      "loc": "Remote, United States (Los Angeles team)",
+      "ind": "Game Development & Engineering",
+      "desc": "Create player-facing game features or shared backend/social services.",
+      "pay": "$58.37/hour",
+      "style": "Remote",
+      "exp": "See eligibility",
+      "state": "Remote, United States (Los Angeles team)",
+      "eligibility": "Currently enrolled in a CS, engineering or technology-related degree; graduating in calendar year 2028.\nMinimum GPA 2.5; object-oriented programming and data structures/algorithms required.\n40 hours/week for a 12-week remote Summer 2027 internship.\nUS work authorization required; no visa sponsorship for this internship or conversions.",
+      "cycle": "Summer 2027",
+      "deadline": "November 6, 2026",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://www.riotgames.com/en/work-with-us/job/8222014?gh_jid=8222014",
+      "deadlineISO": "2026-11-06",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Create player-facing game features or shared backend/social services.",
+        "Work with live data, globally scaled services, SDKs and APIs.",
+        "Team matching depends on interests, experience and available roles."
+      ],
+      "eligibilityFlags": [
+        "Currently enrolled in a CS, engineering or technology-related degree; graduating in calendar year 2028.",
+        "Minimum GPA 2.5; object-oriented programming and data structures/algorithms required.",
+        "40 hours/week for a 12-week remote Summer 2027 internship.",
+        "US work authorization required; no visa sponsorship for this internship or conversions."
+      ],
+      "benefits": [
+        "401(k) participation, in-game perks and Play Fund.",
+        "Intern-focused events and university-program support."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-03T18:23:00.193Z",
+        "sourceUrl": "https://www.riotgames.com/en/work-with-us/job/8222014?gh_jid=8222014",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Pinterest",
+      "role": "UX Engineering Intern (San Francisco)",
+      "link": "https://www.pinterestcareers.com/jobs/?gh_jid=8140210",
+      "loc": "San Francisco, CA",
+      "ind": "UX Engineering & Design",
+      "desc": "Bridge UX design and frontend engineering to prototype and validate ideas.",
+      "pay": "$8,250–$11,000/month",
+      "style": "Hybrid",
+      "exp": "See eligibility",
+      "state": "San Francisco, CA",
+      "eligibility": "Current master’s student in CS, statistics, psychology, sociology, applied sciences or related field; obtain master’s by 2027.\nPrevious SWE internships and programming proficiency required.\nUS-based applicants; commutable to San Francisco with in-office collaboration 1–2 times/week.\nEmployer form has a broader bachelor’s-by-June-2029 screening question; the stricter role-specific master’s requirement remains displayed.",
+      "cycle": "Summer 2027; May 17–August 6 or June 14–September 3",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17, 2027 or June 14, 2027",
+      "timingSourceUrl": "https://www.pinterestcareers.com/jobs/?gh_jid=8140210",
+      "payStatus": "paid",
+      "payBasis": "month",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Bridge UX design and frontend engineering to prototype and validate ideas.",
+        "Contribute tested, documented code and accessible interfaces.",
+        "Partner with design, product, data and engineering mentors."
+      ],
+      "eligibilityFlags": [
+        "Current master’s student in CS, statistics, psychology, sociology, applied sciences or related field; obtain master’s by 2027.",
+        "Previous SWE internships and programming proficiency required.",
+        "US-based applicants; commutable to San Francisco with in-office collaboration 1–2 times/week.",
+        "Employer form has a broader bachelor’s-by-June-2029 screening question; the stricter role-specific master’s requirement remains displayed."
+      ],
+      "benefits": [
+        "Mentorship and real product projects; relocation assistance may be available, not guaranteed."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-03T18:23:00.193Z",
+        "sourceUrl": "https://www.pinterestcareers.com/jobs/?gh_jid=8140210",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Pinterest",
+      "role": "UX Quantitative Research Intern (USA)",
+      "link": "https://www.pinterestcareers.com/jobs/?gh_jid=8140217",
+      "loc": "Remote, United States",
+      "ind": "UX Research",
+      "desc": "Use surveys and exploratory data analysis to understand user attitudes and behavior.",
+      "pay": "$11,000/month",
+      "style": "Remote",
+      "exp": "See eligibility",
+      "state": "Remote, United States",
+      "eligibility": "Currently pursuing PhD in statistics, psychology, sociology, applied sciences, CS or related field; obtain PhD by June 2027 per role description.\nUS-based applicants; survey methodology, statistical/experimental analysis and Python, R or SQL required.\nEmployer form asks PhD by June 2029; narrower June 2027 role-description requirement remains displayed.",
+      "cycle": "Summer 2027; May 17–August 6 or June 14–September 3",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17, 2027 or June 14, 2027",
+      "timingSourceUrl": "https://www.pinterestcareers.com/jobs/?gh_jid=8140217",
+      "payStatus": "paid",
+      "payBasis": "month",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Use surveys and exploratory data analysis to understand user attitudes and behavior.",
+        "Combine survey and log analysis to inform product opportunities.",
+        "Communicate research insights with product, engineering and design teams."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing PhD in statistics, psychology, sociology, applied sciences, CS or related field; obtain PhD by June 2027 per role description.",
+        "US-based applicants; survey methodology, statistical/experimental analysis and Python, R or SQL required.",
+        "Employer form asks PhD by June 2029; narrower June 2027 role-description requirement remains displayed."
+      ],
+      "benefits": [
+        "Mentorship and cross-functional product research projects; other intern-specific benefits not listed."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-03T18:23:00.193Z",
+        "sourceUrl": "https://www.pinterestcareers.com/jobs/?gh_jid=8140217",
         "reviewerType": "source_check"
       }
     }

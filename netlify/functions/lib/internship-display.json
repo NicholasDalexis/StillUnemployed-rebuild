@@ -1,4 +1,144 @@
 {
+  "https://boards.greenhouse.io/robinhood/jobs/8241738?t=gh_src=&gh_jid=8241738": {
+    "sourceKey": "b51249fd:4aaf2e31",
+    "locationLabel": "Menlo Park, CA",
+    "detailBullets": [
+      "Analyze brokerage growth and user behavior.",
+      "Design experiments and causal-inference analyses.",
+      "Build dashboards and communicate data insights.",
+      "Summer 2027; full-time graduate students graduating Winter 2027 or Spring 2028."
+    ]
+  },
+  "https://boards.greenhouse.io/robinhood/jobs/8142961?t=gh_src=&gh_jid=8142961": {
+    "sourceKey": "98eaab12:6b1cdd46",
+    "locationLabel": "Multiple locations",
+    "detailBullets": [
+      "Build Android features from concept to launch.",
+      "Collaborate with designers and an engineering mentor.",
+      "Develop polished mobile interfaces with Kotlin.",
+      "Summer 2027; full-time degree students graduating Winter 2027 or Spring 2028."
+    ]
+  },
+  "https://boards.greenhouse.io/robinhood/jobs/8123225?t=gh_src=&gh_jid=8123225": {
+    "sourceKey": "26a295a5:2cd3faa1",
+    "locationLabel": "Multiple locations",
+    "detailBullets": [
+      "Own a backend project through launch.",
+      "Build and test scalable financial services.",
+      "Collaborate with mentors using Python or Go.",
+      "Summer 2027; full-time degree students graduating Winter 2027 or Spring 2028."
+    ]
+  },
+  "https://boards.greenhouse.io/robinhood/jobs/8142959?t=gh_src=&gh_jid=8142959": {
+    "sourceKey": "d4a0c249:f66acc95",
+    "locationLabel": "Multiple locations",
+    "detailBullets": [
+      "Build iOS and watchOS products with Swift.",
+      "Own features through design, implementation and launch.",
+      "Collaborate with product designers and engineers.",
+      "Summer 2027; full-time degree students graduating Winter 2027 or Spring 2028."
+    ]
+  },
+  "https://boards.greenhouse.io/robinhood/jobs/8142963?t=gh_src=&gh_jid=8142963": {
+    "sourceKey": "f0a227c9:15e2665",
+    "locationLabel": "Multiple locations",
+    "detailBullets": [
+      "Build consumer features and reusable React interfaces.",
+      "Test products with cross-functional partners.",
+      "Develop tools that empower other engineers.",
+      "Summer 2027; full-time degree students graduating Winter 2027 or Spring 2028."
+    ]
+  },
+  "https://job-boards.greenhouse.io/gallup/jobs/4395454009": {
+    "sourceKey": "19bbbd4d:21c919e9",
+    "locationLabel": "Omaha, NE",
+    "detailBullets": [
+      "Build tools and modernize Python/SQL pipelines.",
+      "Troubleshoot data quality across systems.",
+      "Collaborate with technical leaders and stakeholders.",
+      "Summer 2027, 12 weeks, 40 hours/week; relevant students attending college within 250 miles of Omaha; no sponsorship."
+    ]
+  },
+  "https://job-boards.greenhouse.io/monumentalsports/jobs/5197686007": {
+    "sourceKey": "9e5417c5:24ffe119",
+    "locationLabel": "Washington, DC",
+    "detailBullets": [
+      "Create social content and capture game footage.",
+      "Draft, schedule and publish social posts.",
+      "Track trends, analytics and digital assets.",
+      "September 2026–May 2027, 25 hours/week; students or recent graduates; evening, weekend and holiday availability."
+    ]
+  },
+  "https://job-boards.greenhouse.io/accuweather/jobs/8189209": {
+    "sourceKey": "be8df350:48bb6054",
+    "locationLabel": "State College, PA",
+    "detailBullets": [
+      "Improve consumer forecast descriptions with meteorologists.",
+      "Develop precise, vivid and scientifically accurate language.",
+      "Test writing approaches and revise from feedback.",
+      "Bachelor’s required; writing graduate students or equivalent advanced experience; term, hours and pay undisclosed."
+    ]
+  },
+  "https://job-boards.greenhouse.io/doordashusa/jobs/8204111": {
+    "sourceKey": "9f2dca5b:3c1197cf",
+    "locationLabel": "Multiple locations",
+    "detailBullets": [
+      "Research applied machine learning for product discovery.",
+      "Build models that improve customer experiences.",
+      "Write sustainable code with engineering research teams.",
+      "Summer 2027, 12 weeks; master’s students graduating Fall 2027–Summer 2028; published base-pay period unstated."
+    ]
+  },
+  "https://job-boards.greenhouse.io/doordashusa/jobs/8233953": {
+    "sourceKey": "b0973c90:7144e474",
+    "locationLabel": "Multiple locations",
+    "detailBullets": [
+      "Research applied machine learning for product discovery.",
+      "Build models that improve customer experiences.",
+      "Write sustainable code with engineering research teams.",
+      "Summer 2027, 12 weeks; PhD students graduating Fall 2027–Summer 2028; published base-pay period unstated."
+    ]
+  },
+  "https://job-boards.greenhouse.io/doordashusa/jobs/8171041": {
+    "sourceKey": "8c9ce2df:d6b3474b",
+    "locationLabel": "Multiple locations",
+    "detailBullets": [
+      "Develop and ship product features with mentor support.",
+      "Solve problems across consumer, merchant and dasher products.",
+      "Learn with fellow interns and present summer work.",
+      "Summer 2027, 12 weeks; May/June start; BS/MS students graduating Fall 2027–Summer 2028; F-1 CPT eligible, J-1 unsupported."
+    ]
+  },
+  "https://www.riotgames.com/en/work-with-us/job/8222014?gh_jid=8222014": {
+    "sourceKey": "e2fa6fe2:eef20386",
+    "locationLabel": "Remote",
+    "detailBullets": [
+      "Create game features or shared backend services.",
+      "Build globally scaled APIs and player experiences.",
+      "Join a team matched to interests and experience.",
+      "Summer 2027, 12 weeks, 40 hours/week; degree students graduating 2028; GPA 2.5; no sponsorship; apply by November 6."
+    ]
+  },
+  "https://www.pinterestcareers.com/jobs/?gh_jid=8140210": {
+    "sourceKey": "967aa2ea:4a5c4286",
+    "locationLabel": "San Francisco, CA",
+    "detailBullets": [
+      "Prototype and validate interfaces with UX designers.",
+      "Contribute tested, accessible frontend code.",
+      "Partner with design, product and engineering mentors.",
+      "Summer 2027; master’s students obtaining degrees by 2027; prior SWE internship required; starts May 17 or June 14."
+    ]
+  },
+  "https://www.pinterestcareers.com/jobs/?gh_jid=8140217": {
+    "sourceKey": "fd10e5da:823e12be",
+    "locationLabel": "Remote",
+    "detailBullets": [
+      "Analyze surveys and logs to understand users.",
+      "Identify product opportunities through statistical research.",
+      "Communicate insights with product and engineering teams.",
+      "Summer 2027; current PhD students obtaining degrees by June 2027 per description; starts May 17 or June 14."
+    ]
+  },
   "https://jobs.lever.co/wattpad/73363d20-d660-4b7d-b109-bfa2417262d5": {
     "sourceKey": "97ad552:d7464386",
     "locationLabel": "El Segundo, CA",
