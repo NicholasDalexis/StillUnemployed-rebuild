@@ -2,6 +2,7 @@
 const crypto = require('node:crypto');
 const P = require('../../../js/personalization.js');
 const Identity = require('../../../js/job-identity.js');
+const DailyLinks=require('../../../js/daily-links.js');
 const Newsletter = require('./newsletter-attribution.cjs');
 const COUNT_ONLY_EVENTS = new Set(['preference_save','preference_clear','preference_skip','feedback_not_fit',
   'preferred_source_click','feedback_open','feedback_dismiss','feedback_unavailable',
@@ -9,12 +10,12 @@ const COUNT_ONLY_EVENTS = new Set(['preference_save','preference_clear','prefere
   'signin_start','signin_cancel','signin_error','signout_complete','signout_error','sync_error','sync_retry','sync_recovered',
   'preference_open','preference_error','newsletter_dismiss','bookmark_open','view_restored','render_error','share_invalid','share_missing','filters_open','preference_major_saved','preference_industry_saved','preference_location_saved','preference_info_saved']);
 const EVENTS = new Set(['page_view','job_impression','job_open','job_save','job_unsave','apply_click','application_reported','tracker_open','tracker_add','tracker_delete','tracker_status','tracker_export','tracker_note_edit','theme_change','theme_vote','filter_change','search_used','privacy_open','page_engagement','outbound_started','outbound_return','outbound_unknown','auth_login','auth_logout','auth_signup','consent_change','preferences_reset','newsletter_open','newsletter_click','advice_open','advice_impression','suggest_open','suggest_received','founder_open','board_open',...COUNT_ONLY_EVENTS]);
-const PAGES = new Set(['home','board','internships','tracker','privacy','terms','suggest','other']);
+const PAGES = new Set(['daily','home','board','internships','tracker','privacy','terms','suggest','other']);
 const THEMES = new Set(['original','girly','poker','mermaid','bratt','noir','beauty','chess']);
 const ADVICE_IDS=new Set(['no-weekends','board-trap','grad-school','three-years','first-come','ghosted','manifesting','canva-resume','wish-list','follow-up','show-dont-ask','volume-trap','not-linkedin','cold-referral','linkedin-dms','resume-layout','major-cage','keyword-stuffing','experience-internship','experience-campus','experience-ambassador','experience-honest-dates','experience-read-requirement','experience-graduation']);
 const ID = /^[a-f0-9]{64}$/;
 const hash = v => crypto.createHash('sha256').update(String(v)).digest('hex');
-['tldr_open','newsletter_impression','newsletter_engagement','share_arrival'].forEach(name=>EVENTS.add(name));
+['daily_entry_click','daily_selection_view','daily_board_click','tldr_open','newsletter_impression','newsletter_engagement','share_arrival'].forEach(name=>EVENTS.add(name));
 function jobId(job) { return hash(Identity.keys(job.link)[0] || job.link); }
 function catalog(jobs) { const out={}; for (const job of jobs) out[jobId(job)]={...P.classify(job),salary:P.salary(job.pay),company:job.co||'Company not listed',jobLabel:(job.role||'Job')+' at '+(job.co||'Company not listed')};return out; }
 function cleanEvent(input, jobs) {
@@ -29,6 +30,9 @@ function cleanEvent(input, jobs) {
     out.campaign=input.campaign;
     if(/^\d{8}_[a-z][a-z0-9_-]{0,31}$/.test(input.post||'')&&/^(board_footer|job_[1-5]_[a-f0-9]{8,64})$/.test(input.linkSlot||'')){out.post=input.post;out.linkSlot=input.linkSlot;}
   }
+  Object.assign(out,DailyLinks.context(new URLSearchParams({utm_source:input.source||'',utm_medium:input.medium||'',utm_campaign:input.campaign||'',utm_id:input.post||'',utm_content:input.linkSlot||''})));
+  if(out.campaign==='early_career_daily_jobs'&&(!out.post||!/^(board_footer|job_(?:[1-9]|10)_[a-f0-9]{8,64})$/.test(out.linkSlot||''))){delete out.post;delete out.linkSlot;}
+  if(DailyLinks.validDate(input.selectionDate)&&/^20\d{2}/.test(input.selectionDate)&&input.selectionKind==='jobs'){out.selectionDate=input.selectionDate;out.selectionKind='jobs';if(Number.isInteger(input.selectionRank)&&input.selectionRank>=1&&input.selectionRank<=4)out.selectionRank=input.selectionRank;}
   if(['advice_open','advice_impression','newsletter_click'].includes(out.name)&&ADVICE_IDS.has(input.adviceId))out.adviceId=String(input.adviceId);
   if(/^[a-zA-Z0-9_-]{16,64}$/.test(input.outboundId||''))out.outboundId=input.outboundId;
   if(input.jobId) { if(!ID.test(input.jobId)||!jobs[input.jobId])throw Object.assign(new Error('Unknown job'),{status:400});out.jobId=input.jobId;out.field=jobs[input.jobId].field;out.role=jobs[input.jobId].role;out.company=jobs[input.jobId].company;out.jobLabel=jobs[input.jobId].jobLabel; }
@@ -53,16 +57,21 @@ function authorizeOrigin(request, env) {
 function reduceRows(rows, days=30, now=Date.now()) {
   const counts={},daily={},fields={},roles={},themes={},themeVotes={up:{},down:{}},jobs={},companies={},pageTiming={},visitors=new Set(),visits=new Set(),tracker=new Set(), signups=new Set(), logins=new Set();
   let returned=0,unknown=0,capped=0,seconds=0,events=0;const started=new Set(),finished=new Set();
-  const loginUsers=new Set(),acquisition={},campaigns={},advice={},jobFunnels={},marketingLinks={};
+  const loginUsers=new Set(),acquisition={},campaigns={},advice={},jobFunnels={},marketingLinks={},dailyCollections={};
   for(const e of rows) {
     if(e.at < now-days*86400000 || e.at>now)continue;
     events++;counts[e.name]=(counts[e.name]||0)+1;visitors.add(e.actor);if(e.name==='outbound_started'&&e.outboundId)started.add(e.actor+e.outboundId);
     if(e.name==='auth_signup')signups.add(e.actor);
     if(e.name==='auth_login'){logins.add(e.actor+':'+e.id);loginUsers.add(e.actor);}
     if(e.name==='page_view')for(const [map,key] of [[acquisition,e.source||'unattributed'],[campaigns,e.campaign]]){if(!key)continue;map[key]||={count:0,actors:new Set()};map[key].count++;map[key].actors.add(e.actor);}
-    if(e.source==='linkedin'&&e.campaign==='early_career_daily_jobs'&&e.post&&e.linkSlot&&['page_view','tldr_open','apply_click'].includes(e.name)){
-      const key=e.post+':'+e.linkSlot,g=marketingLinks[key]||={label:e.post+' / '+e.linkSlot,actors:new Set(),sessions:new Set(),landings:new Set(),views:0,tldr:0,apply:0};
+    if(e.source&&e.campaign&&(e.post||e.selectionDate)&&e.linkSlot&&['page_view','tldr_open','apply_click'].includes(e.name)){
+      const key=[e.source,e.campaign,e.post||e.selectionDate,e.linkSlot].join(':'),g=marketingLinks[key]||={label:(e.post||e.selectionDate)+' / '+e.linkSlot,...(e.campaign==='early_career_daily_jobs'?{}:{source:e.source,campaign:e.campaign,medium:e.medium||null,post:e.post||null,placement:e.linkSlot,selectionDate:e.selectionDate||null}),actors:new Set(),sessions:new Set(),landings:new Set(),views:0,tldr:0,apply:0};
       g.actors.add(e.actor);if(e.name==='page_view'){g.views++;g.sessions.add(e.actor+':'+e.session);g.landings.add(e.actor);}else g[e.name==='tldr_open'?'tldr':'apply']++;
+    }
+    if(e.selectionDate&&['daily_entry_click','daily_selection_view','tldr_open','apply_click'].includes(e.name)){
+      const key=[e.selectionDate,e.source||'unattributed',e.campaign||'',e.linkSlot||''].join(':');
+      const group=dailyCollections[key]||={date:e.selectionDate,kind:'jobs',source:e.source||'unattributed',campaign:e.campaign||null,placement:e.linkSlot||null,actors:new Set(),entry:0,views:0,tldr:0,apply:0};
+      group.actors.add(e.actor);group[e.name==='daily_entry_click'?'entry':e.name==='daily_selection_view'?'views':e.name==='tldr_open'?'tldr':'apply']++;
     }
     if(e.jobId&&['job_impression','tldr_open','apply_click','application_reported','job_save','share_arrival'].includes(e.name)){
       const group=jobFunnels[e.jobId]||={jobId:e.jobId,label:e.jobLabel,actors:new Set(),impressions:0,tldr:0,apply:0,reported:0,saves:0,arrivals:0};
@@ -92,6 +101,6 @@ function reduceRows(rows, days=30, now=Date.now()) {
   const votes={up:dimension(themeVotes.up),down:dimension(themeVotes.down)};
   const safeGroups=map=>Object.values(map).filter(g=>g.actors.size>=5).map(({actors,...g})=>g);
   const links=Object.values(marketingLinks).filter(g=>g.actors.size>=5).map(({actors,sessions,landings,...g})=>({...g,visitors:landings.size,visits:sessions.size}));
-  return {windowDays:days,generatedAt:new Date(now).toISOString(),tracking:'consent-only',totals:{events:events,visits:visits.size,visitors:visitors.size,signups:signups.size,logins:logins.size,login_users:loginUsers.size,job_opens:counts.job_open||0,saves:counts.job_save||0,apply_clicks:counts.apply_click||0,reported_applied:counts.application_reported||0,tracker_users:tracker.size},acquisition:dimension(acquisition),campaigns:dimension(campaigns),marketingLinks:links,advice:safeGroups(advice),jobFunnels:safeGroups(jobFunnels).sort((a,b)=>b.apply-a.apply),daily:Object.values(daily).sort((a,b)=>a.date.localeCompare(b.date)),fields:dimension(fields),roles:dimension(roles),themes:dimension(themes),themeVotes:votes,jobs:dimension(jobs),companies:dimension(companies),pageTiming:Object.entries(pageTiming).filter(([,v])=>v.actors.size>=5).map(([label,v])=>({label,count:v.count,meanActiveSeconds:Math.round(v.seconds/v.sessions.size)})),events:Object.entries(counts).map(([label,count])=>({label,count})),timing:{returned,unknown,capped,meanAwaySeconds:returned?Math.round(seconds/returned):null},privacy:{rawRetentionDays:90,aggregateRetentionDays:400,minimumCohort:5},questions:[]};
+  return {windowDays:days,generatedAt:new Date(now).toISOString(),tracking:'consent-only',totals:{events:events,visits:visits.size,visitors:visitors.size,signups:signups.size,logins:logins.size,login_users:loginUsers.size,job_opens:counts.job_open||0,saves:counts.job_save||0,apply_clicks:counts.apply_click||0,reported_applied:counts.application_reported||0,tracker_users:tracker.size},acquisition:dimension(acquisition),campaigns:dimension(campaigns),marketingLinks:links,dailyCollections:safeGroups(dailyCollections),advice:safeGroups(advice),jobFunnels:safeGroups(jobFunnels).sort((a,b)=>b.apply-a.apply),daily:Object.values(daily).sort((a,b)=>a.date.localeCompare(b.date)),fields:dimension(fields),roles:dimension(roles),themes:dimension(themes),themeVotes:votes,jobs:dimension(jobs),companies:dimension(companies),pageTiming:Object.entries(pageTiming).filter(([,v])=>v.actors.size>=5).map(([label,v])=>({label,count:v.count,meanActiveSeconds:Math.round(v.seconds/v.sessions.size)})),events:Object.entries(counts).map(([label,count])=>({label,count})),timing:{returned,unknown,capped,meanAwaySeconds:returned?Math.round(seconds/returned):null},privacy:{rawRetentionDays:90,aggregateRetentionDays:400,minimumCohort:5},questions:[]};
 }
 module.exports={EVENTS,hash,jobId,catalog,cleanEvent,authorizeOrigin,reduceRows};

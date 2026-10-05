@@ -1,7 +1,22 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.3",
+  "currentVersion": "2.7.7.4",
   "releases": [
+    {
+      "version": "2.7.7.4",
+      "date": "2026-10-05",
+      "title": "Daily jobs preview",
+      "changes": [
+        "Four-job dated collections, honest current availability, shared TLDR flow and compact main-board discovery.",
+        "Bounded consent-aware cross-platform acquisition and daily collection counts; preview-only review candidate."
+      ],
+      "public": {
+        "title": "Daily picks",
+        "changes": [
+          "Open four jobs from a daily selection and find earlier published picks by date."
+        ]
+      }
+    },
     {
       "version": "2.7.7.3",
       "date": "2026-10-03",
@@ -1020,7 +1035,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "26e58d869bb4a4b12f6b273c287c582fe9b5758b6fb3aaf819ef000bd3d6bae3",
-    "fileCount": 210
+    "digest": "e0e9fbba96db62edd6ddadf6ce86cb750c458136cf6f82d62649d67e1708ad47",
+    "fileCount": 219
   }
 }

@@ -5,23 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Root base so /jobs/<theme> deep-links resolve assets (css/js) + links from site root -->
   <base href="/">
-  <title>StillUnemployed.com — Jobs worth the screenshot</title>
-  <meta name="description" content="Find roles with salary information. Save the ones that fit and keep your applications together.">
+  <title>Daily jobs | StillUnemployed.com</title>
+  <meta name="description" content="Four early-career jobs from the daily selection, with salary and a TLDR. No StillUnemployed account required.">
   <!-- SHARE PREVIEW (og:image) — the ORIGINAL theme board. Crawlers read raw HTML and do NOT run JS,
        so the theme in the preview can't be swapped client-side. That's why each /jobs/<theme> URL gets
        its OWN generated page with its OWN og:image (see scripts/gen-share.mjs → theme board pages). -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="StillUnemployed.com">
   <meta property="og:title" content="Jobs worth the screenshot">
-  <meta property="og:description" content="Find roles with salary information. Save the ones that fit and keep your applications together.">
-  <meta property="og:url" content="https://preview--stillunemployed.netlify.app/jobs">
-  <meta property="og:image" content="https://preview--stillunemployed.netlify.app/assets/og/original.png">
+  <meta property="og:description" content="Four early-career jobs from the daily selection. Salary up front. No StillUnemployed account required.">
+  <meta property="og:url" content="https://stillunemployed.com/jobs/daily">
+  <meta property="og:image" content="https://stillunemployed.com/assets/og/original.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Jobs worth the screenshot">
-  <meta name="twitter:description" content="Find roles with salary information. Save the ones that fit and keep your applications together.">
-  <meta name="twitter:image" content="https://preview--stillunemployed.netlify.app/assets/og/original.png">
+  <meta name="twitter:description" content="Four early-career jobs from the daily selection. Salary up front. No StillUnemployed account required.">
+  <meta name="twitter:image" content="https://stillunemployed.com/assets/og/original.png">
   <!-- Start the real board fonts early, before stylesheets discover them. -->
   <link rel="preload" href="assets/6fd8e60f-e8a8-49d7-aa98-177146dd1016.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/b4cc05cd-2602-48c7-8b9b-2db92103375a.woff2" as="font" type="font/woff2" crossorigin>
@@ -34,43 +34,7 @@
   <!-- Black Ops One powers the WW2 "Change Look?" theme label (falls back to Archivo Black) -->
   <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/brand.css?v=1">
-  <link rel="stylesheet" href="css/daily-entry.css">
   <link rel="stylesheet" href="css/styles.css?v=2753">
-  <!-- Pre-apply the saved "Change Look?" theme before paint to avoid a color flash -->
-  <script>
-    (function () {
-      // Shareable theme URLs: /jobs/casino, /jobs/blackcat, /jobs/girlies … (also ?theme=casino).
-      // A slug in the URL forces + persists that theme; otherwise fall back to the saved theme.
-      var SLUG2LOOK = { original:'original', casino:'poker', poker:'poker', girlies:'girly',
-        girly:'girly', mermaid:'mermaid', mermaidcore:'mermaid', bratt:'bratt', brat:'bratt',
-        blackcat:'noir', 'black-cat':'noir', noir:'noir', beauty:'beauty', chess:'chess' };
-      var VALID = { girly:1, poker:1, mermaid:1, bratt:1, noir:1, beauty:1, chess:1 };
-      function fromUrl() {
-        try {
-          var m = location.pathname.match(/\/jobs\/([A-Za-z0-9_-]+)/);
-          var slug = (m && m[1]) ? m[1].toLowerCase() : '';
-          if (!slug && location.search) {
-            var q = new URLSearchParams(location.search).get('theme');
-            slug = q ? q.toLowerCase() : '';
-          }
-          return (slug && SLUG2LOOK[slug]) ? SLUG2LOOK[slug] : '';
-        } catch (e) { return ''; }
-      }
-      try {
-        var urlLook = fromUrl();
-        if (urlLook) { try { localStorage.setItem('su_look', urlLook); } catch (e) {} }
-        var v = urlLook || localStorage.getItem('su_look');
-        if (v && VALID[v]) {
-          document.documentElement.setAttribute('data-su-look', v);
-          document.addEventListener('DOMContentLoaded', function () {
-            document.body.className = 'theme-' + v;
-            var b = document.getElementById('board');
-            if (b) b.className = 'board ' + v;
-          });
-        }
-      } catch (e) {}
-    })();
-  </script>
   <!-- First-party analytics: defer keeps document order, so this runs BEFORE js/app.js -->
   <script src="js/personalization.js?v=237" defer></script>
 <script src="js/daily-links.js" defer></script>
@@ -85,11 +49,14 @@
   <link rel="stylesheet" href="css/board-runtime.css?v=2.5.7">
   <link rel="stylesheet" href="css/onboarding.css?v=241">
 <link rel="stylesheet" href="/css/board-experience.css">
+  <link rel="stylesheet" href="css/daily.css">
+  <link rel="canonical" href="https://stillunemployed.com/jobs/daily">
+  <meta name="robots" content="noindex, follow">
 </head>
 <body>
   <script src="/js/newsletter-success.js?v=2753"></script>
   <!-- Current active source rows are checked before cards render. Outages never show a stale catalog. -->
-  <div data-screen-label="Jobs" class="board" id="board" style="min-height: 100vh; font-family: 'Poppins', system-ui, sans-serif; color: #2C2118; padding-bottom: 90px;">
+  <div data-screen-label="Daily jobs" class="board" id="board" style="min-height: 100vh; font-family: 'Poppins', system-ui, sans-serif; color: #2C2118; padding-bottom: 90px;">
     <noscript>
       <section class="su-noscript">
         <nav aria-label="Main"><a href="/">Home</a><a href="/jobs.html">Jobs</a><a href="/internships.html">Internships</a><a href="/tracker.html">Tracker</a></nav>
@@ -123,7 +90,7 @@
   </footer>
 
   <script src="js/release.js?v=2.7.7.4" defer></script>
-  <script src="js/onboarding.js?v=241" defer></script>
+
   <script src="js/theme-art.js?v=3" defer></script>
   <script src="js/advice-content.js?v=2.5.6" defer></script>
   <script src="js/advice-illustrations.js?v=2.5.6" defer></script>
@@ -131,8 +98,6 @@
   <script src="js/discovery.js?v=269" defer></script>
   <script src="js/internships.js?v=235" defer></script>
   <script src="js/board-runtime.js?v=2.5.7" defer></script>
-  <script src="js/saved-reminder.js?v=241" defer></script>
-  <script src="js/signin-reminder.js?v=241" defer></script>
   <script src="js/us-states.js?v=241" defer></script>
   <script src="js/pay-display.js?v=241" defer></script>
   <script src="js/board-controls.js?v=269" defer></script>
@@ -141,7 +106,7 @@
   <script src="/js/board-experience.js" defer></script>
 <script src="js/founder-note.js?v=2743" defer></script>
   <script src="js/daily-selection-data.js" defer></script>
-  <script src="js/daily-entry.js" defer></script>
+  <script src="js/daily.js" defer></script>
   <script src="js/app.js?v=2774" defer></script>
   <!-- Google sign-in and cross-device sync on approved production and preview hosts. -->
   <script type="module" src="js/auth.js?v=269"></script>

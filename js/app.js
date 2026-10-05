@@ -22,6 +22,7 @@
 
   // ---- tiny helpers ---------------------------------------------------------
   var INTERNSHIPS = /(?:^|\/)internships(?:\.html)?(?:\/|$)/.test(location.pathname);
+  var DAILY = !!window.SUDaily;
   var HOME_BOARD = /^\/(?:index\.html)?$/.test(location.pathname);
   var HOME_SECTION_KEY = 'su_home_board_section_v1';
   var FEEDBACK_REDIRECT_KEY = 'su_feedback_auth_redirect_v1';
@@ -1651,6 +1652,7 @@
         var host='Saved job';try{host=new URL(link).hostname.replace(/^www\./,'');}catch(_){}
         all.push({link:link,co:host,role:'Saved listing',loc:'',pay:'',savedUnavailable:true,confirmedClosed:(self._closedLinks||[]).some(function(dead){return sameJobLink(dead,link);})});
       });
+      if(DAILY)all=uniqueJobs(current.concat(window.SUDaily.archiveJobs(this),all));
       return all;
     },
     setInternshipSurfaces: function () {
@@ -1785,6 +1787,7 @@
       root.querySelectorAll('[data-act="openJob"][data-link]').forEach(function(card) { this._jobImpressions.observe(card); }, this);
     },
     renderBoard: function (searchOnly) {
+      if(DAILY){window.SUDaily.render(this);return;}
       this.cancelSearchFill();
       var searchGeneration = this._searchRenderGeneration;
       var progressive = searchOnly === true || this._searchFocused;
@@ -2171,6 +2174,8 @@
           '</div>' +
         '</div>';
 
+      if(!INTERNSHIPS&&window.SUDailyEntry)out+=window.SUDailyEntry.html(window.SUDailySelections||[]);
+
       // toolbar
       out += '<div style="position: relative; margin-top: 30px; z-index: 40;">' +
         '<div style="display: flex; align-items: center; gap: 12px; background: #FBF6E9; border: 1.5px solid #E0CFA8; border-radius: 5px; padding: 11px 11px 11px 18px; box-shadow: 2px 4px 11px rgba(44,33,24,0.10); transform: rotate(-0.4deg);">' +
@@ -2539,7 +2544,7 @@
                   : dj.internship ? '<p class="su-internship-timing">See the employer’s program page for duties.</p>' : '<div style="margin-top: 9px; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #6F5E45; line-height: 1.5;">a quick 3–4 bullet summary is coming to every role. for now, hit apply for the full listing →</div>') +
               // apply (card-style text link + hand-drawn arrow)
               '<div style="margin-top: 22px; display: flex; align-items: center; justify-content: flex-end; gap: 12px;">' +
-                '<button type="button" data-act="' + (dj.savedUnavailable ? 'detailArchived' : dj.internship && !internshipCanApply(dj) ? 'detailProgram' : 'detailApply') + '" data-link="' + esc(dj.link) + '" data-co="' + esc(dj.co) + '" style="border:0; background:none; padding:0; font-family: var(--su-body); font-weight: 800; font-size: 21px; color: ' + _applyC + '; display: inline-flex; align-items: center; cursor: pointer; flex: none;">' + (dj.savedUnavailable ? 'View original listing' : dj.internship && !internshipCanApply(dj) ? 'View program' : 'Apply Now') + _arrow + '</button>' +
+                (DAILY&&!window.SUDaily.canApply(this,dj.link) ? '<span class="daily-availability">'+(this._loading?'Checking current availability.':this._loadError||this._moderationError?'Availability could not be checked.':'job no longer available on this board')+' <a href="/jobs.html">Browse current jobs</a></span>' : '<button type="button" data-act="' + (dj.savedUnavailable ? 'detailArchived' : dj.internship && !internshipCanApply(dj) ? 'detailProgram' : 'detailApply') + '" data-link="' + esc(dj.link) + '" data-co="' + esc(dj.co) + '" style="border:0; background:none; padding:0; font-family: var(--su-body); font-weight: 800; font-size: 21px; color: ' + _applyC + '; display: inline-flex; align-items: center; cursor: pointer; flex: none;">' + (dj.savedUnavailable ? 'View original listing' : dj.internship && !internshipCanApply(dj) ? 'View program' : 'Apply Now') + _arrow + '</button>') +
               '</div>' +
               // recipe capture: rotating one-liner + Beehiiv embed. ✕ hides it until reload.
               (!_rShow ? '' :
@@ -2898,13 +2903,13 @@
           case 'detailApply': {
             var dl = el.getAttribute('data-link'), dc = el.getAttribute('data-co');
             var applyJob = self.jobs.find(function (job) {return jobHasLink(job,dl);});
-            if (!applyJob || (applyJob.internship && !internshipCanApply(applyJob))) {self.renderOverlays();break;}
+            if ((DAILY&&!window.SUDaily.canApply(self,dl)) || !applyJob || (applyJob.internship && !internshipCanApply(applyJob))) {self.renderOverlays();break;}
             self.openCurrentListing(dl,dc,'apply');
             break;
           }
           case 'detailArchived': {
             var archivedLink=safeUrl(el.getAttribute('data-link'));
-            if(archivedLink)window.open(archivedLink,'_blank','noopener');
+            if(archivedLink&&!DAILY)window.open(archivedLink,'_blank','noopener');
             break;
           }
           case 'detailProgram': {
@@ -3512,7 +3517,7 @@
       App._moderationCatalog=jobs;App._moderationError=false;
       App._closedLinks=data.closedLinks||[];App._archiveCatalog=data.archiveCatalog||[];App._internshipStatus=data.internshipStatus||null;
       App._loading=false;App._loadingVisible=false;App._loadError=false;App._refreshing=false;lastFeedCheck=Date.now();
-      var restored=initial && !App._feedInteracted ? initialView : null;
+      var restored=!DAILY && initial && !App._feedInteracted ? initialView : null;
       if(checkViewOwner() || runtime && runtime.owner && runtime.owner()!==owner)restored=null;
       try{if(window.SUStore&&window.SUStore.captureSaved)window.SUStore.captureSaved(jobs.concat(App._archiveCatalog||[]));}catch(_){App._actionError='Your saved links are safe. Some card details could not be refreshed.';}
       App.init(window.SUJobModeration.filter(jobs));uxEvent('feed_ready');

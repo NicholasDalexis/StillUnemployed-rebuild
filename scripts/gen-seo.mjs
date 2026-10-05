@@ -25,7 +25,7 @@ export function pagePolicy(relative, production) {
   const theme = /^jobs\/[a-z0-9-]+\/index\.html$/.test(relative);
   const internshipShare = /^j\/internships\/[a-z0-9-]+\/[a-z0-9]+\.html$/.test(relative);
   const share = internshipShare || /^j\/[a-z0-9-]+\/[a-z0-9]+\.html$/.test(relative);
-  const canonical = page ? ORIGIN+page.path : internshipShare ? ORIGIN+'/internships' : theme || share ? ORIGIN+'/jobs' : '';
+  const canonical = relative === 'daily-jobs.html' ? ORIGIN+'/jobs/daily' : page ? ORIGIN+page.path : internshipShare ? ORIGIN+'/internships' : theme || share ? ORIGIN+'/jobs' : '';
   return { page, canonical, robots:!production || PRIVATE.has(relative) || share || (!page && !theme) ? 'noindex, nofollow' : 'index, follow, max-image-preview:large' };
 }
 

@@ -23,3 +23,6 @@ assets/og-src/
 
 # Generated allowlisted deploy surface
 /dist/
+
+# Local Netlify folder
+.netlify

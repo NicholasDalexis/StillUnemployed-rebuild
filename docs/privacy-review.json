@@ -1,20 +1,21 @@
 {
-  "version": "2.7.7.3",
+  "version": "2.7.7.4",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-03T18:41:31.931Z",
+  "reviewedAt": "2026-10-05T20:39:16.552Z",
   "reviewer": "Codex root",
-  "sourceDigest": "26e58d869bb4a4b12f6b273c287c582fe9b5758b6fb3aaf819ef000bd3d6bae3",
-  "sourceFileCount": 210,
-  "privacyChanged": false,
+  "sourceDigest": "e0e9fbba96db62edd6ddadf6ce86cb750c458136cf6f82d62649d67e1708ad47",
+  "sourceFileCount": 219,
+  "privacyChanged": true,
   "termsChanged": false,
-  "baselineReview": "docs/privacy-reviews/2.7.7.json",
-  "scope": "Fourteen exact employer-verified student listings, source-bound display summaries and preserved original pay ranges. Prior public checks are carried forward unchanged, not reverified.",
+  "scope": "Daily published collection and bounded optional source/medium/post/placement/date/rank measurement. Existing collector, identity, retention, providers and account scopes unchanged.",
   "checks": {
-    "disclosures": "Read current Privacy and Terms in full. Existing third-party listing, student eligibility/pay, concise display and public feed disclosures cover this data-only release. No policy wording change or legal certification.",
-    "security": "No new service, collection, permissions, tracking, application submission, account operation or product/checker change. Private native exports, evidence and Slack identities stay outside publication; only approved public fields and hashed presentation data included."
+    "disclosures": "Read both current policies; clarify daily collection/placement metadata, no forwarded-person or completed-application inference. Terms reviewed, no wording change needed. Not legal certification.",
+    "choices": "Existing signed anonymous identity, consent/GPC/account readiness, preview/admin exclusion and cohort thresholds retained; focused fixtures pass. No test subscription or live data writes.",
+    "publication": "Private data manifest not deployed; only published selections are emitted. No future picks; closed/unknown current feed disables Apply. Source snapshots contain public employer facts only."
   },
   "openItems": [
-    "Account/OAuth, production moderation, subscriber delivery and physical-device QA are not repeated for this data-only release."
-  ],
-  "notes": "Native source additions and two lossless salary-format corrections read back exactly; every Date Posted protected. First local build was stopped by the stale privacy receipt; no public release resulted from that attempt."
+    "No production release; physical iPhone/in-app social browser and fresh Google login not performed.",
+    "Production durable daily event readback requires approved release; year-long per-post rollups not implemented.",
+    "Future daily manifests require source-authorized published selections; only October5 is seeded."
+  ]
 }

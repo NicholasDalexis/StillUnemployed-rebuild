@@ -12,6 +12,7 @@
       if(source==='linkedin'&&campaign==='early_career_daily_jobs'){out.campaign=campaign;var post=p.get('utm_id'),slot=p.get('utm_content');if(/^\d{8}_[a-z][a-z0-9_-]{0,31}$/.test(post||'')&&/^(board_footer|job_[1-5]_[a-f0-9]{8,64})$/.test(slot||'')){out.post=post;out.linkSlot=slot;}}
     }
     else {try{var host=new URL(document.referrer||'').hostname;if(/(^|\.)linkedin\.com$/.test(host))out.source='linkedin';else if(/(^|\.)instagram\.com$/.test(host))out.source='instagram';else if(host&&!/^(www\.)?stillunemployed\.com$/.test(host))out.source='referral';}catch(_){}}
+    if(window.SUDailyLinks){var tagged=window.SUDailyLinks.context(p);if(tagged.source)out=tagged;}
     try{var prior=JSON.parse(sessionStorage.getItem('su_analytics_source')||'null');if(out.source==='direct'&&prior&&Date.now()-prior.at<1800000)out=prior.context;sessionStorage.setItem('su_analytics_source',JSON.stringify({at:Date.now(),context:out}));}catch(_){}
     acquisition=out;return out;
   }
@@ -40,7 +41,7 @@
   }
   function signedIn(){return !!(window.SUAuth&&window.SUAuth.signedIn());}
   function randomId(){if(!window.crypto||!window.crypto.getRandomValues)return null;var a=new Uint8Array(16);window.crypto.getRandomValues(a);return Array.from(a).map(function(x){return x.toString(16).padStart(2,'0');}).join('');}
-  function page(){var p=location.pathname;return /^\/internships/.test(p)?'internships':/^\/(jobs|j\/)/.test(p)?'board':/tracker/.test(p)?'tracker':/privacy/.test(p)?'privacy':/terms/.test(p)?'terms':/suggest/.test(p)?'suggest':p==='/'||/index/.test(p)?'home':'other';}
+  function page(){var p=location.pathname;if(/^\/jobs\/daily(?:\/|$)/.test(p)||p==='/daily-jobs.html')return 'daily';return /^\/internships/.test(p)?'internships':/^\/(jobs|j\/)/.test(p)?'board':/tracker/.test(p)?'tracker':/privacy/.test(p)?'privacy':/terms/.test(p)?'terms':/suggest/.test(p)?'suggest':p==='/'||/index/.test(p)?'home':'other';}
   function identifiers(){if(!session){try{var prior=JSON.parse(sessionStorage.getItem('su_analytics_session')||'null');if(prior&&Date.now()-prior.at<1800000){session=prior.id;sessionAt=prior.at;}}catch(e){}}if(!visitor){visitor=stored('su_analytics_visitor')||randomId();if(visitor&&choices().analytics)put('su_analytics_visitor',visitor);}if(!session||Date.now()-sessionAt>1800000){session=randomId();}sessionAt=Date.now();try{sessionStorage.setItem('su_analytics_session',JSON.stringify({id:session,at:sessionAt}));}catch(e){}return !!visitor&&!!session;}
   function consentEnabled(){var c=choices();return identityReady()&&!excluded()&&(c.analytics||(c.personalization&&signedIn()));}
   function emit(name,params){
@@ -50,7 +51,8 @@
     var c=choices();if(!c.analytics && !({job_open:1,job_save:1,apply_click:1,application_reported:1})[name])return;
     var e={id:randomId(),name:name,page:page(),occurredAt:Date.now()};
     // Explicit keys only. Never copy strings from DOM labels, forms or URLs.
-    if(!countOnly){Object.assign(e,sourceContext());['jobId','theme','filter','status','seconds','capped','vote','outboundId','placement','cta','revision','newsletterReceipt','adviceId'].forEach(function(k){if(params&&params[k]!==undefined)e[k]=params[k];});}
+    if(!countOnly){Object.assign(e,sourceContext());['jobId','theme','filter','status','seconds','capped','vote','outboundId','placement','cta','revision','newsletterReceipt','adviceId','selectionDate','selectionKind','selectionRank'].forEach(function(k){if(params&&params[k]!==undefined)e[k]=params[k];});}
+    if(!countOnly&&window.SUDaily&&/^(?:page_view|job_|tldr_open|apply_click|application_reported|outbound_)/.test(name))Object.assign(e,window.SUDaily.context);
     queue.push(e);if(queue.length>120)queue.shift();
     if(queue.length>=20)flush();
   }
