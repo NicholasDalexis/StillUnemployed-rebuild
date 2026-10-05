@@ -39,6 +39,7 @@ test('current facts override historical details and missing/error jobs cannot Ap
   assert.equal(f.daily.archiveJobs(f.app).length,3);
   for(const flag of ['_loading','_loadError','_moderationError']){f.app[flag]=true;assert.equal(f.daily.canApply(f.app,pick.link),false);f.app[flag]=false;}
   f.app.jobs=[];assert.equal(f.daily.canApply(f.app,pick.link),false);assert.equal(f.daily.archiveJobs(f.app)[0].dailyUnavailable,true);
+  f.app._loadError=true;f.app.render();assert.match(f.board.innerHTML,/data-act="retryJobs"/);assert.doesNotMatch(f.board.innerHTML,/data-act="retryFeed"/);
   const source=fs.readFileSync('js/app.js','utf8');assert.match(source,/uniqueJobs\(current\.concat\(window.SUDaily.archiveJobs\(this\),all\)\)/);
   assert.match(source,/DAILY&&!window.SUDaily.canApply\(self,dl\)/);assert.match(source,/archivedLink&&!DAILY/);
 });

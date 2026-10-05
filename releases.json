@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.4",
+  "currentVersion": "2.7.7.5",
   "releases": [
+    {
+      "version": "2.7.7.5",
+      "date": "2026-10-05",
+      "title": "Small improvements",
+      "changes": [
+        "Connect daily collection feed-error retry to the existing guarded feed loader."
+      ]
+    },
     {
       "version": "2.7.7.4",
       "date": "2026-10-05",
@@ -1035,7 +1043,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "e0e9fbba96db62edd6ddadf6ce86cb750c458136cf6f82d62649d67e1708ad47",
+    "digest": "ee6181f2954001081cfb72b6946d61545f1115a1f8f76aca15c6365aafcd46d2",
     "fileCount": 219
   }
 }
