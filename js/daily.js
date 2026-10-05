@@ -22,7 +22,7 @@
   var arrow='<svg width="28" height="15" viewBox="0 0 28 14" fill="none" aria-hidden="true"><path d="M1 7 C8 2.5 15 2.5 24 6.6 M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   function card(app,s,p,rank){
     var state=inspect(app,s,p),j=state.job,pay=window.SUPayDisplay?window.SUPayDisplay.compact(j.pay||''):(j.pay||''),saved=typeof app.isSaved==='function'?app.isSaved(j.link):!!app.state.saved[j.link];
-    return '<article class="daily-card" data-date="'+s.date+'" data-rank="'+rank+'"><span class="daily-tape" aria-hidden="true"></span>'+ (state.ready?'<button type="button" data-act="save" data-link="'+esc(j.link)+'" aria-label="'+(saved?'Remove saved job':'Save job')+'" aria-pressed="'+saved+'" class="daily-save">'+bookmark+'</button>':'')+
+    return '<article class="daily-card" data-date="'+s.date+'" data-rank="'+rank+'"><span class="daily-tape" aria-hidden="true"></span>'+ (state.ready?'<button type="button" data-act="toggleSave" data-link="'+esc(j.link)+'" aria-label="'+(saved?'Remove saved job':'Save job')+'" aria-pressed="'+saved+'" class="daily-save">'+bookmark+'</button>':'')+
       '<h3>'+esc(j.co)+'</h3><p class="daily-role">'+esc(j.role)+'</p><strong class="daily-pay">'+esc(pay)+'</strong><p class="daily-meta">'+esc([j.loc,j.style,j.exp].filter(Boolean).join(' · '))+'</p>'+
       (state.status?'<p class="daily-availability" role="status">'+esc(state.status)+'</p>':'')+
       '<div class="daily-card-bottom"><button type="button" class="daily-open" data-act="apply" data-link="'+esc(j.link)+'" data-co="'+esc(j.co)+'">'+(state.ready?'See the TLDR':'View saved details')+' '+arrow+'</button></div></article>';

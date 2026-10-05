@@ -80,3 +80,10 @@ test('board entry labels only current Eastern published picks as today',()=>{
   assert.match(Entry.html(manifest.selections,now),/href="\/jobs\/daily"/);
   assert.equal(Entry.today(new Date('2026-10-06T02:00:00Z')),'2026-10-05');
 });
+
+test('daily card controls use the shared application dispatcher',()=>{
+  const f=fixture();f.app.jobs=manifest.selections[0].jobs.map(p=>p.snapshot);f.app.render();
+  const source=fs.readFileSync('js/app.js','utf8');
+  for(const action of new Set([...f.board.innerHTML.matchAll(/data-act="([^"]+)"/g)].map(m=>m[1])))assert.ok(source.includes("case '"+action+"':"),action+' has no dispatcher');
+  assert.match(f.board.innerHTML,/data-act="toggleSave"/);
+});

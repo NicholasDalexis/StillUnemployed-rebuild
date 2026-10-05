@@ -1,9 +1,9 @@
 {
-  "version": "2.7.7.5",
+  "version": "2.7.7.6",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-05T20:43:47.306Z",
+  "reviewedAt": "2026-10-05T20:49:17.573Z",
   "reviewer": "Codex root",
-  "sourceDigest": "ee6181f2954001081cfb72b6946d61545f1115a1f8f76aca15c6365aafcd46d2",
+  "sourceDigest": "6cf32286dd789b4714b76ed49c0e1f6daaa53b4cb10f1fa9082d9d6cb48e75ab",
   "sourceFileCount": 219,
   "privacyChanged": true,
   "termsChanged": false,
