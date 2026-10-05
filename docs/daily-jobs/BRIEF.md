@@ -13,3 +13,11 @@ Measurement: existing consent/GPC/exclusion controls; bounded platform/medium/ca
 QA: manifest/route/history/future/alias/removal/error/attribution/cohort tests plus browser current-feed TLDR, Escape/focus and phone reflow. Physical iPhone/in-app social browser and fresh Google authentication remain separate production gates. Hosted preview readback recorded separately.
 
 -Codex
+
+## Nic review correction | October 5, 2026
+
+Author: Codex. Source: Nic direct owner review in StillUnemployed task 01a0735b-ef8e-73b1-b155-9e6808fbb4a4. Status: revised preview candidate.
+
+The separate daily header and four uniformly yellow notes above are superseded for this revision. Daily is a section of the existing job board: use the exact shared header, Jobs/Tracker/Internships tabs, founder/account controls, themes, Saved, search/category, modal filters, pay key and Menu. Render the existing salary-colored job cards, preserving editorial membership/order until an explicit sort. Heading is Top 4 Jobs for Today only for today's ET selection, otherwise Top 4 Jobs. Larger weekday/month/day appears below; year stays in ISO dates, routes and attribution. Search/filters narrow this selected collection; empty matches offer reset and all-jobs access. No added compulsory login or signup, production or marketing activation.
+
+-Codex

@@ -1661,13 +1661,13 @@
     },
     computeShown: function () {
       var self = this;
-      var base = (this.state.savedOnly ? this.catalogJobs() : this.jobs).filter(function (j) { return self.matchesBase(j) && (self._unavailableLocal||[]).every(function(link){return !jobHasLink(j,link);}) && (self.state.savedOnly || (self._sharedJobLink && jobHasLink(j,self._sharedJobLink)) || !window.SUDiscovery || window.SUDiscovery.showHidden() || !window.SUDiscovery.hidden(j)); });
+      var base = (DAILY ? window.SUDaily.catalog(this) : this.state.savedOnly ? this.catalogJobs() : this.jobs).filter(function (j) { return self.matchesBase(j) && (self._unavailableLocal||[]).every(function(link){return !jobHasLink(j,link);}) && (self.state.savedOnly || (self._sharedJobLink && jobHasLink(j,self._sharedJobLink)) || !window.SUDiscovery || window.SUDiscovery.showHidden() || !window.SUDiscovery.hidden(j)); });
       var experience=window.SUBoardExperience;
       var cat = this.state.cat;
       var shown = base.filter(function (j) { return cat === 'all' || j.ind === cat; });
       if (this.state.savedOnly) shown = shown.filter(function (j) { return self.isSaved(j.link); });
 
-      if(this.state.fr==='Any' && !INTERNSHIPS && window.SUPersonalization && window.SUAnalytics) {
+      if(!DAILY && this.state.fr==='Any' && !INTERNSHIPS && window.SUPersonalization && window.SUAnalytics) {
         var profileGeneration=window.SUAnalytics.generation();
         var catalogChanged=this._orderCatalog!==this.jobs;
         if(catalogChanged || (this._profileGeneration!==profileGeneration && (!this._feedInteracted || this._profileGeneration===undefined || this._profileGeneration===-1))){
@@ -1685,9 +1685,9 @@
         shown.sort(function(a,b){return order.indexOf(a)-order.indexOf(b);});
       }
 
-      if(!INTERNSHIPS && this.state.fr==='Any' && window.SUDiscovery && window.SUPersonalization && !window.SUAnalytics){var discoveryOrder=window.SUDiscovery.order(this.jobs,window.SUPersonalization,{});shown.sort(function(a,b){return discoveryOrder.indexOf(a)-discoveryOrder.indexOf(b);});}
+      if(!DAILY && !INTERNSHIPS && this.state.fr==='Any' && window.SUDiscovery && window.SUPersonalization && !window.SUAnalytics){var discoveryOrder=window.SUDiscovery.order(this.jobs,window.SUPersonalization,{});shown.sort(function(a,b){return discoveryOrder.indexOf(a)-discoveryOrder.indexOf(b);});}
       if(INTERNSHIPS && this.state.fr!=='Recently added')shown.sort(function(a,b){return Number(internshipCanApply(b))-Number(internshipCanApply(a)) || Number(b.payStatus==='paid')-Number(a.payStatus==='paid');});
-      if(experience && this.state.fr==='Any'){
+      if(!DAILY && experience && this.state.fr==='Any'){
         // Apply only a snapshot of visit demotions, updated on deliberate filter changes.
         if(!this._activeDemotions)this._activeDemotions=experience.demotions();
         if(!this.state.q.trim()&&!this.state.savedOnly){
@@ -1787,7 +1787,6 @@
       root.querySelectorAll('[data-act="openJob"][data-link]').forEach(function(card) { this._jobImpressions.observe(card); }, this);
     },
     renderBoard: function (searchOnly) {
-      if(DAILY){window.SUDaily.render(this);return;}
       this.cancelSearchFill();
       var searchGeneration = this._searchRenderGeneration;
       var progressive = searchOnly === true || this._searchFocused;
@@ -1867,7 +1866,7 @@
       var rots = [-2, 1.6, -1, 2, -1.5, 1.1, -1.8, 1.3, -0.8, 1.7];
       var noteFor = {};
       var showingHidden=!!(window.SUDiscovery && window.SUDiscovery.showHidden());
-      if (shown.length >= 3 && !showingHidden && !this.state.savedOnly) {
+      if (!DAILY && shown.length >= 3 && !showingHidden && !this.state.savedOnly) {
         var noteDeck=this.shuffledNotes(),nci=0;
         for(var r=0;r*3<shown.length;r+=2){var i=r*3;
           if(i<shown.length && (shown[i].internship || self.payTier(shown[i].pay)==='high'))noteFor[i]=noteDeck[nci++%noteDeck.length];
@@ -2035,7 +2034,7 @@
       // slot, signup = a row-end two rows later) and .su-ins-m (mobile: J J S J J N). CSS
       // display:none removes the hidden set from the grid flow, so each viewport only ever
       // sees its own cadence. Saved-only view stays pure jobs (no notes, no signup cards).
-      var withAdvice = !this.state.savedOnly && !showingHidden && shown.length;
+      var withAdvice = !DAILY && !this.state.savedOnly && !showingHidden && shown.length;
       var insD = withAdvice ? suFeedSchedule(shown.length, false, !this._recipeHidden) : {};
       var insM = withAdvice ? suFeedSchedule(shown.length, true, !this._recipeHidden) : {};
       function feedCard(k) {
@@ -2048,10 +2047,11 @@
       }
       // A broad first letter can match the whole catalog. Bound the synchronous
       // work, then yield between small batches so the next keystroke can cancel it.
-      var rendered = progressive ? Math.min(6, shown.length) : shown.length;
+      var rendered = DAILY ? 0 : progressive ? Math.min(6, shown.length) : shown.length;
       var feedHtml = '';
       for (var fi = 0; fi < rendered; fi++) feedHtml += feedCard(fi);
       function fillSearchResults() {
+        if(DAILY)return;
         var resultRoot = document.getElementById('su-search-results');
         var grid = resultRoot && resultRoot.querySelector('.job-grid');
         if (!grid || rendered >= shown.length) return;
@@ -2166,7 +2166,7 @@
         '<div class="su-board-title-row" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 24px;">' +
           '<div style="position: relative;">' +
             '<div style="font-family: \'Indie Flower\', cursive; font-weight: 700; font-size: 22px; color: ' + (girly ? '#D6277E' : '#C2552F') + '; transform: rotate(-2deg); display: inline-block;">★ StillUnemployed.com</div>' +
-            '<div style="--su-heading-ink:'+boardInk+';--su-heading-marker:'+HLC+';">'+(window.SUBoardHeading ? window.SUBoardHeading.render(INTERNSHIPS,look,window.SUBoardHeading.current,document.body.classList.contains('su-home-board')) : '<h1>'+(INTERNSHIPS?'Internships':'Jobs')+' worth the screenshot.</h1>')+'</div>' +
+            '<div style="--su-heading-ink:'+boardInk+';--su-heading-marker:'+HLC+';">'+(DAILY ? window.SUDaily.heading() : window.SUBoardHeading ? window.SUBoardHeading.render(INTERNSHIPS,look,window.SUBoardHeading.current,document.body.classList.contains('su-home-board')) : '<h1>'+(INTERNSHIPS?'Internships':'Jobs')+' worth the screenshot.</h1>')+'</div>' +
           '</div>' +
           '<div style="display: flex; align-items: flex-start; gap: 12px; flex: none;">' +
             '<div data-act="openLook" class="tab" style="' + changeLookBtnStyle + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M4 7l5-3 6 3 5-3v13l-5 3-6-3-5 3V7z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path><path d="M9 4v13M15 7v13" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path></svg>change theme</div>' +
@@ -2174,7 +2174,7 @@
           '</div>' +
         '</div>';
 
-      if(!INTERNSHIPS&&window.SUDailyEntry)out+=window.SUDailyEntry.html(window.SUDailySelections||[]);
+      if(!DAILY&&!INTERNSHIPS&&window.SUDailyEntry)out+=window.SUDailyEntry.html(window.SUDailySelections||[]);
 
       // toolbar
       out += '<div style="position: relative; margin-top: 30px; z-index: 40;">' +
@@ -2252,10 +2252,14 @@
         '</div>';
       }
 
+      if(DAILY) out += window.SUDaily.content(this,shown,renderCard);
+      else {
       // card grid (jobs + interleaved advice notes / signup cards)
       out += '<div class="job-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(298px, 1fr)); gap: 54px 40px; margin-top: 32px; padding: 12px 8px 0;">' +
         feedHtml +
       '</div>';
+
+      }
 
       if(!this._loadError && !shown.length && this.jobs.length && (this.state.q || this.state.cat!=='all' || this.state.ws!=='Any' || this.state.pr!=='Any' || this.state.st!=='all' || this.state.fr!=='Any' || this.state.savedOnly)) {
         var emptyKey=JSON.stringify([this.state.q,this.state.cat,this.state.ws,this.state.pr,this.state.st,this.state.fr,this.state.savedOnly]);
@@ -2267,7 +2271,7 @@
         emptyTitle=this._loadError?'Internships could not load.':this._internshipStatus==='verified'?'No internships listed right now.':'The internship notebook is getting ready.';
         emptyHint=this._loadError?'Please retry in a moment.':this._internshipStatus==='verified'?'Browse Jobs for more opportunities, or check back for new internships.':'We are checking current student opportunities before adding cards. Browse Jobs while we get this page ready.';
       }
-      if (isEmpty) {
+      if (isEmpty && !DAILY) {
         out += '<div style="display: flex; justify-content: center; padding: 64px 20px 48px;">' +
           '<div style="position: relative; width: 560px; max-width: 100%; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 39px, rgba(96,130,170,0.30) 39px 40.5px); background-position: 0 38px; border-radius: 3px; box-shadow: 4px 12px 30px rgba(44,33,24,0.24); padding: 44px 48px 40px; transform: rotate(-1deg); box-sizing: border-box;">' +
             '<div style="position: absolute; top: 0; bottom: 0; left: 40px; width: 1.5px; background: rgba(214,80,46,0.4);"></div>' +
@@ -2281,8 +2285,8 @@
         '</div>';
       }
 
-      if (this._loadError) out += '<p role="status"><button type="button" data-act="retryJobs" class="tab">Try loading jobs again</button></p>';
-      if (!this._loading && this.state.savedOnly && missingSaved.length) {
+      if (this._loadError && !DAILY) out += '<p role="status"><button type="button" data-act="retryJobs" class="tab">Try loading jobs again</button></p>';
+      if (!DAILY && !this._loading && this.state.savedOnly && missingSaved.length) {
         out += '<section class="su-unlisted-saved"><h2>Saved links outside the current board</h2><p>These links stay saved even when their cards are not in the loaded board. Check the employer for availability.</p><ul>';
         missingSaved.forEach(function (link) {
           var url = safeUrl(link);

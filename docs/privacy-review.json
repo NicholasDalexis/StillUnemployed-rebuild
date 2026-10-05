@@ -1,15 +1,15 @@
 {
-  "version": "2.7.7.6",
+  "version": "2.7.7.8",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-05T20:49:17.573Z",
+  "reviewedAt": "2026-10-05T22:50:28.673Z",
   "reviewer": "Codex root",
-  "sourceDigest": "6cf32286dd789b4714b76ed49c0e1f6daaa53b4cb10f1fa9082d9d6cb48e75ab",
+  "sourceDigest": "21de73724413bd522c98675cfd5de05b7d1a847aacdb112b77ddae3f89c9e1f1",
   "sourceFileCount": 219,
-  "privacyChanged": true,
+  "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Daily published collection and bounded optional source/medium/post/placement/date/rank measurement. Existing collector, identity, retention, providers and account scopes unchanged.",
+  "scope": "Daily jobs now uses existing board UI, search, filters, salary-colored cards and optional account controls. Existing collection membership, public dates and bounded analytics retained; no new data category, provider, permission or retention.",
   "checks": {
-    "disclosures": "Read both current policies; clarify daily collection/placement metadata, no forwarded-person or completed-application inference. Terms reviewed, no wording change needed. Not legal certification.",
+    "disclosures": "Privacy and Terms reviewed, no wording change needed for this UI revision. Existing optional-choice and employer/application limits remain. Not legal certification.",
     "choices": "Existing signed anonymous identity, consent/GPC/account readiness, preview/admin exclusion and cohort thresholds retained; focused fixtures pass. No test subscription or live data writes.",
     "publication": "Private data manifest not deployed; only published selections are emitted. No future picks; closed/unknown current feed disables Apply. Source snapshots contain public employer facts only."
   },

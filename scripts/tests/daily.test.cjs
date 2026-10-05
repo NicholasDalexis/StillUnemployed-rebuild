@@ -6,11 +6,11 @@ const Core=require('../../netlify/functions/lib/analytics-core.cjs');
 const manifest=JSON.parse(fs.readFileSync('data/daily-selections.json'));
 function fixture(path='/jobs/daily',selections=manifest.selections){
   const board={innerHTML:'',className:'',querySelector:()=>null};let clicks;
-  const app={jobs:[],state:{look:'original',saved:{}},renderOverlays(){}};
+  const app={jobs:[],state:{look:'original',saved:{},fr:'Any'},renderOverlays(){}};
   const window={SUDailySelections:selections,SUJobIdentity:Identity,SUApp:app,addEventListener(){}};
   const document={activeElement:null,getElementById:()=>board,addEventListener(n,fn){clicks=fn;}};
   vm.runInNewContext(fs.readFileSync('js/daily.js','utf8'),{window,document,location:{pathname:path},Intl,Date});
-  app.render=()=>window.SUDaily.render(app);
+  app.render=()=>{board.innerHTML=window.SUDaily.heading()+window.SUDaily.content(app,window.SUDaily.catalog(app),j=>'<article data-act="apply" data-link="'+j.link+'">'+j.co+' '+j.role+'</article><button data-act="toggleSave">Save</button>');};
   return {app,board,daily:window.SUDaily,clicks};
 }
 test('daily manifest exposes four ordered published jobs and hides future/drafts',async()=>{
@@ -27,7 +27,7 @@ test('daily manifest exposes four ordered published jobs and hides future/drafts
 test('dated route preserves original selection; malformed and missing dates never show today',()=>{
   const old={...manifest.selections[0],date:'2026-09-30'};const all=[manifest.selections[0],old];
   const f=fixture('/jobs/daily/2026-09-30',all);f.app.render();
-  assert.match(f.board.innerHTML,/Wednesday, September 30, 2026/);assert.doesNotMatch(f.board.innerHTML,/Monday, October 5/);
+  assert.match(f.board.innerHTML,/Wednesday, September 30/);assert.doesNotMatch(f.board.innerHTML,/Monday, October 5/);
   for(const path of ['/jobs/daily/not-a-date','/jobs/daily/2026-10-06','/jobs/daily/2026-10-05/extra']){
     const x=fixture(path,all);x.app.render();assert.match(x.board.innerHTML,/not in the notebook yet/);assert.doesNotMatch(x.board.innerHTML,/<article/);
   }
@@ -47,7 +47,7 @@ test('latest three dates collapse with names, dates and retained keyboard focus'
   const selections=['2026-10-05','2026-10-02','2026-10-01','2026-09-30'].map(date=>({...manifest.selections[0],date}));
   const f=fixture('/jobs/daily',selections);f.app.render();
   assert.equal((f.board.innerHTML.match(/class="daily-collection"/g)||[]).length,3);
-  assert.equal((f.board.innerHTML.match(/class="daily-grid" hidden/g)||[]).length,2);
+  assert.equal((f.board.innerHTML.match(/class="job-grid daily-grid" hidden/g)||[]).length,2);
   assert.match(f.board.innerHTML,/Figma · SharkNinja · Fanatics Collectibles · Eames Institute/);
   f.clicks({target:{closest(selector){return selector==='[data-daily-date]'?{dataset:{dailyDate:'2026-10-02'}}:null;}}});
   assert.match(f.board.innerHTML,/id="date-2026-10-02"[^>]*aria-expanded="true"/);
@@ -86,4 +86,27 @@ test('daily card controls use the shared application dispatcher',()=>{
   const source=fs.readFileSync('js/app.js','utf8');
   for(const action of new Set([...f.board.innerHTML.matchAll(/data-act="([^"]+)"/g)].map(m=>m[1])))assert.ok(source.includes("case '"+action+"':"),action+' has no dispatcher');
   assert.match(f.board.innerHTML,/data-act="toggleSave"/);
+});
+
+test('daily section uses the shared board header, search and filter renderer',()=>{
+  const s=fs.readFileSync('js/app.js','utf8');
+  assert.doesNotMatch(s,/if\(DAILY\)\{window.SUDaily.render/);
+  assert.match(s,/DAILY \? window.SUDaily.catalog\(this\)/);
+  assert.match(s,/DAILY \? window.SUDaily.heading\(\)/);
+  assert.match(s,/window.SUDaily.content\(this,shown,renderCard\)/);
+  const f=fixture();f.app.render();
+  assert.match(f.board.innerHTML,/datetime="2026-10-05"/);
+  assert.match(f.board.innerHTML,/>Monday, October 5<\/time>/);
+  assert.doesNotMatch(f.board.innerHTML,/October 5, 2026|a short list|daily-nav/);
+});
+test('daily filters exclude unmatched picks without introducing unselected jobs',()=>{
+  const f=fixture();f.app.jobs=manifest.selections[0].jobs.map(p=>p.snapshot);
+  f.app.jobs.push({...f.app.jobs[0],co:'Unselected company',link:'https://example.com/unselected'});
+  const catalog=f.daily.catalog(f.app);assert.equal(catalog.length,4);
+  const one=catalog.filter(j=>j.co==='SharkNinja');
+  const card=j=>'<article>'+j.co+'</article>';
+  const html=f.daily.content(f.app,one,card);
+  assert.equal((html.match(/<article>/g)||[]).length,1);assert.match(html,/<article>SharkNinja/);
+  assert.doesNotMatch(html,/<article>Figma|Unselected company/);
+  const empty=f.daily.content(f.app,[],card);assert.match(empty,/No daily picks match/);assert.match(empty,/data-act="clearAll"/);
 });
