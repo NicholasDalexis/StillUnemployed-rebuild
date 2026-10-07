@@ -10,6 +10,10 @@
     if(/^(?:(?:su_daily_jobs|su_internship_friday|top[45])_\d{8}(?:_mixed)?|internships_\d{8}|profile_jobs|early_career_daily_jobs)$/.test(campaign||''))out.campaign=campaign;
     if(/^\d{8}_[a-z][a-z0-9_-]{0,31}$/.test(post||''))out.post=post;
     if(/^(?:bio|page_profile|comment_dm|board_footer|(?:job_|slot)(?:[1-9]|10)_[a-z0-9]{8,64})$/.test(content||''))out.linkSlot=content;
+    if(/^s(?:[1-9]|10)$/.test(content||'')&&/^(?:top[45]_\d{8}(?:_mixed)?|internships_\d{8})$/.test(campaign||'')){
+      out.linkSlot=content;
+      if(!out.post&&out.source)out.post=campaign.match(/\d{8}/)[0]+'_'+out.source+'_'+(campaign.startsWith('internships')?'internships':campaign.slice(0,4));
+    }
     return out;
   }
   function query(input){var out=new URLSearchParams();[['source','utm_source'],['medium','utm_medium'],['campaign','utm_campaign'],['post','utm_id'],['linkSlot','utm_content']].forEach(function(pair){if(input[pair[0]])out.set(pair[1],input[pair[0]]);});return new URLSearchParams(querySafe(out));}

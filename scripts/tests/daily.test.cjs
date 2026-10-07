@@ -110,3 +110,23 @@ test('daily filters exclude unmatched picks without introducing unselected jobs'
   assert.doesNotMatch(html,/<article>Figma|Unselected company/);
   const empty=f.daily.content(f.app,[],card);assert.match(empty,/No daily picks match/);assert.match(empty,/data-act="clearAll"/);
 });
+
+
+test('daily loading never falsely claims selected jobs are off the board',()=>{
+  const f=fixture();f.app._loading=true;f.app.render();
+  assert.match(f.board.innerHTML,/Checking current job availability/);assert.doesNotMatch(f.board.innerHTML,/<article|Off this board/);
+  f.app._loading=false;f.app.render();assert.match(f.board.innerHTML,/<article/);
+});
+
+test('approved marketing short slot tags survive both client and server sanitizers',()=>{
+  const params=new URLSearchParams({utm_source:'linkedin',utm_medium:'organic_social',utm_campaign:'top4_20261007_mixed',utm_content:'s1'});
+  const context=Links.context(params);
+  assert.equal(context.linkSlot,'s1');assert.equal(context.post,'20261007_linkedin_top4');
+  const job=manifest.selections[0].jobs[0].snapshot,jobId=Core.jobId(job);
+  const event=Core.cleanEvent({id:'fixture-short-slot-123456',name:'tldr_open',page:'board',jobId,...context},Core.catalog([job]));
+  assert.equal(event.linkSlot,'s1');assert.equal(event.post,context.post);
+  const now=Date.now();const report=Core.reduceRows(Array.from({length:5},(_,i)=>({...event,actor:'fixture'+i,session:'s'+i,at:now})),30,now);
+  assert.equal(report.marketingLinks.length,1);assert.equal(report.marketingLinks[0].tldr,5);
+  assert.equal(Links.context(new URLSearchParams({...Object.fromEntries(params),utm_content:'s11'})).linkSlot,undefined);
+  assert.equal(Links.context(new URLSearchParams({...Object.fromEntries(params),utm_campaign:'arbitrary'})).linkSlot,undefined);
+});

@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.9",
+  "currentVersion": "2.7.7.10",
   "releases": [
+    {
+      "version": "2.7.7.10",
+      "date": "2026-10-06",
+      "title": "Daily publication QA fixes",
+      "changes": [
+        "Keep unknown/loading availability separate from off-board states and retain bounded s1–s10 marketing slot attribution through both sanitizers."
+      ],
+      "public": {
+        "title": "Daily picks",
+        "changes": [
+          "Browse four daily picks with the same search, filters and job cards as the full board."
+        ]
+      }
+    },
     {
       "version": "2.7.7.9",
       "date": "2026-10-06",
@@ -1081,7 +1095,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "1306226ff06b40056d162d8c9c81683848882179c7ad18ba8a3b7044f4593efb",
+    "digest": "02eb9d142f21b519ed7300418db7ecca19515ca2a8033bf3478b7ff04d938d53",
     "fileCount": 222
   }
 }

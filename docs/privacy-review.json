@@ -1,13 +1,13 @@
 {
-  "version": "2.7.7.9",
+  "version": "2.7.7.10",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-07T01:29:23.784Z",
+  "reviewedAt": "2026-10-07T01:39:07.481Z",
   "reviewer": "Codex root",
-  "sourceDigest": "1306226ff06b40056d162d8c9c81683848882179c7ad18ba8a3b7044f4593efb",
+  "sourceDigest": "02eb9d142f21b519ed7300418db7ecca19515ca2a8033bf3478b7ff04d938d53",
   "sourceFileCount": 222,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Shared-board daily UI and fixed public collection read endpoint with server-timed release. No account input, DB access, additional analytics identity, vendor or retention.",
+  "scope": "Shared-board daily UI and fixed public collection read endpoint with server-timed release. No account input, DB access, additional analytics identity, vendor or retention. Bounded public s1–s10 campaign slots normalized into known post identity; no personal or arbitrary query values. Loading/unknown availability wording separated from off-board state.",
   "checks": {
     "disclosures": "Privacy and Terms reviewed against public historical collections, source snapshot fallback, current availability checks, existing optional analytics and employer application limits. No wording change needed for fixed public collection timing/read endpoint. Not legal certification.",
     "choices": "Existing signed anonymous identity, consent/GPC/account readiness, preview/admin exclusion and cohort thresholds retained; focused fixtures pass. No test subscription or live data writes.",

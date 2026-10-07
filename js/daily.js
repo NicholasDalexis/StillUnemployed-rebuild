@@ -41,6 +41,7 @@
     else if(invalid)out+='<section class="daily-empty"><h2>This date is not in the notebook yet</h2><p>Choose a published collection or browse the full board.</p><a href="/jobs/daily">Latest daily jobs '+arrow+'</a></section>';
     if(!initial&&!invalid)out+='<p class="daily-empty">The first daily collection is on its way. Browse the full board below.</p>';
     if(app._loadError)out+='<div class="daily-error" role="status">Could not check current availability. Historical details remain below.<button type="button" data-act="retryJobs">Try again</button></div>';
+    if(app._loading)return out+'<p class="daily-empty" role="status">Checking current job availability…</p></div>';
     entries().forEach(function(s,index){
       var open=!!expanded[s.date],names=s.jobs.map(function(p){return current(app,p)?.co||p.snapshot.co;}).join(' · ');
       var filtered=s.jobs.map(function(p,i){return {pick:p,rank:i+1,job:shown.find(function(j){return window.SUJobIdentity.equivalent(j.link,p.link);})};}).filter(function(p){return !!p.job;});

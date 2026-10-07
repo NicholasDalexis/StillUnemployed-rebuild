@@ -2002,7 +2002,7 @@
 
         // verified stamp + apply link row (per-theme variant, ported verbatim)
         html += '<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 16px; min-height: 24px;">';
-        if(j.savedUnavailable)html += '<span class="su-availability-stamp">'+(j.confirmedClosed?'No longer available':j.savedElsewhere?(j.internship?'Saved internship':'Saved job'):'Off this board')+'</span>';
+        if(j.savedUnavailable)html += '<span class="su-availability-stamp">'+(DAILY&&(self._loadError||self._moderationError)?'Availability could not be checked':j.confirmedClosed?'No longer available':j.savedElsewhere?(j.internship?'Saved internship':'Saved job'):'Off this board')+'</span>';
         if (showVerified) {
           if (!girly) {
             // original = outlined circle-check; WW2 (cod) = starred dashed-circle stamp
