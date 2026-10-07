@@ -4,7 +4,7 @@ const fs=require('node:fs');const vm=require('node:vm');
 const Links=require('../../js/daily-links.js');const Identity=require('../../js/job-identity.js');
 const Core=require('../../netlify/functions/lib/analytics-core.cjs');
 const manifest=JSON.parse(fs.readFileSync('data/daily-selections.json'));
-function fixture(path='/jobs/daily',selections=manifest.selections){
+function fixture(path='/jobs/daily',selections=[manifest.selections[0]]){
   const board={innerHTML:'',className:'',querySelector:()=>null};let clicks;
   const app={jobs:[],state:{look:'original',saved:{},fr:'Any'},renderOverlays(){}};
   const window={SUDailySelections:selections,SUJobIdentity:Identity,SUApp:app,addEventListener(){}};
@@ -14,9 +14,9 @@ function fixture(path='/jobs/daily',selections=manifest.selections){
   return {app,board,daily:window.SUDaily,clicks};
 }
 test('daily manifest exposes four ordered published jobs and hides future/drafts',async()=>{
-  const {published}=await import('../gen-daily.mjs');const copy=structuredClone(manifest);
+  const {published}=await import('../gen-daily.mjs');const copy={...manifest,selections:[structuredClone(manifest.selections[0])]};
   copy.selections.push({...copy.selections[0],date:'2026-10-06'});
-  copy.selections.push({...copy.selections[0],date:'2026-10-04',state:'scheduled'});
+  copy.selections.push({...copy.selections[0],date:'2026-10-04',state:'draft'});
   assert.deepEqual(published(copy,'2026-10-05').map(s=>s.date),['2026-10-05']);
   assert.deepEqual(published(copy,'2026-10-06').map(s=>s.date),['2026-10-06','2026-10-05']);
   for(const mutate of [s=>s.jobs.pop(),s=>s.jobs[1].id=s.jobs[0].id,s=>s.jobs[0].link='https://user:password@unsafe.example/job',s=>s.date='2026-02-30']){
@@ -73,11 +73,11 @@ test('client/server daily events retain bounded selection and suppress small coh
 });
 test('board entry labels only current Eastern published picks as today',()=>{
   const Entry=require('../../js/daily-entry.js'),now=new Date('2026-10-05T20:00:00Z');
-  assert.match(Entry.html(manifest.selections,now),/Today's top 4 jobs/);
-  assert.match(Entry.html(manifest.selections,new Date('2026-10-06T20:00:00Z')),/Latest picks/);
+  assert.match(Entry.html([manifest.selections[0]],now),/Today's top 4 jobs/);
+  assert.match(Entry.html([manifest.selections[0]],new Date('2026-10-06T20:00:00Z')),/Latest picks/);
   assert.equal(Entry.html([{...manifest.selections[0],date:'2026-10-06'}],now),'');
   assert.equal(Entry.html([{...manifest.selections[0],state:'scheduled'}],now),'');
-  assert.match(Entry.html(manifest.selections,now),/href="\/jobs\/daily"/);
+  assert.match(Entry.html([manifest.selections[0]],now),/href="\/jobs\/daily"/);
   assert.equal(Entry.today(new Date('2026-10-06T02:00:00Z')),'2026-10-05');
 });
 

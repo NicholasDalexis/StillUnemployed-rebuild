@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.8",
+  "currentVersion": "2.7.7.9",
   "releases": [
+    {
+      "version": "2.7.7.9",
+      "date": "2026-10-06",
+      "title": "Daily jobs production",
+      "changes": [
+        "Shared board daily UI, approved October6 collection and server-timed October7–9 sets; existing privacy and availability boundaries retained."
+      ],
+      "public": {
+        "title": "Daily picks",
+        "changes": [
+          "Browse four daily picks with the same search, filters and job cards as the full board."
+        ]
+      }
+    },
     {
       "version": "2.7.7.8",
       "date": "2026-10-05",
@@ -1067,7 +1081,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "21de73724413bd522c98675cfd5de05b7d1a847aacdb112b77ddae3f89c9e1f1",
-    "fileCount": 219
+    "digest": "1306226ff06b40056d162d8c9c81683848882179c7ad18ba8a3b7044f4593efb",
+    "fileCount": 222
   }
 }

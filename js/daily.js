@@ -3,11 +3,16 @@
   'use strict';
   if(!/^\/jobs\/daily(?:\/|$)/.test(location.pathname)&&location.pathname!=='/daily-jobs.html')return;
   var esc=function(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
-  var all=window.SUDailySelections||[],expanded={},seen={},selected=null,invalid=false;
-  var match=location.pathname.match(/^\/jobs\/daily\/([^/]+)\/?$/);
-  if(location.pathname!=='/daily-jobs.html'&&!/^\/jobs\/daily\/?$/.test(location.pathname)){selected=match&&all.find(function(s){return s.date===match[1];});invalid=!selected;}
-  var initial=selected||all[0];
-  if(initial)expanded[initial.date]=true;
+  var all=[],expanded={},seen={},selected=null,invalid=false,initial;
+  function sync(){
+    all=window.SUDailySelections||[];selected=null;invalid=false;
+    var match=location.pathname.match(/^\/jobs\/daily\/([^/]+)\/?$/);
+    if(location.pathname!=='/daily-jobs.html'&&!/^\/jobs\/daily\/?$/.test(location.pathname)){selected=match&&all.find(function(s){return s.date===match[1];});invalid=!selected;}
+    initial=selected||all[0];
+    if(initial&&expanded[initial.date]===undefined)expanded[initial.date]=true;
+    if(window.SUDaily)window.SUDaily.context=initial?{selectionDate:initial.date,selectionKind:'jobs'}:{};
+  }
+  sync();window.addEventListener('su:daily-updated',sync);
   function label(date){return new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',weekday:'long',month:'long',day:'numeric'}).format(new Date(date+'T16:00:00Z'));}
   function entries(){return invalid?[]:selected?[selected]:all.slice(0,3);}
   function current(app,pick){return (app.jobs||[]).find(function(j){return window.SUJobIdentity.equivalent(j.link,pick.link);});}
@@ -25,13 +30,15 @@
     return jobs;
   }
   function heading(){
-    var today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+    var today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).format(window.SUDailyServerNow||new Date());
     var title=invalid?'Daily Jobs':initial&&initial.date===today?'Top 4 Jobs for Today':'Top 4 Jobs';
     return '<div class="su-board-heading"><h1>'+title.replace('Jobs','<span class="su-headline-mark">Jobs</span>')+'</h1>'+(initial&&!invalid?'<time class="daily-heading-date" datetime="'+initial.date+'">'+esc(label(initial.date))+'</time>':'')+'</div>';
   }
   function content(app,shown,renderCard){
     var out='<div class="daily-content">';
-    if(invalid)out+='<section class="daily-empty"><h2>This date is not in the notebook yet</h2><p>Choose a published collection or browse the full board.</p><a href="/jobs/daily">Latest daily jobs '+arrow+'</a></section>';
+    if(invalid&&window.SUDailyLoading)out+='<p class="daily-empty" role="status">Checking this collection…</p>';
+    else if(invalid&&window.SUDailyLoadError)out+='<p class="daily-empty" role="status">Could not check this collection. <button type="button" data-daily-retry>Try again</button></p>';
+    else if(invalid)out+='<section class="daily-empty"><h2>This date is not in the notebook yet</h2><p>Choose a published collection or browse the full board.</p><a href="/jobs/daily">Latest daily jobs '+arrow+'</a></section>';
     if(!initial&&!invalid)out+='<p class="daily-empty">The first daily collection is on its way. Browse the full board below.</p>';
     if(app._loadError)out+='<div class="daily-error" role="status">Could not check current availability. Historical details remain below.<button type="button" data-act="retryJobs">Try again</button></div>';
     entries().forEach(function(s,index){
@@ -45,6 +52,7 @@
     return out;
   }
   document.addEventListener('click',function(e){
+    if(e.target.closest('[data-daily-retry]'))window.dispatchEvent(new Event('su:daily-retry'));
     var date=e.target.closest('[data-daily-date]'),card=e.target.closest('.daily-card');
     if(date){expanded[date.dataset.dailyDate]=!expanded[date.dataset.dailyDate];window.SUApp.render();}
     if(card){window.SUDaily.context={selectionDate:card.dataset.date,selectionKind:'jobs',selectionRank:Number(card.dataset.rank)};}

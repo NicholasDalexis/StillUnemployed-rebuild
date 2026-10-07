@@ -60,6 +60,277 @@
           }
         }
       ]
+    },
+    {
+      "date": "2026-10-06",
+      "kind": "jobs",
+      "state": "published",
+      "jobs": [
+        {
+          "id": "1b3swkt1uhohkv",
+          "link": "https://job-boards.greenhouse.io/newsweek/jobs/4679468006",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/newsweek/jobs/4679468006",
+            "co": "Newsweek",
+            "role": "Associate News Editor",
+            "pay": "$70-80K",
+            "loc": "Remote, US",
+            "style": "Remote",
+            "exp": "Early career",
+            "ind": "Content & Copy",
+            "tldr": "Produce and publish AI-assisted stories daily \u2022 Edit AI drafts for accuracy and fairness \u2022 Jump on breaking news fast \u2022 Pitch original story ideas and beats"
+          }
+        },
+        {
+          "id": "2y148ztq78v1",
+          "link": "https://job-boards.greenhouse.io/misfitsmarket/jobs/8007068003",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/misfitsmarket/jobs/8007068003",
+            "co": "Misfits Market",
+            "role": "Social Video Editor",
+            "pay": "$75K-80K",
+            "loc": "New York, NY",
+            "style": "",
+            "exp": "2-3 years",
+            "ind": "Videography",
+            "tldr": "\u2022 Film and edit short-form social video\n\u2022 Capture product and lifestyle content\n\u2022 Use Premiere and basic After Effects\n\u2022 Full-time; two to three years of brand video experience"
+          }
+        },
+        {
+          "id": "1tg0l181811i6r",
+          "link": "https://job-boards.greenhouse.io/reformation/jobs/8177590",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/reformation/jobs/8177590",
+            "co": "Reformation",
+            "role": "Ecommerce Producer",
+            "pay": "$75K-90K",
+            "loc": "Vernon, CA",
+            "style": "Hybrid",
+            "exp": "3+ years",
+            "ind": "Photography",
+            "tldr": "\u2022 Produce ecommerce photo and video shoots\n\u2022 Coordinate studios, talent, schedules and assets\n\u2022 Manage sample and shoot logistics\n\u2022 Hybrid at Vernon headquarters"
+          }
+        },
+        {
+          "id": "1cc1xhtqxq674",
+          "link": "https://job-boards.greenhouse.io/dept/jobs/8246977",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/dept/jobs/8246977",
+            "co": "DEPT",
+            "role": "Account Coordinator, Paid Social",
+            "pay": "$48K-60K",
+            "loc": "Remote, US",
+            "style": "Remote",
+            "exp": "Early career",
+            "ind": "Growth & CRM",
+            "tldr": "\u2022 Build and traffic paid social campaigns\n\u2022 Support campaign reporting and optimization\n\u2022 Coordinate creative and media deliverables\n\u2022 Six months of paid social experience required"
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-10-07",
+      "kind": "jobs",
+      "state": "scheduled",
+      "jobs": [
+        {
+          "id": "122j43xc6qn95",
+          "link": "https://www.weareroku.com/jobs/8167560?gh_jid=8167560",
+          "snapshot": {
+            "link": "https://www.weareroku.com/jobs/8167560?gh_jid=8167560",
+            "co": "Roku",
+            "role": "Ad Marketing Coordinator",
+            "pay": "$55K-67K",
+            "loc": "New York, NY",
+            "style": "Hybrid",
+            "exp": "1-3 years",
+            "ind": "Brand & Marketing",
+            "tldr": "\u2022 Support advertising marketing content and campaigns\n\u2022 Maintain email, social and website content\n\u2022 Coordinate creative assets and marketing QA\n\u2022 Full-time; Monday through Thursday in office"
+          }
+        },
+        {
+          "id": "m5th8q5dzykq",
+          "link": "https://job-boards.greenhouse.io/tecovas/jobs/8756968002",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/tecovas/jobs/8756968002",
+            "co": "Tecovas",
+            "role": "Junior Designer, Men's Footwear",
+            "pay": "$65K-70K",
+            "loc": "Austin, TX",
+            "style": "",
+            "exp": "1-3 years preferred",
+            "ind": "Fashion Design",
+            "tldr": "Support seasonal footwear concepts and trend research \u2022 Create footwear illustrations, CADs, and technical packs \u2022 Review prototypes and update designs from feedback \u2022 Organize materials, samples, and digital design assets"
+          }
+        },
+        {
+          "id": "x5ac41hbz2m4",
+          "link": "https://careers.roblox.com/jobs/8143982?gh_jid=8143982",
+          "snapshot": {
+            "link": "https://careers.roblox.com/jobs/8143982?gh_jid=8143982",
+            "co": "Roblox",
+            "role": "[2027] Associate Product Designer, Early Career",
+            "pay": "$140K",
+            "loc": "San Mateo, CA",
+            "style": "Hybrid",
+            "exp": "Early career",
+            "ind": "UX/UI Design",
+            "tldr": "\u2022 Full-time 21-month associate design rotation\n\u2022 Design product experiences with mentorship\n\u2022 Undergraduate or graduate design background\n\u2022 Apply by October 30; office Tuesday through Thursday"
+          }
+        },
+        {
+          "id": "96f1k074osxb",
+          "link": "https://job-boards.greenhouse.io/later/jobs/8657615002",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/later/jobs/8657615002",
+            "co": "Later",
+            "role": "Influencer Marketing Coordinator - Bilingual Spanish/English (Remote/Dallas/Fort-Worth Area)",
+            "pay": "$55K-62K",
+            "loc": "Remote, Dallas-Fort Worth, TX",
+            "style": "Remote",
+            "exp": "1-2+ years",
+            "ind": "Influencer",
+            "tldr": "\u2022 Coordinate influencer marketing campaigns\n\u2022 Support client deliverables and creator communication\n\u2022 Spanish and English fluency required\n\u2022 Must live within commuting distance of Dallas"
+          }
+        }
+      ],
+      "publishAt": "2026-10-07T13:00:00.000Z"
+    },
+    {
+      "date": "2026-10-08",
+      "kind": "jobs",
+      "state": "scheduled",
+      "jobs": [
+        {
+          "id": "8b0w80esbqff",
+          "link": "https://www.pinterestcareers.com/jobs/?gh_jid=7908767",
+          "snapshot": {
+            "link": "https://www.pinterestcareers.com/jobs/?gh_jid=7908767",
+            "co": "Pinterest",
+            "role": "Content Designer II, Personalization",
+            "pay": "$82K-169K",
+            "loc": "Remote, US",
+            "style": "Remote",
+            "exp": "3+ years",
+            "ind": "UX/UI Design",
+            "tldr": "\u2022 Write and design personalized product content\n\u2022 Partner with product design, research and engineering\n\u2022 Create clear, accessible user experiences\n\u2022 Office visits one or two times each six months"
+          }
+        },
+        {
+          "id": "4slux2sda0c",
+          "link": "https://job-boards.greenhouse.io/splice/jobs/8857285002",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/splice/jobs/8857285002",
+            "co": "Splice",
+            "role": "Designer, Brand & Marketing",
+            "pay": "$91K-113K",
+            "loc": "Remote, US",
+            "style": "Remote",
+            "exp": "3-5+ years",
+            "ind": "Video & Creative",
+            "tldr": "\u2022 Create brand and marketing design assets\n\u2022 Adapt established visual systems across channels\n\u2022 Collaborate with marketing and art direction\n\u2022 Remote in the United States"
+          }
+        },
+        {
+          "id": "umjwc018lg601",
+          "link": "https://www.ogilvy.com/careers/4736328005?gh_jid=4736328005",
+          "snapshot": {
+            "link": "https://www.ogilvy.com/careers/4736328005?gh_jid=4736328005",
+            "co": "Ogilvy Health",
+            "role": "Account Executive, Paid Social & Social Intelligence",
+            "pay": "$45K-100K",
+            "loc": "New York, NY",
+            "style": "",
+            "exp": "1-2 years",
+            "ind": "Growth & CRM",
+            "tldr": "\u2022 Assist paid social campaign buying and trafficking\n\u2022 Analyze social listening and campaign performance\n\u2022 Track brand visibility across generative AI search\n\u2022 Technical media role; not administrative account management"
+          }
+        },
+        {
+          "id": "1rf2r9f16ujlf6",
+          "link": "https://job-boards.greenhouse.io/thefarmersdog/jobs/8755478002",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/thefarmersdog/jobs/8755478002",
+            "co": "The Farmer's Dog",
+            "role": "Brand Designer",
+            "pay": "$80K-90K",
+            "loc": "New York, NY",
+            "style": "In-person",
+            "exp": "3+ years",
+            "ind": "Video & Creative",
+            "tldr": "\u2022 Design brand and marketing assets.\n\u2022 Collaborate on creative concepts and campaigns.\n\u2022 Create work across digital and print channels.\n\u2022 Refine brand visuals with the creative team."
+          }
+        }
+      ],
+      "publishAt": "2026-10-08T13:00:00.000Z"
+    },
+    {
+      "date": "2026-10-09",
+      "kind": "jobs",
+      "state": "scheduled",
+      "jobs": [
+        {
+          "id": "5wdl92i5jb1h",
+          "link": "https://www.coinbase.com/careers/positions/8238576?gh_jid=8238576",
+          "snapshot": {
+            "link": "https://www.coinbase.com/careers/positions/8238576?gh_jid=8238576",
+            "co": "Coinbase",
+            "role": "Experiential Marketing Associate",
+            "pay": "$101K-119K",
+            "loc": "Remote, US",
+            "style": "Remote",
+            "exp": "2+ years",
+            "ind": "Brand & Marketing",
+            "tldr": "\u2022 Support experiential marketing and brand activations\n\u2022 Coordinate event logistics, vendors and budgets\n\u2022 Track event execution and outcomes\n\u2022 Remote-first; periodic in-person gatherings required"
+          }
+        },
+        {
+          "id": "10a78jm15lbxvu",
+          "link": "https://job-boards.greenhouse.io/discord/jobs/8827890002",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/discord/jobs/8827890002",
+            "co": "Discord",
+            "role": "Graphic Designer & Illustrator",
+            "pay": "$116K-131K",
+            "loc": "San Francisco Bay Area, CA",
+            "style": "",
+            "exp": "2+ years",
+            "ind": "Video & Creative",
+            "tldr": "\u2022 Create graphic design and illustration assets\n\u2022 Develop social and brand creative\n\u2022 Use Photoshop and Illustrator\n\u2022 Full-time; two years of creative studio experience"
+          }
+        },
+        {
+          "id": "fu5rizx1xrj2",
+          "link": "https://vaynermedia.com/careers?gh_jid=8171117",
+          "snapshot": {
+            "link": "https://vaynermedia.com/careers?gh_jid=8171117",
+            "co": "VaynerMedia",
+            "role": "Designer",
+            "pay": "$70K-90K",
+            "loc": "New York, NY",
+            "style": "Hybrid",
+            "exp": "2-3 years",
+            "ind": "Video & Creative",
+            "tldr": "\u2022 Design social-first visual concepts\n\u2022 Produce brand and campaign assets\n\u2022 Collaborate with creative teams\n\u2022 New York hybrid office attendance required"
+          }
+        },
+        {
+          "id": "px1ziw1395mx0",
+          "link": "https://job-boards.greenhouse.io/fanaticscollectibles/jobs/4420789009",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/fanaticscollectibles/jobs/4420789009",
+            "co": "Fanatics Collectibles",
+            "role": "Graphic Designer II - Special Projects",
+            "pay": "$75K-81K",
+            "loc": "New York, NY",
+            "style": "",
+            "exp": "Early career",
+            "ind": "Video & Creative",
+            "tldr": "\u2022 Design trading-card and special-project graphics\n\u2022 Work within art-direction and brand systems\n\u2022 Prepare production-ready files\n\u2022 Portfolio and Adobe Creative Suite skills required"
+          }
+        }
+      ],
+      "publishAt": "2026-10-09T13:00:00.000Z"
     }
   ]
 }

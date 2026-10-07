@@ -1,21 +1,21 @@
 {
-  "version": "2.7.7.8",
+  "version": "2.7.7.9",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-05T22:50:28.673Z",
+  "reviewedAt": "2026-10-07T01:29:23.784Z",
   "reviewer": "Codex root",
-  "sourceDigest": "21de73724413bd522c98675cfd5de05b7d1a847aacdb112b77ddae3f89c9e1f1",
-  "sourceFileCount": 219,
+  "sourceDigest": "1306226ff06b40056d162d8c9c81683848882179c7ad18ba8a3b7044f4593efb",
+  "sourceFileCount": 222,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Daily jobs now uses existing board UI, search, filters, salary-colored cards and optional account controls. Existing collection membership, public dates and bounded analytics retained; no new data category, provider, permission or retention.",
+  "scope": "Shared-board daily UI and fixed public collection read endpoint with server-timed release. No account input, DB access, additional analytics identity, vendor or retention.",
   "checks": {
-    "disclosures": "Privacy and Terms reviewed, no wording change needed for this UI revision. Existing optional-choice and employer/application limits remain. Not legal certification.",
+    "disclosures": "Privacy and Terms reviewed against public historical collections, source snapshot fallback, current availability checks, existing optional analytics and employer application limits. No wording change needed for fixed public collection timing/read endpoint. Not legal certification.",
     "choices": "Existing signed anonymous identity, consent/GPC/account readiness, preview/admin exclusion and cohort thresholds retained; focused fixtures pass. No test subscription or live data writes.",
-    "publication": "Private data manifest not deployed; only published selections are emitted. No future picks; closed/unknown current feed disables Apply. Source snapshots contain public employer facts only."
+    "publication": "Future approved sets remain in the function bundle, not public JS or API responses until9AM America/New_York. Current feed/moderation controls Apply. Endpoint ignores visitor clocks and date query inputs, uses no-store and has no database access."
   },
   "openItems": [
-    "No production release; physical iPhone/in-app social browser and fresh Google login not performed.",
-    "Production durable daily event readback requires approved release; year-long per-post rollups not implemented.",
-    "Future daily manifests require source-authorized published selections; only October5 is seeded."
+    "Physical iPhone/in-app social-browser and fresh Google login remain separate live checks.",
+    "Production durable daily-event persistence and year-long per-post rollups are not established by fixtures.",
+    "A new future set requires owner validation and normal source deploy; no autonomous source writer."
   ]
 }
