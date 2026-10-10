@@ -31,3 +31,12 @@ Use the shared board layout from the October5 correction. Add the actual October
 Future update contract: Marketing supplies a source-approved ordered four with ISO date, canonical listing IDs/links, public snapshot/TLDR and9AM Eastern timestamp. Owner stages that exact set in data/daily-selections.json as scheduled with publishAt, validates using the publication tests, bumps/seals the release, rebuilds/reviews policies and deploys through the normal readiness workflow. A staged set activates at its due time without another build. Adding a new future set still requires a source change and deploy; there is no source-Sheet or autonomous editorial writer. Validate before/at publication and winter DST, actual public response/date/order, dated route, current TLDR/Apply, main-board entry, auth and context parity. Keep future data out of dist. On API failure retain only the last safe published fallback and offer retry for missing dated selections. No device-time override or forced login.
 
 -Codex
+
+
+## Weekend content release | 2026-10-10T00:31:44.337Z
+
+Author: Codex. Timezone: America/New_York. Source: saved Marketing weekend packet, October9 authorized batch and existing future-selection release contract. Status: 2.7.7.11 candidate; hosted verification recorded separately.
+
+Exact October10–11 ordered sets added with publishAt 2026-10-10T13:00:00.000Z and 2026-10-11T13:00:00.000Z. All five previous selections remain structurally identical. Current canonical admissions and all eight stable IDs verified. Before/at both 9AM boundaries pass; future collections remain private until due. Normal build regenerates every current Share page, including the previously missing Forbes route. Shared board UI, policies, auth and source Sheets unchanged.
+
+-Codex

@@ -36,7 +36,16 @@ test('staged collection times and identities are validated before exposure',asyn
   const draft=structuredClone(manifest);draft.selections[2].state='draft';
   const {publicCollections}=await import('../../netlify/functions/lib/daily-collections-core.mjs');
   assert.equal(publicCollections(draft,new Date('2026-10-10T20:00:00Z')).some(s=>s.date==='2026-10-07'),false);
-  const staticSource=fs.readFileSync('js/daily-selection-data.js','utf8');assert.doesNotMatch(staticSource,/Tecovas|2026-10-07|2026-10-08|2026-10-09/);
+  const {published}=await import('../gen-daily.mjs');
+  assert.deepEqual(published(manifest,'2026-10-06').map(s=>s.date),['2026-10-06','2026-10-05']);
+  // A committed fallback can be older than today, but must contain only due
+  // public projections. Fixed October7–9 exclusions expired after publication.
+  const context={window:{}};
+  vm.runInNewContext(fs.readFileSync('js/daily-selection-data.js','utf8'),context);
+  const due=publicCollections(manifest,new Date());
+  for(const collection of JSON.parse(JSON.stringify(context.window.SUDailySelections))){
+    assert.deepEqual(collection,due.find(s=>s.date===collection.date));
+  }
 });
 test('client refresh uses server countdown and rerenders the existing initialized board',async()=>{
   let timer,listener,rendered=0;const events=[];

@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.10",
+  "currentVersion": "2.7.7.11",
   "releases": [
+    {
+      "version": "2.7.7.11",
+      "date": "2026-10-09",
+      "title": "Schedule exact weekend daily picks and refresh share pages",
+      "changes": [
+        "Stage Marketing-approved ordered October 10 and October 11 collections for 9 AM Eastern. Preserve all previous collections and shared board layout; rebuild individual-job share artifacts from current admitted catalogs."
+      ],
+      "public": {
+        "title": "Weekend picks",
+        "changes": [
+          "Weekend daily selections are scheduled for 9 AM Eastern, with refreshed job share previews."
+        ]
+      }
+    },
     {
       "version": "2.7.7.10",
       "date": "2026-10-06",
@@ -1095,7 +1109,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "02eb9d142f21b519ed7300418db7ecca19515ca2a8033bf3478b7ff04d938d53",
+    "digest": "e665e83e713c361a01692784f4c8f4549e78eec5136e3f1223251f5f31088986",
     "fileCount": 222
   }
 }
