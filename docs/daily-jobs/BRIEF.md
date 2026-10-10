@@ -40,3 +40,10 @@ Author: Codex. Timezone: America/New_York. Source: saved Marketing weekend packe
 Exact October10–11 ordered sets added with publishAt 2026-10-10T13:00:00.000Z and 2026-10-11T13:00:00.000Z. All five previous selections remain structurally identical. Current canonical admissions and all eight stable IDs verified. Before/at both 9AM boundaries pass; future collections remain private until due. Normal build regenerates every current Share page, including the previously missing Forbes route. Shared board UI, policies, auth and source Sheets unchanged.
 
 -Codex
+
+
+## Revised Sunday selection | 2026-10-10T00:43:31.243441+00:00
+
+Author: Codex. Timezone: America/New_York. Source: Marketing canonical weekend packet revision2026-10-10T00:41:58.867629Z under existing approved release contract. Status:2.7.7.12 candidate, hosted checks pending. Production2.7.7.11 staged the original private Sunday set but it has not reached due time. Replace only Sunday slots2/3: Genius Sports Designer and Precision AQ Strategic Account Associate, Medical Communications. CarGurus/ONE Campaign/Saturday/five published collections stay identical. Old private manifest remains in Git commit5ac21191fffe00e145123f8215244dfd6f7d1e91 and QA/manifest-27711.json. Skipped M Booth/Veronica Beard source conflicts remain Open, not fixed or globally removed.
+
+-Codex

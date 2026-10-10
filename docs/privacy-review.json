@@ -1,13 +1,13 @@
 {
-  "version": "2.7.7.11",
+  "version": "2.7.7.12",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-10T00:31:44.335Z",
+  "reviewedAt": "2026-10-10T00:43:31.243441+00:00",
   "reviewer": "Codex root",
-  "sourceDigest": "e665e83e713c361a01692784f4c8f4549e78eec5136e3f1223251f5f31088986",
+  "sourceDigest": "f205822d697030e67b02f2ba4f41f13c0046ca55d6cd5f6917a6abeba024224a",
   "sourceFileCount": 222,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Exact approved October 10–11 public job collections, scheduled for 9 AM Eastern; current published fallback refreshed and share pages rebuilt. No layout, authentication, account, database, analytics schema, retention or provider changes.",
+  "scope": "Supersede two unpublished October11 daily picks with exact revised approved packet. Saturday and all published history unchanged. No UI, auth, database, analytics, retention or provider changes.",
   "checks": {
     "disclosures": "Reviewed Privacy/Terms collection fallback, optional analytics and employer application limits against this content-only update. No policy wording change needed; not legal certification.",
     "choices": "Existing signed anonymous identity, consent/GPC/account readiness, preview/admin exclusion and cohort thresholds retained; focused fixtures pass. No test subscription or live data writes.",

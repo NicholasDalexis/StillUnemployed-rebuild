@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.11",
+  "currentVersion": "2.7.7.12",
   "releases": [
+    {
+      "version": "2.7.7.12",
+      "date": "2026-10-09",
+      "title": "Revised Sunday daily selection",
+      "changes": [
+        "Supersede only the unpublished October11 slots2 and3 with exact source-approved Genius Sports and Precision AQ replacements; retain Saturday, published history, shared board UI and future visibility guards."
+      ]
+    },
     {
       "version": "2.7.7.11",
       "date": "2026-10-09",
@@ -1109,7 +1117,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "e665e83e713c361a01692784f4c8f4549e78eec5136e3f1223251f5f31088986",
+    "digest": "f205822d697030e67b02f2ba4f41f13c0046ca55d6cd5f6917a6abeba024224a",
     "fileCount": 222
   }
 }
