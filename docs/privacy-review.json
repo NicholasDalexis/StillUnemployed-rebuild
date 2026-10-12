@@ -1,17 +1,17 @@
 {
-  "version": "2.7.7.12",
+  "version": "2.7.7.13",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-10T00:43:31.243441+00:00",
+  "reviewedAt": "2026-10-12T00:17:57.987Z",
   "reviewer": "Codex root",
-  "sourceDigest": "f205822d697030e67b02f2ba4f41f13c0046ca55d6cd5f6917a6abeba024224a",
+  "sourceDigest": "16208e4269730c31471f348a7a1f58367175aa082b2fa7377b8927d97f223fde",
   "sourceFileCount": 222,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Supersede two unpublished October11 daily picks with exact revised approved packet. Saturday and all published history unchanged. No UI, auth, database, analytics, retention or provider changes.",
+  "scope": "Content-only exact October12/13 daily selections plus published fallback refresh and regenerated share artifacts. Seven old dates, UI/auth/analytics/retention/providers unchanged.",
   "checks": {
-    "disclosures": "Reviewed Privacy/Terms collection fallback, optional analytics and employer application limits against this content-only update. No policy wording change needed; not legal certification.",
-    "choices": "Existing signed anonymous identity, consent/GPC/account readiness, preview/admin exclusion and cohort thresholds retained; focused fixtures pass. No test subscription or live data writes.",
-    "publication": "Future approved sets remain in the function bundle, not public JS or API responses until9AM America/New_York. Current feed/moderation controls Apply. Endpoint ignores visitor clocks and date query inputs, uses no-store and has no database access."
+    "disclosures": "Privacy/Terms optional analytics, account choice, daily snapshot fallback and employer application limits reviewed. No new collection, provider or policy wording; process review is not legal certification.",
+    "choices": "Existing consent/GPC/admin/preview exclusions and signed anonymous capability retained. No new account or subscription.",
+    "publication": "Future sets omitted from public fallback and endpoint until server 9AM Eastern. Original seven dates remain unchanged; no caller clock override, database writer or source Sheet mutation."
   },
   "openItems": [
     "Physical iPhone/in-app social-browser and fresh Google login remain separate live checks.",

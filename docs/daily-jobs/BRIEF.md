@@ -47,3 +47,11 @@ Exact October10–11 ordered sets added with publishAt 2026-10-10T13:00:00.000Z 
 Author: Codex. Timezone: America/New_York. Source: Marketing canonical weekend packet revision2026-10-10T00:41:58.867629Z under existing approved release contract. Status:2.7.7.12 candidate, hosted checks pending. Production2.7.7.11 staged the original private Sunday set but it has not reached due time. Replace only Sunday slots2/3: Genius Sports Designer and Precision AQ Strategic Account Associate, Medical Communications. CarGurus/ONE Campaign/Saturday/five published collections stay identical. Old private manifest remains in Git commit5ac21191fffe00e145123f8215244dfd6f7d1e91 and QA/manifest-27711.json. Skipped M Booth/Veronica Beard source conflicts remain Open, not fixed or globally removed.
 
 -Codex
+
+## Monday and Tuesday content continuation | October 11, 2026
+
+Author: Codex. Timezone: America/New_York. Source: Marketing source version marketing-montue-20261011-v1 and the sealed Sunday batch packet under the existing future-selection contract. Status: 2.7.7.13 candidate; hosted release readback recorded separately.
+
+Stage the exact October12 and October13 ordered four-job collections at 13:00 UTC / 9 AM Eastern. All seven previously published collections remain structurally identical. The eight current admitted identities and four before/at publication boundaries are verified. Normal share generation includes both new NBC routes. Shared UI, auth, analytics, source Sheets and schedules are unchanged; future selections remain private until server publication time. Actual future activation and social publication are separate checks after each due time.
+
+-Codex
