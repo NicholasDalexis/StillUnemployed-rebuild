@@ -217,7 +217,7 @@ test('a valid feed with zero eligible jobs remains empty without requesting bund
  assert.equal(b.app.jobs.length,0);assert(!b.app._loadError);assert.equal(b.requests.length,1);assert(!b.requests.some(r=>r.url.includes('jobs-data.json')));assert.doesNotMatch(b.grid.textContent,/Jobs could not load right now/);
 });
 test('feed failure presents recovery UI and never revives the bundled sample',async()=>{
- const b=board({fetchError:new Error('offline')});await b.boot();assert.equal(b.app.jobs.length,0);assert.equal(b.app._loadError,true);assert.equal(b.requests.length,1);assert(b.grid.querySelector('[data-act="retryJobs"]'));
+ const b=board({fetchError:new Error('offline')});await b.boot();assert.equal(b.app._loading,true);assert.equal(b.requests.length,1);b.runTimers(600);await tick();await tick();assert.equal(b.app.jobs.length,0);assert.equal(b.app._loadError,true);assert.equal(b.requests.length,2);assert(b.grid.querySelector('[data-act="retryJobs"]'));
 });
 test('strict CSV accepts reordered required columns, quoted text and a header-only feed',()=>{
  const b=board();const headers=['Link','Salary','Job Title','Active/Dead','Company'];const text=csv([row({Company:'A, "B"','Job Title':'Designer\nBrand'})],headers);
@@ -554,7 +554,7 @@ test('cross-tab logout cancels the prior account search debounce and resets filt
 });
 
 test('same-owner view survives an initial feed failure and explicit URL state still takes precedence',async()=>{
- const failed=viewBoard({fetchError:Error('offline')});failed.runtime.save('jobs',restoredView);await failed.boot();failed.fireWindow('su:auth-changed');
+ const failed=viewBoard({fetchError:Error('offline')});failed.runtime.save('jobs',restoredView);await failed.boot();failed.runTimers(600);await tick();await tick();failed.fireWindow('su:auth-changed');
  assert.equal(failed.app._loadError,true);assert.deepEqual(viewFields(failed.app.state),restoredView);assert.equal(failed.runtime.read('jobs').state.q,'design');
  for(const address of [{search:'?theme=poker'},{hash:'#shared-role'}]){
   const b=viewBoard({search:address.search||''});b.location.hash=address.hash||'';b.runtime.save('jobs',restoredView);await b.boot();b.fireWindow('su:auth-changed');
@@ -574,7 +574,7 @@ test('shared jobs wait for the fresh catalog then open without scrolling and rem
 test('missing, malformed and unavailable shared links never open another or stale posting',async()=>{
  for(const opts of [{search:'?job=not-base64!'}, {search:'?job='+encodeURIComponent(Buffer.from('https://example.com/missing').toString('base64'))}, {search:'?job='+encodeURIComponent(Buffer.from('https://example.com/job').toString('base64')),fetchError:Error('offline')}]){
   const b=board(opts);await b.boot();assert.equal(!!b.app.state.detailOpen,false);assert.equal(b.opened.length,0);
-  if(opts.fetchError)assert.equal(b.app._loadError,true);else assert.match(b.grid.textContent,/shared job.*(invalid|no longer available)/i);
+  if(opts.fetchError){b.runTimers(600);await tick();await tick();assert.equal(b.app._loadError,true);}else assert.match(b.grid.textContent,/shared job.*(invalid|no longer available)/i);
  }
 });
 

@@ -99,7 +99,7 @@ for(const route of ['/jobs.html','/internships.html']) {
   });
   test(route+': a failed first request reveals retry without publishing cached cards',async()=>{
     const b=board({fetchError:Error('offline'),saved:{'https://example.com/previous':true}});
-    b.window.SUInternships=require('../../js/internships.js');await b.boot();
+    b.window.SUInternships=require('../../js/internships.js');await b.boot();assert.equal(b.app._loading,true);b.runTimers(600);await tick();await tick();
     assert.equal(b.app._loading,false);assert.equal(b.app._loadError,true);assert.equal(b.app.jobs.length,0);
     assert(b.grid.querySelector('[data-act="retryJobs"]'));assert.equal(b.grid.querySelectorAll('.note[data-act="openJob"]').length,0);
     b.runTimers(600);assert.notEqual(b.document.getElementById('su-feed-progress').getAttribute('hidden'),null);

@@ -7,7 +7,7 @@
   var state={status:'unknown',revision:0,removed:[]},listeners=[],request=null,epoch=0,floor=0;
   var local=!!(root.location&&(/^(localhost|127\.0\.0\.1|\[::1\])$/.test(root.location.hostname)||root.location.protocol==='file:'));
   var fetcher=root.fetch.bind(root), endpoint='/api/job-moderation';
-  function error(message){return new Error(message||'Could not check current job availability. Please try again.');}
+  function error(message,code,status){var failure=new Error(message||'Could not check current job availability. Please try again.');failure.feedFailure={stage:'moderation',code:code||'validation'};if(Number.isInteger(status))failure.feedFailure.status=status;return failure;}
   function emit(next){var changed=state.status!==next.status||state.revision!==next.revision;state=next;if(changed)listeners.slice().forEach(function(fn){try{fn(state);}catch(_){}});}
   function inspect(link){return root.SUJobIdentity&&root.SUJobIdentity.inspect(link);}
   function validLink(link){var info=typeof link==='string'&&link.length<=8192&&inspect(link);return !!(info&&info.valid&&!info.ambiguous);}
@@ -18,10 +18,11 @@
   }
   function timedFetch(options,path){
     var controller=new root.AbortController(),timer;
-    var timeout=new Promise(function(_,reject){timer=root.setTimeout(function(){controller.abort();reject(error());},10000);});
-    var work=fetcher(path||endpoint,Object.assign({cache:'no-store',credentials:'same-origin',signal:controller.signal},options)).then(function(response){
+    var timeout=new Promise(function(_,reject){timer=root.setTimeout(function(){controller.abort();reject(error(null,'timeout'));},10000);});
+    var transport;try{transport=fetcher(path||endpoint,Object.assign({cache:'no-store',credentials:'same-origin',signal:controller.signal},options));}catch(_){transport=Promise.reject(error(null,'network'));}
+    var work=Promise.resolve(transport).catch(function(){throw error(null,'network');}).then(function(response){
       if(local&&response.status===404)return response;
-      return response.text().then(function(text){if(text.length>4194304)throw error();var data;try{data=JSON.parse(text);}catch(_){throw error();}return {ok:response.ok,status:response.status,json:function(){return Promise.resolve(data);}};});
+      return response.text().catch(function(){throw error(null,'network');}).then(function(text){if(text.length>4194304)throw error();var data;try{data=JSON.parse(text);}catch(_){throw error(null,response.ok?'parse':'http',response.status);}return {ok:response.ok,status:response.status,json:function(){return Promise.resolve(data);}};});
     });
     return Promise.race([work,timeout]).finally(function(){root.clearTimeout(timer);});
   }
@@ -29,7 +30,7 @@
     if(request)return request;
     var generation=epoch,pending=timedFetch({method:'GET'}).then(function(response){
       if(local&&response.status===404)return {status:'local',revision:0,removed:[]};
-      if(!response.ok)throw error();return response.json().then(validate);
+      if(!response.ok)throw error(null,'http',response.status);return response.json().then(validate);
     }).then(function(next){if(generation!==epoch)throw error('Availability changed. Please try again.');if(next.status==='ready')floor=Math.max(floor,next.revision);emit(next);return next;}).catch(function(e){if(generation===epoch)emit({status:'error',revision:state.revision,removed:state.removed});throw e;}).finally(function(){if(request===pending)request=null;});
     request=pending;return pending;
   }

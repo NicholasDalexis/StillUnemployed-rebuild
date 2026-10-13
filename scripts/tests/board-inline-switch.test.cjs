@@ -79,10 +79,10 @@ test('rapid Jobs to Internships to Jobs safely coalesces an existing Jobs read',
 
 test('failed or unverified Internships stay empty and retry does not restore old Jobs',async()=>{
   const b=harness();await b.boot();b.jobs(b.pending[0]);await settle();
-  const next=b.app.switchSection('internships');await settle();b.pending[1].reject(Error('offline'));assert.equal(await next,false);
+  const next=b.app.switchSection('internships');await settle();b.pending[1].reject(Error('offline'));assert.equal(await next,false);b.runTimers(600);await settle();b.pending[2].reject(Error('still offline'));await settle();
   assert.equal(b.app.jobs.length,0);assert.equal(b.app._moderationCatalog,null);assert.equal(b.app._loadError,true);assert.equal(b.app.internships,true);
   b.grid.querySelector('[data-act="retryJobs"]').click();await settle();
-  const data=internData();data.status='awaiting_verification';data.jobs=[];b.internships(b.pending[2],data);await settle();
+  const data=internData();data.status='awaiting_verification';data.jobs=[];b.internships(b.pending[3],data);await settle();
   assert.equal(b.app.jobs.length,0);assert.equal(b.app._loadError,false);assert.equal(b.app._internshipStatus,'awaiting_verification');
 });
 

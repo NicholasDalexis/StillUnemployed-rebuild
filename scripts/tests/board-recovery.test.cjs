@@ -65,9 +65,9 @@ test('authoritative feed refresh removes stale detail content while retaining th
 test('refresh failure clears unverified catalog, retains filters, and a retry reads fresh data',async()=>{
  let fail=false;const b=board({response:{ok:true,text:async()=>{if(fail)throw Error('offline');return csv([row()]);}}});await b.boot();
  b.app.setState({q:'Designer',cat:'Social'});fail=true;b.advance(61000);b.fireWindow('focus');await tick();await tick();
- assert.equal(b.app.jobs.length,0);assert.equal(b.app._loadError,true);assert.equal(b.app.state.q,'Designer');
+ assert.equal(b.app.jobs.length,0);assert.equal(b.app._loading,true);b.runTimers(600);await tick();await tick();assert.equal(b.app._loadError,true);assert.equal(b.app.state.q,'Designer');
  const retry=b.grid.querySelector('[data-act="retryJobs"]');assert(retry);fail=false;retry.click();await tick();await tick();
- assert.equal(b.requests.length,3);assert.equal(b.app.jobs.length,1);assert.equal(b.app._loadError,false);assert.equal(b.app.state.cat,'Social');
+ assert.equal(b.requests.length,4);assert.equal(b.app.jobs.length,1);assert.equal(b.app._loadError,false);assert.equal(b.app.state.cat,'Social');
 });
 
 test('starting a background refresh preserves the live navigation and focused search until the response settles',async()=>{
