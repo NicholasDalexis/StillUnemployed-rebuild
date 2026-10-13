@@ -32,7 +32,7 @@ test('editorial removal, unknown absence and failure never manufacture a confirm
  for(const status of ['Inactive','No','dead pending review']){
   const saved=row({'Active/Dead':status});const b=setup({saved:{[saved.Link]:true},response:{ok:true,text:async()=>csv([saved])}});await b.boot();showSaved(b);assert.doesNotMatch(card(b,saved.Link).textContent,/No longer available/);assert.equal(b.app.jobs.length,0);
  }
- let fail=false;const b=setup({response:{ok:true,text:async()=>{if(fail)throw Error('offline');return csv([row()]);}}});await b.boot();b.app.toggleSave(job().link);fail=true;b.advance(61000);b.fireWindow('focus');await tick();await tick();showSaved(b);
+ let fail=false;const b=setup({response:{ok:true,text:async()=>{if(fail)throw Error('offline');return csv([row()]);}}});await b.boot();b.app.toggleSave(job().link);fail=true;b.advance(61000);b.fireWindow('focus');await tick();await tick();b.runTimers(600);await tick();await tick();showSaved(b);
  assert.equal(b.app._loadError,true);assert.doesNotMatch(card(b,job().link).textContent,/No longer available/);assert.equal(b.app.jobs.length,0);
 });
 

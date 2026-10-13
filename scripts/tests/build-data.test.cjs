@@ -27,6 +27,7 @@ function homeFeed(fetcher = async () => { throw new Error('offline'); }, identit
   return {
     parseCSV:current.helpers.parseCSV,rowsToJobs:current.helpers.rowsToJobs,
     get grid(){return current.grid;},get app(){return current.app;},
+    async settleRetry(){current.runTimers(600);await new Promise(resolve=>setImmediate(resolve));await new Promise(resolve=>setImmediate(resolve));},
     async load(){
       let options;try{options={response:await fetcher('https://docs.google.com/spreadsheets/current-jobs')};}catch(error){options={fetchError:error};}
       current=rootBoard(options);await current.boot();
@@ -124,7 +125,7 @@ test('valid zero eligible jobs builds successfully and homepage shows zero witho
 test('homepage outage clears old cards and shows unavailable without fetching stale snapshot', async () => {
   const calls = [];
   const home = homeFeed(async url => { calls.push(url); throw new Error('offline'); });
-  await home.load();
+  await home.load();await home.settleRetry();
   assert.equal(calls.length, 1);
   assert.equal(home.grid.querySelectorAll('.note[data-act="openJob"]').length, 0);
   assert.match(home.grid.textContent, /Jobs could not load right now/);

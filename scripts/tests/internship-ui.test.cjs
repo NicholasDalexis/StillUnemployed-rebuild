@@ -33,8 +33,8 @@ const { board } = fixtureModule.exports;
 
 test('hosted internships honor the live catalog and never fall back after a status failure', async () => {
   const b = board({fetchError:new Error('status service unavailable')});
-  b.window.SUInternships=I;await b.boot();
-  assert.equal(b.requests.length,1);
+  b.window.SUInternships=I;await b.boot();assert.equal(b.app._loading,true);b.runTimers(600);await new Promise(resolve=>setImmediate(resolve));await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(b.requests.length,2);
   assert.equal(b.requests[0].url,'/.netlify/functions/internships-catalog');
   assert.equal(b.app.jobs.length,0);assert.equal(b.app._loadError,true);
   assert(b.grid.querySelector('[data-act="retryJobs"]'));

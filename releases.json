@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.14",
+  "currentVersion": "2.7.7.15",
   "releases": [
+    {
+      "version": "2.7.7.15",
+      "date": "2026-10-13",
+      "title": "Recover interrupted board loading",
+      "changes": [
+        "Retry one transient Jobs or Internships feed/moderation failure, preserve epoch and visibility boundaries, report sanitized local failure stages, and show unavailable live counts instead of false zeroes. Keep moderation mandatory and preserve saved roles."
+      ],
+      "public": {
+        "title": "More reliable job board loading",
+        "changes": [
+          "The board retries a temporary loading problem automatically and makes unavailable counts clearer."
+        ]
+      }
+    },
     {
       "version": "2.7.7.14",
       "date": "2026-10-13",
@@ -1139,7 +1153,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "36c36c886bee9d40c26fbc50bdd96b8bb7849adde0a22d7f42ff862d35435948",
+    "digest": "42a6bc5131033a50faf30364f4e7607497f30876fabb606cec718fc03faecede",
     "fileCount": 222
   }
 }

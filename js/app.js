@@ -1819,6 +1819,7 @@
       document.body.style.setProperty('--su-action-ink',ACC_INK);
 
       // ---- categories panel rows (live counts) ----
+      var countsUnavailable=!this.state.savedOnly&&(this._loading||this._loadError||this._moderationError);
       var catRowBase = "display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-radius:4px; font-family:'Indie Flower',cursive; font-size:18px; font-weight:700; cursor:pointer; transition:background .12s;";
       var catRowsHtml = this.catList().map(function (c) {
         var active = self.state.cat === c.match;
@@ -1826,7 +1827,7 @@
         var rowStyle = catRowBase + (active ? ('background:' + ACC + '; color:' + ACC_INK + ';') : 'background:transparent; color:var(--su-ink);');
         var countStyle = "font-family:var(--su-body); font-weight:700; font-size:12px;" + 'color:inherit;';
         return '<div data-act="cat" data-val="' + esc(c.match) + '" style="' + rowStyle + '">' + esc(c.label) +
-          '<span style="' + countStyle + '">' + count + '</span></div>';
+          '<span'+(countsUnavailable?' aria-label="Count unavailable"':'')+' style="' + countStyle + '">' + (countsUnavailable?'—':count) + '</span></div>';
       }).join('');
 
       // ---- work-style pills ----
@@ -2118,6 +2119,7 @@
       }).join('');
 
       var showingLabel = this.state.savedOnly ? shown.length + ' saved '+(shown.length===1?'role':'roles') : shown.length + (INTERNSHIPS ? (shown.length === 1 ? ' internship' : ' internships') : (shown.length === 1 ? ' job' : ' jobs'));
+      if(!this.state.savedOnly&&(this._loadError||this._moderationError))showingLabel='Listing count unavailable';
       var savedCatalog=this.catalogJobs();
       var missingSaved = savedJobs.filter(function (saved) { return !savedCatalog.some(function (job) { return jobHasLink(job, saved.link); }); }).map(function (job) { return job.link; });
       var emptyTitle = this._moderationError ? 'Could not check current job availability' : this._loadError ? 'Jobs could not load right now' : this.state.savedOnly ? (missingSaved.length ? 'Your saved links are below' : 'no saved roles yet') : "We're looking for more jobs RN, check back soon!";
@@ -2320,7 +2322,7 @@
         if(categoryPanel){
           categoryPanel.querySelectorAll('[data-act="cat"]').forEach(function(row){
             var category=row.getAttribute('data-val'),count=row.querySelector('span');
-            if(count)count.textContent=String(category==='all'?base.length:base.filter(function(j){return j.ind===category;}).length);
+            if(count){count.textContent=countsUnavailable?'—':String(category==='all'?base.length:base.filter(function(j){return j.ind===category;}).length);if(countsUnavailable)count.setAttribute('aria-label','Count unavailable');else count.removeAttribute('aria-label');}
           });
         }
         this.observeImpressions();
@@ -3404,7 +3406,8 @@
     try { var parsed = new URL(u); return parsed.hostname && !parsed.username && !parsed.password ? u : ''; } catch (e) { return ''; }
   }
 
-  var feedRequest=null, feedEpoch=0, lastFeedCheck=0, firstFeed=true, initialView=null;
+  var feedRequest=null, feedEpoch=0, lastFeedCheck=0, firstFeed=true, initialView=null, feedRetryTimer=null, feedRetryRequest=null, feedRetrySuspended=false;
+  function cancelFeedRetry(){if(feedRetryTimer!==null){clearTimeout(feedRetryTimer);feedRetryTimer=null;}feedRetryRequest=null;}
   function currentSection(){return INTERNSHIPS?'internships':'jobs';}
   function currentFeed(request){return request.epoch===feedEpoch && request.section===currentSection();}
   function sectionFilters(section, restored){
@@ -3432,7 +3435,7 @@
     clearTimeout(App._renderTimer);App._renderTimer=null;clearTimeout(App._qTimer);App._qTimer=null;
     if(App._cancelSalaryEdit)App._cancelSalaryEdit();
     // Invalidate the prior result before changing any catalog-dependent state.
-    feedEpoch++;INTERNSHIPS=section==='internships';App.internships=INTERNSHIPS;
+    cancelFeedRetry();feedEpoch++;INTERNSHIPS=section==='internships';App.internships=INTERNSHIPS;
     try{window.sessionStorage.setItem(HOME_SECTION_KEY,section);}catch(_){}
     firstFeed=false;initialView=null;lastFeedCheck=0;App._sharedJobLink=null;App._sharedNotice='';
     var restored=runtime && runtime.read?runtime.read(section):null;
@@ -3479,32 +3482,57 @@
     }
     return restored;
   }
+  // Only finite diagnostic categories reach the console; never response bodies,
+  // account data, source URLs, query contents or raw exception messages.
+  function feedFailure(code,status){
+    var failure=Error('Board feed unavailable');failure.feedFailure={stage:'catalog',code:code};
+    if(Number.isInteger(status))failure.feedFailure.status=status;
+    return failure;
+  }
+  function feedResponse(url,options){
+    return Promise.resolve().then(function(){return fetch(url,options);})
+      .catch(function(error){throw feedFailure(error&&error.name==='AbortError'?'timeout':'network');})
+      .then(function(response){if(!response.ok)throw feedFailure('http',response.status);return response;});
+  }
+  function feedBody(response,format){
+    return response[format]().catch(function(error){throw feedFailure(error&&error.name==='SyntaxError'?'parse':error&&error.name==='AbortError'?'timeout':'network');});
+  }
+  function feedDiagnostic(error,request){
+    var detail=error&&error.feedFailure||{},stage=['catalog','moderation','runtime'].indexOf(detail.stage)>=0?detail.stage:'render';
+    var code=['network','timeout','http','parse','validation'].indexOf(detail.code)>=0?detail.code:'unexpected';
+    var result={section:request.section,stage:stage,code:code,attempt:request.attempt+1,elapsedMs:Math.max(0,Math.min(120000,Date.now()-request.startedAt))};
+    if(Number.isInteger(detail.status)&&detail.status>=100&&detail.status<=599)result.status=detail.status;
+    try{if(window.console&&typeof window.console.warn==='function')window.console.warn('[StillUnemployed] Board load failed',result);}catch(_){}
+    return result;
+  }
+  function transientFeedFailure(detail){return detail.code==='network'||detail.code==='timeout'||detail.code==='http'&&[408,500,502,503,504].indexOf(detail.status)>=0;}
   function loadFeed(section,signal) {
     if(section==='internships'){
       var localPreview=['localhost','127.0.0.1','[::1]'].includes(location.hostname)||location.protocol==='file:';
-      return fetch(localPreview?'./internships-data.json':'/.netlify/functions/internships-catalog',{cache:'no-store',signal:signal})
-        .then(function(r){if(!r.ok)throw Error('Internship feed unavailable');return r.json();})
+      return feedResponse(localPreview?'./internships-data.json':'/.netlify/functions/internships-catalog',{cache:'no-store',signal:signal})
+        .then(function(r){return feedBody(r,'json');})
         .then(function(data){
-          if(!window.SUInternships)throw Error('Internship validator unavailable');
+          if(!window.SUInternships)throw feedFailure('validation');
           if(!localPreview)return data;
           return fetch('./netlify/functions/lib/internship-display.json',{cache:'no-store',signal:signal})
             .then(function(r){if(!r.ok)throw Error('Local presentation unavailable');return r.json();})
             .then(function(copy){return Object.assign({},data,{jobs:data.jobs.map(function(job){return window.SUInternships.withPresentation(job,copy[job.link]);})});})
             .catch(function(){return data;});
-        }).then(function(data){return {jobs:window.SUInternships.jobs(data),internshipStatus:data.status,closedLinks:[],archiveCatalog:[]};});
+        }).then(function(data){try{return {jobs:window.SUInternships.jobs(data),internshipStatus:data.status,closedLinks:[],archiveCatalog:[]};}catch(_){throw feedFailure('validation');}});
     }
-    return fetch(SHEET_CSV_URL+'&_='+Date.now(),{cache:'no-cache',signal:signal})
-      .then(function(r){if(!r.ok)throw Error('Jobs feed unavailable');return r.text();})
-      .then(function(text){var metadata={};return Object.assign(metadata,{jobs:rowsToJobs(parseCSV(text),metadata)});});
+    return feedResponse(SHEET_CSV_URL+'&_='+Date.now(),{cache:'no-cache',signal:signal})
+      .then(function(r){return feedBody(r,'text');})
+      .then(function(text){try{var metadata={};return Object.assign(metadata,{jobs:rowsToJobs(parseCSV(text),metadata)});}catch(_){throw feedFailure('validation');}});
   }
   function loadingNote(){
     if(!App._loading)return;
     App._loadingVisible=true;
     var status=document.getElementById('su-feed-progress');if(status)status.hidden=false;
   }
-  function refreshFeed(){
+  function refreshFeed(retrying){
     if(feedRequest && currentFeed(feedRequest))return feedRequest.promise;
-    var request={section:currentSection(),epoch:++feedEpoch},initial=firstFeed,runtime=window.SUBoardRuntime;
+    cancelFeedRetry();
+    var request={section:currentSection(),epoch:++feedEpoch,attempt:retrying===true?1:0,startedAt:Date.now()},initial=firstFeed,runtime=window.SUBoardRuntime;
     feedRequest=request;
     var loadingTimer=App._loading?setTimeout(function(){if(currentFeed(request))loadingNote();},600):null;
     if(!App._loading){App._refreshing=true;var progress=document.getElementById('su-feed-progress');if(progress)progress.hidden=false;uxEvent('feed_refresh');}
@@ -3529,9 +3557,11 @@
         if(currentFeed(request) && !App._feedInteracted && (!runtime.owner || runtime.owner()===owner) && runtime.read(request.section) && window.scrollTo)window.scrollTo(0,restored.y);
       },0);}
       return true;
-    }).catch(function(){
+    }).catch(function(error){
       if(!currentFeed(request))return false;
-      App._loading=false;App._loadingVisible=false;App._loadError=true;App._refreshing=false;lastFeedCheck=Date.now();
+      var diagnostic=feedDiagnostic(error,request);
+      request.retry=request.attempt===0&&transientFeedFailure(diagnostic);
+      App._loading=!!request.retry;App._loadingVisible=!!request.retry;App._loadError=!request.retry;App._refreshing=false;lastFeedCheck=Date.now();
       checkViewOwner();
       App._moderationCatalog=null;
       // Unknown availability never revives a static catalog. Filters and account state remain.
@@ -3539,7 +3569,12 @@
       return false;
     }).finally(function(){
       if(loadingTimer)clearTimeout(loadingTimer);
-      if(currentFeed(request)){firstFeed=false;if(feedRequest===request)feedRequest=null;}
+      if(currentFeed(request)){
+        firstFeed=false;if(feedRequest===request)feedRequest=null;
+        // Release the failed request before retrying. Section changes and newer
+        // requests invalidate recovery; hidden pages retain it until they resume.
+        if(request.retry){feedRetryRequest=request;if(!feedRetrySuspended&&!document.hidden)feedRetryTimer=setTimeout(function(){feedRetryTimer=null;if(currentFeed(request)&&!feedRetrySuspended&&!document.hidden)refreshFeed(true);},600);}
+      }
     });
     return request.promise;
   }
@@ -3595,11 +3630,11 @@
       if(App._reportToastOwner!==moderationOwner())clearReportedToast();App.renderOverlays();
     });
     window.addEventListener('storage',function(e){if(e.key==='su_sync_owner')checkViewOwner();});
-    window.addEventListener('pagehide',function(){if(window.SUBoardRuntime)window.SUBoardRuntime.save(INTERNSHIPS?'internships':'jobs',App.state);});
-    function recheck(){if(!firstFeed && !document.hidden && Date.now()-lastFeedCheck>=60000)refreshFeed();}
+    window.addEventListener('pagehide',function(){feedRetrySuspended=true;if(feedRetryTimer!==null){clearTimeout(feedRetryTimer);feedRetryTimer=null;}if(window.SUBoardRuntime)window.SUBoardRuntime.save(INTERNSHIPS?'internships':'jobs',App.state);});
+    function recheck(){if(document.hidden)return;feedRetrySuspended=false;if(feedRetryRequest&&currentFeed(feedRetryRequest)){refreshFeed(true);return;}if(!firstFeed && !document.hidden && Date.now()-lastFeedCheck>=60000)refreshFeed();}
     window.addEventListener('focus',recheck);
     window.addEventListener('pageshow',function(e){
-      if(!e.persisted)return;
+      feedRetrySuspended=false;if(!e.persisted)return;
       var runtime=window.SUBoardRuntime;
       var ownerChanged=checkViewOwner();
       var sectionChanged=runtime&&runtime.enterSection&&runtime.enterSection(INTERNSHIPS?'internships':'jobs');

@@ -9,7 +9,7 @@
   function request(key,load){
     if(pending[key])return pending[key];
     var controller=typeof root.AbortController==='function'?new root.AbortController():null,timer;
-    var timeout=new Promise(function(_,reject){timer=root.setTimeout(function(){if(controller)controller.abort();reject(Error('Request timed out'));},20000);});
+    var timeout=new Promise(function(_,reject){timer=root.setTimeout(function(){if(controller)controller.abort();var failure=Error('Request timed out');failure.feedFailure={stage:'runtime',code:'timeout'};reject(failure);},20000);});
     var work=Promise.resolve().then(function(){return load(controller?controller.signal:undefined);});
     pending[key]=Promise.race([work,timeout]).finally(function(){root.clearTimeout(timer);delete pending[key];});
     return pending[key];
