@@ -1,0 +1,20 @@
+{
+  "version": "2.7.7.14",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-10-13T22:21:00.613Z",
+  "reviewer": "Codex sourcing coordinator",
+  "sourceDigest": "36c36c886bee9d40c26fbc50bdd96b8bb7849adde0a22d7f42ff862d35435948",
+  "sourceFileCount": 222,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Two verified public internships plus already-reviewed hourly-cents formatter fix. No new data collection, provider, consent, authentication, account, moderation or retention flow.",
+  "checks": {
+    "disclosures": "Reviewed Privacy and Terms; no wording change needed. Employer facts stay distinct from verification, applications are not submitted.",
+    "publication": "Complete native source with all-status identity check, 64 exact previously approved carry-forwards and 2 fresh source-bound admissions; Dead/Closed and unresolved new rows excluded. Public allowlist excludes admission receipts, private notes and sheet provenance IDs.",
+    "compensation": "Hourly cents preserved in shared card/dialog/share formatter. Exact underlying employer source text remains unchanged."
+  },
+  "openItems": [
+    "Hosted preview/production QA recorded separately in private release evidence.",
+    "No physical-device or fresh OAuth retest is claimed for this unchanged authentication flow."
+  ]
+}

@@ -18,7 +18,7 @@ const sharePath=(theme='original',image=false)=>image?'/j/og/internships/'+theme
 
 test('approved internship shares preserve pay periods, explicit internship state and minimal public copy',async()=>{
  const {loadInternshipShares}=await loader;
- for(const [pay,payBasis,expected] of [['$22.50/hour','hour','$23/hour'],['$8,000 for the program','program','$8,000/program'],['$75,600/year','annualized_year','$76K/year'],['Paid; amount not disclosed','not_listed','$ Paid'],['Unpaid','not_listed','Unpaid']]){
+ for(const [pay,payBasis,expected] of [['$22.50/hour','hour','$22.50/hour'],['$8,000 for the program','program','$8,000/program'],['$75,600/year','annualized_year','$76K/year'],['Paid; amount not disclosed','not_listed','$ Paid'],['Unpaid','not_listed','Unpaid']]){
   const job=row({pay,payBasis,payStatus:pay==='Unpaid'?'unpaid':'paid',secretNotes:'DO_NOT_PUBLISH'});
   const rows=await loadInternshipShares({snapshot:snapshot([job]),now:()=>NOW,fetchImpl:async()=>sourceResponse([[link,'Active','Open']])});
   assert.equal(rows.length,1);assert.equal(rows[0].pay,expected);assert.equal(rows[0].internship,true);assert.equal(rows[0].applicationStatus,'open');assert.equal(rows[0].loc,'Chicago, IL');

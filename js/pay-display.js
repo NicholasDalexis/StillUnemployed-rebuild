@@ -49,7 +49,11 @@
     var annual = parsed.basis === 'annual' || parsed.basis === 'year' || parsed.basis === 'annualized_year';
     // Small explicitly annual amounts must not turn into a misleading $0K.
     var useK = (annual || ((!parsed.basis || parsed.basis === 'not_listed') && parsed.k)) && parsed.low >= 1000;
-    function amount(value) { return useK ? String(Math.round(value / 1000)) + 'K' : whole(value); }
+    // Hourly cents are meaningful employer pay, including narrow ranges.
+    function amount(value) {
+      if (useK) return String(Math.round(value / 1000)) + 'K';
+      return parsed.basis === 'hour' ? value.toLocaleString('en-US', { minimumFractionDigits:Number.isInteger(value) ? 0 : 2, maximumFractionDigits:20 }) : whole(value);
+    }
     var low = amount(parsed.low), high = amount(parsed.high);
     var suffix = { hour:'/hour', week:'/week', month:'/month', program:'/program', annualized_year:'/year', year:'/year' }[parsed.basis] || '';
     return (parsed.prefix === '+' ? '' : parsed.prefix) + parsed.currency + low + (low === high ? '' : '–' + high) + suffix + (parsed.prefix === '+' ? '+' : '');

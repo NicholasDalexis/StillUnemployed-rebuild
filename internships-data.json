@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-03T18:39:38.069Z",
+  "sourceExportedAt": "2026-10-13T22:10:43.076Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -401,51 +401,6 @@
         "status": "open",
         "checkedAt": "2026-10-02T15:13:37.415Z",
         "sourceUrl": "https://boards-api.greenhouse.io/v1/boards/figma/jobs/6131089004?questions=true",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Elite Dental Partners",
-      "role": "Part-Time Graphic Design Intern",
-      "link": "https://job-boards.greenhouse.io/elitedentalpartnersllc/jobs/5225603007",
-      "loc": "Chicago, IL; occasional practice/event travel",
-      "ind": "Graphic / Visual Design",
-      "desc": "Design digital, print, social, email and website assets across dental brands.",
-      "pay": "$18/hour",
-      "style": "",
-      "exp": "Not listed",
-      "state": "Chicago, IL; occasional practice/event travel",
-      "eligibility": "Pursuing or recently completed an Associate’s or Bachelor’s in Graphic Design, Visual Communications, Marketing, Fine Arts or a related field.\nGraphic design skills; internship, coursework, freelance work or a personal portfolio preferred.\nAdobe Creative Suite or other design-software proficiency, design fundamentals and Microsoft Office/business applications.\nAttention to detail, communication, time management and teamwork; ability to receive design feedback.\nProlonged desk/computer work, occasional lifting up to 25 pounds and occasional travel to practice locations/events.\nApplication asks whether applicant is 18+ and eligible to work in the US; sponsorship needs are asked, but sponsorship availability is not stated.\nChicago, IL; part-time title. Weekly hours and remote/onsite arrangement are not specified.",
-      "cycle": "Not listed",
-      "deadline": "Not listed",
-      "applicationsOpen": "Not listed",
-      "startDate": "Not listed",
-      "timingSourceUrl": "https://boards-api.greenhouse.io/v1/boards/elitedentalpartnersllc/jobs/5225603007?questions=true",
-      "payStatus": "paid",
-      "payBasis": "hour",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Create digital and print marketing assets for multiple dental brands.",
-        "Support social, web, email, paid-media and practice-event campaigns.",
-        "Maintain brand standards, organize assets and incorporate design feedback."
-      ],
-      "eligibilityFlags": [
-        "Pursuing or recently completed an Associate’s or Bachelor’s in Graphic Design, Visual Communications, Marketing, Fine Arts or a related field.",
-        "Graphic design skills; internship, coursework, freelance work or a personal portfolio preferred.",
-        "Adobe Creative Suite or other design-software proficiency, design fundamentals and Microsoft Office/business applications.",
-        "Attention to detail, communication, time management and teamwork; ability to receive design feedback.",
-        "Prolonged desk/computer work, occasional lifting up to 25 pounds and occasional travel to practice locations/events.",
-        "Application asks whether applicant is 18+ and eligible to work in the US; sponsorship needs are asked, but sponsorship availability is not stated.",
-        "Chicago, IL; part-time title. Weekly hours and remote/onsite arrangement are not specified."
-      ],
-      "benefits": [
-        "Not listed"
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-06T21:47:34.332Z",
-        "sourceUrl": "https://boards-api.greenhouse.io/v1/boards/elitedentalpartnersllc/jobs/5225603007?questions=true",
         "reviewerType": "source_check"
       }
     },
@@ -1033,100 +988,6 @@
       }
     },
     {
-      "co": "MP+F",
-      "role": "Marketing Intern: Spring 2027",
-      "link": "https://mpf.com/careers/marketing-intern-spring-2027/",
-      "loc": "Nashville, TN",
-      "ind": "Brand & Marketing",
-      "desc": "Analyze campaigns and develop social and traditional marketing collateral.",
-      "pay": "Paid; amount not disclosed",
-      "style": "In-person",
-      "exp": "Not listed",
-      "state": "Nashville, TN",
-      "eligibility": "College juniors, seniors, graduate students or recent graduates eligible.\n20–30 hours/week in the downtown Nashville office; no remote internships.\nJanuary 25–April 30, 2027; application deadline October 2, 2026.\nOne boilerplate sentence says fall, but the posting title and explicit dates specify Spring 2027.",
-      "cycle": "Spring 2027; January 25–April 30",
-      "deadline": "October 2, 2026",
-      "applicationsOpen": "Not announced",
-      "startDate": "January 25, 2027",
-      "timingSourceUrl": "https://mpf.com/careers/marketing-intern-spring-2027/",
-      "deadlineISO": "2026-10-02",
-      "startDateISO": "2027-01-25",
-      "payStatus": "paid",
-      "payBasis": "not_listed",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Analyze marketing campaigns and research client audiences.",
-        "Develop social-media and traditional marketing collateral.",
-        "Build research reports while supporting assigned client teams."
-      ],
-      "eligibilityFlags": [
-        "College juniors, seniors, graduate students or recent graduates eligible.",
-        "20–30 hours/week in the downtown Nashville office; no remote internships.",
-        "January 25–April 30, 2027; application deadline October 2, 2026.",
-        "One boilerplate sentence says fall, but the posting title and explicit dates specify Spring 2027."
-      ],
-      "benefits": [
-        "Paid downtown parking.",
-        "Company-issued laptop.",
-        "Professional development and mentoring programs.",
-        "Free snack bar and company pro bono opportunities."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-06T21:40:53.742Z",
-        "sourceUrl": "https://mpf.com/careers/marketing-intern-spring-2027/",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "MP+F",
-      "role": "Communications Intern: Spring 2027",
-      "link": "https://mpf.com/careers/communications-intern-spring-2027/",
-      "loc": "Nashville, TN",
-      "ind": "PR & Partnerships",
-      "desc": "Write content, support media relations and coordinate client communications.",
-      "pay": "Paid; amount not disclosed",
-      "style": "In-person",
-      "exp": "Not listed",
-      "state": "Nashville, TN",
-      "eligibility": "College juniors, seniors, graduate students or recent graduates eligible.\n20–30 hours/week in the downtown Nashville office; no remote internships.\nJanuary 25–April 30, 2027; application deadline October 2, 2026.\nOne boilerplate sentence says fall, but the posting title and explicit dates specify Spring 2027.",
-      "cycle": "Spring 2027; January 25–April 30",
-      "deadline": "October 2, 2026",
-      "applicationsOpen": "Not announced",
-      "startDate": "January 25, 2027",
-      "timingSourceUrl": "https://mpf.com/careers/communications-intern-spring-2027/",
-      "deadlineISO": "2026-10-02",
-      "startDateISO": "2027-01-25",
-      "payStatus": "paid",
-      "payBasis": "not_listed",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Write and edit client communications and support media relations.",
-        "Research and monitor news, digital media and social content.",
-        "Help with events, project coordination, advertising and campaign analytics."
-      ],
-      "eligibilityFlags": [
-        "College juniors, seniors, graduate students or recent graduates eligible.",
-        "20–30 hours/week in the downtown Nashville office; no remote internships.",
-        "January 25–April 30, 2027; application deadline October 2, 2026.",
-        "One boilerplate sentence says fall, but the posting title and explicit dates specify Spring 2027."
-      ],
-      "benefits": [
-        "Paid downtown parking.",
-        "Company-issued laptop.",
-        "Professional development and mentoring programs.",
-        "Free snack bar and company pro bono opportunities."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-06T21:44:05.000Z",
-        "sourceUrl": "https://mpf.com/careers/communications-intern-spring-2027/",
-        "reviewerType": "source_check"
-      }
-    },
-    {
       "co": "La Torre Communications",
       "role": "Public Relations / Public Affairs Internship, 2027 sessions",
       "link": "https://latorrecommunications.com/internships/",
@@ -1506,337 +1367,6 @@
       }
     },
     {
-      "co": "Google",
-      "role": "Business Undergraduate Intern, Summer 2027",
-      "link": "https://www.google.com/about/careers/applications/jobs/results/100460871561421510-business-undergraduate-intern-summer-2027",
-      "loc": "Mountain View, CA, USA; Chicago, IL, USA; New York, NY, USA; San Bruno, CA, USA; San Francisco, CA, USA; Sunnyvale, CA, USA",
-      "ind": "Brand/Marketing",
-      "desc": "Google Interns are given a lot of responsibility and the opportunity to provide a meaningful contribution to their teams. Responsibilities are assigned to interns at the start of the program.",
-      "pay": "$58K-77K (pay period not listed)",
-      "style": "",
-      "exp": "Not listed",
-      "state": "Mountain View, CA, USA; Chicago, IL, USA; New York, NY, USA; San Bruno, CA, USA; San Francisco, CA, USA; Sunnyvale, CA, USA",
-      "eligibility": "Minimum qualifications:\nCurrently enrolled in a full-time Bachelor's degree program.\nPreferred qualifications:\nIn the penultimate academic year or returning to a bachelor's degree program after completion of the internship.\nCurrently attending a bachelor's degree program in the US and available to complete a full-time, consecutive 12-week internship between May and September 2027 (exact dates provided at a later point).\nExcellent people management and organizational skills, with the ability to navigate an ambiguous environment.\nExcellent problem-solving skills and interest in taking on business problems.\nInterest in the technology industry and Google’s business.\nAI Fluency\n\ninfo_outline\nX\nParticipation in the internship program requires that you are located and have legal authorization to work in the United States for the duration of the internship program. For internship opportunities in the location where you are eligible for summer work authorization, please check google.com/students.\nPlease note that applications for this program will be considered for multiple functions based across the United States. After the application period closes, we may reach out to collect additional information regarding your background and skills. You will then have the opportunity to state function preferences.\nTimeline\nApplication: Please complete your application by October 9th\nInterviews: Will occur on a rolling basis through Q1 2027\nInternship: 12 consecutive weeks starting in May or June 2027\nHow to submit your application\nTo start the application process, you will need an updated resume and a current unofficial or official transcript in English. Click on the ‘Apply’ button on this page and provide the required materials in the appropriate sections (PDFs preferred):\nIn the “Resume Section:” attach a resume \nPlease ensure you’ve listed your anticipated graduation date (in MM/YY) \nIn the “Education Section:” attach a current unofficial or official transcript in English.\nUnder “Degree Status,” select “Now attending” to upload a transcript.\n**This internship program is intended for students that are in their penultimate year of a Bachelor's degree program (depending on their program and unique circumstances).**\nWe will review applications and interview candidates on a rolling basis through Q1 2027, or when all roles are filled. Updates will be provided as the status of applications change in the recruiting process. Candidates will be matched with teams based on their background and skills.\nApplicants in San Francisco: Qualified applications with arrest or conviction records will be considered for employment in accordance with the San Francisco Fair Chance Ordinance for Employers and the California Fair Chance Act.\n",
-      "cycle": "Summer 2027",
-      "deadline": "2026-10-09",
-      "applicationsOpen": "Not listed",
-      "startDate": "May or June 2027",
-      "timingSourceUrl": "https://www.google.com/about/careers/applications/jobs/results/100460871561421510-business-undergraduate-intern-summer-2027",
-      "deadlineISO": "2026-10-09",
-      "payStatus": "paid",
-      "payBasis": "not_listed",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Google Interns are given a lot of responsibility and the opportunity to provide a meaningful contribution to their teams. Responsibilities are assigned to interns at the start of the program."
-      ],
-      "eligibilityFlags": [
-        "Minimum qualifications:",
-        "Currently enrolled in a full-time Bachelor's degree program.",
-        "Preferred qualifications:",
-        "In the penultimate academic year or returning to a bachelor's degree program after completion of the internship.",
-        "Currently attending a bachelor's degree program in the US and available to complete a full-time, consecutive 12-week internship between May and September 2027 (exact dates provided at a later point).",
-        "Excellent people management and organizational skills, with the ability to navigate an ambiguous environment.",
-        "Excellent problem-solving skills and interest in taking on business problems.",
-        "Interest in the technology industry and Google’s business.",
-        "AI Fluency",
-        "info_outline",
-        "X",
-        "Participation in the internship program requires that you are located and have legal authorization to work in the United States for the duration of the internship program. For internship opportunities in the location where you are eligible for summer work authorization, please check google.com/students.",
-        "Please note that applications for this program will be considered for multiple functions based across the United States. After the application period closes, we may reach out to collect additional information regarding your background and skills. You will then have the opportunity to state function preferences.",
-        "Timeline",
-        "Application: Please complete your application by October 9th",
-        "Interviews: Will occur on a rolling basis through Q1 2027",
-        "Internship: 12 consecutive weeks starting in May or June 2027",
-        "How to submit your application",
-        "To start the application process, you will need an updated resume and a current unofficial or official transcript in English. Click on the ‘Apply’ button on this page and provide the required materials in the appropriate sections (PDFs preferred):",
-        "In the “Resume Section:” attach a resume",
-        "Please ensure you’ve listed your anticipated graduation date (in MM/YY)",
-        "In the “Education Section:” attach a current unofficial or official transcript in English.",
-        "Under “Degree Status,” select “Now attending” to upload a transcript.",
-        "*This internship program is intended for students that are in their penultimate year of a Bachelor's degree program (depending on their program and unique circumstances).**",
-        "We will review applications and interview candidates on a rolling basis through Q1 2027, or when all roles are filled. Updates will be provided as the status of applications change in the recruiting process. Candidates will be matched with teams based on their background and skills.",
-        "Applicants in San Francisco: Qualified applications with arrest or conviction records will be considered for employment in accordance with the San Francisco Fair Chance Ordinance for Employers and the California Fair Chance Act."
-      ],
-      "benefits": [
-        "See employer posting"
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-27T19:24:36.309Z",
-        "sourceUrl": "https://www.google.com/about/careers/applications/jobs/results/100460871561421510-business-undergraduate-intern-summer-2027",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Google",
-      "role": "Hardware Engineering Intern, BS/MS, Summer 2027",
-      "link": "https://www.google.com/about/careers/applications/jobs/results/122803627516404422-hardware-engineering-intern-bsms-summer-2027",
-      "loc": "Mountain View, CA, USA; Ann Arbor, MI, USA; Atlanta, GA, USA; Austin, TX, USA; Boulder, CO, USA; Cambridge, MA, USA; Bellevue, WA, USA; Chicago, IL, USA; Irvine, CA, USA; Los Angeles, CA, USA; Madison, WI, USA; New York, NY, USA; Palo Alto, CA, USA; Portland, OR, USA; Pittsburgh, PA, USA; Raleigh, NC, USA; Durham, NC, USA; Reston, VA, USA; Redmond, WA, USA; Redwood City, CA, USA; San Diego, CA, USA; Goleta, CA, USA; San Bruno, CA, USA; Seattle, WA, USA; San Francisco, CA, USA; San Jose, CA, USA; Santa Cruz, CA, USA; South San Francisco, CA, USA; Sunnyvale, CA, USA; Washington D.C., DC, USA; Kirkland, WA, USA",
-      "ind": "Creative Tech",
-      "desc": "Responsibilities may vary based on specific teams.",
-      "pay": "$86K-115K (pay period not listed)",
-      "style": "",
-      "exp": "Not listed",
-      "state": "Mountain View, CA, USA; Ann Arbor, MI, USA; Atlanta, GA, USA; Austin, TX, USA; Boulder, CO, USA; Cambridge, MA, USA; Bellevue, WA, USA; Chicago, IL, USA; Irvine, CA, USA; Los Angeles, CA, USA; Madison, WI, USA; New York, NY, USA; Palo Alto, CA, USA; Portland, OR, USA; Pittsburgh, PA, USA; Raleigh, NC, USA; Durham, NC, USA; Reston, VA, USA; Redmond, WA, USA; Redwood City, CA, USA; San Diego, CA, USA; Goleta, CA, USA; San Bruno, CA, USA; Seattle, WA, USA; San Francisco, CA, USA; San Jose, CA, USA; Santa Cruz, CA, USA; South San Francisco, CA, USA; Sunnyvale, CA, USA; Washington D.C., DC, USA; Kirkland, WA, USA",
-      "eligibility": "Minimum qualifications:\nCurrently pursuing a Bachelor's or Master's degree in Electrical Engineering, Mechanical Engineering, Computer Engineering, Computer Science, or a related technical field.\nPreferred qualifications:\nCurrently attending a degree program in the US and available to work full time for 12 weeks outside of university term time.\nIn their penultimate academic year or returning to a degree program after completion of the internship.\nExperience in one or more of the following areas: hardware system integration (board design, board bring-up), signal and power integrity, system validation, product design (mechanical/thermal), computer architecture, FPGAs, embedded systems, or memory systems (FEA or CFD), modeling or simulation for power/thermal analysis, or prototyping, testing, and debugging of data center systems in a lab environment. \nExperience with data center systems, consumer electronics or device manufacturing.\nExperience in one or more of the following areas: board layout (e.g., working with CAD/PCB design), CAD tools (e.g., NX, Creo, or Solidworks), systems integration.\nFamiliarity with electromechanical assemblies, manufacturing techniques, fabrication techniques, or rapid prototyping or technical subsystems such as wireless, antenna, radio frequency, imaging, display, sensors, audio, charging power, or batteries.\n\ninfo_outline\nX\nPlease complete your application before October 9th\n, 2026. \nApplications will be reviewed on a rolling basis and it’s in an applicant's best interest to apply early.\nTiming on when you can hear back will vary and can take upwards of 90+ days. If you haven’t heard from us in three months about your application, we likely proceeded with other candidates for the role.\nParticipation in the internship program requires that you are located in the United States for the duration of the internship program.\nThis internship is intended for students in their penultimate academic year, who are pursuing a Bachelor's or Master's degree in Electrical Engineering, Mechanical Engineering, Computer Engineering, Computer Science, or a related technical field.\nGoogle is a global company and, in order to facilitate efficient collaboration and communication globally, English proficiency is a requirement for this internship program.\nTo start the application process, you will need an updated CV or resume and a current unofficial or official transcript in English. Click on the “Apply” button on this page and provide the required materials in the appropriate sections (PDFs preferred):\nIn the “Resume Section:” attach an updated CV or resume.\nIn the “Education Section:” attach a current or recent unofficial or official transcript in English.\nUnder “Degree Status,” select “Now attending” to upload a transcript.\nIn accordance with Washington state law, we are highlighting our comprehensive benefits package, which is available to all eligible US based Interns. Benefits for this role include: \nHealth, dental, vision insurance\nSick Time: 40 hours/year (increased to 69 hours/year for Seattle) including 5 discretionary sick days per instance \nHolidays: 13 paid days per year\nThis role may also be located in our Playa Vista, CA campus.\nApplicants in the County of Los Angeles: Qualified applications with arrest or conviction records will be considered for employment in accordance with the Los Angeles County Fair Chance Ordinance for Employers and the California Fair Chance Act.\nApplicants in San Francisco: Qualified applications with arrest or conviction records will be considered for employment in accordance with the San Francisco Fair Chance Ordinance for Employers and the California Fair Chance Act.\n",
-      "cycle": "Summer 2027",
-      "deadline": "2026-10-09",
-      "applicationsOpen": "Not listed",
-      "startDate": "Summer 2027",
-      "timingSourceUrl": "https://www.google.com/about/careers/applications/jobs/results/122803627516404422-hardware-engineering-intern-bsms-summer-2027",
-      "deadlineISO": "2026-10-09",
-      "payStatus": "paid",
-      "payBasis": "not_listed",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Responsibilities may vary based on specific teams."
-      ],
-      "eligibilityFlags": [
-        "Minimum qualifications:",
-        "Currently pursuing a Bachelor's or Master's degree in Electrical Engineering, Mechanical Engineering, Computer Engineering, Computer Science, or a related technical field.",
-        "Preferred qualifications:",
-        "Currently attending a degree program in the US and available to work full time for 12 weeks outside of university term time.",
-        "In their penultimate academic year or returning to a degree program after completion of the internship.",
-        "Experience in one or more of the following areas: hardware system integration (board design, board bring-up), signal and power integrity, system validation, product design (mechanical/thermal), computer architecture, FPGAs, embedded systems, or memory systems (FEA or CFD), modeling or simulation for power/thermal analysis, or prototyping, testing, and debugging of data center systems in a lab environment.",
-        "Experience with data center systems, consumer electronics or device manufacturing.",
-        "Experience in one or more of the following areas: board layout (e.g., working with CAD/PCB design), CAD tools (e.g., NX, Creo, or Solidworks), systems integration.",
-        "Familiarity with electromechanical assemblies, manufacturing techniques, fabrication techniques, or rapid prototyping or technical subsystems such as wireless, antenna, radio frequency, imaging, display, sensors, audio, charging power, or batteries.",
-        "info_outline",
-        "X",
-        "Please complete your application before October 9th",
-        ", 2026.",
-        "Applications will be reviewed on a rolling basis and it’s in an applicant's best interest to apply early.",
-        "Timing on when you can hear back will vary and can take upwards of 90+ days. If you haven’t heard from us in three months about your application, we likely proceeded with other candidates for the role.",
-        "Participation in the internship program requires that you are located in the United States for the duration of the internship program.",
-        "This internship is intended for students in their penultimate academic year, who are pursuing a Bachelor's or Master's degree in Electrical Engineering, Mechanical Engineering, Computer Engineering, Computer Science, or a related technical field.",
-        "Google is a global company and, in order to facilitate efficient collaboration and communication globally, English proficiency is a requirement for this internship program.",
-        "To start the application process, you will need an updated CV or resume and a current unofficial or official transcript in English. Click on the “Apply” button on this page and provide the required materials in the appropriate sections (PDFs preferred):",
-        "In the “Resume Section:” attach an updated CV or resume.",
-        "In the “Education Section:” attach a current or recent unofficial or official transcript in English.",
-        "Under “Degree Status,” select “Now attending” to upload a transcript.",
-        "In accordance with Washington state law, we are highlighting our comprehensive benefits package, which is available to all eligible US based Interns. Benefits for this role include:",
-        "Health, dental, vision insurance",
-        "Sick Time: 40 hours/year (increased to 69 hours/year for Seattle) including 5 discretionary sick days per instance",
-        "Holidays: 13 paid days per year",
-        "This role may also be located in our Playa Vista, CA campus.",
-        "Applicants in the County of Los Angeles: Qualified applications with arrest or conviction records will be considered for employment in accordance with the Los Angeles County Fair Chance Ordinance for Employers and the California Fair Chance Act.",
-        "Applicants in San Francisco: Qualified applications with arrest or conviction records will be considered for employment in accordance with the San Francisco Fair Chance Ordinance for Employers and the California Fair Chance Act."
-      ],
-      "benefits": [
-        "See employer posting"
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-27T19:24:36.329Z",
-        "sourceUrl": "https://www.google.com/about/careers/applications/jobs/results/122803627516404422-hardware-engineering-intern-bsms-summer-2027",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Google",
-      "role": "User Experience Engineer Intern, BS/MS, Summer 2027",
-      "link": "https://www.google.com/about/careers/applications/jobs/results/112499004540887750-user-experience-engineer-intern-bsms-summer-2027",
-      "loc": "Mountain View, CA, USA; Atlanta, GA, USA; Austin, TX, USA; Boulder, CO, USA; Bellevue, WA, USA; Cambridge, MA, USA; Chicago, IL, USA; Irvine, CA, USA; Kirkland, WA, USA; Los Angeles, CA, USA; Madison, WI, USA; New York, NY, USA; Palo Alto, CA, USA; Portland, OR, USA; Pittsburgh, PA, USA; Reston, VA, USA; Redmond, WA, USA; San Diego, CA, USA; Goleta, CA, USA; San Bruno, CA, USA; Seattle, WA, USA; San Francisco, CA, USA; Santa Cruz, CA, USA; Sunnyvale, CA, USA; Washington D.C., DC, USA",
-      "ind": "UI/UX & Product Design",
-      "desc": "Work closely with UX designers, project managers and back-end engineers to implement versatile front-end solutions to web development issues. Launch, iterate and make a difference. Provide front-end coding expertise, and help make our products better for users.",
-      "pay": "$88K-117K (pay period not listed)",
-      "style": "",
-      "exp": "Not listed",
-      "state": "Mountain View, CA, USA; Atlanta, GA, USA; Austin, TX, USA; Boulder, CO, USA; Bellevue, WA, USA; Cambridge, MA, USA; Chicago, IL, USA; Irvine, CA, USA; Kirkland, WA, USA; Los Angeles, CA, USA; Madison, WI, USA; New York, NY, USA; Palo Alto, CA, USA; Portland, OR, USA; Pittsburgh, PA, USA; Reston, VA, USA; Redmond, WA, USA; San Diego, CA, USA; Goleta, CA, USA; San Bruno, CA, USA; Seattle, WA, USA; San Francisco, CA, USA; Santa Cruz, CA, USA; Sunnyvale, CA, USA; Washington D.C., DC, USA",
-      "eligibility": "Minimum qualifications:\nCurrently pursuing a Bachelor's or Master's degree in Computer Science, HCI, Design, or a related technical field.\nExperience with JavaScript, HTML, and CSS.\nExperience in designing and implementing user interfaces (UIs).\nPreferred qualifications:\nCurrently attending a degree program in the US and available to work full time for 12 weeks outside of university term time.\nIn their penultimate academic year or returning to a degree program after completion of the internship.\nExperience with modern frontend frameworks and libraries (e.g., React, TypeScript, Angular, Vue, etc.)\nExperience in development or prototyping.\nExperience coding in Go, Python, C++, Java, Kotlin, Objective C, Swift, or similar.\n\ninfo_outline\nX\nPlease complete your application before \nOctober 9, 2026.\nApplications will be reviewed on a rolling basis and it’s in a candidate’s best interest to apply early.\nTiming on when you can hear back will vary and can take upwards of 90+ days. If you haven’t heard from us in three months about your application, we likely proceeded with other candidates for the role. \nParticipation in the internship program requires that you are located in the United States for the duration of the internship program.\nThis internship is intended for students who are currently pursuing a Bachelor’s or Master's degree program ​​in Computer Science, HCI, Design or related technical field.\nGoogle is a global company and, in order to facilitate efficient collaboration and communication globally, English proficiency is a requirement for this internship program.\nTo start the application process, you will need an updated CV or resume and a current unofficial or official transcript in English. Click on the “Apply” button on this page and provide the required materials in the appropriate sections (PDFs preferred):\nIn the “Resume Section:” attach an updated CV or resume.\nPlease ensure your resume includes your anticipated graduation date (in MM/YY) and list experience with coding language(s), along with any technical experience or projects.\nIn the “Education Section:” attach a current or recent unofficial or official transcript in English.\nUnder “Degree Status,” select “Now attending” to upload a transcript.\nIn accordance with Washington state law, we are highlighting our comprehensive benefits package, which is available to all eligible US based Interns. Benefits for this role include: \nHealth, dental, vision insurance\nSick Time: 40 hours/year (increased to 69 hours/year for Seattle) including 5 discretionary sick days per instance \nHolidays: 13 paid days per year\nThis role may also be located in our Playa Vista, CA campus.\nApplicants in the County of Los Angeles: Qualified applications with arrest or conviction records will be considered for employment in accordance with the Los Angeles County Fair Chance Ordinance for Employers and the California Fair Chance Act.\nApplicants in San Francisco: Qualified applications with arrest or conviction records will be considered for employment in accordance with the San Francisco Fair Chance Ordinance for Employers and the California Fair Chance Act.\n",
-      "cycle": "Summer 2027",
-      "deadline": "2026-10-09",
-      "applicationsOpen": "Not listed",
-      "startDate": "Summer 2027",
-      "timingSourceUrl": "https://www.google.com/about/careers/applications/jobs/results/112499004540887750-user-experience-engineer-intern-bsms-summer-2027",
-      "deadlineISO": "2026-10-09",
-      "payStatus": "paid",
-      "payBasis": "not_listed",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Work closely with UX designers, project managers and back-end engineers to implement versatile front-end solutions to web development issues.",
-        "Launch, iterate and make a difference. Provide front-end coding expertise, and help make our products better for users.",
-        "Manage your own time, and work well both independently and as part of a team."
-      ],
-      "eligibilityFlags": [
-        "Minimum qualifications:",
-        "Currently pursuing a Bachelor's or Master's degree in Computer Science, HCI, Design, or a related technical field.",
-        "Experience with JavaScript, HTML, and CSS.",
-        "Experience in designing and implementing user interfaces (UIs).",
-        "Preferred qualifications:",
-        "Currently attending a degree program in the US and available to work full time for 12 weeks outside of university term time.",
-        "In their penultimate academic year or returning to a degree program after completion of the internship.",
-        "Experience with modern frontend frameworks and libraries (e.g., React, TypeScript, Angular, Vue, etc.)",
-        "Experience in development or prototyping.",
-        "Experience coding in Go, Python, C++, Java, Kotlin, Objective C, Swift, or similar.",
-        "info_outline",
-        "X",
-        "Please complete your application before",
-        "October 9, 2026.",
-        "Applications will be reviewed on a rolling basis and it’s in a candidate’s best interest to apply early.",
-        "Timing on when you can hear back will vary and can take upwards of 90+ days. If you haven’t heard from us in three months about your application, we likely proceeded with other candidates for the role.",
-        "Participation in the internship program requires that you are located in the United States for the duration of the internship program.",
-        "This internship is intended for students who are currently pursuing a Bachelor’s or Master's degree program ​​in Computer Science, HCI, Design or related technical field.",
-        "Google is a global company and, in order to facilitate efficient collaboration and communication globally, English proficiency is a requirement for this internship program.",
-        "To start the application process, you will need an updated CV or resume and a current unofficial or official transcript in English. Click on the “Apply” button on this page and provide the required materials in the appropriate sections (PDFs preferred):",
-        "In the “Resume Section:” attach an updated CV or resume.",
-        "Please ensure your resume includes your anticipated graduation date (in MM/YY) and list experience with coding language(s), along with any technical experience or projects.",
-        "In the “Education Section:” attach a current or recent unofficial or official transcript in English.",
-        "Under “Degree Status,” select “Now attending” to upload a transcript.",
-        "In accordance with Washington state law, we are highlighting our comprehensive benefits package, which is available to all eligible US based Interns. Benefits for this role include:",
-        "Health, dental, vision insurance",
-        "Sick Time: 40 hours/year (increased to 69 hours/year for Seattle) including 5 discretionary sick days per instance",
-        "Holidays: 13 paid days per year",
-        "This role may also be located in our Playa Vista, CA campus.",
-        "Applicants in the County of Los Angeles: Qualified applications with arrest or conviction records will be considered for employment in accordance with the Los Angeles County Fair Chance Ordinance for Employers and the California Fair Chance Act.",
-        "Applicants in San Francisco: Qualified applications with arrest or conviction records will be considered for employment in accordance with the San Francisco Fair Chance Ordinance for Employers and the California Fair Chance Act."
-      ],
-      "benefits": [
-        "See employer posting"
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-27T19:24:36.702Z",
-        "sourceUrl": "https://www.google.com/about/careers/applications/jobs/results/112499004540887750-user-experience-engineer-intern-bsms-summer-2027",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Google",
-      "role": "Customer and Partner Solutions Engineering Intern, BS/MS, Summer 2027",
-      "link": "https://www.google.com/about/careers/applications/jobs/results/114405557703451334-customer-and-partner-solutions-engineering-intern-bsms-summer-2027",
-      "loc": "Mountain View, CA, USA; Ann Arbor, MI, USA; Atlanta, GA, USA; Austin, TX, USA; Boulder, CO, USA; Bellevue, WA, USA; Cambridge, MA, USA; Chicago, IL, USA; Irvine, CA, USA; Kirkland, WA, USA; Los Angeles, CA, USA; Madison, WI, USA; New York, NY, USA; Palo Alto, CA, USA; Portland, OR, USA; Pittsburgh, PA, USA; Raleigh, NC, USA; Durham, NC, USA; Reston, VA, USA; Redmond, WA, USA; Redwood City, CA, USA; San Diego, CA, USA; Goleta, CA, USA; San Bruno, CA, USA; Seattle, WA, USA; San Francisco, CA, USA; Santa Cruz, CA, USA; Sunnyvale, CA, USA; Washington D.C., DC, USA",
-      "ind": "Creative Tech",
-      "desc": "Collect requirements, provide guidance, and best practices to apply to products and technologies. Be responsible for proactively scoping, designing, and building a series of solutions and best practices at a global level to be reused by customers, sellers, partners.",
-      "pay": "$82K-109K (pay period not listed)",
-      "style": "",
-      "exp": "Not listed",
-      "state": "Mountain View, CA, USA; Ann Arbor, MI, USA; Atlanta, GA, USA; Austin, TX, USA; Boulder, CO, USA; Bellevue, WA, USA; Cambridge, MA, USA; Chicago, IL, USA; Irvine, CA, USA; Kirkland, WA, USA; Los Angeles, CA, USA; Madison, WI, USA; New York, NY, USA; Palo Alto, CA, USA; Portland, OR, USA; Pittsburgh, PA, USA; Raleigh, NC, USA; Durham, NC, USA; Reston, VA, USA; Redmond, WA, USA; Redwood City, CA, USA; San Diego, CA, USA; Goleta, CA, USA; San Bruno, CA, USA; Seattle, WA, USA; San Francisco, CA, USA; Santa Cruz, CA, USA; Sunnyvale, CA, USA; Washington D.C., DC, USA",
-      "eligibility": "Minimum qualifications:\nCurrently pursuing a Bachelor's or Master's degree in Computer Science, Software Engineering, Information Systems, or a related technical field.\nPreferred qualifications:\nCurrently attending a degree program in the US and available to work full time for 12 weeks outside of university term time.\nIn their penultimate academic year or returning to a degree program after completion of the internship.\nExperience coding with one or more programming languages (e.g., Java, C/C++, Python).\nExperience or coursework involving web technologies (e.g., RESTful APIs, JSON, SDKs, Webhooks) and technical troubleshooting or developer-facing support.\nExperience implementing data pipelines and dashboards.\nComfortable evaluating a new problem space, identifying stakeholders, and proposing technical solutions.\n\ninfo_outline\nX\nPlease complete your application before\n October 9, 2026.\nApplications will be reviewed on a rolling basis and it’s in a candidate’s best interest to apply early.\nTiming on when you can hear back will vary and can take upwards of 90+ days. If you haven’t heard from us in three months about your application, we likely proceeded with other candidates for the role. \nParticipation in the internship program requires that you are located in the United States for the duration of the internship program.\nThis internship is intended for students in their penultimate academic year, who are pursuing a Bachelor's or Master's degree program in Computer Science or a related field.\nGoogle is a global company and, in order to facilitate efficient collaboration and communication globally, English proficiency is a requirement for this internship program.\nTo start the application process, you will need an updated CV or resume and a current unofficial or official transcript in English. Click on the “Apply” button on this page and provide the required materials in the appropriate sections (PDFs preferred):\nIn the “Resume Section:” attach an updated CV or resume.\nPlease ensure you’ve listed your anticipated graduation date (in MM/YY)\nIn the “Education Section:” attach a current or recent unofficial or official transcript in English.\nUnder “Degree Status,” select “Now attending” to upload a transcript.\nThis role may also be located in our Playa Vista, CA campus.\nApplicants in the County of Los Angeles: Qualified applications with arrest or conviction records will be considered for employment in accordance with the Los Angeles County Fair Chance Ordinance for Employers and the California Fair Chance Act.\nApplicants in San Francisco: Qualified applications with arrest or conviction records will be considered for employment in accordance with the San Francisco Fair Chance Ordinance for Employers and the California Fair Chance Act.\nIn accordance with Washington state law, we are highlighting our comprehensive benefits package, which is available to all eligible US based Interns. Benefits for this role include: \nHealth, dental, vision insurance\nSick Time: Includes 5 discretionary sick days per instance to prioritize your well-being, in addition to all applicable local and state statutory sick leave.\nInterns receive paid time off for any official company holidays that fall within their internship term.\n",
-      "cycle": "Summer 2027",
-      "deadline": "2026-10-09",
-      "applicationsOpen": "Not listed",
-      "startDate": "Summer 2027",
-      "timingSourceUrl": "https://www.google.com/about/careers/applications/jobs/results/114405557703451334-customer-and-partner-solutions-engineering-intern-bsms-summer-2027",
-      "deadlineISO": "2026-10-09",
-      "payStatus": "paid",
-      "payBasis": "not_listed",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Collect requirements, provide guidance, and best practices to apply to products and technologies.",
-        "Be responsible for proactively scoping, designing, and building a series of solutions and best practices at a global level to be reused by customers, sellers, partners.",
-        "Own the Ask Google Help support configuration and agentic workflow integrations for a dedicated set of products."
-      ],
-      "eligibilityFlags": [
-        "Minimum qualifications:",
-        "Currently pursuing a Bachelor's or Master's degree in Computer Science, Software Engineering, Information Systems, or a related technical field.",
-        "Preferred qualifications:",
-        "Currently attending a degree program in the US and available to work full time for 12 weeks outside of university term time.",
-        "In their penultimate academic year or returning to a degree program after completion of the internship.",
-        "Experience coding with one or more programming languages (e.g., Java, C/C++, Python).",
-        "Experience or coursework involving web technologies (e.g., RESTful APIs, JSON, SDKs, Webhooks) and technical troubleshooting or developer-facing support.",
-        "Experience implementing data pipelines and dashboards.",
-        "Comfortable evaluating a new problem space, identifying stakeholders, and proposing technical solutions.",
-        "info_outline",
-        "X",
-        "Please complete your application before",
-        "October 9, 2026.",
-        "Applications will be reviewed on a rolling basis and it’s in a candidate’s best interest to apply early.",
-        "Timing on when you can hear back will vary and can take upwards of 90+ days. If you haven’t heard from us in three months about your application, we likely proceeded with other candidates for the role.",
-        "Participation in the internship program requires that you are located in the United States for the duration of the internship program.",
-        "This internship is intended for students in their penultimate academic year, who are pursuing a Bachelor's or Master's degree program in Computer Science or a related field.",
-        "Google is a global company and, in order to facilitate efficient collaboration and communication globally, English proficiency is a requirement for this internship program.",
-        "To start the application process, you will need an updated CV or resume and a current unofficial or official transcript in English. Click on the “Apply” button on this page and provide the required materials in the appropriate sections (PDFs preferred):",
-        "In the “Resume Section:” attach an updated CV or resume.",
-        "Please ensure you’ve listed your anticipated graduation date (in MM/YY)",
-        "In the “Education Section:” attach a current or recent unofficial or official transcript in English.",
-        "Under “Degree Status,” select “Now attending” to upload a transcript.",
-        "This role may also be located in our Playa Vista, CA campus.",
-        "Applicants in the County of Los Angeles: Qualified applications with arrest or conviction records will be considered for employment in accordance with the Los Angeles County Fair Chance Ordinance for Employers and the California Fair Chance Act.",
-        "Applicants in San Francisco: Qualified applications with arrest or conviction records will be considered for employment in accordance with the San Francisco Fair Chance Ordinance for Employers and the California Fair Chance Act.",
-        "In accordance with Washington state law, we are highlighting our comprehensive benefits package, which is available to all eligible US based Interns. Benefits for this role include:",
-        "Health, dental, vision insurance",
-        "Sick Time: Includes 5 discretionary sick days per instance to prioritize your well-being, in addition to all applicable local and state statutory sick leave.",
-        "Interns receive paid time off for any official company holidays that fall within their internship term."
-      ],
-      "benefits": [
-        "See employer posting"
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-27T19:24:36.730Z",
-        "sourceUrl": "https://www.google.com/about/careers/applications/jobs/results/114405557703451334-customer-and-partner-solutions-engineering-intern-bsms-summer-2027",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Google",
-      "role": "Security Engineering Intern, BS/MS, Summer 2027",
-      "link": "https://www.google.com/about/careers/applications/jobs/results/136826798817059526-security-engineering-intern-bsms-summer-2027",
-      "loc": "Mountain View, CA, USA; Ann Arbor, MI, USA; Atlanta, GA, USA; Austin, TX, USA; Boulder, CO, USA; Bellevue, WA, USA; Cambridge, MA, USA; Chicago, IL, USA; Irvine, CA, USA; Kirkland, WA, USA; Los Angeles, CA, USA; Madison, WI, USA; New York, NY, USA; Palo Alto, CA, USA; Portland, OR, USA; Pittsburgh, PA, USA; Raleigh, NC, USA; Durham, NC, USA; Reston, VA, USA; Redmond, WA, USA; Redwood City, CA, USA; San Diego, CA, USA; Goleta, CA, USA; San Bruno, CA, USA; Seattle, WA, USA; San Francisco, CA, USA; San Jose, CA, USA; Santa Cruz, CA, USA; South San Francisco, CA, USA; Sunnyvale, CA, USA; Washington D.C., DC, USA",
-      "ind": "Creative Tech",
-      "desc": "Apply knowledge gained in computer science courses to real-world challenges. Analyze information and evaluate results to choose the best solution to effectively solve challenges.",
-      "pay": "$98K-131K (pay period not listed)",
-      "style": "",
-      "exp": "Not listed",
-      "state": "Mountain View, CA, USA; Ann Arbor, MI, USA; Atlanta, GA, USA; Austin, TX, USA; Boulder, CO, USA; Bellevue, WA, USA; Cambridge, MA, USA; Chicago, IL, USA; Irvine, CA, USA; Kirkland, WA, USA; Los Angeles, CA, USA; Madison, WI, USA; New York, NY, USA; Palo Alto, CA, USA; Portland, OR, USA; Pittsburgh, PA, USA; Raleigh, NC, USA; Durham, NC, USA; Reston, VA, USA; Redmond, WA, USA; Redwood City, CA, USA; San Diego, CA, USA; Goleta, CA, USA; San Bruno, CA, USA; Seattle, WA, USA; San Francisco, CA, USA; San Jose, CA, USA; Santa Cruz, CA, USA; South San Francisco, CA, USA; Sunnyvale, CA, USA; Washington D.C., DC, USA",
-      "eligibility": "Minimum qualifications:\nCurrently pursuing a Bachelor's or Master's degree in Computer Science, Information Security, or related technical field.\nCoding experience with one or more of the following: Python, Go, C++, JavaScript.\nExperience in one or more of the following: network protocols, secure network design, web application/browser security, authentication control, applied cryptography/security protocols, intrusion detection.\nPreferred qualifications:\nCurrently attending a degree program in the US and available to work full time for 12 weeks outside of university term time.\nIn their penultimate academic year or returning to a degree program after completion of the internship.\nUnderstanding of technical privacy issues and experience with the software development lifecycle.\nExcellent communication skills.\n\ninfo_outline\nX\nPlease complete your application before\n October 9, 2026.\nApplications will be reviewed on a rolling basis and it’s in a candidate’s best interest to apply early.\nTiming on when you can hear back will vary and can take upwards of 90+ days. If you haven’t heard from us in three months about your application, we likely proceeded with other candidates for the role. \nParticipation in the internship program requires that you are located in the United States for the duration of the internship program.\nThis internship is intended for students in their penultimate academic year, who are pursuing a Bachelor's or Master's degree program in Computer Science, Information Security, or related technical field.\nGoogle is a global company and, in order to facilitate efficient collaboration and communication globally, English proficiency is a requirement for this internship program.\nTo start the application process, you will need an updated CV or resume and a current unofficial or official transcript in English. Click on the “Apply” button on this page and provide the required materials in the appropriate sections (PDFs preferred):\nIn the “Resume Section:” attach an updated CV or resume.\nPlease ensure you’ve listed your anticipated graduation date (in MM/YY)\nIn the “Education Section:” attach a current or recent unofficial or official transcript in English.\nUnder “Degree Status,” select “Now attending” to upload a transcript.\nSan Francisco/Los Angeles applicants: Qualified applications with arrest or conviction records will be considered for employment in accordance with the San Francisco/Los Angeles County Fair Chance Ordinance for Employers and the California Fair Chance Act.\n",
-      "cycle": "Summer 2027",
-      "deadline": "2026-10-09",
-      "applicationsOpen": "Not listed",
-      "startDate": "Summer 2027",
-      "timingSourceUrl": "https://www.google.com/about/careers/applications/jobs/results/136826798817059526-security-engineering-intern-bsms-summer-2027",
-      "deadlineISO": "2026-10-09",
-      "payStatus": "paid",
-      "payBasis": "not_listed",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Apply knowledge gained in computer science courses to real-world challenges.",
-        "Analyze information and evaluate results to choose the best solution to effectively solve challenges.",
-        "Develop scripts to automate routine tasks."
-      ],
-      "eligibilityFlags": [
-        "Minimum qualifications:",
-        "Currently pursuing a Bachelor's or Master's degree in Computer Science, Information Security, or related technical field.",
-        "Coding experience with one or more of the following: Python, Go, C++, JavaScript.",
-        "Experience in one or more of the following: network protocols, secure network design, web application/browser security, authentication control, applied cryptography/security protocols, intrusion detection.",
-        "Preferred qualifications:",
-        "Currently attending a degree program in the US and available to work full time for 12 weeks outside of university term time.",
-        "In their penultimate academic year or returning to a degree program after completion of the internship.",
-        "Understanding of technical privacy issues and experience with the software development lifecycle.",
-        "Excellent communication skills.",
-        "info_outline",
-        "X",
-        "Please complete your application before",
-        "October 9, 2026.",
-        "Applications will be reviewed on a rolling basis and it’s in a candidate’s best interest to apply early.",
-        "Timing on when you can hear back will vary and can take upwards of 90+ days. If you haven’t heard from us in three months about your application, we likely proceeded with other candidates for the role.",
-        "Participation in the internship program requires that you are located in the United States for the duration of the internship program.",
-        "This internship is intended for students in their penultimate academic year, who are pursuing a Bachelor's or Master's degree program in Computer Science, Information Security, or related technical field.",
-        "Google is a global company and, in order to facilitate efficient collaboration and communication globally, English proficiency is a requirement for this internship program.",
-        "To start the application process, you will need an updated CV or resume and a current unofficial or official transcript in English. Click on the “Apply” button on this page and provide the required materials in the appropriate sections (PDFs preferred):",
-        "In the “Resume Section:” attach an updated CV or resume.",
-        "Please ensure you’ve listed your anticipated graduation date (in MM/YY)",
-        "In the “Education Section:” attach a current or recent unofficial or official transcript in English.",
-        "Under “Degree Status,” select “Now attending” to upload a transcript.",
-        "San Francisco/Los Angeles applicants: Qualified applications with arrest or conviction records will be considered for employment in accordance with the San Francisco/Los Angeles County Fair Chance Ordinance for Employers and the California Fair Chance Act."
-      ],
-      "benefits": [
-        "See employer posting"
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-27T19:24:36.801Z",
-        "sourceUrl": "https://www.google.com/about/careers/applications/jobs/results/136826798817059526-security-engineering-intern-bsms-summer-2027",
-        "reviewerType": "source_check"
-      }
-    },
-    {
       "co": "DoorDash",
       "role": "Product Design, Intern (Summer 2027)",
       "link": "https://careersatdoordash.com/jobs/product-design-intern-summer-2027/8176863/",
@@ -1989,45 +1519,6 @@
         "status": "open",
         "checkedAt": "2026-09-28T01:40:22.475Z",
         "sourceUrl": "https://boards-api.greenhouse.io/v1/boards/hydritechemicalco/jobs/8185945?questions=true",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Dev Technology",
-      "role": "Social Media Marketing Intern (Summer 2027)",
-      "link": "https://job-boards.greenhouse.io/devtechnology/jobs/8726281002",
-      "loc": "Reston, VA; onsite at least two days/week",
-      "ind": "Marketing / Social / PR",
-      "desc": "Create social content, graphics and communications for a federal technology contractor's summer internship program.",
-      "pay": "$21–30/hour (estimated)",
-      "style": "Hybrid",
-      "exp": "Not listed",
-      "state": "Reston, VA; onsite at least two days/week",
-      "eligibility": "Rising junior or senior pursuing bachelor's degree in Communications, Marketing, Digital Marketing/Graphic Design or related field; rising senior preferred. Writing examples, Adobe/Canva and social-platform experience. US citizenship required, able to obtain public-trust or higher clearance; no work visa or Green Card status accepted by application. Commute to Reston at least two days/week, 10–12-week commitment; no housing/relocation assistance.",
-      "cycle": "Summer 2027; 10–12 weeks",
-      "deadline": "Not listed",
-      "applicationsOpen": "Not listed",
-      "startDate": "Summer 2027; exact dates not listed",
-      "timingSourceUrl": "https://job-boards.greenhouse.io/devtechnology/jobs/8726281002",
-      "payStatus": "paid",
-      "payBasis": "hour",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Create social campaigns and video content.",
-        "Design graphics for web and events.",
-        "Draft newsletter, press and communications material."
-      ],
-      "eligibilityFlags": [
-        "Rising junior or senior pursuing bachelor's degree in Communications, Marketing, Digital Marketing/Graphic Design or related field; rising senior preferred. Writing examples, Adobe/Canva and social-platform experience. US citizenship required, able to obtain public-trust or higher clearance; no work visa or Green Card status accepted by application. Commute to Reston at least two days/week, 10–12-week commitment; no housing/relocation assistance."
-      ],
-      "benefits": [
-        "Intern cohort, group technical project and presentation, corporate learning; broader company benefits may not apply to interns."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-28T01:40:22.651Z",
-        "sourceUrl": "https://boards-api.greenhouse.io/v1/boards/devtechnology/jobs/8726281002?questions=true",
         "reviewerType": "source_check"
       }
     },
@@ -2609,96 +2100,6 @@
         "status": "open",
         "checkedAt": "2026-09-30T18:29:36.916Z",
         "sourceUrl": "https://boards.greenhouse.io/robinhood/jobs/8193710?t=gh_src=&gh_jid=8193710",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Gallup",
-      "role": "AI/ML Research Intern — Summer 2027",
-      "link": "https://job-boards.greenhouse.io/gallup/jobs/4395921009",
-      "loc": "San Francisco",
-      "ind": "Applied AI & Machine Learning",
-      "desc": "Research and reproduce emerging AI/ML approaches.",
-      "pay": "$45–50/hour",
-      "style": "Hybrid",
-      "exp": "Not listed",
-      "state": "San Francisco",
-      "eligibility": "Enrolled at a college/university within 80 miles of San Francisco.\nGraduation August 2027–May 2028 preferred; 2029 graduates also considered.\n40 hours/week for 12 weeks in summer 2027; onsite Monday–Thursday, optional remote Friday.\nUS work eligibility required; no employment visa sponsorship.\nApplication requires education and projected graduation date.\nBachelor’s or graduate degree in CS, data science, ML or related quantitative field.\nPython and hands-on ML/AI experimentation through research, coursework or substantial projects required.",
-      "cycle": "Summer 2027; 12 weeks",
-      "deadline": "Not listed",
-      "applicationsOpen": "Not listed",
-      "startDate": "Summer 2027; exact date not listed",
-      "timingSourceUrl": "https://job-boards.greenhouse.io/gallup/jobs/4395921009",
-      "payStatus": "paid",
-      "payBasis": "hour",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Research and reproduce emerging AI/ML approaches.",
-        "Build prototypes and evaluate models using experiments and benchmarks.",
-        "Document methods, findings and reproducible technical recommendations."
-      ],
-      "eligibilityFlags": [
-        "Enrolled at a college/university within 80 miles of San Francisco.",
-        "Graduation August 2027–May 2028 preferred; 2029 graduates also considered.",
-        "40 hours/week for 12 weeks in summer 2027; onsite Monday–Thursday, optional remote Friday.",
-        "US work eligibility required; no employment visa sponsorship.",
-        "Application requires education and projected graduation date.",
-        "Bachelor’s or graduate degree in CS, data science, ML or related quantitative field.",
-        "Python and hands-on ML/AI experimentation through research, coursework or substantial projects required."
-      ],
-      "benefits": [
-        "Potential for up to 20 hours/week during school year and a full-time offer after graduation, subject to business needs/performance."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-30T18:29:42.166Z",
-        "sourceUrl": "https://job-boards.greenhouse.io/gallup/jobs/4395921009",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Gallup",
-      "role": "Software Engineer Intern — Summer 2027",
-      "link": "https://job-boards.greenhouse.io/gallup/jobs/4395897009",
-      "loc": "San Francisco",
-      "ind": "Software Engineering",
-      "desc": "Build front-end and back-end customer experiences.",
-      "pay": "$45–50/hour",
-      "style": "Hybrid",
-      "exp": "Not listed",
-      "state": "San Francisco",
-      "eligibility": "Enrolled at a college/university within 80 miles of San Francisco.\nGraduation August 2027–May 2028 preferred; 2029 graduates also considered.\n40 hours/week for 12 weeks in summer 2027; onsite Monday–Thursday, optional remote Friday.\nUS work eligibility required; no employment visa sponsorship.\nApplication requires education and projected graduation date.\nAssociate, bachelor’s or graduate degree in CS, MIS or related field.\nClassroom/project/internship/work coding in JavaScript, TypeScript, React, Python, SQL or another language.",
-      "cycle": "Summer 2027; 12 weeks",
-      "deadline": "Not listed",
-      "applicationsOpen": "Not listed",
-      "startDate": "Summer 2027; exact date not listed",
-      "timingSourceUrl": "https://job-boards.greenhouse.io/gallup/jobs/4395897009",
-      "payStatus": "paid",
-      "payBasis": "hour",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Build front-end and back-end customer experiences.",
-        "Explore AI and emerging technology through prototypes.",
-        "Collaborate with engineers to test and improve software."
-      ],
-      "eligibilityFlags": [
-        "Enrolled at a college/university within 80 miles of San Francisco.",
-        "Graduation August 2027–May 2028 preferred; 2029 graduates also considered.",
-        "40 hours/week for 12 weeks in summer 2027; onsite Monday–Thursday, optional remote Friday.",
-        "US work eligibility required; no employment visa sponsorship.",
-        "Application requires education and projected graduation date.",
-        "Associate, bachelor’s or graduate degree in CS, MIS or related field.",
-        "Classroom/project/internship/work coding in JavaScript, TypeScript, React, Python, SQL or another language."
-      ],
-      "benefits": [
-        "Potential for up to 20 hours/week during school year and a full-time offer after graduation, subject to business needs/performance."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-30T18:29:43.751Z",
-        "sourceUrl": "https://job-boards.greenhouse.io/gallup/jobs/4395897009",
         "reviewerType": "source_check"
       }
     },
@@ -3378,6 +2779,93 @@
         "status": "open",
         "checkedAt": "2026-10-03T18:23:00.193Z",
         "sourceUrl": "https://www.pinterestcareers.com/jobs/?gh_jid=8140217",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Whitney Museum of American Art",
+      "role": "Marketing Internship (Spring 2027)",
+      "link": "https://jobs.whitney.org/apply/CuF0WKRJaP/Spring-2027-Marketing-Internship",
+      "loc": "New York, NY",
+      "ind": "Brand & Marketing",
+      "desc": "Support email, digital and exhibition marketing campaigns.",
+      "pay": "$3,000 stipend for full participation",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "New York, NY",
+      "eligibility": "Rising juniors or above, including graduate students, currently enrolled in an accredited academic program throughout the internship; at least two undergraduate years completed before start.\n16–21 hours/week over 10–12 weeks, total 176 hours, onsite in New York; official program window January 18–April 26, 2027.\nAll majors welcome; prior museum experience not required. Organization, interpersonal and Microsoft Office skills; MailChimp knowledge and interest in art/cultural audiences preferred.\nInternational students need valid US work authorization; no visa sponsorship or host-organization support; J-1 visa holders cannot be considered (official program FAQ).\nApplication requires resume and essay; no application submitted during verification.",
+      "cycle": "Spring 2027; January 18–April 26",
+      "deadline": "November 9 (Spring 2027 intake; rolling review may close early)",
+      "applicationsOpen": "Not listed",
+      "startDate": "2027-01-18",
+      "timingSourceUrl": "https://jobs.whitney.org/apply/CuF0WKRJaP/Spring-2027-Marketing-Internship",
+      "payStatus": "paid",
+      "payBasis": "program",
+      "collegeCredit": "available",
+      "applicationStatus": "open",
+      "duties": [
+        "Support email, digital and exhibition marketing campaigns.",
+        "Research audiences and track influencer and advertisement performance.",
+        "Assist tourism outreach, community engagement and onsite events."
+      ],
+      "eligibilityFlags": [
+        "Rising juniors or above, including graduate students, currently enrolled in an accredited academic program throughout the internship; at least two undergraduate years completed before start.",
+        "16–21 hours/week over 10–12 weeks, total 176 hours, onsite in New York; official program window January 18–April 26, 2027.",
+        "All majors welcome; prior museum experience not required. Organization, interpersonal and Microsoft Office skills; MailChimp knowledge and interest in art/cultural audiences preferred.",
+        "International students need valid US work authorization; no visa sponsorship or host-organization support; J-1 visa holders cannot be considered (official program FAQ).",
+        "Application requires resume and essay; no application submitted during verification."
+      ],
+      "benefits": [
+        "MailChimp, Word/Excel and department-process training; professional network and museum experience. Academic-year credit may be earned through the student's institution. Interns arrange their own housing and transportation."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-13T22:05:43.846Z",
+        "sourceUrl": "https://jobs.whitney.org/apply/CuF0WKRJaP/Spring-2027-Marketing-Internship",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Khan Academy",
+      "role": "Software Engineer Intern (Summer 2027)",
+      "link": "https://job-boards.greenhouse.io/khanacademy/jobs/8250259",
+      "loc": "Remote, US / Canada",
+      "ind": "Software Engineering",
+      "desc": "Build education software for learners and teachers.",
+      "pay": "$46.15/hour (US target rate)",
+      "style": "Remote",
+      "exp": "Not listed",
+      "state": "Remote, US / Canada",
+      "eligibility": "Current Bachelor's enrollment in Computer Science or related field; graduation in 2028 or 2029 (employer calls this rising Junior or Senior).\nAt least one previous software internship required.\nStart in May or June 2027 with 10–12 weeks available; work/live in the United States or Canada for the internship.\nAbility to learn AI-assisted development, review and validate generated code with a mentor, strong communication and openness to feedback. No particular programming language or tool experience required.\nUS target pay is $46.15/hour; employer separately lists CAD $54.51/hour for Canada.\nSponsorship is asked in the application, but no sponsorship policy is stated; do not infer eligibility or exclusion.",
+      "cycle": "Summer 2027; 12-week program",
+      "deadline": "October 16, 2026 at 5 PM PDT",
+      "applicationsOpen": "Not listed",
+      "startDate": "May or June 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/khanacademy/jobs/8250259",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build education products used by learners and teachers.",
+        "Use AI tools for coding, debugging and testing.",
+        "Review and validate code with an engineering mentor."
+      ],
+      "eligibilityFlags": [
+        "Current Bachelor's enrollment in Computer Science or related field; graduation in 2028 or 2029 (employer calls this rising Junior or Senior).",
+        "At least one previous software internship required.",
+        "Start in May or June 2027 with 10–12 weeks available; work/live in the United States or Canada for the internship.",
+        "Ability to learn AI-assisted development, review and validate generated code with a mentor, strong communication and openness to feedback. No particular programming language or tool experience required.",
+        "US target pay is $46.15/hour; employer separately lists CAD $54.51/hour for Canada.",
+        "Sponsorship is asked in the application, but no sponsorship policy is stated; do not infer eligibility or exclusion."
+      ],
+      "benefits": [
+        "Onboarding and engineering mentorship; opportunity to build educational products."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-13T22:07:54.822Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/khanacademy/jobs/8250259",
         "reviewerType": "source_check"
       }
     }
