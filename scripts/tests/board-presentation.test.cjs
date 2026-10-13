@@ -60,7 +60,7 @@ test('real Jobs cards and detail headings compact annual pay while preserving so
 
 test('internship faces and detail headings use compact paid labels without losing hourly or annual source facts', () => {
   const cases = [
-    [{pay:'$22.50/hour',payBasis:'hour'}, '$23/hour'],
+    [{pay:'$22.50/hour',payBasis:'hour'}, '$22.50/hour'],
     [{pay:'$1,100/week',payBasis:'week'}, '$1,100/week'],
     [{pay:'$138,600/year (annualized)',payBasis:'annualized_year'}, '$139K/year'],
     [{pay:'Paid; amount not disclosed',payBasis:'not_listed'}, '$ Paid']
@@ -83,7 +83,7 @@ test('pay rendering stays inert and the approved small internship hourly assumpt
   assert.equal(dialog.querySelector('.su-pay-source'), null);assert.equal(dialog.querySelector('img,[onerror],script'), null);
   assert.equal(b.app.jobs[0].pay, unsafe.pay, 'raw employer text stays untouched');
   const student = intern({pay:'$23.75 (time unit not listed)',payBasis:'not_listed'}), before=JSON.stringify(student);
-  assert.equal(b.helpers.cardPay(student), '$24/hour');
+  assert.equal(b.helpers.cardPay(student), '$23.75/hour');
   assert.equal(JSON.stringify(student),before,'the hourly assumption is presentation only');
   assert.equal(b.helpers.cardPay(intern({pay:'$1,100/week',payBasis:'week'})), '$1,100/week', 'an explicit employer unit is never replaced');
   assert.equal(b.helpers.cardPay(intern({pay:'Not disclosed',payStatus:'not_disclosed'})), 'Pay not disclosed');
@@ -205,4 +205,18 @@ test('Show hidden jobs contains only dismissed cards and never advice or persona
   assert.equal(b.grid.querySelector('.su-advice'),null,'hidden view is a review list, not an advice feed');
   assert.equal(b.grid.querySelector('[data-act="openNote"]'),null);assert.equal(b.grid.querySelector('[data-act="closeNote"]'),null);
   assert.equal(b.grid.querySelectorAll('[data-discovery="restore"]').length,12);
+});
+
+test('NBC Shop TODAY hourly card and TLDR retain cents in the real shared renderer', () => {
+  const selection=JSON.parse(fs.readFileSync(path.join(__dirname,'../../data/daily-selections.json'),'utf8')).selections.find(s=>s.date==='2026-10-13');
+  const selected=selection.jobs.find(j=>j.id==='y32zbb11vaiyg');
+  assert(selected,'exact approved NBC daily identity exists');
+  const original=job({...selected.snapshot}); const before=JSON.stringify(original);
+  const b=ui(); b.init([original]);
+  assert(card(b,original.link).textContent.includes('$31.25–36.05/hour'));
+  const dialog=detail(b,original.link);
+  assert(dialog.children.some(n=>n.textContent==='$31.25–36.05/hour'));
+  assert.equal(dialog.querySelector('[data-act="detailApply"]').getAttribute('data-link'),original.link);
+  assert.equal(JSON.stringify(original),before);
+  assert.equal(b.app.jobs[0].pay,selected.snapshot.pay);
 });

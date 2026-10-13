@@ -1,21 +1,20 @@
 {
-  "version": "2.7.7.13",
+  "version": "2.7.7.14",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-12T00:17:57.987Z",
-  "reviewer": "Codex root",
-  "sourceDigest": "16208e4269730c31471f348a7a1f58367175aa082b2fa7377b8927d97f223fde",
+  "reviewedAt": "2026-10-13T22:21:00.613Z",
+  "reviewer": "Codex sourcing coordinator",
+  "sourceDigest": "36c36c886bee9d40c26fbc50bdd96b8bb7849adde0a22d7f42ff862d35435948",
   "sourceFileCount": 222,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Content-only exact October12/13 daily selections plus published fallback refresh and regenerated share artifacts. Seven old dates, UI/auth/analytics/retention/providers unchanged.",
+  "scope": "Two verified public internships plus already-reviewed hourly-cents formatter fix. No new data collection, provider, consent, authentication, account, moderation or retention flow.",
   "checks": {
-    "disclosures": "Privacy/Terms optional analytics, account choice, daily snapshot fallback and employer application limits reviewed. No new collection, provider or policy wording; process review is not legal certification.",
-    "choices": "Existing consent/GPC/admin/preview exclusions and signed anonymous capability retained. No new account or subscription.",
-    "publication": "Future sets omitted from public fallback and endpoint until server 9AM Eastern. Original seven dates remain unchanged; no caller clock override, database writer or source Sheet mutation."
+    "disclosures": "Reviewed Privacy and Terms; no wording change needed. Employer facts stay distinct from verification, applications are not submitted.",
+    "publication": "Complete native source with all-status identity check, 64 exact previously approved carry-forwards and 2 fresh source-bound admissions; Dead/Closed and unresolved new rows excluded. Public allowlist excludes admission receipts, private notes and sheet provenance IDs.",
+    "compensation": "Hourly cents preserved in shared card/dialog/share formatter. Exact underlying employer source text remains unchanged."
   },
   "openItems": [
-    "Physical iPhone/in-app social-browser and fresh Google login remain separate live checks.",
-    "Production durable daily-event persistence and year-long per-post rollups are not established by fixtures.",
-    "A new future set requires owner validation and normal source deploy; no autonomous source writer."
+    "Hosted preview/production QA recorded separately in private release evidence.",
+    "No physical-device or fresh OAuth retest is claimed for this unchanged authentication flow."
   ]
 }

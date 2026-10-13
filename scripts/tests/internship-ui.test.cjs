@@ -89,7 +89,7 @@ function ui(rows, options = {}) {
 
 test('internship cards and details share compact pay while source amounts and units remain unchanged across all themes', () => {
   const values = [
-    { pay:'$22.50/hour', payBasis:'hour', display:'$23/hour' }, { pay:'$1,100/week', payBasis:'week', display:'$1,100/week' },
+    { pay:'$22.50/hour', payBasis:'hour', display:'$22.50/hour' }, { pay:'$1,100/week', payBasis:'week', display:'$1,100/week' },
     { pay:'$4,500 program stipend', payBasis:'program', display:'$4,500/program' },
     { pay:'$120,000/year (annualized)', payBasis:'annualized_year', display:'$120K/year' }
   ];
@@ -117,7 +117,7 @@ test('internship cards and details share compact pay while source amounts and un
 test('USD amounts keep an explicit currency marker in both the card and detail', () => {
   const row = listing({ pay:'USD 23.75/hour' }), b = ui([row]);
   const label = b.card(row.link).querySelector('.su-internship-pay').textContent;
-  assert.equal(label, '$24/hour');
+  assert.equal(label, '$23.75/hour');
   const detail=b.detail(row.link);assert(detail.textContent.includes(label));
   assert.equal(detail.querySelector('.su-pay-source'),null);
   assert.equal(b.app.jobs[0].pay,'USD 23.75/hour');assert.equal(b.app.jobs[0].payBasis,'hour');

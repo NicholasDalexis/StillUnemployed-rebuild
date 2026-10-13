@@ -18,8 +18,8 @@ test('annual cards round each endpoint to whole K without modifying exact source
 
 test('explicit hourly pay overrides annual fallback and never becomes annualized K', () => {
   for (const [raw, expected] of [
-    ['$45.00-55.00/hour', '$45–55/hour'], ['$45.10 to $55.40 per hour', '$45–55/hour'],
-    ['$32.50/hr', '$33/hour'], ['$22.10 hourly', '$22/hour'],
+    ['$45.00-55.00/hour', '$45–55/hour'], ['$45.10 to $55.40 per hour', '$45.10–55.40/hour'],
+    ['$32.50/hr', '$32.50/hour'], ['$22.10 hourly', '$22.10/hour'],
     ['$25/h', '$25/hour'], ['$1.5K/hour', '$1,500/hour']
   ]) assert.equal(Pay.compact(raw, { basis:'annual' }), expected, raw);
 });
@@ -37,8 +37,8 @@ test('employer-confirmed basis is added while amounts alone never invent a curre
 test('known currencies are retained or normalized without turning non-USD pay into dollars', () => {
   for (const [raw, expected] of [
     ['USD 45.00 - 55.00/hour', '$45–55/hour'], ['$28 - $28 USD', '$28'],
-    ['28 - 30 USD/hour', '$28–30/hour'], ['€25.50/hour', '€26/hour'],
-    ['GBP 70,000-85,000/year', 'GBP 70K–85K/year'], ['CAD 25.25/hour', 'CAD 25/hour'],
+    ['28 - 30 USD/hour', '$28–30/hour'], ['€25.50/hour', '€25.50/hour'],
+    ['GBP 70,000-85,000/year', 'GBP 70K–85K/year'], ['CAD 25.25/hour', 'CAD 25.25/hour'],
     ['CA$25/hour', 'CA$25/hour']
   ]) assert.equal(Pay.compact(raw), expected, raw);
   assert.equal(Pay.compact('$25-€30/hour'), '$25-€30/hour', 'conflicting currency is not silently merged');
@@ -66,7 +66,7 @@ test('short qualifiers preserve limits and estimates while program duration stay
 });
 
 test('separate student rates share one compact envelope only with matching basis and currency', () => {
-  assert.equal(Pay.compact('$32.50/hour undergraduate; $40.00/hour graduate', { basis:'hour' }), '$33–40/hour');
+  assert.equal(Pay.compact('$32.50/hour undergraduate; $40.00/hour graduate', { basis:'hour' }), '$32.50–40/hour');
   assert.equal(Pay.compact('$21/hour undergraduate; $23/hour graduate, postgraduate or MBA'), '$21–23/hour');
   assert.equal(Pay.compact('$20/hour; $800/week'), '$20/hour; $800/week');
   assert.equal(Pay.compact('$20/hour; €23/hour'), '$20/hour; €23/hour');
@@ -79,7 +79,8 @@ test('current internship pay labels are compact and formatting leaves all source
     const options = Object.freeze({ basis:job.payBasis, status:job.payStatus });
     const label = Pay.compact(job.pay, options);
     assert(label.length <= 36, job.co + ': ' + label);
-    assert.doesNotMatch(label, /\d\.\d|not listed|not stated|amount not disclosed/i, job.co + ': ' + label);
+    assert.doesNotMatch(label, /not listed|not stated|amount not disclosed/i, job.co + ': ' + label);
+    if (job.payBasis !== 'hour') assert.doesNotMatch(label, /\d\.\d/, job.co + ': ' + label);
     if (job.payBasis === 'not_listed') assert.doesNotMatch(label, /\/(?:hour|week|month|year|program)\b/, job.co);
     assert.equal(Pay.compact(job.pay, options), label, 'pure repeated formatting');
   }
@@ -105,7 +106,7 @@ test('minimum-pay plus follows the period for explicit, inferred and already-plu
   for (const [raw, expected] of [
     ['From $29/hour', '$29/hour+'], ['$29+/hour', '$29/hour+'],
     ['$29/hour+', '$29/hour+'], ['$29+ per hour', '$29/hour+'],
-    ['$29.10 minimum per hour', '$29/hour+'], ['Starting at $500/week', '$500/week+'],
+    ['$29.10 minimum per hour', '$29.10/hour+'], ['Starting at $500/week', '$500/week+'],
     ['At least $2,000/month', '$2,000/month+'], ['From $70K/year', '$70K/year+'],
     ['From $5,000 for the program', '$5,000/program+'], ['From $70K', '$70K+'],
     ['Up to $29/hour', '≤$29/hour'], ['$29/hour plus commission', '$29/hour'],
@@ -115,4 +116,19 @@ test('minimum-pay plus follows the period for explicit, inferred and already-plu
   const before = JSON.stringify(job);
   assert.equal(Pay.compact(job.pay, {basis:job.payBasis, internship:true}), '$29/hour+');
   assert.equal(JSON.stringify(job), before, 'the employer amount and source basis stay exact');
+});
+
+// Regression: the posted hourly interval must not be rounded or collapsed.
+test('hourly cents survive explicit, confirmed and internship-inferred basis without changing caller inputs', () => {
+  for (const [pay, options, expected] of [
+    ['$31.25–$36.05/hour', {basis:'annual'}, '$31.25–36.05/hour'],
+    ['$31.25–$31.40/hour', {basis:'hour'}, '$31.25–31.40/hour'],
+    ['$0.125/hour', {}, '$0.125/hour'],
+    ['$31.25–36.05', {basis:'hour'}, '$31.25–36.05/hour'],
+    ['$23.75', {internship:true,basis:'not_listed'}, '$23.75/hour'],
+  ]) {
+    Object.freeze(options); const before=JSON.stringify(options);
+    assert.equal(Pay.compact(pay,options),expected);
+    assert.equal(JSON.stringify(options),before);
+  }
 });
