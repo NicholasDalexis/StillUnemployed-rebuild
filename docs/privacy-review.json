@@ -1,19 +1,22 @@
 {
-  "version": "2.7.7.18",
+  "version": "2.7.7.22",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-14T03:20:08.512Z",
-  "reviewer": "Codex root",
-  "sourceDigest": "b4c7e537639a6c4eea51a1766eed316bcab07e84a5e798d8f85f5d2c3d822c0d",
+  "reviewedAt": "2026-10-14T18:35:26.120Z",
+  "reviewer": "Codex internship sourcing",
+  "sourceDigest": "cd624ea8707a829bf0cd513bcf597e4dbed3e5982c6e844c253ef5db2a4e3813",
   "sourceFileCount": 225,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Combined release of reviewed daily Home UI, footer links, public inventory counts, and two approved public internship records.",
+  "scope": "Authorized source-only internship catalog release: eighteen qualified employer postings and unchanged previously approved sixty-eight. Standard generated version/footer labels only; unrelated owner Chicory candidate excluded. Post-build seal preserves existing approved due October14 daily projection without new selections or behavioral code.",
   "checks": {
-    "disclosures": "Reviewed, no wording change needed. Only public employer facts and counts added; existing consent, auth, retention and private projection unchanged. Footer labels updated.",
-    "choices": "No account or analytics requirement, new stored identifier, input, vendor or retention change. Count request credentials omitted and no-store; shared board consent/auth unchanged.",
-    "publication": "Existing due-only daily sets remain unchanged; private connector review page preserved. Counters have Loading, Unavailable and Retry states. Upcoming published internships included. Source outages never become zero."
+    "disclosures": "Privacy and Terms read in full; no wording change needed. Public employer facts only; enrollment, pay basis, cohort and material restrictions retained.",
+    "choices": "No new accounts, analytics requirement, identifiers, inputs, services, retention, permissions or account actions.",
+    "publication": "Fresh complete126-row27-column source envelope checked86included/40excluded. Original68 verification dates unchanged. NEON Design/Sony hold/private Golden/receipts excluded. Public-safe Gemini aliases verified; no opaque session parameters copied."
   },
   "openItems": [
-    "Fresh Google OAuth and physical iPhone remain untested; hosted release verification follows."
-  ]
+    "Hosted preview and production proof pending; no fresh OAuth or physical iPhone test.",
+    "Native tracker owner-local19/20 not deployed;21 allocation avoids their identities."
+  ],
+  "author": "Codex",
+  "platform_signature": "-Codex"
 }
