@@ -1,7 +1,36 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.22",
+  "currentVersion": "2.7.7.24",
   "releases": [
+    {
+      "version": "2.7.7.24",
+      "date": "2026-10-14",
+      "title": "Student opportunities with eligibility",
+      "changes": [
+        "Finalize eighteen source-verified student internships and co-ops with source-bound eligibility summaries; preserve sixty-eight approved records and unchanged Jobs. Local21/22/23 were preparation and preview checkpoints, never production releases."
+      ],
+      "public": {
+        "title": "More student opportunities",
+        "changes": [
+          "Eighteen internships and co-ops added with cohort, location and eligibility details."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.23",
+      "date": "2026-10-14",
+      "title": "Student opportunities with eligibility",
+      "changes": [
+        "Finalize eighteen verified internship/co-op admissions with source-bound compact eligibility summaries, preserving full original public eligibility and previous68 approved records. Local21/22 preview checkpoints were not deployed."
+      ],
+      "public": false,
+      "preparedPublic": {
+        "title": "More student opportunities",
+        "changes": [
+          "Eighteen internships and co-ops added with cohort, location and eligibility details."
+        ]
+      }
+    },
     {
       "version": "2.7.7.22",
       "date": "2026-10-14",
@@ -9,7 +38,8 @@
       "changes": [
         "Post-build seal for eighteen verified internships/co-ops and sixty-eight unchanged approved records. Include only existing approved due October14 daily projection; exclude unrelated Chicory local20 patch. Local21 was a preparation checkpoint, never deployed."
       ],
-      "public": {
+      "public": false,
+      "preparedPublic": {
         "title": "More student opportunities",
         "changes": [
           "Eighteen internships and co-ops across design, content, research, marketing and engineering."
@@ -1220,7 +1250,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "cd624ea8707a829bf0cd513bcf597e4dbed3e5982c6e844c253ef5db2a4e3813",
+    "digest": "3eead560136c00fa88bf6bbf238aaebe45fb68b4ba70c37c01b6a9731b62c928",
     "fileCount": 225
   }
 }
