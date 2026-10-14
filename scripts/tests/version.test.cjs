@@ -72,7 +72,9 @@ test('Version 2 overview is readable without JavaScript and never renders releas
   const before = JSON.stringify(data), html = renderHistory(data);
   assert.match(html, /<h1>Version 2<\/h1>/);assert.match(html, /<main id="version-2">/);
   assert.match(html, /Current board version 2<\/p>/);
-  assert.doesNotMatch(html, /<script|<img|onerror|alert\(|<time|Version history|latest two updates/);
+  assert.doesNotMatch(html, /<img|onerror|alert\(|<time|latest two updates/);
+  assert.match(html, /<script src="\/js\/public-counts.js" defer><\/script>/);
+  assert.match(html, /data-public-counts/);
   assert.equal(JSON.stringify(data), before);
   assert.match(html, /href="\/css\/brand\.css"/);
   assert.match(html, /grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);

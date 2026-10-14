@@ -57,7 +57,7 @@ async function boundedText(response,limits){
   finally{reader.releaseLock();}
   return new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(chunks));
 }
-async function fetchCatalog({fetchImpl=fetch,now=Date.now,limits=LIMITS}={}){
+async function fetchCatalog({fetchImpl=fetch,now=Date.now,limits=LIMITS,parseCatalog=catalogFromCSV}={}){
   const controller=new AbortController();let timer;
   const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(unavailable());},limits.timeoutMs);});
   const work=(async()=>{
@@ -71,7 +71,7 @@ async function fetchCatalog({fetchImpl=fetch,now=Date.now,limits=LIMITS}={}){
         if(!location||redirects===limits.redirects)throw unavailable();url=new URL(location,url);continue;
       }
       if(response.status!==200){if(response.body)await response.body.cancel();throw unavailable();}
-      return {jobs:await catalogFromCSV(await boundedText(response,limits),limits),checkedAt:now()};
+      return {jobs:await parseCatalog(await boundedText(response,limits),limits),checkedAt:now()};
     }
     throw unavailable();
   })();

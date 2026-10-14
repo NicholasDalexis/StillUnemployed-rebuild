@@ -45,7 +45,7 @@ h1 { font-family:var(--su-hand); font-size:clamp(40px,10vw,56px); font-weight:40
 .suggest-receipt p { max-width:52ch; }
 .suggest-receipt-actions { display:flex; flex-wrap:wrap; align-items:center; gap:12px 20px; margin:25px 0; }
 .suggest-text-button { min-height:44px; padding:8px 0; border:0; background:transparent; color:var(--su-ink); font-family:var(--su-hand); font-size:20px; text-decoration:underline; text-decoration-color:var(--su-orange); text-underline-offset:.2em; cursor:pointer; }
-.suggest-footer { display:flex; justify-content:center; align-items:center; gap:20px; margin-top:16px; color:var(--su-muted); font-family:var(--su-hand); font-size:17px; }
+.suggest-footer { display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:8px 20px; margin-top:16px; color:var(--su-muted); font-family:var(--su-hand); font-size:17px; }
 .suggest-footer a { display:inline-flex; align-items:center; min-height:44px; }
 @media(min-width:640px) { .suggest-wrap { padding:24px 32px 40px; } .suggest-header { margin-bottom:32px; } .suggest-brand { font-size:25px; } .suggest-back { font-size:20px; } .suggest-paper { padding:34px 40px 28px 48px; } .suggest-paper::after { background-position:16px 0,0 0,0 0; } }
 @media(prefers-reduced-motion:reduce) { *, *::before, *::after { scroll-behavior:auto !important; transition:none !important; } }

@@ -203,12 +203,14 @@ export function renderHistory(data) {
   <title>Version 2 | StillUnemployed.com</title>
   <meta name="description" content="Explore Version 2: advice notes, themes, internships, your job tracker and more ways to make the board yours.">
   <link rel="stylesheet" href="/css/brand.css">
+  <script src="/js/public-counts.js" defer></script>
   <style>
     *{box-sizing:border-box}body{margin:0;background:var(--su-bg);color:var(--su-ink);font:400 16px/1.6 var(--su-body)}
     main{max-width:880px;margin:auto;padding:24px 24px 64px;scroll-margin-top:24px}nav{display:flex;justify-content:space-between;gap:12px 20px;flex-wrap:wrap;margin-bottom:28px}
     a{color:var(--su-orange-text);text-underline-offset:4px}nav a{display:inline-flex;align-items:center;gap:8px;min-height:44px;font:400 22px/1.25 var(--su-hand)}nav a:first-child{color:var(--su-ink)}
     h1,h2,p{margin:0}h1{display:inline-block;font:400 clamp(40px,8vw,56px)/1.15 var(--su-hand);text-decoration:underline;text-decoration-color:var(--su-yellow);text-decoration-thickness:6px;text-underline-offset:5px}.intro{max-width:54ch;margin-top:16px}.current-version{margin:12px 0 28px;color:var(--su-muted);font-size:14px}
     .features{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}article{min-width:0;padding:22px 24px 24px;border-left:2px solid var(--su-orange);background:var(--su-paper);box-shadow:var(--su-note-shadow);overflow-wrap:anywhere}h2{font:400 29px/1.25 var(--su-hand);margin-bottom:10px}article p{line-height:1.6}
+    .public-counts{display:flex;align-items:center;gap:12px 28px;flex-wrap:wrap;margin:0 0 24px;font-size:20px}.public-counts button{min-height:44px;padding:6px 12px;background:var(--su-yellow-paper);color:var(--su-ink);border:0;font:400 20px var(--su-hand);cursor:pointer}.public-counts button:focus-visible{outline:3px solid var(--su-orange-text);outline-offset:4px}
     .drawn-arrow{width:36px;height:20px;flex:none;fill:none;stroke:var(--su-orange);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}footer{display:flex;gap:8px 24px;flex-wrap:wrap;margin-top:32px;font-size:14px}footer a{display:inline-flex;align-items:center;gap:8px;min-height:44px}
     a:focus-visible{outline:3px solid var(--su-orange);outline-offset:4px;border-radius:2px}@media(max-width:600px){main{padding:20px 16px 48px}.features{grid-template-columns:minmax(0,1fr);gap:16px}article{padding:20px}.current-version{margin-bottom:24px}}
   </style>
@@ -216,13 +218,14 @@ export function renderHistory(data) {
 <body>
   <main id="${anchor(data.currentVersion)}">
     <nav aria-label="Site navigation"><a href="/index.html">StillUnemployed.com</a><a href="/jobs.html">Just jobs ${arrow}</a></nav>
+    <section class="public-counts" data-public-counts aria-label="Current public listings" role="status" aria-live="polite" aria-atomic="true"><p>Jobs: <strong data-count="jobs">Loading…</strong></p><p>Internships: <strong data-count="internships">Loading…</strong></p><button type="button" hidden>Retry counts</button><noscript>Enable JavaScript to check the current counts.</noscript></section>
     <h1>Version 2</h1>
     <p class="intro">More ways to find a role and keep your job hunt together.</p>
     <p class="current-version">Current board version ${esc(data.currentVersion)}</p>
     <section class="features" aria-label="Version 2 features">
 ${cards}
     </section>
-    <footer><a href="/style-guide.html">For designers: check out our style guide ${arrow}</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/index.html">Home</a></footer>
+    <footer><a href="/style-guide.html">For designers: check out our style guide ${arrow}</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/index.html">Home</a>${versionFooterLink(data.currentVersion)}</footer>
   </main>
 </body>
 </html>
@@ -235,6 +238,19 @@ export function refreshVersionLinks(html, version) {
     return attributes + ' href="/versions.html#' + anchor(version) + '" aria-label="' + esc(label(version) + '. View version history') + '">' + label(version) + close;
   })
     .replace(/(js\/release\.js\?v=)[^"'\s>]+/g, (_match, prefix) => prefix + version);
+}
+export function versionFooterLink(version){
+  return '<a data-su-version style="display:inline-flex;align-items:center;min-height:44px" href="/versions.html#'+anchor(version)+'" aria-label="'+esc(label(version)+'. View version history')+'">'+esc(label(version))+'</a>';
+}
+export function ensureVersionFooter(html,version){
+  html=refreshVersionLinks(html,version);
+  const footers=[...html.matchAll(/<footer\b[^>]*>[\s\S]*?<\/footer\s*>/gi)],last=footers.at(-1);
+  if(last){
+    if(/\bdata-su-version(?:\s|=|>)/.test(last[0]))return refreshVersionLinks(html,version);
+    const footer=last[0].replace(/<\/footer\s*>/i,versionFooterLink(version)+'</footer>');
+    return html.slice(0,last.index)+footer+html.slice(last.index+last[0].length);
+  }
+  return html.replace(/<\/body\s*>/i,'<footer class="su-release-footer" style="text-align:center;padding:16px">'+versionFooterLink(version)+'</footer>\n</body>');
 }
 export function applyRelease(root = ROOT, options = {}) {
   const metadataPath = join(root, 'releases.json');
@@ -250,8 +266,8 @@ export function applyRelease(root = ROOT, options = {}) {
   ]);
   // Keep every opted-in static page correct even with JavaScript disabled.
   // Generated /j and /jobs pages stay excluded and inherit their source page.
-  for (const path of inventoryPublicSource(root).filter(path => /\.html?$/i.test(path))) {
-    files.set(path, refreshVersionLinks(readFileSync(join(root, path), 'utf8'), data.currentVersion));
+  for (const path of inventoryPublicSource(root).filter(path => /\.html?$/i.test(path) && !path.includes('/'))) {
+    files.set(path, ensureVersionFooter(refreshVersionLinks(readFileSync(join(root, path), 'utf8'), data.currentVersion), data.currentVersion));
   }
   const fingerprint = publicSourceFingerprint(root, files);
   if (options.seal || options.bump) {

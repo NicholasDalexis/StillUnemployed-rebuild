@@ -79,6 +79,11 @@ test('board entry labels only current Eastern published picks as today',()=>{
   assert.equal(Entry.html([{...manifest.selections[0],state:'scheduled'}],now),'');
   assert.match(Entry.html([manifest.selections[0]],now),/href="\/jobs\/daily"/);
   assert.equal(Entry.today(new Date('2026-10-06T02:00:00Z')),'2026-10-05');
+  assert.match(Entry.html([manifest.selections[0]],now),/Monday, October 5/);
+  assert.doesNotMatch(Entry.html([manifest.selections[0]],now),/October 5, 2026/);
+  const home=fs.readFileSync('index.html','utf8');
+  for(const asset of ['css/daily-entry.css','js/daily-selection-data.js','js/daily-loader.js','js/daily-entry.js'])assert.ok(home.includes(asset),'Home loads '+asset);
+  assert.ok(home.indexOf('<script src="js/daily-entry.js')<home.indexOf('<script src="js/app.js'),'Home daily entry is ready before the shared board renderer');
 });
 
 test('daily card controls use the shared application dispatcher',()=>{

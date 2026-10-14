@@ -3,6 +3,7 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync, lstatSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {ensureVersionFooter} from './version.mjs';
 
 export const ORIGIN = 'https://stillunemployed.com';
 export const PAGES = Object.freeze({
@@ -94,7 +95,11 @@ export function finalizeSEO(dist, env = process.env) {
     }
   }
   walk(dist);
-  for (const {file,relative} of files) writeFileSync(file,htmlMetadata(readFileSync(file,'utf8'),relative,production));
+  const versionPath=join(dist,'releases.json'),version=existsSync(versionPath)?JSON.parse(readFileSync(versionPath,'utf8')).currentVersion:null;
+  for (const {file,relative} of files){
+    const html=htmlMetadata(readFileSync(file,'utf8'),relative,production);
+    writeFileSync(file,version?ensureVersionFooter(html,version):html);
+  }
   const headerPath = join(dist,'_headers');
   writeFileSync(headerPath,headers(existsSync(headerPath) ? readFileSync(headerPath,'utf8') : '',production));
   writeFileSync(join(dist,'robots.txt'),robots(production));
