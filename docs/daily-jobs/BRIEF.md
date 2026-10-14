@@ -55,3 +55,12 @@ Author: Codex. Timezone: America/New_York. Source: Marketing source version mark
 Stage the exact October12 and October13 ordered four-job collections at 13:00 UTC / 9 AM Eastern. All seven previously published collections remain structurally identical. The eight current admitted identities and four before/at publication boundaries are verified. Normal share generation includes both new NBC routes. Shared UI, auth, analytics, source Sheets and schedules are unchanged; future selections remain private until server publication time. Actual future activation and social publication are separate checks after each due time.
 
 -Codex
+
+
+## Wednesday through Friday content continuation | October 13, 2026
+
+Author: Codex. Timezone: America/New_York. Source: Marketing marketing-wedfri-20261013-v2, exact packetSHA2562471662e027b84ff464a0727c441134cf4f3a6415b8117aee8057a414e241db6 under existing authorized continuation contract. Status:2.7.7.16 candidate; hosted release readback recorded separately.
+
+Stage exact October14,15,16 ordered four-job collections at13:00UTC/9AM Eastern. Nine previous collections remain structurally identical. All twelve live admitted IDs/links and six before/at publication boundaries verified. Current canonical data/moderation still governs titles, TLDR and Apply; archived snapshots preserve the approved source wording. Only Friday slot4 uses finalCarGurus8094246 rather than heldUNKNOWN UnderArmour. Preserve repaired.15 runtime recovery/hourly cents,66 internship approvals and all auth/privacy behavior. No source Sheet, social schedule, ManyChat, new provider or spend change. Future API/static fallback stays hidden until server due-time; actual activation/publication remains a later check.
+
+-Codex

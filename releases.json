@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.15",
+  "currentVersion": "2.7.7.16",
   "releases": [
+    {
+      "version": "2.7.7.16",
+      "date": "2026-10-13",
+      "title": "Stage Wednesday through Friday daily jobs",
+      "changes": [
+        "Stage the exact approved October14-16 Top4 collections at9AM Eastern, preserving nine prior dates and repaired2.7.7.15 behavior. Source marketing-wedfri-20261013-v2."
+      ]
+    },
     {
       "version": "2.7.7.15",
       "date": "2026-10-13",
@@ -1153,7 +1161,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "42a6bc5131033a50faf30364f4e7607497f30876fabb606cec718fc03faecede",
+    "digest": "4a3b402816a98e7c61ca3fd200d8cd0b1e0392310a8caa2b29afe680c69c5e32",
     "fileCount": 222
   }
 }

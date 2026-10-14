@@ -1,21 +1,21 @@
 {
-  "version": "2.7.7.15",
+  "version": "2.7.7.16",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-13T22:47:59.381756+00:00",
-  "reviewer": "Codex sourcing coordinator",
-  "sourceDigest": "42a6bc5131033a50faf30364f4e7607497f30876fabb606cec718fc03faecede",
+  "reviewedAt": "2026-10-14T00:44:23.331Z",
+  "reviewer": "Codex root",
+  "sourceDigest": "4a3b402816a98e7c61ca3fd200d8cd0b1e0392310a8caa2b29afe680c69c5e32",
   "sourceFileCount": 222,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Bounded retry for existing public listing and moderation requests, truthful unavailable counts, finite local console diagnostics. No new provider, persistent record, account access, consent setting or remote telemetry.",
+  "scope": "Exact October14-16 daily collections and due-only public fallback; nine prior dates and repaired.15 behavior preserved.",
   "checks": {
-    "disclosures": "Reviewed current Privacy and Terms against the change; no wording change needed. Existing optional recovery counts remain consent gated.",
-    "diagnostics": "Only section, finite stage/code, HTTP status, attempt number and bounded elapsed time are logged locally. No query, URL, raw error, body, account identity or credential is logged.",
-    "availability": "Fresh moderation remains mandatory on both attempts; no static catalog fallback; genuine empty feed remains zero."
+    "disclosures": "Privacy/Terms daily archival fallback, optional analytics and direct employer navigation reviewed; no wording change needed. Process review, not legal certification.",
+    "choices": "Auth/consent/GPC/identity/exclusions, providers/storage/retention unchanged; no signup or private input.",
+    "publication": "Future picks excluded from public JS/API until server9AM Eastern. Caller clock ignored; no source Sheet/editorial writer/social-schedule changes."
   },
   "openItems": [
-    "Preview and production verification recorded separately.",
-    "Initial historical failing endpoint unknown; this repairs demonstrated sticky recovery, not every network outage.",
-    "No fresh OAuth or physical device retest claimed."
+    "Actual future activation/social publication pending after due time.",
+    "Fresh OAuth, physical iPhone and durable daily analytics not tested.",
+    "SU-BUG-123 initiating transient endpoint unknown despite.15 recovery mitigation."
   ]
 }
