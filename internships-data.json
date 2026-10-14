@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-13T22:10:43.076Z",
+  "sourceExportedAt": "2026-10-14T03:15:05.263Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -2866,6 +2866,99 @@
         "status": "open",
         "checkedAt": "2026-10-13T22:07:54.822Z",
         "sourceUrl": "https://job-boards.greenhouse.io/khanacademy/jobs/8250259",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Sephora",
+      "role": "Intern, Product Management, Connecting Clients, Channels and Fulfillment (Applied AI & Automation)",
+      "link": "https://jobs.sephora.com/USA/job/Remote-Intern%2C-Product-Management%2C-Connecting-Clients%2C-Channels-and-Fulfillment-CA-USA_519958/1371172755/",
+      "loc": "Remote, US; FSC SF/NY/DC",
+      "ind": "Artificial Intelligence",
+      "desc": "Build machine-learning and agentic AI proofs of concept for Sephora business challenges.",
+      "pay": "$30.00/hour",
+      "style": "Remote",
+      "exp": "Not listed",
+      "state": "Remote, US; FSC SF/NY/DC",
+      "eligibility": "Currently pursuing Bachelor's, Master's or Ph.D. in Computer Science, Machine Learning, Artificial Intelligence, Data Science, Engineering, Statistics or related quantitative field.\nStrong Python and SQL; demonstrated ML/deep-learning model building/evaluation and experience with LLM applications, RAG, embeddings, vector databases, tool calling or agentic frameworks.\nGraduating in 2027 or 2028 (undergraduate or graduate degree).\n36 hours/week, Monday–Friday; work schedule must align with 9–5 PM Pacific Standard Time (employer wording).\nMust permanently reside and work in the United States; available June 14–August 20, 2027.\nMust be open to relocating to the San Francisco Bay Area upon graduation for consideration for full-time hybrid positions; this is a future-employment consideration, not a promise of conversion.",
+      "cycle": "Summer 2027; June 14–August 20",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "2027-06-14",
+      "timingSourceUrl": "https://jobs.sephora.com/USA/job/Remote-Intern%2C-Product-Management%2C-Connecting-Clients%2C-Channels-and-Fulfillment-CA-USA_519958/1371172755/",
+      "startDateISO": "2027-06-14",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Design and evaluate machine-learning models for business use cases.",
+        "Build retrieval, tool-calling and agentic AI workflows.",
+        "Develop Python and SQL proofs of concept."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing Bachelor's, Master's or Ph.D. in Computer Science, Machine Learning, Artificial Intelligence, Data Science, Engineering, Statistics or related quantitative field.",
+        "Strong Python and SQL; demonstrated ML/deep-learning model building/evaluation and experience with LLM applications, RAG, embeddings, vector databases, tool calling or agentic frameworks.",
+        "Graduating in 2027 or 2028 (undergraduate or graduate degree).",
+        "36 hours/week, Monday–Friday; work schedule must align with 9–5 PM Pacific Standard Time (employer wording).",
+        "Must permanently reside and work in the United States; available June 14–August 20, 2027.",
+        "Must be open to relocating to the San Francisco Bay Area upon graduation for consideration for full-time hybrid positions; this is a future-employment consideration, not a promise of conversion."
+      ],
+      "benefits": [
+        "Weekly virtual workshops, networking and career panels; hands-on projects.",
+        "Optional intern summer shutdown July 6–9, 2027; paid/unpaid shutdown status not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-14T02:44:17.500Z",
+        "sourceUrl": "https://jobs.sephora.com/USA/job/Remote-Intern%2C-Product-Management%2C-Connecting-Clients%2C-Channels-and-Fulfillment-CA-USA_519958/1371172755/",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Sephora",
+      "role": "Intern, Technology, DevOps & Site Reliability Engineering (SRE)",
+      "link": "https://jobs.sephora.com/USA/job/San-Francisco-Intern%2C-Technology%2C-DevOps-%26-Site-Reliability-Engineering-%28SRE%29-CA-USA_519959/1371172655/",
+      "loc": "San Francisco, CA",
+      "ind": "Software Engineering",
+      "desc": "Improve cloud infrastructure reliability, automation and engineering productivity with Sephora's DevOps, SRE and Platform Operations teams.",
+      "pay": "$30.00/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "San Francisco, CA",
+      "eligibility": "Currently pursuing Bachelor's or Master's in Computer Science, Software Engineering, Computer Engineering, Information Systems, Information Technology or related technical discipline.\nProgramming/scripting in at least one of Python, Java, Go, JavaScript or Bash; foundational Linux, networking, APIs, Git and cloud concepts.\nCoursework/project/internship exposure to cloud, containers, infrastructure automation, CI/CD, observability, platform/reliability engineering or distributed systems; technical communication and problem-solving skills.\nGraduating in 2027 or 2028 (undergraduate or graduate degree).\n36 hours/week, Monday–Friday; work schedule must align with 9–5 PM Pacific Standard Time (employer wording).\nMust permanently reside and work in the United States; available June 14–August 20, 2027.\nMust be open to relocating to the San Francisco Bay Area upon graduation for consideration for full-time hybrid positions; this is a future-employment consideration, not a promise of conversion.",
+      "cycle": "Summer 2027; June 14–August 20",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "2027-06-14",
+      "timingSourceUrl": "https://jobs.sephora.com/USA/job/San-Francisco-Intern%2C-Technology%2C-DevOps-%26-Site-Reliability-Engineering-%28SRE%29-CA-USA_519959/1371172655/",
+      "startDateISO": "2027-06-14",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Analyze service health and identify reliability and automation improvements.",
+        "Develop scripts, tools and dashboards to reduce manual work.",
+        "Support CI/CD, observability, infrastructure automation and developer self-service."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing Bachelor's or Master's in Computer Science, Software Engineering, Computer Engineering, Information Systems, Information Technology or related technical discipline.",
+        "Programming/scripting in at least one of Python, Java, Go, JavaScript or Bash; foundational Linux, networking, APIs, Git and cloud concepts.",
+        "Coursework/project/internship exposure to cloud, containers, infrastructure automation, CI/CD, observability, platform/reliability engineering or distributed systems; technical communication and problem-solving skills.",
+        "Graduating in 2027 or 2028 (undergraduate or graduate degree).",
+        "36 hours/week, Monday–Friday; work schedule must align with 9–5 PM Pacific Standard Time (employer wording).",
+        "Must permanently reside and work in the United States; available June 14–August 20, 2027.",
+        "Must be open to relocating to the San Francisco Bay Area upon graduation for consideration for full-time hybrid positions; this is a future-employment consideration, not a promise of conversion."
+      ],
+      "benefits": [
+        "Weekly virtual workshops, networking and career panels; hands-on projects.",
+        "Optional intern summer shutdown July 6–9, 2027; paid/unpaid shutdown status not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-14T02:44:17.500Z",
+        "sourceUrl": "https://jobs.sephora.com/USA/job/San-Francisco-Intern%2C-Technology%2C-DevOps-%26-Site-Reliability-Engineering-%28SRE%29-CA-USA_519959/1371172655/",
         "reviewerType": "source_check"
       }
     }

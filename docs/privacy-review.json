@@ -1,21 +1,19 @@
 {
-  "version": "2.7.7.16",
+  "version": "2.7.7.18",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-14T00:44:23.331Z",
+  "reviewedAt": "2026-10-14T03:20:08.512Z",
   "reviewer": "Codex root",
-  "sourceDigest": "4a3b402816a98e7c61ca3fd200d8cd0b1e0392310a8caa2b29afe680c69c5e32",
-  "sourceFileCount": 222,
+  "sourceDigest": "b4c7e537639a6c4eea51a1766eed316bcab07e84a5e798d8f85f5d2c3d822c0d",
+  "sourceFileCount": 225,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Exact October14-16 daily collections and due-only public fallback; nine prior dates and repaired.15 behavior preserved.",
+  "scope": "Combined release of reviewed daily Home UI, footer links, public inventory counts, and two approved public internship records.",
   "checks": {
-    "disclosures": "Privacy/Terms daily archival fallback, optional analytics and direct employer navigation reviewed; no wording change needed. Process review, not legal certification.",
-    "choices": "Auth/consent/GPC/identity/exclusions, providers/storage/retention unchanged; no signup or private input.",
-    "publication": "Future picks excluded from public JS/API until server9AM Eastern. Caller clock ignored; no source Sheet/editorial writer/social-schedule changes."
+    "disclosures": "Reviewed, no wording change needed. Only public employer facts and counts added; existing consent, auth, retention and private projection unchanged. Footer labels updated.",
+    "choices": "No account or analytics requirement, new stored identifier, input, vendor or retention change. Count request credentials omitted and no-store; shared board consent/auth unchanged.",
+    "publication": "Existing due-only daily sets remain unchanged; private connector review page preserved. Counters have Loading, Unavailable and Retry states. Upcoming published internships included. Source outages never become zero."
   },
   "openItems": [
-    "Actual future activation/social publication pending after due time.",
-    "Fresh OAuth, physical iPhone and durable daily analytics not tested.",
-    "SU-BUG-123 initiating transient endpoint unknown despite.15 recovery mitigation."
+    "Fresh Google OAuth and physical iPhone remain untested; hosted release verification follows."
   ]
 }
