@@ -1,12 +1,14 @@
 import {createRemoteJWKSet,jwtVerify,customFetch} from 'jose';
 import Core from './job-moderation-core.cjs';
 import config from '../../../__/firebase/init.json' with {type:'json'};
+import Account from './account-state.cjs';
 export const PROJECT='stillunemployed-17de9';
 export const OWNER='nicholasdalexis@gmail.com';
 export const JWKS_URL='https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com';
 const LOOKUP_URL='https://identitytoolkit.googleapis.com/v1/accounts:lookup';
 const denied=()=>Core.fail(401,'Sign in again to verify owner access.');
 const lower=value=>typeof value==='string'?value.toLowerCase():'';
+const googleIdentities=payload=>payload.firebase?.identities?.['google.com'];
 
 // Upstream bodies and tokens are used only in memory, never logged or returned.
 export async function boundedJSON(url,options={},fetchImpl=fetch,bytes=65536){
@@ -23,12 +25,21 @@ export async function boundedJSON(url,options={},fetchImpl=fetch,bytes=65536){
 export function validateClaims(payload,now){
   const seconds=Math.floor(now/1000);
   if(!payload||payload.aud!==PROJECT||payload.iss!=='https://securetoken.google.com/'+PROJECT||typeof payload.sub!=='string'||!payload.sub||payload.sub.length>128||!Number.isSafeInteger(payload.exp)||payload.exp<=seconds||!Number.isSafeInteger(payload.iat)||payload.iat>seconds||payload.iat<0||!Number.isSafeInteger(payload.auth_time)||payload.auth_time>seconds||payload.auth_time>payload.iat||payload.auth_time<0)throw denied();
-  if(payload.email_verified!==true||lower(payload.email)!==OWNER||payload.firebase?.sign_in_provider!=='google.com'||payload.firebase?.tenant)throw Core.fail(403,'Owner access required');
+  if(payload.firebase?.sign_in_provider!=='google.com'||payload.firebase?.tenant)throw Core.fail(403,'Owner access required');
+  if(payload.email!==undefined){if(payload.email_verified!==true||lower(payload.email)!==OWNER)throw Core.fail(403,'Owner access required');}
+  else if(!Array.isArray(googleIdentities(payload))||!googleIdentities(payload).some(id=>typeof id==='string'&&id))throw Core.fail(403,'Owner access required');
 }
 export function validateAccount(payload,result){
   if(!result||!Array.isArray(result.users)||result.users.length!==1)throw denied();
   const account=result.users[0];
-  if(!account||account.localId!==payload.sub||account.disabled===true||account.emailVerified!==true||lower(account.email)!==OWNER||!Array.isArray(account.providerUserInfo)||!account.providerUserInfo.some(provider=>provider.providerId==='google.com'))throw denied();
+  if(!account||account.localId!==payload.sub||account.disabled===true||!Array.isArray(account.providerUserInfo))throw denied();
+  const google=account.providerUserInfo.find(provider=>provider.providerId==='google.com');
+  const primary=account.emailVerified===true&&lower(account.email)===OWNER;
+  // Firebase's explicit separate-provider account mode omits primary email.
+  // The Google identity still binds the signed token to the current Google's
+  // provider record. Google controls and verifies this exact gmail.com address.
+  const providerOwner=payload.email===undefined&&account.email===undefined&&google&&lower(google.email)===OWNER&&Array.isArray(googleIdentities(payload))&&googleIdentities(payload).includes(google.rawId);
+  if(!google||!(primary||providerOwner))throw denied();
   // Google's live account validSince is the minimum token-authentication epoch.
   // Signature and exp checks alone do not establish revocation status.
   if(!/^\d+$/.test(String(account.validSince))||!Number.isSafeInteger(Number(account.validSince))||payload.auth_time<Number(account.validSince))throw denied();
@@ -48,5 +59,7 @@ export async function verifyOwner(request,{verify=jwtVerify,keys,fetchImpl=fetch
   validateClaims(payload,now());
   if(config.projectId!==PROJECT||typeof config.apiKey!=='string')throw Core.unavailable();
   const result=await boundedJSON(LOOKUP_URL+'?key='+encodeURIComponent(config.apiKey),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:token})},fetchImpl,65536);
-  return validateAccount(payload,result);
+  const owner=validateAccount(payload,result);
+  if(Account.enabled(process.env))await Account.assertActive(payload.sub,Account.dependencies());
+  return owner;
 }

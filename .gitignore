@@ -8,7 +8,7 @@
 Thumbs.db
 
 # Node (only if ever added)
-node_modules/
+node_modules
 j/
 
 # throwaway local font/render test scratch
@@ -26,3 +26,6 @@ assets/og-src/
 
 # Local Netlify folder
 .netlify
+
+# Local account-release verification receipts
+.release-local/

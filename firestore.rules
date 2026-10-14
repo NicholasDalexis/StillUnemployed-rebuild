@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function owns(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+    function active(uid) {
+      return !exists(/databases/$(database)/documents/suAccountDeletion/$(uid));
+    }
+    function validSync() {
+      return request.resource.data.syncVersion == 2
+        && request.resource.data.records is map
+        && request.resource.data.records.keys().hasOnly(['saved', 'tracker', 'discovery']);
+    }
+    match /users/{uid} {
+      allow read: if owns(uid) && active(uid);
+      allow create: if owns(uid) && active(uid) && validSync()
+        && request.resource.data.keys().hasOnly(['saved', 'savedJobs', 'tracker', 'syncVersion', 'records'])
+        ;
+      // Preserve unknown immutable fields on older account documents while
+      // limiting this client to its current sync fields during migration.
+      allow update: if owns(uid) && active(uid) && validSync()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['saved', 'savedJobs', 'tracker', 'syncVersion', 'records']);
+      // Account deletion is a verified, multi-store server operation.
+      allow delete: if false;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

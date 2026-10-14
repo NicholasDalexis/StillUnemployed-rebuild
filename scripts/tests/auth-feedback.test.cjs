@@ -34,6 +34,7 @@ async function feedbackUI(options={}) {
     disabled:{get(){return this.getAttribute('disabled')!==null;},set(value){value?this.setAttribute('disabled',''):this.removeAttribute('disabled');if(value&&b.document.activeElement===this)b.document.activeElement=b.document.body;}}
   });
   proto.getClientRects=function(){for(let el=this;el;el=el.parentElement)if(el.hidden||el.style.display==='none')return[];return[{}];};
+  proto.remove=function(){if(this.parentElement)this.parentElement.removeChild(this);};
   proto.click=function(){
     if(this.disabled)return;
     const event={target:this,preventDefault(){},stopPropagation(){this.stopped=true;}};
@@ -48,17 +49,24 @@ async function feedbackUI(options={}) {
   const timers=new Map(),windowEvents={};let timerID=0,resolveSignout,rejectSignout,syncCallback;
   let authListener,mutationListener,owner=null,resolvePopup,rejectPopup,releaseSdk;
   const sdkGate=options.deferSdk?new Promise(resolve=>{releaseSdk=resolve;}):Promise.resolve();
-  const store={owner:()=>owner,current:()=>options.cacheCurrent!==false,ownershipCurrent:()=>options.ownerMatches!==false,activate(value){owner=value;options.cacheCurrent=true;options.ownerMatches=true;b.app.render();if(mutationListener)mutationListener([{addedNodes:[b.grid]}]);}};
+  const store={owner:()=>owner,current:()=>options.cacheCurrent!==false,ownershipCurrent:()=>options.ownerMatches!==false,suspend(){options.cacheCurrent=false;},activate(value){owner=value;options.cacheCurrent=true;options.ownerMatches=true;b.app.render();if(mutationListener)mutationListener([{addedNodes:[b.grid]}]);}};
   const sdk={getAuth:()=>({}),GoogleAuthProvider:function GoogleAuthProvider(){},
     getRedirectResult:async()=>null,
     onAuthStateChanged(_auth,fn){authListener=fn;fn(options.initialUser||null);},
     signInWithPopup(){calls.popups++;return options.popupError?Promise.reject({code:options.popupError}):new Promise((resolve,reject)=>{resolvePopup=resolve;rejectPopup=reject;});},
-    signInWithRedirect:async()=>{calls.redirects++;if(options.redirectError)throw{code:options.redirectError};},signOut:()=>{calls.signouts++;return new Promise((resolve,reject)=>{resolveSignout=resolve;rejectSignout=reject;});}
+    signInWithRedirect:async()=>{calls.redirects++;if(options.redirectError)throw{code:options.redirectError};},signOut:()=>{calls.signouts++;if(options.immediateSignout){authListener(null);return Promise.resolve();}return new Promise((resolve,reject)=>{resolveSignout=resolve;rejectSignout=reject;});},
+    signInWithCredential:async(_auth,credential)=>{calls.credential=credential;authListener(options.nativeUser);return {user:options.nativeUser};},
+    linkWithCredential:async(current,credential)=>{calls.linked={uid:current.uid,credential};return {user:current};},
+    reauthenticateWithCredential:async(current,credential)=>{calls.reauthenticated={uid:current.uid,credential};return {user:current};},
+    reauthenticateWithPopup:async current=>{if(options.reauthError)throw {code:options.reauthError};return {user:current};}
   };
+  sdk.GoogleAuthProvider.credential=(idToken,accessToken)=>({providerId:'google.com',idToken,accessToken});
+  sdk.OAuthProvider=class{constructor(id){this.id=id;}addScope(){}credential(value){return {providerId:this.id,...value};}static credentialFromResult(){return {idToken:'synthetic-apple-token',accessToken:'synthetic-apple-access'};}};
   const window={SUApp:b.app,SUStore:store,SUAnalytics:{emit:(name,payload)=>calls.events.push({name,payload})},addEventListener(name,fn){(windowEvents[name]??=[]).push(fn);},SUSync:{connect(_store,_adapter,status){calls.syncs++;syncCallback=status;status(options.syncFailure?'error':'synced');return{stop(){},queue(){}};}}};
   const hostname=options.hostname||'preview--stillunemployed.netlify.app';
+  if(options.native)window.SUNative={isNative:true,ready:Promise.resolve(),firebase:{app:{initializeApp:()=>({})},auth:sdk,firestore:{getFirestore:()=>({}),doc:()=>({})}},auth:{signIn:options.nativeSignIn,reauthenticate:options.nativeSignIn,clearProviderSession:async()=>{calls.providerCleared=true;}},request:options.request,storage:{flush:async()=>{calls.flushes=(calls.flushes||0)+1;if(options.flushError)throw Error("Native storage unavailable");}}};
   vm.runInNewContext(authSource.replace(/import\((['"])([^'"]+)\1\)/g,'__loadSdk($1$2$1)'),{
-    location:{hostname,host:hostname},window,document:b.document,
+    location:{hostname,host:hostname},window,document:b.document,localStorage:b.localStorage,sessionStorage:b.window.sessionStorage,crypto:require('node:crypto'),fetch:options.request,
     setTimeout:options.manualTimers?(fn,ms)=>{const id=++timerID;timers.set(id,{fn,ms});return id;}:setTimeout,clearTimeout:options.manualTimers?id=>timers.delete(id):clearTimeout,
     console:{warn(){}},alert:message=>calls.alerts.push(message),confirm:()=>{calls.confirms++;return !!options.confirm;},
     MutationObserver:class{constructor(fn){mutationListener=fn;}observe(){}},
@@ -172,8 +180,74 @@ test('already signed-in and newly mounted feedback slots show X; observer mounts
   ui.close().click();ui.open();ui.notify(ui.b.overlay);
   const google=ui.google(),slot=ui.slot();assert.equal(google.hidden,true);assert.equal(ui.close().hidden,false);
   ui.notify(slot);ui.notify(google);ui.notify(google.querySelector('svg'));
-  assert.equal(slot.querySelectorAll('.su-auth-button').length,1);assert.equal(ui.google(),google);
+  assert.equal(slot.querySelectorAll('.su-auth-button').length,3);assert.equal(slot.querySelectorAll('.su-auth-apple').length,1);assert.equal(slot.querySelectorAll('.su-account-settings').length,1);assert.equal(ui.google(),google);
   ui.close().focus();ui.signIn(null);assert.equal(ui.google().hidden,false);assert.equal(ui.b.document.activeElement,google);
+});
+
+test('native Google and Apple deliver credentials to one Firebase session without a web popup',async()=>{
+  for(const provider of ['google.com','apple.com']){
+    const nativeUser={uid:'same-firebase-user',providerData:[{providerId:provider}]};
+    let requested;const ui=await feedbackUI({hostname:'localhost',native:true,nativeUser,nativeSignIn:async id=>{requested=id;return {provider:id,idToken:'synthetic-provider-id',accessToken:'synthetic-provider-access',rawNonce:'synthetic-nonce',authorizationCode:'synthetic-code'};}});
+    assert.equal(ui.calls.imports,0,'packaged Firebase modules are used');
+    const button=provider==='apple.com'?ui.slot().querySelector('.su-auth-apple'):ui.google();button.click();await tick();await tick();
+    assert.equal(requested,provider);assert.equal(ui.calls.popups,0);assert.equal(ui.calls.redirects,0);assert.equal(ui.calls.credential.providerId,provider);assert.equal(ui.auth.signedIn(),true);assert.equal(ui.auth.syncReady(),true);
+    if(provider==='apple.com')assert.equal(ui.calls.credential.rawNonce,'synthetic-nonce');
+  }
+});
+
+test('linking is explicit and preserves the Firebase UID; cancellation never links',async()=>{
+  for(const consent of [false,true]){
+    const initialUser={uid:'existing-google-uid',providerData:[{providerId:'google.com'}]},ui=await feedbackUI({native:true,hostname:'localhost',initialUser,confirm:consent,nativeSignIn:async id=>({provider:id,idToken:'synthetic-apple-id',rawNonce:'nonce',authorizationCode:'code'})});
+    await ui.auth.linkProvider('apple.com');
+    assert.equal(ui.calls.confirms,1);assert.equal(!!ui.calls.linked,consent);
+    if(consent)assert.equal(ui.calls.linked.uid,initialUser.uid);
+    assert.equal(ui.auth.accountCurrent(),true);
+  }
+});
+
+test('cancelled deletion reauthentication leaves account sync and local jobs available',async()=>{
+  const initialUser={uid:'member',providerData:[{providerId:'google.com'}]},ui=await feedbackUI({initialUser,confirm:true,reauthError:'auth/popup-closed-by-user'});
+  await ui.auth.deleteAccount();assert.equal(ui.auth.accountCurrent(),true);assert.equal(ui.auth.syncReady(),true);assert.equal(ui.b.localStorage.getItem('su_delete_request:member'),null);
+});
+
+test('deletion completion clears private caches and provider session only after verified server success',async()=>{
+  const uid='delete-fixture',initialUser={uid,providerData:[{providerId:'google.com'}],getIdToken:async()=>'synthetic-firebase-token'};
+  const sent=[];const ui=await feedbackUI({initialUser,native:true,hostname:'localhost',confirm:true,immediateSignout:true,nativeSignIn:async id=>({provider:id,idToken:'synthetic-google-id',accessToken:'access'}),request:async(url,request)=>{sent.push({url,request});return {ok:true,status:JSON.parse(request.body).phase==='start'?202:200,json:async()=>JSON.parse(request.body).phase==='start'?{deleted:false,continuation:'synthetic-continuation'}:{deleted:true}};}});
+  ui.b.localStorage.setItem('su_sync_v2:'+uid,'private-account-data');ui.b.localStorage.setItem('su_discovery_guest','private-preferences');ui.b.localStorage.setItem('su_analytics_visitor','private-attribution');
+  await ui.auth.deleteAccount();assert.equal(sent[0].url,'/api/account/delete');assert.equal(sent[0].request.headers.Authorization,'Bearer synthetic-firebase-token');assert.equal(JSON.parse(sent[0].request.body).confirm,true);assert.equal(sent[1].request.headers.Authorization,undefined);assert.equal(JSON.parse(sent[1].request.body).continuation,'synthetic-continuation');assert.equal(ui.calls.flushes,4);assert.equal(ui.auth.signedIn(),false);assert.equal(ui.calls.providerCleared,true);
+  for(const key of ['su_sync_v2:'+uid,'su_discovery_guest','su_analytics_visitor','su_delete_request:'+uid])assert.equal(ui.b.localStorage.getItem(key),null);
+});
+
+test('interrupted deletion retains private cache, freezes writes and permits a same-request retry',async()=>{
+  const uid='retry-fixture',initialUser={uid,providerData:[{providerId:'google.com'}],getIdToken:async()=>'synthetic-firebase-token'};
+  const ids=[],ui=await feedbackUI({initialUser,native:true,hostname:'localhost',confirm:true,nativeSignIn:async id=>({provider:id,idToken:'synthetic-google-id',accessToken:'access'}),request:async(_url,request)=>{ids.push(JSON.parse(request.body).requestId);return {ok:false,json:async()=>({error:'Please retry'})};}});
+  ui.b.localStorage.setItem('su_sync_v2:'+uid,'recoverable');await ui.auth.deleteAccount();assert.equal(ui.auth.signedIn(),true);assert.equal(ui.auth.accountCurrent(),false);assert.equal(ui.b.localStorage.getItem('su_sync_v2:'+uid),'recoverable');
+  await ui.auth.deleteAccount();assert.equal(ids.length,2);assert.equal(ids[0],ids[1]);assert.equal(ui.calls.providerCleared,undefined);
+});
+
+test('confirmed pre-start failure restores sync and next deletion obtains fresh authorization',async()=>{
+  let authorizations=0;const initialUser={uid:'not-started',providerData:[{providerId:'google.com'}],getIdToken:async()=>'synthetic-firebase-token'};
+  const ui=await feedbackUI({initialUser,native:true,hostname:'localhost',confirm:true,nativeSignIn:async id=>{authorizations++;return {provider:id,idToken:'synthetic-google-id',accessToken:'access'};},request:async()=>({ok:false,status:503,json:async()=>({error:'Configuration unavailable',pending:false})})});
+  await ui.auth.deleteAccount();assert.equal(ui.auth.accountCurrent(),true);assert.equal(ui.b.localStorage.getItem('su_delete_request:not-started'),null);await ui.auth.deleteAccount();assert.equal(authorizations,2);
+});
+
+test('lost final deletion response resumes with persisted continuation after Firebase refresh fails and auth state disappears',async()=>{
+  let authorizations=0,requests=0,tokens=0,ui;
+  const initialUser={uid:'apple-lost-response',providerData:[{providerId:'apple.com'}],getIdToken:async force=>{assert.equal(force,false);tokens++;if(tokens>1)throw {code:'auth/user-not-found'};return 'synthetic-cached-token';}};
+  ui=await feedbackUI({initialUser,native:true,hostname:'localhost',confirm:true,immediateSignout:true,nativeSignIn:async id=>{authorizations++;return {provider:id,idToken:'synthetic-apple-id',rawNonce:'nonce',authorizationCode:'one-use-code'};},request:async(_url,request)=>{
+    requests++;const input=JSON.parse(request.body);
+    if(input.phase==='start')return {ok:true,status:202,json:async()=>({deleted:false,continuation:'synthetic-resume-capability'})};
+    assert.equal(request.headers.Authorization,undefined);assert.equal(input.continuation,'synthetic-resume-capability');
+    if(requests===2){ui.signIn(null);throw Error('lost final response');}
+    return {ok:true,status:200,json:async()=>({deleted:true})};
+  }});
+  await ui.auth.deleteAccount();assert.equal(ui.auth.signedIn(),false);assert.equal(ui.auth.accountCurrent(),false);assert.equal(ui.auth.measurementReady(),false);assert.equal(JSON.parse(ui.b.localStorage.getItem('su_delete_operation')).continuation,'synthetic-resume-capability');
+  await ui.auth.deleteAccount();assert.equal(ui.auth.signedIn(),false);assert.equal(ui.auth.measurementReady(),true);assert.equal(authorizations,1);assert.equal(tokens,1);assert.equal(requests,3);assert.equal(ui.b.localStorage.getItem('su_delete_operation'),null);
+});
+test('native continuation must flush durably before the server may revoke or erase account',async()=>{
+  let requests=0;const initialUser={uid:'storage-failure',providerData:[{providerId:'google.com'}],getIdToken:async()=>'synthetic-firebase-token'};
+  const ui=await feedbackUI({initialUser,native:true,hostname:'localhost',confirm:true,flushError:true,nativeSignIn:async id=>({provider:id,idToken:'synthetic-google-id',accessToken:'access'}),request:async()=>{requests++;return {ok:true,status:202,json:async()=>({deleted:false,continuation:'synthetic-resume-capability'})};}});
+  await ui.auth.deleteAccount();assert.equal(requests,0);assert.equal(ui.auth.accountCurrent(),false);assert.equal(ui.calls.providerCleared,undefined);assert.ok(ui.b.localStorage.getItem('su_delete_request:'+initialUser.uid));
 });
 
 function reloadBoard(storage) {
@@ -350,4 +424,54 @@ test('successful Google login is counted once after both popup and account activ
   await tick();assert.equal(ui.auth.measurementReady(),true);assert.equal(ui.calls.events.filter(e=>e.name==='auth_login').length,1);
   ui.signIn(user);await tick();assert.equal(ui.calls.events.filter(e=>e.name==='auth_login').length,1,'ordinary auth refresh is not a new login');
  }
+});
+
+test('prior-account deletion recovery never targets or clears a different resolved account',async()=>{
+  const prior={uid:'prior-delete',providerData:[{providerId:'google.com'}],getIdToken:async()=>'synthetic-firebase-token'},other={uid:'other-account',providerData:[{providerId:'google.com'}]};let requests=0;
+  const ui=await feedbackUI({initialUser:prior,native:true,hostname:'localhost',confirm:true,nativeSignIn:async id=>({provider:id,idToken:'synthetic-google-id',accessToken:'access'}),request:async(_url,request)=>{requests++;return JSON.parse(request.body).phase==='start'?{ok:true,status:202,json:async()=>({deleted:false,continuation:'synthetic-continuation'})}:{ok:true,status:202,json:async()=>({deleted:false,processing:true})};}});
+  await ui.auth.deleteAccount();ui.signIn(other);ui.b.localStorage.setItem('su_sync_v2:'+other.uid,'other-private-cache');assert.equal(ui.auth.accountCurrent(),true);await ui.auth.deleteAccount();assert.equal(requests,2);assert.equal(ui.auth.signedIn(),true);assert.equal(ui.auth.accountCurrent(),true);assert.equal(ui.b.localStorage.getItem('su_sync_v2:'+other.uid),'other-private-cache');assert.equal(ui.calls.signouts,0);
+});
+
+test('expired confirmed deletion renews through the same existing Firebase UID without granting Apple again',async()=>{
+  let authorizations=0,starts=0,processes=0;const initialUser={uid:'expired-incomplete',providerData:[{providerId:'apple.com'}],getIdToken:async()=>'synthetic-firebase-token'};
+  const ui=await feedbackUI({initialUser,native:true,hostname:'localhost',confirm:true,immediateSignout:true,nativeSignIn:async id=>{authorizations++;return {provider:id,idToken:'synthetic-apple-id',rawNonce:'nonce',authorizationCode:'first-code'};},request:async(_url,request)=>{
+    const input=JSON.parse(request.body);
+    if(input.phase==='start'){starts++;if(starts===2)assert.equal(input.apple,undefined,'renewal supplies no new provider authorization');return {ok:true,status:202,json:async()=>({deleted:false,continuation:starts===1?'expired-capability':'renewed-capability'})};}
+    processes++;if(processes===1)return {ok:true,status:202,json:async()=>({deleted:false,processing:true})};
+    if(input.continuation==='expired-capability')return {ok:false,status:401,json:async()=>({error:'Expired',pending:true})};
+    assert.equal(input.continuation,'renewed-capability');return {ok:true,status:200,json:async()=>({deleted:true})};
+  }});
+  await ui.auth.deleteAccount();assert.equal(ui.auth.accountCurrent(),false);await ui.auth.deleteAccount();assert.equal(ui.auth.signedIn(),false);assert.equal(starts,2);assert.equal(processes,3);assert.equal(authorizations,1);assert.equal(ui.b.localStorage.getItem('su_delete_operation'),null);
+});
+
+test('expired recovery after Auth has disappeared cannot claim deletion success or clear private cache',async()=>{
+  const initialUser={uid:'expired-removed-auth',providerData:[{providerId:'google.com'}],getIdToken:async()=>'synthetic-firebase-token'};let ui,starts=0,processes=0;
+  ui=await feedbackUI({initialUser,native:true,hostname:'localhost',confirm:true,nativeSignIn:async id=>({provider:id,idToken:'synthetic-google-id',accessToken:'access'}),request:async(_url,request)=>{
+    const input=JSON.parse(request.body);if(input.phase==='start'){starts++;return {ok:true,status:202,json:async()=>({deleted:false,continuation:'expired-capability'})};}
+    processes++;if(processes===1){ui.signIn(null);throw Error('lost final response');}return {ok:false,status:401,json:async()=>({error:'Recovery expired',pending:true})};
+  }});
+  ui.b.localStorage.setItem('su_sync_v2:'+initialUser.uid,'recoverable-private-data');await ui.auth.deleteAccount();await ui.auth.deleteAccount();assert.equal(starts,1);assert.equal(processes,2);assert.equal(ui.calls.providerCleared,undefined);assert.equal(ui.b.localStorage.getItem('su_sync_v2:'+initialUser.uid),'recoverable-private-data');assert.ok(ui.b.localStorage.getItem('su_delete_operation'));assert.equal(ui.auth.measurementReady(),false);
+});
+
+test('native header uses one settings icon and keeps both provider actions inside the account dialog',async()=>{
+ for(const provider of ['google.com','apple.com']){
+  let requested;const nativeUser={uid:'menu-account',providerData:[{providerId:provider}]};
+  const ui=await feedbackUI({native:true,hostname:'localhost',nativeUser,nativeSignIn:async id=>{requested=id;return {provider:id,idToken:'synthetic-id',accessToken:'synthetic-access',rawNonce:'synthetic-nonce'};}});
+  const nav=ui.b.grid.querySelector('.su-main-nav'),slot=nav.querySelector('.su-account-slot'),menu=slot.querySelector('.su-account-menu-trigger');
+  assert(menu);assert.equal(slot.querySelectorAll('button').length,1);assert.equal(slot.querySelector('.su-auth-button'),null);assert.equal(menu.getAttribute('aria-haspopup'),'dialog');
+  ui.notify(slot);assert.equal(slot.querySelectorAll('.su-account-menu-trigger').length,1);
+  menu.focus();menu.click();const panel=ui.b.document.body.querySelector('.su-account-dialog');assert(panel);assert.equal(menu.getAttribute('aria-expanded'),'true');assert(panel.textContent.includes('Sign in with Google'));assert.equal(panel.querySelector('[data-account-action="delete"]'),null);
+  const resources=panel.querySelector('.su-account-resources');assert(resources);assert.deepEqual(Array.from(resources.querySelectorAll('a')).map(a=>[a.textContent,a.getAttribute('href')]),[['Privacy policy','./privacy.html'],['Terms of use','./terms.html'],['Help & support','./support.html']]);
+  const button=provider==='apple.com'?panel.querySelector('.su-auth-apple'):panel.querySelector('.su-auth-button');assert.equal(button.hidden,false);button.click();await tick();await tick();
+  assert.equal(requested,provider);assert.equal(ui.calls.popups,0);assert.equal(ui.calls.credential.providerId,provider);assert.equal(ui.auth.syncReady(),true);assert.equal(ui.b.document.body.querySelector('.su-account-dialog'),null,'identity changes close the old menu');
+  ui.b.grid.querySelector('.su-account-menu-trigger').click();const signed=ui.b.document.body.querySelector('.su-account-dialog');assert(signed.querySelector('[data-account-action="delete"]'));assert(signed.querySelector('[data-account-action="signout"]'));assert.equal(signed.querySelector('.su-auth-apple'),null,'signed-in menu contains linking, not another sign-in');
+  assert.equal(signed.querySelector('.su-account-resources').querySelectorAll('a').length,3,'legal and support access survives authentication');
+ }
+});
+
+test('native menu cancellation keeps the provider choices; Close restores keyboard focus to the icon',async()=>{
+ const ui=await feedbackUI({native:true,hostname:'localhost',nativeSignIn:async()=>{throw {code:'native/auth-cancelled'};}});
+ const menu=ui.b.grid.querySelector('.su-account-menu-trigger');menu.focus();menu.click();const panel=ui.b.document.body.querySelector('.su-account-dialog');panel.querySelector('.su-auth-button').click();await tick();await tick();
+ assert.equal(ui.auth.signedIn(),false);assert.equal(ui.b.document.body.querySelector('.su-account-dialog'),panel);assert.equal(panel.querySelector('.su-auth-button').disabled,false);
+ const close=Array.from(panel.querySelectorAll('button')).find(b=>b.textContent==='Close');close.click();assert.equal(ui.b.document.activeElement,menu);assert.equal(menu.getAttribute('aria-expanded'),'false');
 });

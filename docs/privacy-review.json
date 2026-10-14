@@ -1,19 +1,21 @@
 {
-  "version": "2.7.7.18",
+  "version": "2.7.7.19",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-14T03:20:08.512Z",
+  "reviewedAt": "2026-10-14T03:56:30.921Z",
   "reviewer": "Codex root",
-  "sourceDigest": "b4c7e537639a6c4eea51a1766eed316bcab07e84a5e798d8f85f5d2c3d822c0d",
-  "sourceFileCount": 225,
-  "privacyChanged": false,
-  "termsChanged": false,
-  "scope": "Combined release of reviewed daily Home UI, footer links, public inventory counts, and two approved public internship records.",
+  "sourceDigest": "d51f1aa32dbc345cb4f608425032c4a02501845457b80ec5c11eeace2a125558",
+  "sourceFileCount": 232,
+  "privacyChanged": true,
+  "termsChanged": true,
+  "baselineReview": "docs/privacy-reviews/2.7.7.18-before-ios-20261014.json",
+  "scope": "Existing live architecture with resumable account erasure, Apple provider support, native request compatibility, and accessible support. Current daily analytics and API disclosures retained. No policy has been published by this candidate. Integrated over current main ff15f0f, retaining public counts, all Sephora internship entries, daily selections and every version footer.",
   "checks": {
-    "disclosures": "Reviewed, no wording change needed. Only public employer facts and counts added; existing consent, auth, retention and private projection unchanged. Footer labels updated.",
-    "choices": "No account or analytics requirement, new stored identifier, input, vendor or retention change. Count request credentials omitted and no-store; shared board consent/auth unchanged.",
-    "publication": "Existing due-only daily sets remain unchanged; private connector review page preserved. Counters have Loading, Unavailable and Retry states. Upcoming published internships included. Source outages never become zero."
+    "disclosures": "Optional accounts, explicit provider linking, persistent app storage, analytics consent, Google native SDK user identifier/IP security collection, erasure and Apple revocation reviewed against the code. Existing newsletter attribution and daily collection disclosures preserved. No automatic email-based account merge.",
+    "security": "Owner authorization remains separate from ordinary Google/Apple account access. Confirmed recent-auth erasure uses durable markers, bounded leases and signed continuations. Shared suppression decisions retained. Secrets absent from source and static allowlist."
   },
   "openItems": [
-    "Fresh Google OAuth and physical iPhone remain untested; hosted release verification follows."
+    "Live rules and server secrets/provider configuration must precede account lifecycle acceptance.",
+    "Physical iPhone provider sign-in, linking, switching and disposable-account deletion remain pending.",
+    "Public policy and support URLs must be verified after the actual coordinated production deployment."
   ]
 }

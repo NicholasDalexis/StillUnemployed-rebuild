@@ -4,6 +4,16 @@ const {database}=require('./helpers/analytics-store.cjs');
 function deps(){return {env:{SU_ALLOWED_ORIGINS:'https://stillunemployed.com',SU_ANALYTICS_SECRET:'synthetic-test-only-secret',SU_ANALYTICS_ADMIN_UIDS:'owner'},db:database(),jobs:C.catalog([job]),now:()=>now,auth:{verifyIdToken:async(token,check)=>{assert.equal(check,true);if(!['alice','bob','owner'].includes(token))throw Error('invalid');return {uid:token};},getUser:async()=>({metadata:{creationTime:new Date(now-1000).toISOString()}})}};}
 function request(token='alice',events=[{name:'job_open',jobId}],extra={}){return {httpMethod:'POST',headers:{origin:'https://stillunemployed.com',authorization:'Bearer '+token},body:JSON.stringify({session:'session1234567890',visitor:'visitor1234567890',consent:{analytics:true,personalization:true},events:events.map((e,i)=>({id:'testevent123456789'+i,page:'board',occurredAt:now,...e})),...extra})};}
 test('collector verifies token, derives account from token and deduplicates retries',async()=>{const d=deps(),r=request();assert.equal((await S.collect(r,d)).accepted,1);assert.equal((await S.collect(r,d)).accepted,0);const profile=await S.profile({...r,httpMethod:'GET'},d);assert.equal(profile.jobs[jobId].weight,1);const other=await S.profile({...request('bob'),httpMethod:'GET'},d);assert.deepEqual(other.jobs,{});});
+
+test('native optional analytics requires consent plus verified account or signed guest identity, and deletion blocks writes',async()=>{
+ const d=deps(),r=request();r.headers.origin='capacitor://localhost';r.headers['x-su-native']='1';assert.equal((await S.collect(r,d)).accepted,1);
+ const forged=request('forged');forged.headers={...r.headers,authorization:'Bearer forged'};await assert.rejects(()=>S.collect(forged,d),error=>error.status===401);
+ const wrongOrigin=request();wrongOrigin.headers={...r.headers,'sec-fetch-site':'cross-site'};await assert.rejects(()=>S.collect(wrongOrigin,d),error=>error.status===403);
+ const guest=request('alice',[{name:'page_view'}],{consent:{analytics:true,personalization:false}});guest.headers={...r.headers};delete guest.headers.authorization;
+ await assert.rejects(()=>S.collect(guest,d),error=>error.status===401);
+ const Identity=require('../../netlify/functions/lib/analytics-identity.cjs'),issued=await Identity.issue({...guest,headers:{...guest.headers,'x-nf-client-connection-ip':'192.0.2.2'}},d);guest.headers.cookie=issued.cookie.split(';')[0];assert.equal((await S.collect(guest,d)).accepted,1);
+ d.env.SU_ACCOUNT_DELETION_ENABLED='true';d.db.data.set('suAccountDeletion/alice',{state:'deleting'});await assert.rejects(()=>S.collect(r,d),error=>error.status===403);await assert.rejects(()=>S.profile({...r,httpMethod:'GET'},d),error=>error.status===403);
+});
 test('invalid tokens, cross-origin, missing consent and forged unknown jobs fail closed',async()=>{const d=deps();await assert.rejects(()=>S.collect(request('forged'),d),e=>e.status===401);const r=request();r.headers.origin='https://evil.example';await assert.rejects(()=>S.collect(r,d),e=>e.status===403);await assert.rejects(()=>S.collect(request('alice',undefined,{consent:{}}),d),e=>e.status===403);await assert.rejects(()=>S.collect(request('alice',[{name:'job_open',jobId:'f'.repeat(64)}]),d),e=>e.status===400);assert.equal(d.db.data.size,0);});
 test('PII and client-supplied fields are excluded and employer metadata is trusted',async()=>{const d=deps();await S.collect(request('alice',[{name:'job_open',jobId,email:'secret@example.invalid',notes:'private',url:'https://secret',field:'Fake',uid:'bob'}]),d);const text=JSON.stringify([...d.db.data]);assert.doesNotMatch(text,/secret|private|Fake|"bob"/);assert.match(text,/Marketing/);});
 test('response action events discard every optional payload field at the server',()=>{
@@ -152,4 +162,10 @@ test('LinkedIn post-slot attribution is bounded, cohort suppressed, and separate
  assert.deepEqual(C.reduceRows(rows.slice(0,12),30,now).marketingLinks,[]);
  rows.push({...rows[0],linkSlot:'board_footer'});assert.equal(C.reduceRows(rows,30,now).marketingLinks.length,1);
  assert.doesNotMatch(JSON.stringify(C.reduceRows(rows,30,now).marketingLinks),/actor|session/);
+});
+
+test('existing retention job expires completed account receipts and idle leases without erasing pending deletion or active operations',async()=>{
+  const d=deps(),expired=new Date(now-1),future=new Date(now+1);
+  for(const [path,value] of [['suAccountDeletion/complete',{state:'complete',expiresAt:expired}],['suAccountDeletion/current',{state:'complete',expiresAt:future}],['suAccountDeletion/pending',{state:'deleting',expiresAt:expired}],['suAccountOperations/idle',{leases:{old:now-1},expiresAt:expired}],['suAccountOperations/active',{leases:{active:now+1000},expiresAt:expired}]])d.db.data.set(path,value);
+  assert.equal((await S.cleanup(d)).deleted,2);for(const path of ['suAccountDeletion/complete','suAccountOperations/idle'])assert.equal(d.db.data.has(path),false);for(const path of ['suAccountDeletion/current','suAccountDeletion/pending','suAccountOperations/active'])assert.equal(d.db.data.has(path),true);
 });

@@ -94,9 +94,24 @@ test('read-only origin exception cannot authorize POST without exact Origin',asy
   assert.equal((await f.handler(request,context)).status,403);assert.equal(f.store.writes,0);assert.equal(f.seen.length,0);
 });
 
+test('native owner moderation retains exact Firebase owner role checks for read and writes',async()=>{
+  const headers={Origin:'capacitor://localhost','X-SU-Native':'1'},f=await fixture();
+  assert.equal((await f.call(body(),{headers})).status,200);assert.equal((await f.call(null,{headers},context,{admin:true})).status,200);
+  for(const role of [undefined,'member','apple-member']){
+    const denied=await fixture({authenticate:async()=>({role})});assert.equal((await denied.call(body(),{headers})).status,403);assert.equal((await denied.call(null,{headers},context,{admin:true})).status,403);assert.equal(denied.seen.length,0);
+  }
+  assert.equal((await f.call(body(),{headers:{...headers,'Sec-Fetch-Site':'cross-site'}})).status,403);
+});
+
 async function authFixture(){const [,Auth,jose]=await modules;const {privateKey,publicKey}=await jose.generateKeyPair('RS256');const payload={sub:'synthetic-owner',email:Auth.OWNER,email_verified:true,auth_time:Math.floor(NOW/1000)-10,firebase:{sign_in_provider:'google.com'}};const token=await new jose.SignJWT(payload).setProtectedHeader({alg:'RS256',kid:'fixture'}).setAudience(Auth.PROJECT).setIssuer('https://securetoken.google.com/'+Auth.PROJECT).setIssuedAt(Math.floor(NOW/1000)-5).setExpirationTime(Math.floor(NOW/1000)+3600).sign(privateKey);const account={users:[{localId:payload.sub,email:Auth.OWNER,emailVerified:true,validSince:String(Math.floor(NOW/1000)-20),providerUserInfo:[{providerId:'google.com'}]}]};return {Auth,jose,payload,token,publicKey,account};}
 test('real RS256 verification and current Google account lookup authorize only owner role',async()=>{
   const a=await authFixture(),calls=[];const result=await a.Auth.verifyOwner(req(body(),{headers:{Authorization:'Bearer '+a.token}}),{keys:a.publicKey,now:()=>NOW,fetchImpl:async(url,options)=>{calls.push({url,options});return new Response(JSON.stringify(a.account),{headers:{'Content-Type':'application/json'}});}});assert.deepEqual(result,{role:'owner'});assert.equal(calls.length,1);assert.ok(calls[0].url.startsWith('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key='));assert.deepEqual(JSON.parse(calls[0].options.body),{idToken:a.token});assert.equal(calls[0].options.redirect,'manual');
+});
+
+test('even a signed Apple token with owner email cannot become a Google owner credential',async()=>{
+  const a=await authFixture(),t=Math.floor(NOW/1000),{privateKey,publicKey}=await a.jose.generateKeyPair('RS256');
+  const token=await new a.jose.SignJWT({...a.payload,firebase:{sign_in_provider:'apple.com'}}).setProtectedHeader({alg:'RS256',kid:'apple-fixture'}).setAudience(a.Auth.PROJECT).setIssuer('https://securetoken.google.com/'+a.Auth.PROJECT).setIssuedAt(t-5).setExpirationTime(t+300).sign(privateKey);
+  await assert.rejects(()=>a.Auth.verifyOwner(req(body(),{headers:{Origin:'capacitor://localhost','X-SU-Native':'1',Authorization:'Bearer '+token}}),{keys:publicKey,now:()=>NOW,fetchImpl:async()=>new Response(JSON.stringify(a.account))}),error=>error.status===403);
 });
 test('forged signature is rejected before sending token to account lookup',async()=>{const a=await authFixture();let fetched=false;const other=await a.jose.generateKeyPair('RS256');await assert.rejects(a.Auth.verifyOwner(req(body(),{headers:{Authorization:'Bearer '+a.token}}),{keys:other.publicKey,now:()=>NOW,fetchImpl:async()=>{fetched=true;}}),{status:401});assert.equal(fetched,false);});
 test('claim validation rejects wrong project/provider/email/time and tenant',async()=>{
@@ -115,3 +130,11 @@ test('Google lookup rejects redirects, malformed/oversized payload and access er
 test('public and admin revisions include community quarantines and owner restore translates the composite guard',async()=>{const f=await fixture({getAvailability:async()=>({schemaVersion:1,revision:7,removed:[{keys:Identity.keys(jobs[1].link),slugs:['example-2'],link:jobs[1].link}]})});const reported=await f.call(body());assert.equal(reported.body.revision,8);const index=await f.call();assert.equal(index.body.revision,8);assert.equal(index.body.removed.length,2);const admin=await f.call(null,{},context,{admin:true});assert.equal(admin.body.revision,8);assert.equal(admin.body.ownerRevision,1);const restored=await f.call(body({action:'restore',expectedRevision:8}));assert.equal(restored.body.revision,9);assert.equal((await f.call()).body.removed.length,1);});
 
 test('composite restore retry replays its receipt before checking the obsolete expected revision',async()=>{const f=await fixture({getAvailability:async()=>({schemaVersion:1,revision:7,removed:[]})});await f.call(body());const input=body({action:'restore',expectedRevision:8});const first=await f.call(input),again=await f.call(input);assert.equal(first.status,200);assert.equal(first.body.revision,9);assert.deepEqual(again.body,first.body);assert.equal(f.store.writes,2);assert.equal((await f.call({...input,link:jobs[1].link})).status,409);await f.call(body());assert.equal((await f.call(input)).status,409);});
+
+test('separate-provider account mode preserves Google owner verification with exact signed current provider identity',async()=>{
+  const [,Auth]=await modules,t=Math.floor(NOW/1000),payload={sub:'owner-no-primary-email',aud:Auth.PROJECT,iss:'https://securetoken.google.com/'+Auth.PROJECT,exp:t+3600,iat:t,auth_time:t-20,firebase:{sign_in_provider:'google.com',identities:{'google.com':['immutable-google-owner']}}};
+  const account={localId:payload.sub,validSince:String(t-30),providerUserInfo:[{providerId:'google.com',rawId:'immutable-google-owner',email:Auth.OWNER}]};
+  Auth.validateClaims(payload,NOW);assert.deepEqual(Auth.validateAccount(payload,{users:[account]}),{role:'owner'});
+  for(const provider of [{...account.providerUserInfo[0],rawId:'another-google-identity'},{...account.providerUserInfo[0],email:'nonowner@gmail.com'},{...account.providerUserInfo[0],providerId:'apple.com'}])assert.throws(()=>Auth.validateAccount(payload,{users:[{...account,providerUserInfo:[provider]}]}));
+  assert.throws(()=>Auth.validateClaims({...payload,firebase:{...payload.firebase,sign_in_provider:'apple.com'}},NOW));assert.throws(()=>Auth.validateClaims({...payload,firebase:{sign_in_provider:'google.com'}},NOW));
+});

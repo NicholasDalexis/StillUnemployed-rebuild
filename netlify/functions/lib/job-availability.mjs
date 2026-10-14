@@ -7,6 +7,8 @@ import {verifyOwner} from './job-moderation-auth.mjs';
 import {currentCatalog} from './job-moderation.mjs';
 import Identity from '../../../js/job-identity.js';
 import Availability from './job-availability-core.cjs';
+import Native from './native-origin.cjs';
+import Account from './account-state.cjs';
 const {validate,publicIndex,hidden,same}=Availability;
 // An observation is not a diagnosis. The owner review endpoint accepts explicit
 // ATS/page evidence only; UNKNOWN never restores or permanently retires a role.
@@ -22,15 +24,16 @@ export function reviewInput(input,now){
 export function createService({openStore=scope=>getStore({name:'su-job-availability-v1-'+scope,consistency:'strong'}),authenticate=verifyCommunity,owner=verifyOwner,getCatalog=currentCatalog,now=Date.now}={}){
   return async function handle(request,context,{admin=false,review=false}={}){try{
     const scope=Core.scopeFor(request,context);
-    if(admin){if(request.method!=='GET')return Queue.response(405,{error:'Method not allowed'});Core.authorizeOrigin(request,{readOnly:true});if((await owner(request))?.role!=='owner')throw Core.fail(403,'Owner access required');return Queue.response(200,{...Queue.page(validate((await Queue.read(openStore(scope))).state),request),scope});}
+    if(admin){if(request.method!=='GET')return Queue.response(405,{error:'Method not allowed'});Native.authorizeOrigin(request,{native:true,readOnly:true});if((await owner(request))?.role!=='owner')throw Core.fail(403,'Owner access required');return Queue.response(200,{...Queue.page(validate((await Queue.read(openStore(scope))).state),request),scope});}
     if(!review&&request.method==='GET')return Queue.response(200,publicIndex((await Queue.read(openStore(scope))).state,now()));
     if(request.method!=='POST')return Queue.response(405,{error:'Method not allowed'});
-    Core.authorizeOrigin(request);
+    Native.authorizeOrigin(request,{native:true});
     let account=null;if(review){if((await owner(request))?.role!=='owner')throw Core.fail(403,'Owner access required');account={uid:'review-owner'};}else if(request.headers.has('authorization')){account=await authenticate(request);if(!account?.uid)throw Core.fail(401,'Sign in with Google again');}
     let input=await Queue.body(request,review?['requestId','link','expectedRevision','result','evidence']:['requestId','link']);input.link=Queue.publicURL(input.link);
     if(review)input=reviewInput(input,now());
     let catalog;
-    const result=await Queue.mutate({store:openStore(scope),input,scope,uid:account?.uid,ip:context.ip,now,rateExempt:review,apply:async(state,{who,at,reportId,uid})=>{
+    const accountDependencies=account?.uid&&Account.enabled(process.env)?Account.dependencies():null;
+    const result=await Account.runActive(account?.uid,()=>Queue.mutate({store:openStore(scope),input,scope,uid:account?.uid,ip:context.ip,now,guard:accountDependencies?()=>Account.assertActive(account.uid,accountDependencies):undefined,rateExempt:review,apply:async(state,{who,at,reportId,uid})=>{
       validate(state);const keys=Identity.keys(input.link);const matches=state.records.filter(r=>same(r.keys,keys));if(matches.length>1)throw Core.fail(409,'Posting identity is ambiguous');let record=matches[0];if(record&&record.holdAuthorized===undefined)record.holdAuthorized=Availability.authorizedHold(record);
       if(review){
         if(!record||record.revision!==input.expectedRevision)throw Core.fail(409,'Refresh this report before reviewing');
@@ -49,7 +52,7 @@ export function createService({openStore=scope=>getStore({name:'su-job-availabil
         if(record.status!=='retired'){record.needsCheck=true;record.checkRequestedAt=new Date(at).toISOString();record.humanReviewRequired=record.status==='human_review';}
       }
       validate(state);return {reportId:record.reportId,status:record.status,extra:{globallyHidden:hidden(record)}};
-    }});return Queue.response(202,result);
+    }}),accountDependencies);return Queue.response(202,result);
   }catch(e){return Queue.error(e);}};
 }
 export const handle=createService();

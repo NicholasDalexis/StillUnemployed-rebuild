@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.18",
+  "currentVersion": "2.7.7.19",
   "releases": [
+    {
+      "version": "2.7.7.19",
+      "date": "2026-10-13",
+      "title": "Small improvements",
+      "changes": [
+        "Add Google/Apple account settings, resumable account erasure, native request compatibility and iPhone legal/support access while preserving current daily selections and catalog."
+      ]
+    },
     {
       "version": "2.7.7.18",
       "date": "2026-10-13",
@@ -1191,7 +1199,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "b4c7e537639a6c4eea51a1766eed316bcab07e84a5e798d8f85f5d2c3d822c0d",
-    "fileCount": 225
+    "digest": "d51f1aa32dbc345cb4f608425032c4a02501845457b80ec5c11eeace2a125558",
+    "fileCount": 232
   }
 }

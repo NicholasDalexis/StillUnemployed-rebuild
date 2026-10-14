@@ -36,7 +36,9 @@ function validate(state){
   if(!plain(state)||state.schemaVersion!==1||!id(state.secret)||!Number.isSafeInteger(state.revision)||state.revision<0||!Array.isArray(state.records)||state.records.length>MAX_RECORDS||!Array.isArray(state.receipts)||state.receipts.length>MAX_RECEIPTS||Buffer.byteLength(JSON.stringify(state))>MAX_BYTES)throw failed();
   const ids=new Set(),keys=new Set();for(const r of state.records){if(!plain(r)||!id(r.reportId)||ids.has(r.reportId)||typeof r.status!=='string'||!Number.isFinite(Date.parse(r.receivedAt)))throw failed();ids.add(r.reportId);}
   for(const r of state.receipts){if(!plain(r)||!id(r.key)||keys.has(r.key)||!id(r.fingerprint)||!ids.has(r.reportId)||!Number.isFinite(Date.parse(r.at))||!plain(r.response))throw failed();keys.add(r.key);}
-  if(state.revision!==state.receipts.length)throw failed();return state;
+  // Erasure can remove account-linked receipts without rewinding public queue
+  // revisions. Older documents with revision === receipts.length stay valid.
+  if(state.revision<state.receipts.length)throw failed();return state;
 }
 async function read(store){const r=await Core.within(()=>store.getWithMetadata('state',{type:'text',consistency:'strong'}));if(r===null)return {state:empty(),etag:null};if(!r||typeof r.data!=='string'||Buffer.byteLength(r.data)>MAX_BYTES||typeof r.etag!=='string'||!r.etag)throw failed();let state;try{state=JSON.parse(r.data);}catch{throw failed();}return {state:validate(state),etag:r.etag};}
 function actor(state,uid,ip,now){
@@ -46,7 +48,7 @@ function actor(state,uid,ip,now){
   return 'guest:'+createHmac('sha256',state.secret).update(Math.floor(now/DAY)+'|'+ip).digest('hex');
 }
 function rate(state,who,now,network){const events=state.receipts.filter(r=>r.actor===who&&now-Date.parse(r.at)<DAY);if(events.length>=20||events.filter(r=>now-Date.parse(r.at)<3600000).length>=5)throw Core.fail(429,'Please wait before sending another report.');if(network){const shared=state.receipts.filter(r=>r.network===network&&now-Date.parse(r.at)<DAY);if(shared.length>=100||shared.filter(r=>now-Date.parse(r.at)<3600000).length>=30)throw Core.fail(429,'Please wait before sending another report.');}}
-async function mutate({store,input,scope,uid,ip,now=Date.now,apply,rateExempt=false,attempts=3}){
+async function mutate({store,input,scope,uid,ip,now=Date.now,apply,guard,rateExempt=false,attempts=3}){
   for(let attempt=0;attempt<attempts;attempt++){
     const {state,etag}=await read(store),at=now(),who=actor(state,uid,ip,at),key=hash(who+'|'+input.requestId),fingerprint=hash(JSON.stringify(input)),network=typeof ip==='string'&&isIP(ip)?createHmac('sha256',state.secret).update('network|'+Math.floor(at/DAY)+'|'+ip).digest('hex'):null;
     const prior=state.receipts.find(r=>r.key===key);
@@ -55,6 +57,7 @@ async function mutate({store,input,scope,uid,ip,now=Date.now,apply,rateExempt=fa
     const result=await apply(state,{who,at,reportId:hash(key),uid});
     const response={schemaVersion:1,requestId:input.requestId,reportId:result.reportId,status:result.status,duplicate:!!result.duplicate,scope,...result.extra};
     state.receipts.push({key,actor:who,...(network?{network}:{}),fingerprint,reportId:result.reportId,at:new Date(at).toISOString(),response});state.revision++;validate(state);
+    if(guard)await guard();
     const saved=await Core.within(()=>store.setJSON('state',state,etag?{onlyIfMatch:etag}:{onlyIfNew:true}));if(!saved?.modified)continue;
     const check=await read(store),receipt=check.state.receipts.find(r=>r.key===key);if(!receipt||receipt.fingerprint!==fingerprint)throw failed();return receipt.response;
   }

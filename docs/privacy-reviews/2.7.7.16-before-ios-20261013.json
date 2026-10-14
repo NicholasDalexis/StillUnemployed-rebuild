@@ -1,0 +1,21 @@
+{
+  "version": "2.7.7.16",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-10-14T00:44:23.331Z",
+  "reviewer": "Codex root",
+  "sourceDigest": "4a3b402816a98e7c61ca3fd200d8cd0b1e0392310a8caa2b29afe680c69c5e32",
+  "sourceFileCount": 222,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Exact October14-16 daily collections and due-only public fallback; nine prior dates and repaired.15 behavior preserved.",
+  "checks": {
+    "disclosures": "Privacy/Terms daily archival fallback, optional analytics and direct employer navigation reviewed; no wording change needed. Process review, not legal certification.",
+    "choices": "Auth/consent/GPC/identity/exclusions, providers/storage/retention unchanged; no signup or private input.",
+    "publication": "Future picks excluded from public JS/API until server9AM Eastern. Caller clock ignored; no source Sheet/editorial writer/social-schedule changes."
+  },
+  "openItems": [
+    "Actual future activation/social publication pending after due time.",
+    "Fresh OAuth, physical iPhone and durable daily analytics not tested.",
+    "SU-BUG-123 initiating transient endpoint unknown despite.15 recovery mitigation."
+  ]
+}

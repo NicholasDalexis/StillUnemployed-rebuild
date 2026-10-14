@@ -1,0 +1,21 @@
+{
+  "version": "2.7.7.19",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-10-14T03:56:30.921Z",
+  "reviewer": "Codex root",
+  "sourceDigest": "d51f1aa32dbc345cb4f608425032c4a02501845457b80ec5c11eeace2a125558",
+  "sourceFileCount": 232,
+  "privacyChanged": true,
+  "termsChanged": true,
+  "baselineReview": "docs/privacy-reviews/2.7.7.18-before-ios-20261014.json",
+  "scope": "Existing live architecture with resumable account erasure, Apple provider support, native request compatibility, and accessible support. Current daily analytics and API disclosures retained. No policy has been published by this candidate. Integrated over current main ff15f0f, retaining public counts, all Sephora internship entries, daily selections and every version footer.",
+  "checks": {
+    "disclosures": "Optional accounts, explicit provider linking, persistent app storage, analytics consent, Google native SDK user identifier/IP security collection, erasure and Apple revocation reviewed against the code. Existing newsletter attribution and daily collection disclosures preserved. No automatic email-based account merge.",
+    "security": "Owner authorization remains separate from ordinary Google/Apple account access. Confirmed recent-auth erasure uses durable markers, bounded leases and signed continuations. Shared suppression decisions retained. Secrets absent from source and static allowlist."
+  },
+  "openItems": [
+    "Live rules and server secrets/provider configuration must precede account lifecycle acceptance.",
+    "Physical iPhone provider sign-in, linking, switching and disposable-account deletion remain pending.",
+    "Public policy and support URLs must be verified after the actual coordinated production deployment."
+  ]
+}
