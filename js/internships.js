@@ -1,13 +1,13 @@
 /* Public internship contract. Admission evidence and reviewer identities stay private. */
 (function(root,factory){
-  if(typeof module==='object'&&module.exports)module.exports=factory(require('./job-identity.js'));
-  else root.SUInternships=factory(root.SUJobIdentity);
-})(typeof window!=='undefined'?window:this,function(Identity){
+  if(typeof module==='object'&&module.exports)module.exports=factory(require('./job-identity.js'),require('./job-deadlines.js'));
+  else root.SUInternships=factory(root.SUJobIdentity,root.SUJobDeadlines);
+})(typeof window!=='undefined'?window:this,function(Identity,Deadlines){
   'use strict';
   var PAY=['paid','unpaid','not_disclosed'];
   var BASIS=['hour','week','month','program','annualized_year','not_listed'];
   var CREDIT=['required','available','school_approval_required','not_offered','not_listed'];
-  var TEXT={co:200,role:300,link:2000,loc:1000,ind:100,desc:12000,pay:600,style:100,exp:500,state:1000,eligibility:8000,cycle:500,deadline:500,applicationsOpen:500,startDate:500,timingSourceUrl:2000};
+  var TEXT={co:200,role:300,link:2000,loc:1000,ind:100,desc:12000,pay:600,style:100,exp:500,state:1000,eligibility:8000,cycle:500,deadline:500,deadlineTimezone:100,employerIndustry:100,applicationsOpen:500,startDate:500,timingSourceUrl:2000};
   var DATES=['deadlineISO','applicationsOpenISO','startDateISO'];
   function object(v){return !!v&&typeof v==='object'&&!Array.isArray(v);}
   function text(v,max,required){return typeof v==='string'&&v.length<=max&&!/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(v)&&(!required||!!v.trim());}
@@ -34,7 +34,7 @@
   }
   function knownDatePassed(value,now,opening){
     if(!value)return false;
-    if(value.length===10){var today=new Date(now).toISOString().slice(0,10);return opening?value<=today:value<today;}
+    if(value.length===10){var today=Deadlines?Deadlines.day(now,Deadlines.defaultTimezone):new Date(now).toISOString().slice(0,10);return opening?value<=today:value<today;}
     return dateValue(value)<=now;
   }
   function stateOf(job){return job.applicationStatus||((job.verification||{}).status==='open'?'open':'unknown');}
@@ -43,7 +43,7 @@
     var status=stateOf(job),v=job.verification||{};
     if(!['open','upcoming'].includes(status)||v.status!==status||!Number.isFinite(dateValue(v.checkedAt))||dateValue(v.checkedAt)>now+300000)return 'needs_recheck';
     if(DATES.some(function(k){return job[k]&&!Number.isFinite(dateValue(job[k]));}))return 'needs_recheck';
-    if(knownDatePassed(job.deadlineISO,now,false))return 'needs_recheck';
+    if(Deadlines?!Deadlines.accepting(job,now):knownDatePassed(job.deadlineISO,now,false))return 'needs_recheck';
     if(status==='upcoming'){
       if(v.sourceAnnounced!==true||v.upcomingApproved!==true||!safeUrl(v.sourceUrl)||!safeUrl(job.timingSourceUrl))return 'needs_recheck';
       return knownDatePassed(job.applicationsOpenISO,now,true)?'needs_recheck':'upcoming';

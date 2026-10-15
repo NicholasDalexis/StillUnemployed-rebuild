@@ -20,9 +20,9 @@ function indexKeys(index,checked){
 export function catalogFromCSV(csv,limits=Discovery.LIMITS){
   if(typeof csv!=='string'||Buffer.byteLength(csv)>limits.bytes)throw Error('Unavailable');
   const rows=Source.parseCSV(csv),head=rows[0];
-  if(!head||rows.length>limits.rows+1||head.length!==Discovery.EXPECTED.length||head.some((v,i)=>v.trim().toLowerCase()!==Discovery.EXPECTED[i]))throw Error('Unavailable');
+  if(!head||rows.length>limits.rows+1||head.length<Discovery.EXPECTED.length||new Set(head.map(h=>h.trim().toLowerCase())).size!==head.length||head.some((v,i)=>v.trim().toLowerCase()!==Discovery.EXPECTED[i]&&i<Discovery.EXPECTED.length))throw Error('Unavailable');
   if(rows.slice(1).some(row=>row.some(value=>value.length>limits.field)||row.some(value=>value.trim())&&row.length!==head.length))throw Error('Unavailable');
-  return Source.rowsToJobs([head,...rows.slice(1).filter(row=>row[10]?.trim().toLowerCase()==='active')]);
+  return Source.rowsToJobs(rows);
 }
 function count(rows,index){
   if(!Array.isArray(rows)||rows.length>10000)throw Error('Unavailable');

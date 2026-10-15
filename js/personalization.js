@@ -1,9 +1,9 @@
 /* Shared, deterministic career-interest ranking. No browser/account data here. */
 (function (root, factory) {
-  var api = factory();
+  var api = factory(typeof module === 'object' && module.exports ? require('./career-fields.js') : root.SUCareerFields);
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.SUPersonalization = api;
-}(typeof window !== 'undefined' ? window : this, function () {
+}(typeof window !== 'undefined' ? window : this, function (Career) {
   'use strict';
   var WEIGHTS = { job_open:1, job_save:3, apply_click:4, application_reported:5 };
   var FIELDS = {
@@ -21,7 +21,7 @@
       var title = String(job.role || '').toLowerCase();
       role = /\bux\b|user experience/.test(title) && !/\bui\b/.test(title) ? 'UX Design' : /\bui\b|user interface/.test(title) && !/\bux\b/.test(title) ? 'UI Design' : 'UX/UI Design';
     }
-    return { field:FIELDS[category] || 'Other', role:role || 'Other' };
+    return { field:FIELDS[category] || (Career ? Career.field(job) : 'Other'), role:role || 'Other' };
   }
   function salary(value) {
     var text = String(value || '').replace(/,/g, '');

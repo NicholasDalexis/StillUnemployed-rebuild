@@ -1,7 +1,49 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.24",
+  "currentVersion": "2.7.7.27",
   "releases": [
+    {
+      "version": "2.7.7.27",
+      "date": "2026-10-14",
+      "title": "Small improvements",
+      "changes": [
+        "Finish mobile career controls, preserve experience months and annual OTE qualifiers, retain explicit unknown pay units, and integrate the source-approved88internship snapshot with all86prior records unchanged. Local25/26 preparation checkpoints were not deployed; separate source-only25worktree is not shipped."
+      ],
+      "public": {
+        "title": "Find related work and keep the details clear",
+        "changes": [
+          "Search adjacent specialties, browse career fields and see disclosed deadlines. Experience months and OTE pay labels stay clear, with two new student opportunities."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.26",
+      "date": "2026-10-14",
+      "title": "Small improvements",
+      "changes": [
+        "Finalize policy effective dates, explicit cache refresh and Netlify dependency packaging for the broader career fields candidate. Local25 retained as an unpublished preparation checkpoint."
+      ],
+      "public": {
+        "title": "More ways to find your next job",
+        "changes": [
+          "Browse related work by career field. Search adjacent specialties and check disclosed application deadlines before applying."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.25",
+      "date": "2026-10-14",
+      "title": "Small improvements",
+      "changes": [
+        "Implement broader work-family search and filters, compatible deadline metadata, paused-state suppression, and editorial brand/annual-pay default preference without changing admissions or source catalog. Existing preference history and explicit sorts preserved."
+      ],
+      "public": {
+        "title": "Find more kinds of early-career work",
+        "changes": [
+          "Search related work together and browse by career field. Disclosed application deadlines stay visible, with clear timezone handling."
+        ]
+      }
+    },
     {
       "version": "2.7.7.24",
       "date": "2026-10-14",
@@ -1250,7 +1292,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "3eead560136c00fa88bf6bbf238aaebe45fb68b4ba70c37c01b6a9731b62c928",
-    "fileCount": 225
+    "digest": "0925524090ead77a80979966c9fbfef6e72e3de3c11df10675526458663185ab",
+    "fileCount": 227
   }
 }

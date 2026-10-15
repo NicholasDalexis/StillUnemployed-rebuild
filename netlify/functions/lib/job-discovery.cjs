@@ -15,11 +15,11 @@ const {parseCSV,rowsToJobs,shareEntries}=require('./job-source.cjs');
 async function catalogFromCSV(csv,limits=LIMITS){
   if(typeof csv!=='string'||Buffer.byteLength(csv)>limits.bytes||/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(csv))throw unavailable();
   const rows=parseCSV(csv);
-  if(!rows.length||rows.length>limits.rows+1||rows[0].length!==EXPECTED.length||rows[0].some((value,index)=>value.trim().toLowerCase()!==EXPECTED[index]))throw unavailable();
+  if(!rows.length||rows.length>limits.rows+1||rows[0].length<EXPECTED.length||new Set(rows[0].map(h=>h.trim().toLowerCase())).size!==rows[0].length||rows[0].some((value,index)=>value.trim().toLowerCase()!==EXPECTED[index]&&index<EXPECTED.length))throw unavailable();
   const all=[];
   for(const cells of rows.slice(1)){
     if(cells.every(value=>!value.trim()))continue;
-    if(cells.length!==EXPECTED.length||cells.some(value=>value.length>limits.field))throw unavailable();
+    if(cells.length!==rows[0].length||cells.some(value=>value.length>limits.field))throw unavailable();
     const values=cells.map(value=>value.trim()),link=values[2];
     // Missing or malformed URLs never authorize a listing. All known aliases,
     // including inactive ones, stay in grouping until after status resolution.
@@ -32,10 +32,10 @@ async function catalogFromCSV(csv,limits=LIMITS){
   for(const group of Identity.groupJobs(all)){
     if(group.members.some(row=>row.values[10].toLowerCase()!=='active'))continue;
     const cells=group.job.values;
-    const facts=row=>[...row.values.slice(0,2),...row.values.slice(3,9),row.values[13],row.values[14]];
+    const facts=row=>[...row.values.slice(0,2),...row.values.slice(3,9),row.values[13],row.values[14],...row.values.slice(15)];
     const fingerprint=JSON.stringify(facts(group.job));
     if(group.members.some(row=>JSON.stringify(facts(row))!==fingerprint))continue;
-    const eligible=rowsToJobs([EXPECTED,cells]);
+    const eligible=rowsToJobs([rows[0],cells]);
     if(eligible.length!==1)continue;
     const job={...eligible[0],identity:group.key,description:cells[8],summary:cells[13],posted:cells[14]};
     job.id=hash(job.identity).slice(0,24);

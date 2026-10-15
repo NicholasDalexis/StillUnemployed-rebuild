@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-14T18:29:03.286Z",
+  "sourceExportedAt": "2026-10-15T00:30:49.000Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -3842,6 +3842,104 @@
           "Research operator workflows and prioritize with data.",
           "Test features and coordinate product releases.",
           "Related degree students/recent grads or equivalent; US authorization; 40 hours/week in Cary; flexible 2027 start."
+        ]
+      }
+    },
+    {
+      "co": "AEG Worldwide / CMN",
+      "role": "CMN Internship (Touring)",
+      "link": "https://job-boards.greenhouse.io/aegworldwide/jobs/8858718002",
+      "loc": "Chicago, IL",
+      "ind": "Music / Audio",
+      "desc": "Support touring schedules, venue availability and routing.",
+      "pay": "$17.67",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Chicago, IL",
+      "eligibility": "Currently pursuing a degree in communications, media, advertising or a related field. Bilingual verbal and written Spanish required. Excel, Word and PowerPoint; budgeting/advertising fundamentals, music-industry knowledge, communication, organization and research skills. Employer explicitly does not offer work visa sponsorship. Form asks age18+, US work authorization and education details. Travel required: none. Work arrangement, weekly hours, program duration, start date and pay time unit are not stated; not inferred. The general full-time employee benefits paragraph is not treated as verified internship benefits.",
+      "cycle": "Current internship; cohort not stated",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/aegworldwide/jobs/8858718002",
+      "payStatus": "paid",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Support touring schedules, venue availability and routing.",
+        "Review campaign artwork and distribute media assets.",
+        "Prepare sales reports and organize tour documentation."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a degree in communications, media, advertising or a related field. Bilingual verbal and written Spanish required. Excel, Word and PowerPoint; budgeting/advertising fundamentals, music-industry knowledge, communication, organization and research skills. Employer explicitly does not offer work visa sponsorship. Form asks age18+, US work authorization and education details. Travel required: none. Work arrangement, weekly hours, program duration, start date and pay time unit are not stated; not inferred. The general full-time employee benefits paragraph is not treated as verified internship benefits."
+      ],
+      "benefits": [
+        "Not eligible for a bonus; no internship-specific benefits listed."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-15T00:28:17.313Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/aegworldwide/jobs/8858718002",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "20b9fd6d:323dc069",
+        "locationLabel": "Chicago, IL",
+        "detailBullets": [
+          "Support touring schedules, venue availability and routing.",
+          "Review campaign artwork and distribute media assets.",
+          "Prepare sales reports and organize tour documentation.",
+          "Pursuing related degree; Spanish required; no sponsorship; Chicago; hours, duration and pay unit not stated."
+        ]
+      }
+    },
+    {
+      "co": "Pinterest",
+      "role": "Solutions Engineer Intern 2027 (USA)",
+      "link": "https://www.pinterestcareers.com/jobs/?gh_jid=8214788",
+      "loc": "Seattle, WA; San Francisco, CA; Los Angeles, CA; New York, NY; Remote, US (approved locations)",
+      "ind": "Software Engineering",
+      "desc": "Build and improve technical tools and data workflows.",
+      "pay": "$7,500–9,500/month",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Seattle, WA; San Francisco, CA; Los Angeles, CA; New York, NY; Remote, US (approved locations)",
+      "eligibility": "US-based applicants only. Current school/education-program enrollment pursuing a bachelor degree in Computer Science, engineering, information systems or a related technical field; obtain degree by June2028 per description. The form asks by June2029; applying the stricter June2028 condition satisfies both inclusive by-date statements, an attributed Codex reconciliation, not a new human verdict. Programming/debugging/testing, code in Python/Java/JavaScript/C++, structured-data/spreadsheet familiarity, communication and responsible AI-assisted work. Form asks US authorization and sponsorship requirements; no blanket no-sponsorship policy asserted for this requisition. Some teams hybrid approximately1–2office days/week, others remote within approved US locations, confirmed during interview/offer. Sessions May17–August6 or June14–September3,2027. On-call coverage only during regular workdays/hours with guidance.",
+      "cycle": "Summer 2027; 12 weeks; two sessions",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14, 2027",
+      "timingSourceUrl": "https://www.pinterestcareers.com/jobs/?gh_jid=8214788",
+      "payStatus": "paid",
+      "payBasis": "month",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build and improve technical tools and data workflows.",
+        "Debug issues and document reliable solutions.",
+        "Collaborate with engineering, product, sales and support teams."
+      ],
+      "eligibilityFlags": [
+        "US-based applicants only. Current school/education-program enrollment pursuing a bachelor degree in Computer Science, engineering, information systems or a related technical field; obtain degree by June2028 per description. The form asks by June2029; applying the stricter June2028 condition satisfies both inclusive by-date statements, an attributed Codex reconciliation, not a new human verdict. Programming/debugging/testing, code in Python/Java/JavaScript/C++, structured-data/spreadsheet familiarity, communication and responsible AI-assisted work. Form asks US authorization and sponsorship requirements; no blanket no-sponsorship policy asserted for this requisition. Some teams hybrid approximately1–2office days/week, others remote within approved US locations, confirmed during interview/offer. Sessions May17–August6 or June14–September3,2027. On-call coverage only during regular workdays/hours with guidance."
+      ],
+      "benefits": [
+        "Mentor/manager guidance and cross-functional engineering learning; no quantified additional benefit inferred from general culture links."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-15T00:28:17.313Z",
+        "sourceUrl": "https://www.pinterestcareers.com/jobs/?gh_jid=8214788",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "2d5810ad:1b1d7d89",
+        "locationLabel": "Multiple locations",
+        "detailBullets": [
+          "Build and improve technical tools and data workflows.",
+          "Debug issues and document reliable solutions.",
+          "Collaborate with engineering, product, sales and support teams.",
+          "US-based current bachelor students; degree by June 2028; 12 weeks May/June 2027; arrangement confirmed at offer."
         ]
       }
     }

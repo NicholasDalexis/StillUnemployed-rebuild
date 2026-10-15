@@ -143,12 +143,12 @@ test('internship open notes use the approved student deck, hide the stamp until 
   assert.notEqual(next.app.shuffledNotes()[0],first,'a new visit avoids repeating its prior first note');
 });
 
-test('compact fronts contain city and state but no attendance, timing or source-review commentary', () => {
+test('compact fronts keep city/state and disclosed deadline without attendance or source-review commentary', () => {
   const row = listing({loc:'Chicago, IL, United States',style:'Hybrid; confirm attendance with employer',startDate:'January 2031',deadline:'September 2030'});
   const b=ui([row]),card=b.card(row.link);
-  assert.equal(card.querySelector('.card-location').textContent,'Chicago, IL');
+  assert.equal(card.querySelector('.card-location').textContent,'Chicago, IL · Apply by September 2030');
   assert.equal(card.querySelector('.su-internship-status'),null);assert.equal(card.querySelector('.su-internship-timing'),null);
-  assert.doesNotMatch(card.textContent,/United States|confirm attendance|Hybrid|January|September|Accepting applications/);
+  assert.doesNotMatch(card.textContent,/United States|confirm attendance|Hybrid|January|Accepting applications/);
   assert(card.textContent.includes(row.co));assert(card.textContent.includes(row.role));
 });
 

@@ -1026,6 +1026,7 @@
     state: {
       q: '',
       cat: 'all',
+      industry: 'all',
       ws: 'Any',
       st: 'all',
       pr: 'Any',
@@ -1351,23 +1352,7 @@
     },
 
     catList: function () {
-      return [
-        { label: 'All', match: 'all' },
-        { label: 'Social', match: 'Social' },
-        { label: 'Brand & Marketing', match: 'Brand & Marketing' },
-        { label: 'Content & Copy', match: 'Content & Copy' },
-        { label: 'Growth & CRM', match: 'Growth & CRM' },
-        { label: 'PR & Partnerships', match: 'PR & Partnerships' },
-        { label: 'Video & Creative', match: 'Video & Creative' },
-        { label: 'Influencer', match: 'Influencer' },
-        { label: 'Creative Tech', match: 'Creative Tech' },
-        { label: 'Fashion Design', match: 'Fashion Design' },
-        { label: 'UX/UI Design', match: 'UX/UI Design' },
-        { label: 'Videography', match: 'Videography' },
-        { label: 'Photography', match: 'Photography' },
-        { label: 'Web Development', match: 'Web Development' },
-        { label: 'Artificial Intelligence', match: 'Artificial Intelligence' }
-      ];
+      return window.SUCareerFields ? window.SUCareerFields.options(this.jobs) : [{label:'All career fields',match:'all'}];
     },
 
     payTier: function (pay) {
@@ -1417,9 +1402,10 @@
           if (window.SUStates && window.SUStates.extract(j.state, j.loc).indexOf('NY') >= 0) hay += ' nyc';
           if (hay.indexOf('san francisco') !== -1) hay += ' sf bay area';
           if (hay.indexOf('los angeles') !== -1) hay += ' la';
-          if (hay.indexOf(plan.text) < 0) return false;
+          if (window.SUCareerFields ? !window.SUCareerFields.searchMatches(j,plan.text,hay) : hay.indexOf(plan.text)<0) return false;
         }
       }
+      if(this.state.industry&&this.state.industry!=='all'&&j.employerIndustry!==this.state.industry)return false;
       if (this.state.ws !== 'Any' && j.style !== this.state.ws) return false;
       if (this.state.st !== 'all' && (!window.SUStates || window.SUStates.extract(j.state, j.loc).indexOf(this.state.st) < 0) && !isRemoteAnywhere(j)) return false;
       if (!INTERNSHIPS && window.SUBoardExperience && !window.SUBoardExperience.salaryMatches(j.pay, Number(this.state.salaryMin), Number(this.state.salaryMax))) return false;
@@ -1657,14 +1643,15 @@
     },
     setInternshipSurfaces: function () {
       if(!INTERNSHIPS||!window.SUInternships||!window.SUInternships.setSurfaceCatalog)return;
-      window.SUInternships.setSurfaceCatalog(this.jobs.slice().sort(function(a,b){return Number(internshipCanApply(b))-Number(internshipCanApply(a))||Number(b.payStatus==='paid')-Number(a.payStatus==='paid');}));
+      var surfaces=window.SUBoardExperience?window.SUBoardExperience.defaultOrder(this.jobs,true):this.jobs.slice();
+      window.SUInternships.setSurfaceCatalog(surfaces.sort(function(a,b){return Number(internshipCanApply(b))-Number(internshipCanApply(a));}));
     },
     computeShown: function () {
       var self = this;
       var base = (DAILY ? window.SUDaily.catalog(this) : this.state.savedOnly ? this.catalogJobs() : this.jobs).filter(function (j) { return self.matchesBase(j) && (self._unavailableLocal||[]).every(function(link){return !jobHasLink(j,link);}) && (self.state.savedOnly || (self._sharedJobLink && jobHasLink(j,self._sharedJobLink)) || !window.SUDiscovery || window.SUDiscovery.showHidden() || !window.SUDiscovery.hidden(j)); });
       var experience=window.SUBoardExperience;
       var cat = this.state.cat;
-      var shown = base.filter(function (j) { return cat === 'all' || j.ind === cat; });
+      var shown = base.filter(function (j) { return cat === 'all' || (window.SUCareerFields ? window.SUCareerFields.matches(j,cat) : j.ind === cat); });
       if (this.state.savedOnly) shown = shown.filter(function (j) { return self.isSaved(j.link); });
 
       if(!DAILY && this.state.fr==='Any' && !INTERNSHIPS && window.SUPersonalization && window.SUAnalytics) {
@@ -1686,7 +1673,7 @@
       }
 
       if(!DAILY && !INTERNSHIPS && this.state.fr==='Any' && window.SUDiscovery && window.SUPersonalization && !window.SUAnalytics){var discoveryOrder=window.SUDiscovery.order(this.jobs,window.SUPersonalization,{});shown.sort(function(a,b){return discoveryOrder.indexOf(a)-discoveryOrder.indexOf(b);});}
-      if(INTERNSHIPS && this.state.fr!=='Recently added')shown.sort(function(a,b){return Number(internshipCanApply(b))-Number(internshipCanApply(a)) || Number(b.payStatus==='paid')-Number(a.payStatus==='paid');});
+      if(INTERNSHIPS && this.state.fr==='Any'){if(experience)shown=experience.defaultOrder(shown,true);shown.sort(function(a,b){return Number(internshipCanApply(b))-Number(internshipCanApply(a));});}
       if(!DAILY && experience && this.state.fr==='Any'){
         // Apply only a snapshot of visit demotions, updated on deliberate filter changes.
         if(!this._activeDemotions)this._activeDemotions=experience.demotions();
@@ -1753,7 +1740,7 @@
       } catch (e) { /* Missing or malformed tab storage never blocks the board. */ }
     },
     setState: function (patch) {
-      if(window.SUBoardExperience && ['q','cat','ws','st','pr','payBands','salaryMin','salaryMax','fr','theme'].some(function(key){return Object.prototype.hasOwnProperty.call(patch,key);})){this._activeDemotions=window.SUBoardExperience.demotions();}
+      if(window.SUBoardExperience && ['q','cat','industry','ws','st','pr','payBands','salaryMin','salaryMax','fr','theme'].some(function(key){return Object.prototype.hasOwnProperty.call(patch,key);})){this._activeDemotions=window.SUBoardExperience.demotions();}
       if (patch.feedbackOpen === false || (patch.feedbackLink && patch.feedbackLink !== this.state.feedbackLink)) this.clearFeedbackRedirect();
       if(patch.feedbackOpen === true && !this.state.feedbackOpen) { this._feedbackError=''; uxEvent('feedback_open'); }
       if(patch.reportedOpen===false)this._reportedPanel=null;
@@ -1823,7 +1810,7 @@
       var catRowBase = "display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-radius:4px; font-family:'Indie Flower',cursive; font-size:18px; font-weight:700; cursor:pointer; transition:background .12s;";
       var catRowsHtml = this.catList().map(function (c) {
         var active = self.state.cat === c.match;
-        var count = c.match === 'all' ? base.length : base.filter(function (j) { return j.ind === c.match; }).length;
+        var count = c.match === 'all' ? base.length : base.filter(function (j) { return (window.SUCareerFields ? window.SUCareerFields.matches(j,c.match) : j.ind === c.match); }).length;
         var rowStyle = catRowBase + (active ? ('background:' + ACC + '; color:' + ACC_INK + ';') : 'background:transparent; color:var(--su-ink);');
         var countStyle = "font-family:var(--su-body); font-weight:700; font-size:12px;" + 'color:inherit;';
         return '<div data-act="cat" data-val="' + esc(c.match) + '" style="' + rowStyle + '">' + esc(c.label) +
@@ -1915,7 +1902,9 @@
         var isOpening = (noteState === 'open' || noteState === 'closing');
 
         var cardLoc = window.SUStates ? window.SUStates.cardLocation(j.loc) : j.loc;
+        var deadline=window.SUJobDeadlines?window.SUJobDeadlines.facts(j):null;
         var metaTop = j.internship ? internshipLocation(j) : [cardLoc, j.style, (j.exp && j.exp !== 'See posting' ? j.exp : null)].filter(Boolean).join('  ·  ');
+        if(deadline&&deadline.label)metaTop+=' · Apply by '+(j.deadline||j.deadlineISO);
 
         var noteStyle = '--rot:' + rot + 'deg; cursor:pointer; position:relative; background:' + bg +
           '; color:' + ink + '; border-radius:3px; padding:30px 24px 22px; box-sizing:border-box; display:flex; ' +
@@ -2090,8 +2079,9 @@
       var changeLookBtnStyle = changeLookBtnBase + (this.state.lookOpen ? 'background:#2A2118; color:#F4E9C9;' : 'background:#E7D2A8; color:#3A2A1B;');
 
       var curCat = this.catList().find(function (c) { return c.match === self.state.cat; }) || this.catList()[0];
-      var catBtnLabel = this.state.cat === 'all' ? 'all roles' : curCat.label;
-      var filterCount = (this.state.ws !== 'Any' ? 1 : 0) + (this.state.st !== 'all' ? 1 : 0) + (this.state.pr !== 'Any' || this.state.salaryMin || this.state.salaryMax ? 1 : 0) + (this.state.fr !== 'Any' ? 1 : 0);
+      var fieldShort={'Marketing & Communications':'Marketing & PR','Software & Engineering':'Engineering','Product & Project Management':'Product & Projects','Business & Operations':'Business & Ops','Finance & Accounting':'Finance','People & Recruiting':'People & HR','Sales & Customer Success':'Sales & Success','Research & Science':'Research','Legal & Compliance':'Legal','Education & Community':'Education','Media & Production':'Media'};
+      var catBtnLabel = this.state.cat === 'all' ? 'career field' : fieldShort[curCat.label]||curCat.label;
+      var filterCount = (this.state.industry&&this.state.industry!=='all'?1:0) + (this.state.ws !== 'Any' ? 1 : 0) + (this.state.st !== 'all' ? 1 : 0) + (this.state.pr !== 'Any' || this.state.salaryMin || this.state.salaryMax ? 1 : 0) + (this.state.fr !== 'Any' ? 1 : 0);
 
       var btnBase = "display:inline-flex; align-items:center; gap:7px; padding:9px 15px; border-radius:4px; font-family:'Indie Flower',cursive; font-size:18px; font-weight:700; cursor:pointer; white-space:nowrap; box-shadow:1px 2px 6px rgba(44,33,24,0.16);";
       var catBtnStyle = btnBase + 'transform:rotate(-2deg);' + (this.state.openPanel === 'cat' || this.state.cat !== 'all'
@@ -2107,6 +2097,7 @@
       // ---- active chips ----
       var chips = [];
       if (this.state.theme && Object.prototype.hasOwnProperty.call(this.themeDefs, this.state.theme)) chips.push({ label: this.themeDefs[this.state.theme].label, act: 'chipTheme' });
+      if(this.state.industry&&this.state.industry!=='all')chips.push({label:this.state.industry,act:'chipIndustry'});
       if (this.state.ws !== 'Any') chips.push({ label: this.state.ws, act: 'chipWs' });
       if(!INTERNSHIPS && (this.state.salaryMin||this.state.salaryMax))chips.push({label:'$'+(Number(this.state.salaryMin)||0).toLocaleString()+'–'+(this.state.salaryMax?'$'+Number(this.state.salaryMax).toLocaleString():'Any'),act:'chipPr'});
       if (this.state.pr !== 'Any') chips.push({ label: this.state.pr, act: 'chipPr' });
@@ -2183,23 +2174,25 @@
         '<div style="display: flex; align-items: center; gap: 12px; background: #FBF6E9; border: 1.5px solid #E0CFA8; border-radius: 5px; padding: 11px 11px 11px 18px; box-shadow: 2px 4px 11px rgba(44,33,24,0.10); transform: rotate(-0.4deg);">' +
           '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex: none;"><circle cx="11" cy="11" r="7" stroke="#A8825F" stroke-width="2"></circle><path d="M20 20l-3.2-3.2" stroke="#A8825F" stroke-width="2" stroke-linecap="round"></path></svg>' +
           '<input id="su-search" value="' + esc(this.state.q) + '" placeholder="search a company, role or city..." style="flex: 1; min-width: 80px; border: none; outline: none; background: transparent; font-family: \'Indie Flower\', cursive; font-size: 20px; color: #2C2118;">' +
-          '<div data-act="toggleCat" class="tab" style="' + catBtnStyle + '">' + esc(catBtnLabel) + '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="flex: none; opacity: .7;"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>' +
+          '<div data-act="toggleCat"'+(this.state.cat!=='all'?' aria-label="'+esc(curCat.label)+'" title="'+esc(curCat.label)+'"':'')+' class="tab" style="' + catBtnStyle + '">' + esc(catBtnLabel) + '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="flex: none; opacity: .7;"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>' +
           '<div data-act="toggleFilters" class="tab" style="' + filterBtnStyle + '"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="flex: none;"><path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path></svg>filters<span style="' + filterBadgeStyle + '">' + esc(filterBadge) + '</span></div>' +
         '</div>';
 
       // category panel
       if (this.state.openPanel === 'cat') {
-        out += '<div data-su-panel="cat" style="position: absolute; right: 92px; top: calc(100% + 12px); width: 268px; background: #FBF6E9; border: 1.5px dashed #CDB88C; border-radius: 6px; box-shadow: 4px 8px 22px -8px rgba(44,33,24,0.4); padding: 10px; display: flex; flex-direction: column; gap: 2px; transform: rotate(-0.8deg);">' +
-          '<div style="font-family: \'Indie Flower\', cursive; font-size: 16px; color: #6F5E45; padding: 2px 6px 6px;">pick a lane ↓</div>' +
+        out += '<div data-su-panel="cat" style="position: absolute; right: 92px; top: calc(100% + 12px); width: 268px; max-height: min(60vh, 440px); overflow-y: auto; background: #FBF6E9; border: 1.5px dashed #CDB88C; border-radius: 6px; box-shadow: 4px 8px 22px -8px rgba(44,33,24,0.4); padding: 10px; display: flex; flex-direction: column; gap: 2px; transform: rotate(-0.8deg);">' +
+          '<div style="font-family: \'Indie Flower\', cursive; font-size: 16px; color: #6F5E45; padding: 2px 6px 6px;">Career field ↓</div>' +
           catRowsHtml +
         '</div>';
       }
 
+      var employerIndustries=Array.from(new Set(this.jobs.map(function(j){return j.employerIndustry||'';}).filter(Boolean))).sort();
+      var industryHtml=employerIndustries.length?'<label class="su-employer-industry">Employer industry<select id="su-employer-industry"><option value="all">All employer industries</option>'+employerIndustries.map(function(value){return '<option value="'+esc(value)+'"'+(self.state.industry===value?' selected':'')+'>'+esc(value)+'</option>';}).join('')+'</select></label>':'';
       // filters panel
       if (this.state.openPanel === 'filters') {
         this._filtersHTML = '<section data-su-panel="filters" data-act="stop" class="su-filter-note"><div class="su-filter-header"><h2>Filters</h2>' +
           '<div data-act="toggleFilters" aria-label="Close filters" style="position: absolute; top: 12px; right: 12px; width: 26px; height: 26px; border-radius: 50%; background: rgba(44,33,24,0.07); display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg class="su-close-icon" color="#5C4033" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>' +
-          '</div><div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 0;">which state?</div>' +
+          '</div>'+industryHtml+'<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 0;">which state?</div>' +
           '<select id="su-state" aria-label="State" style="width: 100%; box-sizing: border-box; font-family: \'Indie Flower\', cursive; font-size: 17px; color: var(--su-action-ink); background: var(--su-action-paper); border: 1.5px solid currentColor; border-radius: 5px; padding: 9px 12px; cursor: pointer; outline: none; margin-top: 11px;">' + stateOpts + '</select>' +
           '<div style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 18px;">how do you wanna work?</div>' +
           '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px;">' + workStylesHtml + '</div>' +
@@ -2207,7 +2200,7 @@
           '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px;">' + pricesHtml + '</div>' +
           '<div class="su-sort-heading" style="font-family: \'Indie Flower\', cursive; font-size: 19px; color: #2A2118; margin-top: 18px;">What do you want to see first?</div>' +
           '<div class="su-sort-options" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px;">' + freshHtml + '</div>' +
-          '<details class="su-sort-help"><summary>What does “Most popular” mean?</summary><p>Big-name brands first, based on brand recognition. This isn’t a ranking of views or applications.</p></details>' +
+          '<details class="su-sort-help"><summary>What does “Most popular” mean?</summary><p>Familiar brands from our editorial list first. This is not a ranking of views, applications, or employer quality.</p></details>' +
           (window.SUDiscovery && window.SUDiscovery.preferencesHTML ? window.SUDiscovery.preferencesHTML() : '') +
           '<div data-act="clearAll" style="margin-top: 18px; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #B23A1E; cursor: pointer;">↺ reset all filters</div>' +
         '</section>';
@@ -2263,8 +2256,8 @@
 
       }
 
-      if(!this._loadError && !shown.length && this.jobs.length && (this.state.q || this.state.cat!=='all' || this.state.ws!=='Any' || this.state.pr!=='Any' || this.state.st!=='all' || this.state.fr!=='Any' || this.state.savedOnly)) {
-        var emptyKey=JSON.stringify([this.state.q,this.state.cat,this.state.ws,this.state.pr,this.state.st,this.state.fr,this.state.savedOnly]);
+      if(!this._loadError && !shown.length && this.jobs.length && (this.state.q || this.state.cat!=='all' || this.state.industry!=='all' || this.state.ws!=='Any' || this.state.pr!=='Any' || this.state.st!=='all' || this.state.fr!=='Any' || this.state.savedOnly)) {
+        var emptyKey=JSON.stringify([this.state.q,this.state.cat,this.state.industry,this.state.ws,this.state.pr,this.state.st,this.state.fr,this.state.savedOnly]);
         if(this._emptyKey!==emptyKey) uxEvent('search_empty'); this._emptyKey=emptyKey;
       } else this._emptyKey=null;
 
@@ -2322,7 +2315,7 @@
         if(categoryPanel){
           categoryPanel.querySelectorAll('[data-act="cat"]').forEach(function(row){
             var category=row.getAttribute('data-val'),count=row.querySelector('span');
-            if(count){count.textContent=countsUnavailable?'—':String(category==='all'?base.length:base.filter(function(j){return j.ind===category;}).length);if(countsUnavailable)count.setAttribute('aria-label','Count unavailable');else count.removeAttribute('aria-label');}
+            if(count){count.textContent=countsUnavailable?'—':String(category==='all'?base.length:base.filter(function(j){return (window.SUCareerFields ? window.SUCareerFields.matches(j,category) : j.ind===category);}).length);if(countsUnavailable)count.setAttribute('aria-label','Count unavailable');else count.removeAttribute('aria-label');}
           });
         }
         this.observeImpressions();
@@ -2492,29 +2485,7 @@
           var _rInvitation=this._detailRecipeInvitation || NEWSLETTER_INVITATIONS[0];
           var _rCopy = this._detailRecipeCopy || _rInvitation.text;
           var _arrow = '<svg width="30" height="15" viewBox="0 0 28 14" fill="none" style="overflow: visible; margin-left: 5px;"><path d="M1 7 C 8 2.5, 15 2.5, 24 6.6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"></path><path d="M18.5 2.6 L25.5 6.9 L19 11.4" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
-          // Age disclaimer (Nic, 2026-07-11). We never retire a role for being old — old roles STAY on the
-          // board (a fuller board), and we disclose the age here, in the popup only, never on the card face.
-          // Keyed off the job's POSTED date (when the company posted it), falling back to our Date Added
-          // until the sourcer backfills Date Posted from the ATS APIs.
-          var _ageNote = '';
-          try {
-            var _src = (dj && dj.posted) ? dj.posted : (dj && dj.added ? dj.added : '');
-            if (_src) {
-              var _ad = new Date(String(_src).trim().slice(0, 10) + 'T00:00:00');
-              if (!isNaN(_ad.getTime())) {
-                var _days = Math.floor((Date.now() - _ad.getTime()) / 86400000);
-                if (_days >= 30) {
-                  // Nic 2026-07-11: ALWAYS "30+" no matter the real age (60/70/89) — a bigger
-                  // number scares people off. The 90-day sourcing cap bounds the true age.
-                  _ageNote = 'FYI: job is 30+ days old';
-                }
-              }
-            }
-          } catch (e) {}
-          // KILLED 2026-07-11 late (Nic): the age line made the whole board FEEL stale, and
-          // corporate reqs genuinely accept applicants for 60-90 days. The 90-day sourcing cap
-          // + the liveness checker are the real guards. Data (Date Posted) stays in the sheet.
-          _ageNote = '';
+          var _ageNote = ''; // Posting age never excludes a job or becomes a public warning.
           out += '<div data-act="closeDetail" style="position: fixed; inset: 0; z-index: 214; background: rgba(44,33,24,0.58); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch;">' +
             '<div data-act="stop" class="su-detail-dialog ' + (dj.internship ? 'su-internship-dialog' : '') + '" style="margin: auto;position: relative; width: 410px; max-width: 100%; box-sizing: border-box; background-color: #FCFAF3; background-image: repeating-linear-gradient(180deg, transparent 0 32px, rgba(96,130,170,0.20) 32px 33px); background-position: 0 92px; border-radius: 4px; box-shadow: 5px 18px 44px rgba(44,33,24,0.34); transform: rotate(-1deg); padding: 30px 30px 26px 48px;">' +
               // red left margin line + tape
@@ -2539,6 +2510,8 @@
               '<div class="su-detail-role" style="font-family: var(--su-body); font-weight: 600; font-size: 16px; color: #3A2E20; margin-top: 4px; padding-right: 82px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">' + esc(dj.role) + '</div>' +
               (dj.pay ? '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 20px; color: #2C2118; margin-top: 10px;">' + esc(cardPay(dj)) + '</div>' : '') +
               (dmeta ? '<div style="font-family: var(--su-body); font-size: 13.5px; color: #6F5E45; margin-top: 5px;">' + esc(dmeta) + '</div>' : '') +
+              (dj.employerIndustry ? '<p class="su-job-deadline">Employer industry: '+esc(dj.employerIndustry)+'</p>' : '') +
+              (window.SUJobDeadlines && window.SUJobDeadlines.facts(dj).label ? '<p class="su-job-deadline">Apply by '+esc(window.SUJobDeadlines.facts(dj).label)+(safeUrl(dj.timingSourceUrl)?' · <a href="'+esc(safeUrl(dj.timingSourceUrl))+'" target="_blank" rel="noopener noreferrer">Employer timing</a>':'')+'</p>' : '') +
               (dj.savedUnavailable ? '<p class="su-saved-availability">'+(dj.confirmedClosed?'No longer available. You saved this job, so it stays here.':dj.savedElsewhere?'Saved from the '+(dj.internship?'internships':'jobs')+' board. Check the employer for current availability.':'This listing is off the current board. Your saved copy stays here; check the employer for availability.')+'</p>' : '') +
               payDisclosure(dj) +
               // TL;DR label (handwritten + swoosh)
@@ -2550,7 +2523,7 @@
                   : dj.internship ? '<p class="su-internship-timing">See the employer’s program page for duties.</p>' : '<div style="margin-top: 9px; font-family: \'Indie Flower\', cursive; font-size: 17px; color: #6F5E45; line-height: 1.5;">a quick 3–4 bullet summary is coming to every role. for now, hit apply for the full listing →</div>') +
               // apply (card-style text link + hand-drawn arrow)
               '<div style="margin-top: 22px; display: flex; align-items: center; justify-content: flex-end; gap: 12px;">' +
-                (DAILY&&!window.SUDaily.canApply(this,dj.link) ? '<span class="daily-availability">'+(this._loading?'Checking current availability.':this._loadError||this._moderationError?'Availability could not be checked.':'job no longer available on this board')+' <a href="/jobs.html">Browse current jobs</a></span>' : '<button type="button" data-act="' + (dj.savedUnavailable ? 'detailArchived' : dj.internship && !internshipCanApply(dj) ? 'detailProgram' : 'detailApply') + '" data-link="' + esc(dj.link) + '" data-co="' + esc(dj.co) + '" style="border:0; background:none; padding:0; font-family: var(--su-body); font-weight: 800; font-size: 21px; color: ' + _applyC + '; display: inline-flex; align-items: center; cursor: pointer; flex: none;">' + (dj.savedUnavailable ? 'View original listing' : dj.internship && !internshipCanApply(dj) ? 'View program' : 'Apply Now') + _arrow + '</button>') +
+                (window.SUJobDeadlines&&!window.SUJobDeadlines.accepting(dj)?'<span class="daily-availability">'+(window.SUJobDeadlines.facts(dj).state==='expired'?'Application deadline passed.':'Application timing needs a recheck.')+'</span>' : DAILY&&!window.SUDaily.canApply(this,dj.link) ? '<span class="daily-availability">'+(this._loading?'Checking current availability.':this._loadError||this._moderationError?'Availability could not be checked.':'job no longer available on this board')+' <a href="/jobs.html">Browse current jobs</a></span>' : '<button type="button" data-act="' + (dj.savedUnavailable ? 'detailArchived' : dj.internship && !internshipCanApply(dj) ? 'detailProgram' : 'detailApply') + '" data-link="' + esc(dj.link) + '" data-co="' + esc(dj.co) + '" style="border:0; background:none; padding:0; font-family: var(--su-body); font-weight: 800; font-size: 21px; color: ' + _applyC + '; display: inline-flex; align-items: center; cursor: pointer; flex: none;">' + (dj.savedUnavailable ? 'View original listing' : dj.internship && !internshipCanApply(dj) ? 'View program' : 'Apply Now') + _arrow + '</button>') +
               '</div>' +
               // recipe capture: rotating one-liner + Beehiiv embed. ✕ hides it until reload.
               (!_rShow ? '' :
@@ -2720,7 +2693,7 @@
       if(this._outgoing)return;
       if(!moderation){suToast('Could not check current job availability. Please reload and try again.');return;}
       var intent={link:link};this._outgoing=intent;
-      moderation.navigate(link,{current:function(){return self._outgoing===intent&&self.state.detailOpen&&self.state.detailLink===link;}}).then(function(){
+      moderation.navigate(link,{current:function(){var job=self.jobs.find(function(j){return jobHasLink(j,link);});return self._outgoing===intent&&self.state.detailOpen&&self.state.detailLink===link&&!!job&&(!window.SUJobDeadlines||window.SUJobDeadlines.accepting(job));}}).then(function(){
         if(self._outgoing!==intent)return;
         if(kind==='apply'){postReport('click',company,link);self.setState({detailOpen:false,feedbackOpen:true,feedbackCo:company,feedbackLink:link});}
       }).catch(function(e){if(self._outgoing===intent)suToast(e.message);}).finally(function(){if(self._outgoing===intent)self._outgoing=null;});
@@ -2909,7 +2882,7 @@
           case 'detailApply': {
             var dl = el.getAttribute('data-link'), dc = el.getAttribute('data-co');
             var applyJob = self.jobs.find(function (job) {return jobHasLink(job,dl);});
-            if ((DAILY&&!window.SUDaily.canApply(self,dl)) || !applyJob || (applyJob.internship && !internshipCanApply(applyJob))) {self.renderOverlays();break;}
+            if ((DAILY&&!window.SUDaily.canApply(self,dl)) || (window.SUJobDeadlines&&!window.SUJobDeadlines.accepting(applyJob)) || !applyJob || (applyJob.internship && !internshipCanApply(applyJob))) {self.renderOverlays();break;}
             self.openCurrentListing(dl,dc,'apply');
             break;
           }
@@ -2956,7 +2929,7 @@
           case 'closeFilters': self.setState({openPanel:null});break;
           case 'payBand': if(self.desktopPayBands()&&window.SUBoardExperience)self.setState({payBands:window.SUBoardExperience.togglePayBand(self.state.payBands,el.getAttribute('data-val'))});break;
           case 'resetPayBands': self.setState({payBands:''});break;
-          case 'clearAll': self.setState({ q: '', cat: 'all', ws: 'Any', st: 'all', pr: 'Any', payBands:'', salaryMin:'', salaryMax:'', fr: 'Any', theme: null }); break;
+          case 'clearAll': self.setState({ q: '', cat: 'all', industry:'all', ws: 'Any', st: 'all', pr: 'Any', payBands:'', salaryMin:'', salaryMax:'', fr: 'Any', theme: null }); break;
 
           case 'cat': self.setState({ cat: el.getAttribute('data-val'), openPanel: null }); break;
           case 'ws': self.setState({ ws: el.getAttribute('data-val') }); break;
@@ -2964,6 +2937,7 @@
           case 'fr': self.setState({ fr: el.getAttribute('data-val'),recentSeed:String(Date.now()) }); break;
 
           case 'chipTheme': self.setState({ theme: null }); break;
+          case 'chipIndustry': self.setState({industry:'all'}); break;
           case 'chipWs': self.setState({ ws: 'Any' }); break;
           case 'chipPr': self.setState({ pr: 'Any', salaryMin:'',salaryMax:'' }); break;
           case 'chipFr': self.setState({ fr: 'Any' }); break;
@@ -3151,6 +3125,7 @@
         if(salaryControl(e.target)){
           if(updateSalary(e.target)&&!salaryGesture)commitSalary(e.target.type==='text');return;
         }
+        if(e.target&&e.target.id==='su-employer-industry'){self.setState({industry:e.target.value});return;}
         if (e.target && e.target.id === 'su-state') {
           // analytics: state filter — additive
           if (typeof window.suTrack === 'function') window.suTrack('filter', 'state', e.target.value, '');
@@ -3342,7 +3317,7 @@
         iAdded = col('Date Added'),   // when WE added it to the board
         iPosted = col('Date Posted'); // when the COMPANY posted the job — drives the age disclaimer (2026-07-11)
     var get = function (cells, k) { return (k >= 0 && cells[k] != null) ? String(cells[k]).trim() : ''; };
-    var jobs = [], archived=[], closed=[];
+    var jobs = [], archived=[], closed=[], withheld=[];
     for (var r = 1; r < rows.length; r++) {
       var cells = rows[r];
       if (cells.every(function (s) { return !s.trim(); })) continue;
@@ -3350,7 +3325,8 @@
       var co = get(cells, iCo), role = get(cells, iRole);
       if (!co || !role || !safeUrl(get(cells, iLink))) continue; // incomplete or unsafe listing
       var act = get(cells, iAct).toLowerCase();
-      var retired=act.indexOf('dead')!==-1||act==='inactive'||act==='no';
+      var retired=act!=='active'; // Only an explicitly admitted source row is public.
+      if(retired)withheld.push(safeUrl(get(cells,iLink)));
       if(act==='dead')closed.push(safeUrl(get(cells,iLink))); // Only explicit closure is confirmed.
       var _payv = get(cells, iPay);
       // GUARD (Nic's rule: a card must NEVER show without a salary). A blank Salary cell used to render
@@ -3374,13 +3350,15 @@
         pick: get(cells, iPick).toLowerCase() === 'featured',
         handpicked: /^(handpicked|human reviewed)$/.test(get(cells,col('Review provenance')).toLowerCase()),
         added: get(cells, iAdded),    // yyyy-mm-dd — when we added it
-        posted: get(cells, iPosted)   // yyyy-mm-dd — when the COMPANY posted it (from the ATS API)
+        posted: get(cells, iPosted), // actual employer posting date; optional, never an age gate
+        deadline:get(cells,col('Application Deadline')),deadlineISO:get(cells,col('Deadline ISO')),deadlineTimezone:get(cells,col('Deadline Timezone')),timingSourceUrl:safeUrl(get(cells,col('Timing Source'))),employerIndustry:get(cells,col('Employer Industry'))
       });
     }
     // Parsing is independent of the selected board. Only an accepted request
     // can publish its closure/archive metadata; legacy callers still get an array.
     if(metadata){metadata.closedLinks=closed;metadata.archiveCatalog=uniqueJobs(archived);}
-    return uniqueJobs(jobs);
+    var held=new Set();withheld.forEach(function(link){window.SUJobIdentity.keys(link).forEach(function(key){held.add(key);});});
+    return uniqueJobs(jobs).filter(function(job){return !window.SUJobIdentity.keys(job.link).some(function(key){return held.has(key);});});
   }
 
   // Security: only let http(s) job links reach the DOM. Blocks a malicious sheet
@@ -3393,6 +3371,7 @@
   function normExp(v) {
     var s = String(v == null ? '' : v).trim();
     if (!s) return '';
+    if (/\b(?:months?|mos?|weeks?|days?)\b/i.test(s))return s; // Never turn six months into six years.
     if (!/\d/.test(s)) return s;                 // "Early career", "See posting", etc.
     var m = s.match(/\d+/);                      // the FIRST number is the floor
     if (!m) return s;
@@ -3411,7 +3390,7 @@
   function currentSection(){return INTERNSHIPS?'internships':'jobs';}
   function currentFeed(request){return request.epoch===feedEpoch && request.section===currentSection();}
   function sectionFilters(section, restored){
-    var defaults={q:'',cat:'all',ws:'Any',pr:'Any',payBands:'',salaryMin:'',salaryMax:'',st:'all',fr:'Any',recentSeed:String(Date.now()),savedOnly:false,theme:null};
+    var defaults={q:'',cat:'all',industry:'all',ws:'Any',pr:'Any',payBands:'',salaryMin:'',salaryMax:'',st:'all',fr:'Any',recentSeed:String(Date.now()),savedOnly:false,theme:null};
     if(restored && restored.state)Object.keys(defaults).forEach(function(key){
       if(key!=='savedOnly' && key!=='theme' && typeof restored.state[key]==='string')defaults[key]=restored.state[key];
     });
@@ -3457,7 +3436,7 @@
     if(!changed&&!stale)return false;
     App.cancelSearchFill();
     clearTimeout(App._renderTimer);App._renderTimer=null;
-    Object.assign(App.state,{q:'',cat:'all',ws:'Any',pr:'Any',payBands:'',salaryMin:'',salaryMax:'',st:'all',fr:'Any',savedOnly:false,recentOpen:false});
+    Object.assign(App.state,{q:'',cat:'all',industry:'all',ws:'Any',pr:'Any',payBands:'',salaryMin:'',salaryMax:'',st:'all',fr:'Any',savedOnly:false,recentOpen:false});
     App._activeDemotions=null;App._unavailableLocal=[];App._availabilityBusy=false;App._availabilityAttempt=null;
     App._personalOrder=null;App._profileGeneration=-1;App._feedInteracted=false;
     if(document.getElementById('overlay-root'))App.renderOverlays();

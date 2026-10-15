@@ -1,21 +1,23 @@
 {
-  "version": "2.7.7.24",
+  "version": "2.7.7.27",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-14T18:55:46.256Z",
-  "reviewer": "Codex internship sourcing",
-  "sourceDigest": "3eead560136c00fa88bf6bbf238aaebe45fb68b4ba70c37c01b6a9731b62c928",
-  "sourceFileCount": 225,
-  "privacyChanged": false,
-  "termsChanged": false,
-  "scope": "Authorized source-only internship catalog release: eighteen qualified employer postings and unchanged previously approved sixty-eight. Standard generated version/footer labels only; unrelated owner Chicory candidate excluded. Post-build seal preserves existing approved due October14 daily projection without new selections or behavioral code. Source-bound compact presentation now exposes important eligibility in existing four-bullet popup; full restrictions stay in catalog and employer source.",
+  "reviewedAt": "2026-10-15T00:40:54.712Z",
+  "reviewer": "Codex StillUnemployed owner",
+  "sourceDigest": "0925524090ead77a80979966c9fbfef6e72e3de3c11df10675526458663185ab",
+  "sourceFileCount": 227,
+  "privacyChanged": true,
+  "termsChanged": true,
+  "scope": "Broader career-field search/filtering, optional employer-industry and deadline metadata, date-only Eastern/default or employer timezone, paused-state suppression and editorial brand/disclosed annual-pay preference. Exact titles, admissions, catalog and consent preserved. Preserve6–12months, OTE labels and explicit unknown pay period; integrate2verified internships with prior86data/receipts exact. Source-only preparation25notpublished.",
   "checks": {
-    "disclosures": "Privacy and Terms read in full; no wording change needed. Public employer facts only; enrollment, pay basis, cohort and material restrictions retained.",
-    "choices": "No new accounts, analytics requirement, identifiers, inputs, services, retention, permissions or account actions.",
-    "publication": "Fresh complete126-row27-column source envelope checked86included/40excluded. Original68 verification dates unchanged. NEON Design/Sony hold/private Golden/receipts excluded. Public-safe Gemini aliases verified; no opaque session parameters copied."
+    "disclosures": "Privacy/Terms disclose default familiar-brand and annual USD minimum-over-80K preference without annualizing hourly/estimated/variable pay, professional scope and deadline semantics. Effective dates October14; no legal certification.",
+    "choices": "Existing consent/GPC, account isolation, stored preference labels/history, explicit sorts and daily order preserved. No new provider, identity/event, raw-search collection, retention or schedule.",
+    "publication": "Native optional-column migration waits for compatible deployed readers. Original86 internship records/receipts and daily source manifest unchanged. Separate Chicory20 not included; Muse/jobs connector remains disabled."
   },
   "openItems": [
-    "Hosted final preview and production proof pending; no fresh OAuth or physical iPhone test.",
-    "Unrelated owner Chicory local20 is excluded. Local21/22/23 are preserved preparation checkpoints, not deployed production versions."
+    "Hosted preview and actual-domain QA pending under existing Preview-Release-Workflow.",
+    "Optional native-column migration follows compatible reader deployment; no source admissions performed.",
+    "Fresh OAuth and physical iPhone not tested.",
+    "Two new student cards public pending until approved candidate release. No source-only25 deploy attempted."
   ],
   "author": "Codex",
   "platform_signature": "-Codex"

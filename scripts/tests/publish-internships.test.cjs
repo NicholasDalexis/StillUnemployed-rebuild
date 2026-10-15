@@ -223,7 +223,7 @@ test('private input must be explicit, readable and outside the public repository
 test('CLI rejects undeclared output/network flags and publishes only to its own repository snapshot', t => {
   const b = sandbox(t);fs.mkdirSync(path.join(b.root, 'scripts/lib'), { recursive:true });fs.mkdirSync(path.join(b.root, 'js'));
   const repo = path.resolve(__dirname, '../..');
-  for (const file of ['scripts/publish-internships.mjs','scripts/lib/internship-projection.cjs','js/internships.js','js/job-identity.js']) fs.copyFileSync(path.join(repo, file), path.join(b.root, file));
+  for (const file of ['scripts/publish-internships.mjs','scripts/lib/internship-projection.cjs','js/internships.js','js/job-identity.js','js/job-deadlines.js']) fs.copyFileSync(path.join(repo, file), path.join(b.root, file));
   const cli = path.join(b.root, 'scripts/publish-internships.mjs');
   const run = args => spawnSync(process.execPath, [cli, ...args], { encoding:'utf8' });
   const help = run(['--help']);assert.equal(help.status, 0);assert.match(help.stdout, /No network/);
