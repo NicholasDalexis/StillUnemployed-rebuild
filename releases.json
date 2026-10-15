@@ -1,7 +1,36 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.27",
+  "currentVersion": "2.7.7.29",
   "releases": [
+    {
+      "version": "2.7.7.29",
+      "date": "2026-10-14",
+      "title": "Complete corrected Google deadline presentation",
+      "changes": [
+        "Align the source-bound Google TPM compact summary with October 23 and retain its checksum; local 28 was a preparation checkpoint."
+      ],
+      "public": {
+        "title": "Current deadlines and availability",
+        "changes": [
+          "Current internship listings use the latest verified deadline, with expired records excluded from discovery."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.28",
+      "date": "2026-10-14",
+      "title": "Correct current internship deadlines and preserve saved history",
+      "changes": [
+        "Refresh Google TPM deadline and eligibility to October 23 from current employer evidence; remove retired APM from the approved snapshot.",
+        "Exclude elapsed deadlines from current board discovery and counts while preserving readable saved history and approved compact presentation."
+      ],
+      "public": {
+        "title": "Current deadlines and clearer availability",
+        "changes": [
+          "Expired application deadlines leave the current board; saved job details remain available."
+        ]
+      }
+    },
     {
       "version": "2.7.7.27",
       "date": "2026-10-14",
@@ -1292,7 +1321,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "0925524090ead77a80979966c9fbfef6e72e3de3c11df10675526458663185ab",
+    "digest": "dfcd3548e82fd216750671ffb6c0637f00090992a0be32d0db993c83e31a3774",
     "fileCount": 227
   }
 }

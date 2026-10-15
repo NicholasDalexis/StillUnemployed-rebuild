@@ -30,5 +30,8 @@
     return {state:'unknown',label:text||raw};
   }
   function accepting(job,now){return !/^(?:paused|on hold|hiring paused|closed|expired|dead|inactive|no)$/i.test(String(job&&job.applicationStatus||'').trim())&&['expired','unknown'].indexOf(facts(job,now).state)<0;}
-  return {facts:facts,accepting:accepting,calendar:calendar,day:day,defaultTimezone:DEFAULT_ZONE};
+  // Current discovery excludes elapsed deadlines. Raw snapshots and saved
+  // history remain readable and never become proof of employer closure.
+  function current(jobs,now){return jobs.filter(function(job){return facts(job,now).state!=='expired';});}
+  return {facts:facts,accepting:accepting,current:current,calendar:calendar,day:day,defaultTimezone:DEFAULT_ZONE};
 });

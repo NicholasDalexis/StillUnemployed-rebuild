@@ -1,13 +1,13 @@
 {
-  "version": "2.7.7.27",
+  "version": "2.7.7.29",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-15T00:40:54.712Z",
+  "reviewedAt": "2026-10-15T01:24:04.874Z",
   "reviewer": "Codex StillUnemployed owner",
-  "sourceDigest": "0925524090ead77a80979966c9fbfef6e72e3de3c11df10675526458663185ab",
+  "sourceDigest": "dfcd3548e82fd216750671ffb6c0637f00090992a0be32d0db993c83e31a3774",
   "sourceFileCount": 227,
-  "privacyChanged": true,
+  "privacyChanged": false,
   "termsChanged": true,
-  "scope": "Broader career-field search/filtering, optional employer-industry and deadline metadata, date-only Eastern/default or employer timezone, paused-state suppression and editorial brand/disclosed annual-pay preference. Exact titles, admissions, catalog and consent preserved. Preserve6–12months, OTE labels and explicit unknown pay period; integrate2verified internships with prior86data/receipts exact. Source-only preparation25notpublished.",
+  "scope": "Current discovery/counts exclude elapsed machine-readable deadlines; raw approved and saved history remain readable without claiming employer closure. Google TPM deadline/eligibility correction and APM retirement follow fresh source evidence. Preserve approved compact copy only for checksum-matching unchanged facts. No new data collection/provider/auth/API activation/schedule. Privacy reviewed, no further wording change needed; Terms explains current-feed removal.",
   "checks": {
     "disclosures": "Privacy/Terms disclose default familiar-brand and annual USD minimum-over-80K preference without annualizing hourly/estimated/variable pay, professional scope and deadline semantics. Effective dates October14; no legal certification.",
     "choices": "Existing consent/GPC, account isolation, stored preference labels/history, explicit sorts and daily order preserved. No new provider, identity/event, raw-search collection, retention or schedule.",

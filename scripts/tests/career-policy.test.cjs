@@ -85,3 +85,11 @@ test('source months remain months and OTE stays visible in the real card and det
  const card=b.document.querySelector('[data-act="openJob"]');assert.match(card.textContent,/6-12 months/);assert.match(card.textContent,/OTE/);assert.doesNotMatch(card.textContent,/6\+ yrs/);
  b.app.state.detailOpen=true;b.app.state.detailLink=b.app.jobs[0].link;b.app.renderOverlays();assert.match(b.overlay.textContent,/OTE/);assert.match(b.overlay.textContent,/6-12 months/);
 });
+
+test('elapsed deadlines leave current discovery without destroying saved source history',async()=>{
+ const active=job({deadlineISO:'2030-10-14'}),expired=job({link:'https://example.org/expired',deadlineISO:'2030-10-13'}),rows=[expired,active];
+ assert.deepEqual(D.current(rows,Date.parse('2030-10-15T03:59:59Z')),[active]);
+ assert.equal(rows.length,2);assert.equal(D.current(rows,Date.parse('2030-10-15T04:00:00Z')).length,0);
+ const b=board({response:{ok:true,status:200,text:async()=>csv([row({'Deadline ISO':'2000-01-01','Application Deadline':'2000-01-01'})],['Company','Job Title','Link','Location','Type','Salary','Years of Experience','Category','Description','Pick','Active/Dead','Date Added','Dead Date','TL;DR','Date Posted','Application Deadline','Deadline ISO'])}});
+ b.window.SUJobDeadlines=D;await b.boot();assert.equal(b.app.jobs.length,0);assert.equal(b.app._archiveCatalog.length,1);assert.equal(b.app._closedLinks.length,0);
+});

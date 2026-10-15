@@ -3,6 +3,7 @@
 const {readFileSync}=require('node:fs');
 const {senior}=require('../../../js/board-experience.js');
 const SUJobIdentity=require('../../../js/job-identity.js');
+const Deadlines=require('../../../js/job-deadlines.js');
 const SHEET = '1DRfkDn_OIVlnx06xFaNpNbusXl49jvM26oJsl-qq2nU';
 const CSV = `https://docs.google.com/spreadsheets/d/${SHEET}/gviz/tq?tqx=out:csv&headers=1&gid=2134483974&_=${Date.now()}`;
 // deterministic short slug from the apply link — MUST match app.js suSlug()
@@ -68,7 +69,7 @@ function rowsToJobs(rows) {
     var job={co,role,link,pay,ind:get('category'),loc:get('location'),style:get('type'),exp:get('years of experience'),deadline:get('application deadline'),deadlineISO:get('deadline iso'),deadlineTimezone:get('deadline timezone'),timingSourceUrl:get('timing source'),employerIndustry:get('employer industry')};
     jobs.push(job);
   }
-  return SUJobIdentity.groupJobs(jobs.filter(job=>!SUJobIdentity.keys(job.link).some(key=>withheld.has(key)))).map(group => ({ ...group.job, _aliases: group.aliases }));
+  return SUJobIdentity.groupJobs(Deadlines.current(jobs.filter(job=>!SUJobIdentity.keys(job.link).some(key=>withheld.has(key))))).map(group => ({ ...group.job, _aliases: group.aliases }));
 }
 
 // Keep every previously shareable raw-URL hash. Alias pages use the same

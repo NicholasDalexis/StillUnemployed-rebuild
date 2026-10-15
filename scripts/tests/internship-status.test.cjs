@@ -203,3 +203,12 @@ test('all responses disable browser/CDN caching and the packaged entry is GET-on
     assert.equal(result.headers['X-Content-Type-Options'], 'nosniff');assert.match(result.headers['Content-Type'], /^application\/json/);
   }
 });
+
+test('current public feed suppresses elapsed deadlines but preserves raw approved history',()=>{
+ const before=Date.parse('2030-10-15T03:59:59Z'),after=Date.parse('2030-10-15T04:00:00Z');
+ const j=job('98765',{deadlineISO:'2030-10-14'}),snapshot={schemaVersion:2,status:'verified',jobs:[j]};
+ const index=Status.statusIndex('Link,Active/Dead,Application Status\n'+j.link+',Active,Open');
+ assert.equal(Status.suppress(Status.approvedSnapshot(snapshot,before),index,before).jobs.length,1);
+ assert.equal(Status.suppress(Status.approvedSnapshot(snapshot,after),index,after).jobs.length,0);
+ assert.equal(snapshot.jobs.length,1);assert.equal(Internships.jobs(snapshot,after).length,1);assert.equal(Internships.canApply(j,after),false);
+});

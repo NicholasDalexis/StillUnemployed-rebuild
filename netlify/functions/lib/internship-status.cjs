@@ -2,6 +2,7 @@
 
 const Internships = require('../../../js/internships.js');
 const Identity = require('../../../js/job-identity.js');
+const Deadlines = require('../../../js/job-deadlines.js');
 const SOURCE_URL = 'https://docs.google.com/spreadsheets/d/1DRfkDn_OIVlnx06xFaNpNbusXl49jvM26oJsl-qq2nU/gviz/tq?tqx=out%3Acsv&headers=1&gid=1560669113&tq=select%20C%2CK%2CV';
 const LIMITS = Object.freeze({ bytes:1048576, rows:10000, timeoutMs:5000, redirects:3 });
 const HEADERS = Object.freeze({
@@ -86,7 +87,7 @@ function suppress(snapshot, index, checkedAt) {
     if (!matches.size) return false;
     const status = matches.values().next().value;
     const phase = job.applicationStatus || (job.verification || {}).status;
-    return status.active && ['open', 'upcoming'].includes(phase) && status.phase === phase;
+    return status.active && ['open', 'upcoming'].includes(phase) && status.phase === phase && Deadlines.facts(job,checkedAt).state!=='expired';
   }), statusCheckedAt:new Date(checkedAt).toISOString() };
 }
 

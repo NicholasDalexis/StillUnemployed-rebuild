@@ -26,7 +26,7 @@ test('complete counts deduplicate aliases, respect global removals and include p
  const getIndex=()=>({...index(),removed:[{keys:Identity.keys('https://example.com/job/2'),slugs:[]},{keys:Identity.keys(internship.link),slugs:[]}]});
  const reply=await (await handler({getIndex}))(new Request('https://stillunemployed.com/api/public-counts'));
  const body=await reply.json();assert.equal(reply.status,200);assert.equal(body.jobs.count,1);
- const rows=Internships.jobs(snapshot,now).filter(j=>!Identity.equivalent(j.link,internship.link));
+ const rows=require('../../js/job-deadlines.js').current(Internships.jobs(snapshot,now),now).filter(j=>!Identity.equivalent(j.link,internship.link));
  assert.equal(body.internships.count,rows.length);assert.equal(body.internships.upcoming,Internships.counts(rows,now).upcoming);
  assert.equal(reply.headers.get('Cache-Control'),'no-store');
  assert.deepEqual(Object.keys(body).sort(),['checkedAt','internships','jobs','schemaVersion']);

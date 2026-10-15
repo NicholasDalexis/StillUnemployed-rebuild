@@ -1,5 +1,6 @@
 import Identity from '../../../js/job-identity.js';
 import Internships from '../../../js/internships.js';
+import Deadlines from '../../../js/job-deadlines.js';
 import Source from './job-source.cjs';
 import Discovery from './job-discovery.cjs';
 
@@ -63,7 +64,7 @@ export function createHandler({getJobs,getInternships,getIndex,now=Date.now,time
           if(data.status!=='verified')throw Error('Unavailable');
           const rows=Internships.jobs(data,checked);
           if(rows.length!==data.jobs.length)throw Error('Unavailable');
-          const published=count(rows,index);
+          const published=count(Deadlines.current(rows,checked),index);
           body.internships={status:'ready',count:published.length,upcoming:Internships.counts(published,checked).upcoming};
         }catch{}
       }

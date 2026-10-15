@@ -3356,6 +3356,7 @@
     }
     // Parsing is independent of the selected board. Only an accepted request
     // can publish its closure/archive metadata; legacy callers still get an array.
+    if(window.SUJobDeadlines){var current=window.SUJobDeadlines.current(jobs);archived=archived.concat(jobs.filter(function(job){return current.indexOf(job)<0;}));jobs=current;}
     if(metadata){metadata.closedLinks=closed;metadata.archiveCatalog=uniqueJobs(archived);}
     var held=new Set();withheld.forEach(function(link){window.SUJobIdentity.keys(link).forEach(function(key){held.add(key);});});
     return uniqueJobs(jobs).filter(function(job){return !window.SUJobIdentity.keys(job.link).some(function(key){return held.has(key);});});
@@ -3497,7 +3498,7 @@
             .then(function(r){if(!r.ok)throw Error('Local presentation unavailable');return r.json();})
             .then(function(copy){return Object.assign({},data,{jobs:data.jobs.map(function(job){return window.SUInternships.withPresentation(job,copy[job.link]);})});})
             .catch(function(){return data;});
-        }).then(function(data){try{return {jobs:window.SUInternships.jobs(data),internshipStatus:data.status,closedLinks:[],archiveCatalog:[]};}catch(_){throw feedFailure('validation');}});
+        }).then(function(data){try{var all=window.SUInternships.jobs(data),current=window.SUJobDeadlines?window.SUJobDeadlines.current(all):all;return {jobs:current,internshipStatus:data.status,closedLinks:[],archiveCatalog:all.filter(function(job){return current.indexOf(job)<0;})};}catch(_){throw feedFailure('validation');}});
     }
     return feedResponse(SHEET_CSV_URL+'&_='+Date.now(),{cache:'no-cache',signal:signal})
       .then(function(r){return feedBody(r,'text');})

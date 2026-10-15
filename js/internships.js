@@ -193,5 +193,5 @@
     surfaceMembership=membership;surfaces=new Map();unique.forEach(function(key,index){surfaces.set(key,paperCycle[index%paperCycle.length]);});
   }
   function cardSurface(job){var key=surfaceKey(job);if(surfaces.has(key))return surfaces.get(key);var hash=2166136261;for(var i=0;i<key.length;i++)hash=Math.imul(hash^key.charCodeAt(i),16777619);return paperCycle[(hash>>>0)%paperCycle.length];}
-  return {jobs:jobs,payLabel:payLabel,locationLabel:locationLabel,detailBullets:detailBullets,withPresentation:withPresentation,applicationState:applicationState,canApply:canApply,counts:counts,publicJob:publicJob,safeUrl:safeUrl,dateValue:dateValue,setSurfaceCatalog:setSurfaceCatalog,cardSurface:cardSurface};
+  return {jobs:jobs,payLabel:payLabel,locationLabel:locationLabel,detailBullets:detailBullets,displayKey:displayKey,withPresentation:withPresentation,applicationState:applicationState,canApply:canApply,counts:counts,publicJob:publicJob,safeUrl:safeUrl,dateValue:dateValue,setSurfaceCatalog:setSurfaceCatalog,cardSurface:cardSurface};
 });

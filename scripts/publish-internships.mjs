@@ -42,6 +42,9 @@ function carryForward(values, headers, admission, previous, now) {
   let projected;
   try { projected = projection.projectRow(record, receipt, {now}); } catch { fail('Carry-forward facts are invalid.'); }
   projected.verification = prior.verification;
+  // Retain an already-approved compact view only when its checksum still
+  // matches the unchanged source facts. Presentation is not a new admission.
+  if (prior.presentation) projected = internships.withPresentation(projected, prior.presentation);
   if (!isDeepStrictEqual(projected, prior)) fail('Changed public facts require a fresh source check.');
   return prior;
 }
