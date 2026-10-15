@@ -53,6 +53,12 @@
   var KNOWN_BRANDS = ['Google','Alphabet','YouTube','Spotify','Microsoft','Xbox','LinkedIn','Bubble Skincare','LVMH','Michael Kors','Meta','Instagram','Facebook','Apple','Amazon','Adobe','Netflix','Disney','The Walt Disney Company','Nike','Adidas','TikTok','ByteDance','Pinterest','Snap','Snapchat','Reddit','Salesforce','Samsung','IBM','NVIDIA','Intel','Sony','PlayStation','Nintendo','Warner Bros Discovery','Warner Bros','NBCUniversal','Comcast','Paramount','HBO','Hulu','ESPN','Target','Walmart','Sephora','Ulta Beauty','Estee Lauder','The Estee Lauder Companies','L Oreal','Louis Vuitton','Dior','Gucci','Prada','Chanel','Ralph Lauren','Coach','Tapestry','Levi Strauss and Co','Levi Strauss','Gap','Old Navy','American Eagle','Aritzia','Lululemon','New Balance','Converse','Crocs','LEGO','Mattel','Hasbro','Airbnb','Uber','Lyft','DoorDash','Duolingo','Figma','Canva','Notion','Roblox','Epic Games','Electronic Arts','EA','Rockstar Games'];
   var brandNames = new Set(KNOWN_BRANDS.map(function(co){return employer({co:co});}));
   function recognizedBrand(job) { return brandNames.has(employer(job)); }
+  function defaultOrder(items, internships) {
+    // Existing editorial brand list is a preference, never employer verification.
+    // Only the disclosed annual USD floor can receive the pay preference.
+    function score(job){var annual=!internships&&/\$|\bUSD\b/i.test(job.pay||'')&&!/commission|bonus|ote|up to|estimated|approx|CAD|AUD|NZD|HKD|SGD|[€£¥]/i.test(job.pay||'')?annualRange(job.pay):null;return Number(recognizedBrand(job))*2+Number(!!annual&&annual.min>80000);}
+    return items.map(function(job,index){return {job:job,index:index,score:score(job)};}).sort(function(a,b){return b.score-a.score||a.index-b.index;}).map(function(row){return row.job;});
+  }
   function payBands(value) {
     var selected=String(value||'').split(',');
     return ['low','mid','high'].filter(function(band){return selected.indexOf(band)>=0;}).join(',');
@@ -138,5 +144,5 @@
     try{root.sessionStorage.setItem(key,JSON.stringify(ids.slice(-LIMIT)));}catch(_){}
   }
   function clearHistory() { try {var key=storageKey('history');if(key)root.localStorage.removeItem(key);}catch(_){} }
-  return {senior:senior,annualRange:annualRange,salaryMatches:salaryMatches,dayKey:dayKey,addedDay:addedDay,recentDay:recentDay,shuffled:shuffled,employer:employer,spaced:spaced,payBands:payBands,togglePayBand:togglePayBand,payBandMatches:payBandMatches,recognizedBrand:recognizedBrand,orderFirst:orderFirst,history:history,record:record,dismiss:dismiss,demotions:demotions,clearHistory:clearHistory,identity:identity};
+  return {senior:senior,annualRange:annualRange,salaryMatches:salaryMatches,dayKey:dayKey,addedDay:addedDay,recentDay:recentDay,shuffled:shuffled,employer:employer,spaced:spaced,payBands:payBands,togglePayBand:togglePayBand,payBandMatches:payBandMatches,recognizedBrand:recognizedBrand,defaultOrder:defaultOrder,orderFirst:orderFirst,history:history,record:record,dismiss:dismiss,demotions:demotions,clearHistory:clearHistory,identity:identity};
 });

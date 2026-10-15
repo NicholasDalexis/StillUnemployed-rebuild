@@ -2,6 +2,8 @@ import {createHash} from 'node:crypto';
 import Discovery from './job-discovery.cjs';
 import Identity from '../../../js/job-identity.js';
 import States from '../../../js/us-states.js';
+import Career from '../../../js/career-fields.js';
+import Deadlines from '../../../js/job-deadlines.js';
 import Experience from '../../../js/board-experience.js';
 
 export const LIMITS = Object.freeze({query: 160, location: 100, category: 80, page: 25, offset: 10000, sourceMs: 15000, indexMs: 5000, deadlineMs: 7000});
@@ -84,10 +86,10 @@ function matches(job, filters) {
   const query = States.searchQuery(filters.q);
   if (query.states.length && !query.states.some(state => locationMatches(job,state))) return false;
   const haystack = normalize([job.role,job.co,job.ind,job.loc,job.style].join(' '));
-  if (query.text && !query.text.split(/\s+/).every(word => haystack.includes(word))) return false;
+  if (query.text && !Career.searchMatches(job,query.text,haystack)) return false;
   if (!locationMatches(job, filters.location)) return false;
   if (filters.work_mode && workMode(job) !== filters.work_mode) return false;
-  if (filters.category && normalize(job.ind) !== normalize(filters.category)) return false;
+  if (filters.category && !Career.matches(job,filters.category)) return false;
   if (filters.min_salary !== null || filters.max_salary !== null) {
     const salary = salaryFacts(job.pay);
     if (salary.period !== 'year' || salary.currency !== 'USD' || salary.min === null) return false;
@@ -121,10 +123,10 @@ export function createCatalogCache({load=Discovery.fetchCatalog,now=Date.now}={}
   };
 }
 
-function publicJob(job, detail=false) {
+function publicJob(job, detail=false, checked=Date.now()) {
   const board = new URL('https://stillunemployed.com/jobs.html');
   board.searchParams.set('job',Buffer.from(job.link).toString('base64'));
-  const value = {id:job.id,title:job.role,company:job.co,location:job.loc,states:States.extract('',job.loc),work_mode:workMode(job),work_mode_text:job.style,category:job.ind,salary:salaryFacts(job.pay),experience:{text:job.exp,minimum_years:minimumExperience(job.exp)},summary:job.summary||'',employer_url:job.link,board_url:board.href,availability:'listed',employer_verified_at:null};
+  const value = {id:job.id,title:job.role,company:job.co,location:job.loc,states:States.extract('',job.loc),work_mode:workMode(job),work_mode_text:job.style,category:job.ind,career_field:Career.field(job),employer_industry:job.employerIndustry||null,deadline:Deadlines.facts(job,checked),salary:salaryFacts(job.pay),experience:{text:job.exp,minimum_years:minimumExperience(job.exp)},summary:job.summary||'',employer_url:job.link,board_url:board.href,availability:'listed',employer_verified_at:null};
   if (detail) {value.description=job.description||'';value.date_posted_text=job.posted||null;}
   return value;
 }
@@ -155,18 +157,18 @@ export function createJobsHandler({getCatalog=createCatalogCache(),getModeration
         ids.add(job.id);
         const keys=Identity.keys(job.link);
         if (!keys.length) throw unavailable();
-        return !blocked.some(index => [job.identity,...keys].some(key=>index.keys.has(key)) || job.aliases.some(slug=>index.slugs.has(slug)));
+        return Deadlines.accepting(job,checked) && !blocked.some(index => [job.identity,...keys].some(key=>index.keys.has(key)) || job.aliases.some(slug=>index.slugs.has(slug)));
       }).sort((a,b)=>a.id.localeCompare(b.id));
       const snapshot=createHash('sha256').update(JSON.stringify([jobs.map(job=>[job.id,job.sourceRevision]),moderation.revision,availability.revision])).digest('hex');
       const meta={api_version:'1.0.0',source_checked_at:new Date(source.checkedAt).toISOString(),visibility_checked_at:new Date(Math.min(Date.parse(moderation.checkedAt),Date.parse(availability.checkedAt))).toISOString(),snapshot,notice:NOTICE};
       if (detail) {
         const job=jobs.find(job=>job.id===detail[1]);
-        return job ? reply(200,{...meta,job:publicJob(job,true)},method) : reply(404,{error:{code:'job_not_listed',message:'This job is not currently available through StillUnemployed. This does not confirm employer closure.'}},method);
+        return job ? reply(200,{...meta,job:publicJob(job,true,checked)},method) : reply(404,{error:{code:'job_not_listed',message:'This job is not currently available through StillUnemployed. This does not confirm employer closure.'}},method);
       }
       if (filters.snapshot && snapshot !== filters.snapshot) return reply(409,{error:{code:'catalog_changed',message:'The catalog changed. Restart at offset 0 without a snapshot.'}},method);
       const selected=jobs.filter(job=>matches(job,filters));
       const nextOffset=filters.offset+filters.limit;
-      return reply(200,{...meta,total:selected.length,limit:filters.limit,offset:filters.offset,next_offset:nextOffset<selected.length?nextOffset:null,filters,categories:[...new Set(jobs.map(job=>job.ind).filter(Boolean))].sort(),jobs:selected.slice(filters.offset,nextOffset).map(job=>publicJob(job))},method);
+      return reply(200,{...meta,total:selected.length,limit:filters.limit,offset:filters.offset,next_offset:nextOffset<selected.length?nextOffset:null,filters,categories:[...new Set(jobs.map(job=>job.ind).filter(Boolean))].sort(),jobs:selected.slice(filters.offset,nextOffset).map(job=>publicJob(job,false,checked))},method);
     } catch(error) {
       if (error.apiStatus===400) return reply(400,{error:{code:error.code,message:error.message}},method);
       return reply(503,{error:{code:'catalog_unavailable',message:'Current job visibility could not be checked. Retry shortly; do not treat this as an empty catalog or confirmed closure.'}},method,{'Retry-After':'30'});

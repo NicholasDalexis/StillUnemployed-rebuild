@@ -37,6 +37,9 @@ function projectRow(row,admission,options={}){
   const rowOut={co:row.Company,role:row['Job Title'],link:row.Link,loc:row.Location,style:row.Type,ind:row.Category,desc:row.Description||'',exp:row['Years of Experience']||'See eligibility',pay:row.Salary,payStatus:payStates[row['Pay Status']],payBasis:bases[row['Pay Basis']],collegeCredit:credits[row['College Credit']],eligibility:row['Eligibility Flags'],eligibilityFlags:lines(row['Eligibility Flags']),duties:lines(row['TL;DR']),benefits:lines(row.Benefits),cycle:row.Cycle||'Not listed',applicationStatus:status,applicationsOpen:row['Applications Open']||'Not announced',startDate:row['Start Date']||'Not listed',deadline:row['Application Deadline']||'Not listed',timingSourceUrl:admission.timingSourceUrl,verification};
   // Partial dates remain display text. Only separately verified exact dates are machine-readable.
   ['applicationsOpenISO','startDateISO','deadlineISO'].forEach(k=>{if(admission[k]!==undefined)rowOut[k]=admission[k];});
+  if(row['Deadline ISO']){if(admission.deadlineISO&&row['Deadline ISO']!==admission.deadlineISO)throw Error('Deadline source receipt mismatch');rowOut.deadlineISO=row['Deadline ISO'];}
+  if(row['Deadline Timezone'])rowOut.deadlineTimezone=row['Deadline Timezone'];
+  if(row['Employer Industry'])rowOut.employerIndustry=row['Employer Industry'];
   if(rowOut.payStatus==='not_disclosed'){
     if(rowOut.pay&&!['Not disclosed','Pay not disclosed'].includes(rowOut.pay))throw Error('Contradictory pay status');
     rowOut.pay='Pay not disclosed';
@@ -57,7 +60,7 @@ function projectFeed(source,admissions,options={}){
   if(!Array.isArray(admissions)||admissions.length!==source.rows.length)throw Error('One explicit admission per row required');
   const rows=source.rows.map((values,index)=>{
     if(!Array.isArray(values)||values.length!==headers.length)throw Error('Operational row width mismatch');
-    const row={};HEADERS.forEach(name=>{row[name]=values[normalized.indexOf(name.toLowerCase())];});
+    const row={};HEADERS.concat(['Deadline ISO','Deadline Timezone','Employer Industry']).forEach(name=>{const i=normalized.indexOf(name.toLowerCase());if(i>=0)row[name]=values[i];});
     return projectRow(row,admissions[index],options);
   });
   const feed={schemaVersion:2,status:rows.length?'verified':'awaiting_verification',jobs:rows};

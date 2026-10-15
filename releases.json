@@ -1,14 +1,165 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.19",
+  "currentVersion": "2.7.7.31",
   "releases": [
     {
-      "version": "2.7.7.19",
-      "date": "2026-10-13",
+      "version": "2.7.7.31",
+      "date": "2026-10-14",
+      "title": "Complete app account lifecycle and native compatibility",
+      "changes": [
+        "Integrate confirmed resumable account deletion, explicit Apple and Google provider linking, native-origin transport and legal/support pages over production 2.7.7.30."
+      ],
+      "public": {
+        "title": "Your account, on your terms",
+        "changes": [
+          "Account settings support connecting sign-in methods and requesting account deletion where enabled. Updated privacy, terms and support information."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.30",
+      "date": "2026-10-14",
+      "title": "Enforce explicit written deadlines and current Figma source",
+      "changes": [
+        "Parse one complete written deadline including explicit employer time and timezone; reject partial/multi-cohort/estimated windows and ambiguous DST wall times.",
+        "Refresh full source after verified Figma retirement; 86 approved records, 85 current; retain all surviving facts and saved history."
+      ],
+      "public": {
+        "title": "Accurate application deadlines",
+        "changes": [
+          "Explicit written deadlines now leave current listings at the stated closing time."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.29",
+      "date": "2026-10-14",
+      "title": "Complete corrected Google deadline presentation",
+      "changes": [
+        "Align the source-bound Google TPM compact summary with October 23 and retain its checksum; local 28 was a preparation checkpoint."
+      ],
+      "public": {
+        "title": "Current deadlines and availability",
+        "changes": [
+          "Current internship listings use the latest verified deadline, with expired records excluded from discovery."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.28",
+      "date": "2026-10-14",
+      "title": "Correct current internship deadlines and preserve saved history",
+      "changes": [
+        "Refresh Google TPM deadline and eligibility to October 23 from current employer evidence; remove retired APM from the approved snapshot.",
+        "Exclude elapsed deadlines from current board discovery and counts while preserving readable saved history and approved compact presentation."
+      ],
+      "public": {
+        "title": "Current deadlines and clearer availability",
+        "changes": [
+          "Expired application deadlines leave the current board; saved job details remain available."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.27",
+      "date": "2026-10-14",
       "title": "Small improvements",
       "changes": [
-        "Add Google/Apple account settings, resumable account erasure, native request compatibility and iPhone legal/support access while preserving current daily selections and catalog."
-      ]
+        "Finish mobile career controls, preserve experience months and annual OTE qualifiers, retain explicit unknown pay units, and integrate the source-approved88internship snapshot with all86prior records unchanged. Local25/26 preparation checkpoints were not deployed; separate source-only25worktree is not shipped."
+      ],
+      "public": {
+        "title": "Find related work and keep the details clear",
+        "changes": [
+          "Search adjacent specialties, browse career fields and see disclosed deadlines. Experience months and OTE pay labels stay clear, with two new student opportunities."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.26",
+      "date": "2026-10-14",
+      "title": "Small improvements",
+      "changes": [
+        "Finalize policy effective dates, explicit cache refresh and Netlify dependency packaging for the broader career fields candidate. Local25 retained as an unpublished preparation checkpoint."
+      ],
+      "public": {
+        "title": "More ways to find your next job",
+        "changes": [
+          "Browse related work by career field. Search adjacent specialties and check disclosed application deadlines before applying."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.25",
+      "date": "2026-10-14",
+      "title": "Small improvements",
+      "changes": [
+        "Implement broader work-family search and filters, compatible deadline metadata, paused-state suppression, and editorial brand/annual-pay default preference without changing admissions or source catalog. Existing preference history and explicit sorts preserved."
+      ],
+      "public": {
+        "title": "Find more kinds of early-career work",
+        "changes": [
+          "Search related work together and browse by career field. Disclosed application deadlines stay visible, with clear timezone handling."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.24",
+      "date": "2026-10-14",
+      "title": "Student opportunities with eligibility",
+      "changes": [
+        "Finalize eighteen source-verified student internships and co-ops with source-bound eligibility summaries; preserve sixty-eight approved records and unchanged Jobs. Local21/22/23 were preparation and preview checkpoints, never production releases."
+      ],
+      "public": {
+        "title": "More student opportunities",
+        "changes": [
+          "Eighteen internships and co-ops added with cohort, location and eligibility details."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.23",
+      "date": "2026-10-14",
+      "title": "Student opportunities with eligibility",
+      "changes": [
+        "Finalize eighteen verified internship/co-op admissions with source-bound compact eligibility summaries, preserving full original public eligibility and previous68 approved records. Local21/22 preview checkpoints were not deployed."
+      ],
+      "public": false,
+      "preparedPublic": {
+        "title": "More student opportunities",
+        "changes": [
+          "Eighteen internships and co-ops added with cohort, location and eligibility details."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.22",
+      "date": "2026-10-14",
+      "title": "Student opportunities publication",
+      "changes": [
+        "Post-build seal for eighteen verified internships/co-ops and sixty-eight unchanged approved records. Include only existing approved due October14 daily projection; exclude unrelated Chicory local20 patch. Local21 was a preparation checkpoint, never deployed."
+      ],
+      "public": false,
+      "preparedPublic": {
+        "title": "More student opportunities",
+        "changes": [
+          "Eighteen internships and co-ops across design, content, research, marketing and engineering."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.21",
+      "date": "2026-10-14",
+      "title": "New student opportunities",
+      "changes": [
+        "Publish eighteen independently verified student internships and co-ops; preserve sixty-eight previously approved listings and their original verification dates. Keep unpublished NEON Design and Sony program watch held."
+      ],
+      "public": false,
+      "preparedPublic": {
+        "title": "More student opportunities",
+        "changes": [
+          "Eighteen internships and co-ops added across design, content, research, marketing and engineering."
+        ]
+      }
     },
     {
       "version": "2.7.7.18",
@@ -1199,7 +1350,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "d51f1aa32dbc345cb4f608425032c4a02501845457b80ec5c11eeace2a125558",
-    "fileCount": 232
+    "digest": "11d60833fdb9116a644c0ef0839ad54bd09a71a073acdfb780197f67ef2ef3c6",
+    "fileCount": 234
   }
 }

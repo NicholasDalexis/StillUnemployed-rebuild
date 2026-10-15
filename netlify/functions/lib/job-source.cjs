@@ -3,6 +3,7 @@
 const {readFileSync}=require('node:fs');
 const {senior}=require('../../../js/board-experience.js');
 const SUJobIdentity=require('../../../js/job-identity.js');
+const Deadlines=require('../../../js/job-deadlines.js');
 const SHEET = '1DRfkDn_OIVlnx06xFaNpNbusXl49jvM26oJsl-qq2nU';
 const CSV = `https://docs.google.com/spreadsheets/d/${SHEET}/gviz/tq?tqx=out:csv&headers=1&gid=2134483974&_=${Date.now()}`;
 // deterministic short slug from the apply link — MUST match app.js suSlug()
@@ -48,7 +49,7 @@ function rowsToJobs(rows) {
       throw new Error('Jobs CSV requires one ' + name + ' column');
     }
   }
-  const jobs = [];
+  const jobs = [], withheld=new Set();
   for (let i = 1; i < rows.length; i++) {
     const cells = rows[i];
     if (cells.every(s => !s.trim())) continue;
@@ -56,7 +57,8 @@ function rowsToJobs(rows) {
     const get = name => (cells[head.indexOf(name)] || '').trim();
     const co = get('company'), role = get('job title'), link = get('link'), pay = get('salary');
     const act = get('active/dead').toLowerCase();
-    if (!co || !role || senior(role) || act.includes('dead') || act === 'inactive' || act === 'no') continue;
+    if(act!=='active')SUJobIdentity.keys(link).forEach(key=>withheld.add(key));
+    if (!co || !role || senior(role) || act!=='active') continue;
     try { const url = new URL(link); if (!/^https?:\/\//i.test(link) || !/^https?:$/.test(url.protocol) || !url.hostname || url.username || url.password) continue; }
     catch (e) { continue; }
     if (!/\d/.test(pay)) continue;
@@ -64,9 +66,10 @@ function rowsToJobs(rows) {
       const rates = (pay.replace(/,/g, '').match(/\d+(?:\.\d+)?/g) || []).map(Number);
       if (!rates.length || Math.max(...rates) < 25) continue;
     }
-    jobs.push({ co, role, link, pay, ind: get('category'), loc: get('location'), style: get('type'), exp: get('years of experience') });
+    var job={co,role,link,pay,ind:get('category'),loc:get('location'),style:get('type'),exp:get('years of experience'),deadline:get('application deadline'),deadlineISO:get('deadline iso'),deadlineTimezone:get('deadline timezone'),timingSourceUrl:get('timing source'),employerIndustry:get('employer industry')};
+    jobs.push(job);
   }
-  return SUJobIdentity.groupJobs(jobs).map(group => ({ ...group.job, _aliases: group.aliases }));
+  return SUJobIdentity.groupJobs(Deadlines.current(jobs.filter(job=>!SUJobIdentity.keys(job.link).some(key=>withheld.has(key))))).map(group => ({ ...group.job, _aliases: group.aliases }));
 }
 
 // Keep every previously shareable raw-URL hash. Alias pages use the same

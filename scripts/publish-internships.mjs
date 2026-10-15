@@ -28,7 +28,7 @@ const fail = message => { throw new Error(message); };
 // snapshot. Preserve its real verification dates; this is not a new source check.
 function carryForward(values, headers, admission, previous, now) {
   if (!previous || admission.previousSnapshotSha256 !== createHash('sha256').update(previous.bytes).digest('hex')) fail('Carry-forward requires the exact previous public snapshot.');
-  const record = Object.fromEntries(headers.map((key,index) => [projection.HEADERS.find(name => name.toLowerCase() === key), values[index]]));
+  const record = Object.fromEntries(headers.map((key,index) => [projection.HEADERS.concat(['Deadline ISO','Deadline Timezone','Employer Industry']).find(name => name.toLowerCase() === key), values[index]]));
   const matches = internships.jobs(previous.data, now).filter(job => job.link === record.Link);
   if (matches.length !== 1) fail('Carry-forward requires one previously approved identity.');
   const prior = internships.publicJob(matches[0]);
@@ -36,12 +36,15 @@ function carryForward(values, headers, admission, previous, now) {
     sourceUrl:prior.verification.sourceUrl, checkedAt:prior.verification.checkedAt,
     timingSourceUrl:prior.timingSourceUrl, applicationStatus:prior.applicationStatus,
     creditEvidence:'Preserved previously approved public credit facts' };
-  for (const key of ['applicationsOpenISO','startDateISO','deadlineISO']) if (prior[key] !== undefined) receipt[key] = prior[key];
+  for (const key of ['applicationsOpenISO','startDateISO','deadlineISO','deadlineTimezone']) if (prior[key] !== undefined) receipt[key] = prior[key];
   if (prior.applicationStatus === 'upcoming') Object.assign(receipt, {sourceAnnounced:true,cohortEvidence:prior.cycle,
     announcementEvidence:'Previously approved announcement',brandApproval:{basis:'Previously approved brand',reference:admission.previousSnapshotSha256}});
   let projected;
   try { projected = projection.projectRow(record, receipt, {now}); } catch { fail('Carry-forward facts are invalid.'); }
   projected.verification = prior.verification;
+  // Retain an already-approved compact view only when its checksum still
+  // matches the unchanged source facts. Presentation is not a new admission.
+  if (prior.presentation) projected = internships.withPresentation(projected, prior.presentation);
   if (!isDeepStrictEqual(projected, prior)) fail('Changed public facts require a fresh source check.');
   return prior;
 }
@@ -56,7 +59,7 @@ export function createSnapshot(input, { now = Date.now(), previous = null } = {}
   // already-published row merely because its earlier receipt grows older.
   if (exportedAt < now - PUBLICATION_FRESHNESS_MS) fail('The complete operational export must be from the last 24 hours.');
   if (!object(input.publication) || input.publication.approved !== true || (input.publication.allowEmpty !== undefined && typeof input.publication.allowEmpty !== 'boolean')) fail('Explicit publication approval is required.');
-  if (!Array.isArray(source.headers) || source.headers.length !== projection.HEADERS.length || !source.headers.every(value => typeof value === 'string')) fail('The complete 27-column operational header contract is required.');
+  if (!Array.isArray(source.headers) || source.headers.length < projection.HEADERS.length || !source.headers.every(value => typeof value === 'string')) fail('The complete original operational header contract is required; appended optional fields are supported.');
   const headers = source.headers.map(value => value.trim().toLowerCase());
   if (new Set(headers).size !== headers.length || projection.HEADERS.some(name => !headers.includes(name.toLowerCase()))) fail('Operational headers do not match the Internships contract.');
   if (!Array.isArray(source.rows) || !Array.isArray(input.admissions) || source.rows.length !== input.admissions.length) fail('Each source row requires a corresponding admission or null.');

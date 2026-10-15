@@ -77,14 +77,14 @@ test('internship faces and detail headings use compact paid labels without losin
   }
 });
 
-test('pay rendering stays inert and the approved small internship hourly assumption is display-only', () => {
+test('pay rendering stays inert and explicit unknown periods override the legacy small-amount convention', () => {
   const b = ui(), unsafe = job({pay:'$75,600 <img src=x onerror=alert(1)>'}); b.init([unsafe]);
   const dialog = detail(b, unsafe.link);
   assert.equal(dialog.querySelector('.su-pay-source'), null);assert.equal(dialog.querySelector('img,[onerror],script'), null);
   assert.equal(b.app.jobs[0].pay, unsafe.pay, 'raw employer text stays untouched');
   const student = intern({pay:'$23.75 (time unit not listed)',payBasis:'not_listed'}), before=JSON.stringify(student);
-  assert.equal(b.helpers.cardPay(student), '$23.75/hour');
-  assert.equal(JSON.stringify(student),before,'the hourly assumption is presentation only');
+  assert.equal(b.helpers.cardPay(student), '$23.75 (time unit not listed)');
+  assert.equal(JSON.stringify(student),before,'unknown employer timing stays exact');
   assert.equal(b.helpers.cardPay(intern({pay:'$1,100/week',payBasis:'week'})), '$1,100/week', 'an explicit employer unit is never replaced');
   assert.equal(b.helpers.cardPay(intern({pay:'Not disclosed',payStatus:'not_disclosed'})), 'Pay not disclosed');
   assert.equal(b.helpers.cardPay(intern({pay:'Unpaid',payStatus:'unpaid'})), 'Unpaid');
