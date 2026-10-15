@@ -54,7 +54,7 @@ const equal = [
   ['known global tracking only', 'https://example.com/jobs/one?job_id=1&utm_source=test&gclid=xyz', 'https://example.com/jobs/one?job_id=1'],
   ['safe host, default port and unreserved escape', 'HTTPS://EXAMPLE.COM:443/jobs/%7eone?job_id=%31', 'https://example.com/jobs/~one?job_id=1'],
   ['Greenhouse provider tracking', 'https://boards.greenhouse.io/glossier/jobs/8054875?gh_src=tracking', 'https://job-boards.greenhouse.io/glossier/jobs/8054875'],
-  ['SeatGeek employer path with provider tracking', 'https://seatgeek.com/jobs/8180508/?gh_jid=8180508&gh_src=tracking&utm_source=linkedin', 'https://boards.greenhouse.io/seatgeek/jobs/8180508'],
+  ['SeatGeek employer path with existing global tracking', 'https://seatgeek.com/jobs/8180508/?gh_jid=8180508&utm_source=linkedin', 'https://boards.greenhouse.io/seatgeek/jobs/8180508'],
 ];
 for (const [label, a, b] of equal) test('equivalent: ' + label, () => assert.equal(identity.equivalent(a, b), true));
 
@@ -110,6 +110,7 @@ const different = [
   ['SeatGeek unverified subdomain stays distinct', 'https://unverified.seatgeek.com/jobs/8180508?gh_jid=8180508', 'https://boards.greenhouse.io/seatgeek/jobs/8180508'],
   ['SeatGeek unrelated employer path stays distinct', 'https://seatgeek.com/events/8180508?gh_jid=8180508', 'https://boards.greenhouse.io/seatgeek/jobs/8180508'],
   ['SeatGeek unknown query stays distinct', 'https://seatgeek.com/jobs/8180508?gh_jid=8180508&job_id=another', 'https://boards.greenhouse.io/seatgeek/jobs/8180508'],
+  ['SeatGeek legacy provider query retains its original URL key', 'https://seatgeek.com/jobs/8180508?gh_jid=8180508&gh_src=legacy', 'https://boards.greenhouse.io/seatgeek/jobs/8180508'],
   ['SeatGeek hash route stays distinct', 'https://seatgeek.com/jobs/8180508?gh_jid=8180508#/jobs/another', 'https://boards.greenhouse.io/seatgeek/jobs/8180508'],
   ['SeatGeek nonstandard port stays distinct', 'https://seatgeek.com:8443/jobs/8180508?gh_jid=8180508', 'https://boards.greenhouse.io/seatgeek/jobs/8180508'],
 ];
@@ -145,6 +146,13 @@ test('legitimate unknown URL remains valid with a canonical fallback', () => {
   assert.equal(description.valid, true);
   assert.equal(description.ambiguous, false);
   assert.deepEqual(description.keys, ['url:https://unknown.example/careers?job_id=123']);
+});
+
+test('SeatGeek supported and unknown-query URLs retain their pre-upgrade URL keys', () => {
+  // These exact keys came from production30, before the employer alias rule.
+  for (const link of ['https://seatgeek.com/jobs/8180508?gh_jid=8180508', 'https://seatgeek.com/jobs/8180508?gh_jid=8180508&gh_src=legacy', 'https://seatgeek.com/jobs/8180508?gh_jid=8180508&job_id=other']) {
+    assert.ok(identity.keys(link).includes('url:' + link));
+  }
 });
 
 test('groupJobs preserves original objects and URLs and chooses first input', () => {

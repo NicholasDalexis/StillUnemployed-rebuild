@@ -168,7 +168,7 @@ var SUJobIdentity = (function () {
   function inspect(url) {
     var parsed = parse(url);
     if (!parsed) return { valid: false, ambiguous: false, reason: 'malformed_or_unsupported_url', keys: [] };
-    if (parsed.host === 'boards.greenhouse.io' || parsed.host === 'job-boards.greenhouse.io' || parsed.host === 'boards.eu.greenhouse.io' || parsed.host === 'seatgeek.com' || parsed.host === 'careers.cargurus.com' || parsed.host === 'www.codeandtheory.com' || parsed.host === 'codeandtheory.com') {
+    if (parsed.host === 'boards.greenhouse.io' || parsed.host === 'job-boards.greenhouse.io' || parsed.host === 'boards.eu.greenhouse.io' || parsed.host === 'careers.cargurus.com' || parsed.host === 'www.codeandtheory.com' || parsed.host === 'codeandtheory.com') {
       removeProviderTracking(parsed, ['gh_src']);
     }
     if (parsed.host === 'jobs.lever.co' || parsed.host === 'jobs.eu.lever.co') removeProviderTracking(parsed, ['lever-source', 'lever-origin']);
