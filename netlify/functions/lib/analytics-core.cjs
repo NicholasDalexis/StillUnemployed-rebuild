@@ -48,8 +48,10 @@ function cleanEvent(input, jobs) {
   // All arbitrary text/identity/URLs/notes are discarded, never copied.
   return out;
 }
-function authorizeOrigin(request, env) {
+function authorizeOrigin(request, env, {native=false}={}) {
   const origin=request.headers.origin || request.headers.Origin;
+  const nativeRequest=native&&origin==='capacitor://localhost'&&request.headers['x-su-native']==='1'&&!request.headers['sec-fetch-site'];
+  if(nativeRequest)return;
   const allowed=(env.SU_ALLOWED_ORIGINS||'').split(',').map(s=>s.trim()).filter(Boolean);
   const sameOriginGet=!origin && ['GET','DELETE'].includes(request.httpMethod) && request.headers['sec-fetch-site']==='same-origin' && allowed.some(o=>{try{return new URL(o).host===request.headers.host;}catch{return false;}});
   if ((!origin || !allowed.includes(origin)) && !sameOriginGet) throw Object.assign(new Error('Origin denied'),{status:403});

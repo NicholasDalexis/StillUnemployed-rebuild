@@ -1,0 +1,19 @@
+{
+  "version": "2.7.7.18",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-10-14T03:20:08.512Z",
+  "reviewer": "Codex root",
+  "sourceDigest": "b4c7e537639a6c4eea51a1766eed316bcab07e84a5e798d8f85f5d2c3d822c0d",
+  "sourceFileCount": 225,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Combined release of reviewed daily Home UI, footer links, public inventory counts, and two approved public internship records.",
+  "checks": {
+    "disclosures": "Reviewed, no wording change needed. Only public employer facts and counts added; existing consent, auth, retention and private projection unchanged. Footer labels updated.",
+    "choices": "No account or analytics requirement, new stored identifier, input, vendor or retention change. Count request credentials omitted and no-store; shared board consent/auth unchanged.",
+    "publication": "Existing due-only daily sets remain unchanged; private connector review page preserved. Counters have Loading, Unavailable and Retry states. Upcoming published internships included. Source outages never become zero."
+  },
+  "openItems": [
+    "Fresh Google OAuth and physical iPhone remain untested; hosted release verification follows."
+  ]
+}

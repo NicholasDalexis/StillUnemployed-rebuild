@@ -200,10 +200,15 @@
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else {
     root.SUSync = api;
-    try {
-      root.SUStore = create(root.localStorage, function (localEdit) {
-        root.dispatchEvent(new CustomEvent(localEdit ? 'su:local-change' : 'su:data-sync'));
-      });
-    } catch (e) { console.warn('[su-sync] Local storage unavailable', e.name); }
+    function initializeStore() {
+      try {
+        var native=root.SUNative&&root.SUNative.isNative?root.SUNative:null;
+        root.SUStore = create(native&&native.storage||root.localStorage, function (localEdit) {
+          root.dispatchEvent(new CustomEvent(localEdit ? 'su:local-change' : 'su:data-sync'));
+        });
+      } catch (e) { console.warn('[su-sync] Local storage unavailable', e.name); }
+    }
+    if(root.SUNative&&root.SUNative.isNative)Promise.resolve(root.SUNative.ready).then(initializeStore).catch(function(){console.warn('[su-sync] Device storage unavailable');});
+    else initializeStore();
   }
 })(typeof window !== 'undefined' ? window : globalThis);

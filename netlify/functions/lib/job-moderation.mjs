@@ -7,6 +7,7 @@ import JobSource from './job-source.cjs';
 import InternshipStatus from './internship-status.cjs';
 import Identity from '../../../js/job-identity.js';
 import snapshot from '../../../internships-data.json' with {type:'json'};
+import Native from './native-origin.cjs';
 const HEADERS=Object.freeze({'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','CDN-Cache-Control':'no-store','Netlify-CDN-Cache-Control':'no-store','X-Content-Type-Options':'nosniff','X-Robots-Tag':'noindex, nofollow','Referrer-Policy':'no-referrer'});
 const response=(status,body)=>new Response(JSON.stringify(body),{status,headers:HEADERS});
 const storeFor=scope=>getStore({name:'su-job-moderation-v1-'+scope,consistency:'strong'});
@@ -25,14 +26,14 @@ export function createService({openStore=storeFor,authenticate=verifyOwner,getCa
       const scope=Core.scopeFor(request,context);
       if(admin){
         if(request.method!=='GET')return response(405,{error:'Method not allowed'});
-        Core.authorizeOrigin(request,{readOnly:true});if((await authenticate(request))?.role!=='owner')throw Core.fail(403,'Owner access required');
+        Native.authorizeOrigin(request,{native:true,readOnly:true});if((await authenticate(request))?.role!=='owner')throw Core.fail(403,'Owner access required');
         const {state}=await Core.readState(openStore(scope));
         const availability=await getAvailability(request,context);
         return response(200,{schemaVersion:1,scope,revision:state.revision+availability.revision,ownerRevision:state.revision,records:state.records,history:state.history,checkedAt:new Date(now()).toISOString()});
       }
       if(request.method==='GET'){const [stored,availability]=await Promise.all([Core.readState(openStore(scope)),getAvailability(request,context)]);return response(200,combineIndex(Core.publicIndex(stored.state,now()),availability));}
       if(request.method!=='POST')return response(405,{error:'Method not allowed'});
-      Core.authorizeOrigin(request);if((await authenticate(request))?.role!=='owner')throw Core.fail(403,'Owner access required');
+      Native.authorizeOrigin(request,{native:true});if((await authenticate(request))?.role!=='owner')throw Core.fail(403,'Owner access required');
       // Owner authentication above applies on both origins; deploy scope keeps their state separate.
       const input=await Core.requestBody(request),store=openStore(scope);
       if(input.expectedRevision!==undefined){const [stored,availability]=await Promise.all([Core.readState(store),getAvailability(request,context)]);const prior=Core.replay(stored.state,input,scope);if(prior)return response(200,{...prior,revision:prior.revision+availability.revision});if(input.expectedRevision!==stored.state.revision+availability.revision)throw Core.conflict();input.expectedRevision=stored.state.revision;}

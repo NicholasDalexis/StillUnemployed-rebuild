@@ -1,23 +1,25 @@
 {
-  "version": "2.7.7.32",
+  "version": "2.7.7.33",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-15T05:13:49.635Z",
-  "reviewer": "Codex StillUnemployed owner",
-  "sourceDigest": "45d495187ec552f0f14e8c663caf8197970c66b940fc438e3906ddbe4dd1f503",
-  "privacyChanged": false,
-  "termsChanged": false,
-  "scope": "Reviewed Privacy and Terms; no wording change needed. Verified employer-scoped SeatGeek alias affects deduplicated display/counts and matching existing saved/share links; original URLs/history are retained. No new collection, permissions, provider, data transmission, analytics field, retention, account flow or service.",
+  "reviewedAt": "2026-10-15T05:39:09.720Z",
+  "reviewer": "Codex App Launch",
+  "sourceDigest": "c482227d80a9cc1bf80cec54d9bd3912aa7266e6c8d9228f959c58fb5088c792",
+  "sourceFileCount": 234,
+  "privacyChanged": true,
+  "termsChanged": true,
+  "baselineReview": "docs/privacy-reviews/2.7.7.32.json",
+  "scope": "Integrate the previously reviewed optional account lifecycle and native transport over production 2.7.7.32. Preserve exact SeatGeek employer-scoped identity behavior, historical URL keys, saved/tracker rows, current feeds, career fields, salary/default ordering, deadlines and all published release history.",
   "checks": {
-    "identity": "Exact seatgeek.com/jobs/numeric-id maps only to Greenhouse seatgeek tenant; path/query conflicts fail closed, unknown parameters/hash/ports remain meaningful.",
-    "history": "Saved keys and all existing tracker rows/notes/statuses retained and synchronized in regression; display grouping does not retroactively merge stored records. Preserve production30 URL fallback keys verbatim, including unrecognized gh_src queries; do not strip new provider tracking on this custom host.",
-    "deployment": "Independent patch based production30, no pending31 auth/provider/rules code or flags included; normal preview and production readiness required."
+    "disclosures": "Reviewed website/iPhone persistent storage, native SDK identifiers and security/IP processing, optional consent, explicit provider linking without email-based merge, recent-auth resumable deletion, Apple revocation, private analytics/report-attribution erasure and preservation of shared visibility decisions. Current production salary/deadline/sourcing disclosures retained. No legal certification.",
+    "choices": "Guest browsing remains available. Deletion is behind its explicit server feature flag and recent-auth confirmation; cloud rule/write barriers and provider configuration are required before activation. No automatic analytics consent or account merging.",
+    "security": "Owner authorization remains distinct from ordinary providers. Native bridge origin and main-frame checks preserved. No secrets or private QA documents added to the publish allowlist.",
+    "integration": "Reviewed Privacy and Terms against production32 identity grouping. No additional wording change from the reviewed account31 candidate: no new collection, permissions, provider, retention or transmission from this integration. Existing account lifecycle disclosures retained. No legal certification."
   },
   "openItems": [
-    "Hosted exact preview and production acceptance pending.",
-    "App Launch31 provider/account activation remains separately owned and unmodified.",
-    "Sourcing/vendor/shared-writer helper copies require coordinated propagation by their owners after website verification."
+    "Server credentials, deployed Firestore rules and Firebase provider/linking policy require canonical readback before account lifecycle activation.",
+    "Physical Google/Apple sign-in/cancel/link/account-isolation/deletion acceptance remains pending.",
+    "Hosted preview, production policy/support readback and Apple server validation/upload are separate pending outcomes."
   ],
   "author": "Codex",
-  "platform_signature": "-Codex",
-  "sourceFileCount": 227
+  "platform_signature": "-Codex"
 }

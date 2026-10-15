@@ -9,7 +9,7 @@ const source = fs.readFileSync(path.join(__dirname, '../../js/auth.js'), 'utf8')
 const tick = () => new Promise(resolve => setImmediate(resolve));
 
 async function authUI(hostname = 'preview--stillunemployed.netlify.app', options = {}) {
-  const label = { textContent:'' }, qaLabel = { hidden:true }, attrs = {}, button = { dataset:{}, removeAttribute(name) { delete attrs[name]; }, querySelector:selector => selector === '.su-auth-label' ? label : selector === '.su-auth-qa' ? qaLabel : null, setAttribute(name, value) { attrs[name] = value; } };
+  const label = { textContent:'' }, qaLabel = { hidden:true }, attrs = {}, button = { closest:()=>null, dataset:{}, removeAttribute(name) { delete attrs[name]; }, querySelector:selector => selector === '.su-auth-label' ? label : selector === '.su-auth-qa' ? qaLabel : null, setAttribute(name, value) { attrs[name] = value; } };
   let listener, notifySync, owner = null, imports = 0, ownershipCurrent = true;
   const store = { ownershipCurrent:() => ownershipCurrent, owner:() => owner, activate:value => { owner = value; } };
   const authSdk = { getAuth:() => ({}), getRedirectResult:async () => null, onAuthStateChanged(_auth, fn) { listener = fn; } };

@@ -1,0 +1,25 @@
+{
+  "version": "2.7.7.33",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-10-15T05:39:09.720Z",
+  "reviewer": "Codex App Launch",
+  "sourceDigest": "c482227d80a9cc1bf80cec54d9bd3912aa7266e6c8d9228f959c58fb5088c792",
+  "sourceFileCount": 234,
+  "privacyChanged": true,
+  "termsChanged": true,
+  "baselineReview": "docs/privacy-reviews/2.7.7.32.json",
+  "scope": "Integrate the previously reviewed optional account lifecycle and native transport over production 2.7.7.32. Preserve exact SeatGeek employer-scoped identity behavior, historical URL keys, saved/tracker rows, current feeds, career fields, salary/default ordering, deadlines and all published release history.",
+  "checks": {
+    "disclosures": "Reviewed website/iPhone persistent storage, native SDK identifiers and security/IP processing, optional consent, explicit provider linking without email-based merge, recent-auth resumable deletion, Apple revocation, private analytics/report-attribution erasure and preservation of shared visibility decisions. Current production salary/deadline/sourcing disclosures retained. No legal certification.",
+    "choices": "Guest browsing remains available. Deletion is behind its explicit server feature flag and recent-auth confirmation; cloud rule/write barriers and provider configuration are required before activation. No automatic analytics consent or account merging.",
+    "security": "Owner authorization remains distinct from ordinary providers. Native bridge origin and main-frame checks preserved. No secrets or private QA documents added to the publish allowlist.",
+    "integration": "Reviewed Privacy and Terms against production32 identity grouping. No additional wording change from the reviewed account31 candidate: no new collection, permissions, provider, retention or transmission from this integration. Existing account lifecycle disclosures retained. No legal certification."
+  },
+  "openItems": [
+    "Server credentials, deployed Firestore rules and Firebase provider/linking policy require canonical readback before account lifecycle activation.",
+    "Physical Google/Apple sign-in/cancel/link/account-isolation/deletion acceptance remains pending.",
+    "Hosted preview, production policy/support readback and Apple server validation/upload are separate pending outcomes."
+  ],
+  "author": "Codex",
+  "platform_signature": "-Codex"
+}

@@ -8,6 +8,7 @@ const DAY=86400000;
 const Newsletter=require('./newsletter-attribution.cjs');
 const Anonymous=require('./analytics-identity.cjs');
 const Trends=require('./analytics-trends.cjs');
+const Account=require('./account-state.cjs');
 let jobsCache=null,jobsCacheAt=0;
 async function liveCatalog(){
   if(jobsCache&&Date.now()-jobsCacheAt<300000)return jobsCache;
@@ -29,7 +30,8 @@ async function verifiedIdentity(request,d,required=false) {
   const authorization=request.headers.authorization||request.headers.Authorization||'';
   if(!authorization){if(required)throw error(401,'Sign in required');return null;}
   if(!/^Bearer [^\s]+$/.test(authorization))throw error(401,'Invalid authentication');
-  try {const decoded=await d.auth.verifyIdToken(authorization.slice(7),true);if(!decoded.uid)throw Error('Missing identity');return decoded;}catch{throw error(401,'Invalid authentication');}
+  let decoded;try {decoded=await d.auth.verifyIdToken(authorization.slice(7),true);if(!decoded.uid)throw Error('Missing identity');}catch{throw error(401,'Invalid authentication');}
+  await Account.assertActive(decoded.uid,d);return decoded;
 }
 async function identity(request,d,required=false){const decoded=await verifiedIdentity(request,d,required);return decoded?decoded.uid:null;}
 function excludedAccount(decoded,env){
@@ -39,11 +41,11 @@ function excludedAccount(decoded,env){
 }
 function body(request){if(Buffer.byteLength(request.body||'')>32768)throw error(413,'Request too large');try{return JSON.parse(request.body||'{}');}catch{throw error(400,'Invalid JSON');}}
 async function collect(request,d) {
-  Core.authorizeOrigin(request,d.env);
+  Core.authorizeOrigin(request,d.env,{native:true});
   // Test builds must never inflate the production audience, even if a client sends events.
   if(d.env.CONTEXT && d.env.CONTEXT!=='production')return {accepted:0,excluded:true};
   const origin=request.headers.origin||request.headers.Origin||'';
-  if(origin && !/^https:\/\/(www\.)?stillunemployed\.com$/.test(origin))return {accepted:0,excluded:true};
+  if(origin && origin!=='capacitor://localhost' && !/^https:\/\/(www\.)?stillunemployed\.com$/.test(origin))return {accepted:0,excluded:true};
   const input=body(request), choices=input.consent||{};
   if(choices.analytics!==true && choices.personalization!==true)throw error(403,'Consent required');
   if(!Array.isArray(input.events)||input.events.length>30||!input.events.length)throw error(400,'Invalid batch');
@@ -61,6 +63,7 @@ async function collect(request,d) {
   const now=d.now(),expiresAt=new Date(now+90*DAY),ref=d.db.doc('suAnalyticsProfiles/'+actor);
   const rateRef=d.db.doc('suAnalyticsRates/'+hmac(d.env,request.headers['x-nf-client-connection-ip']||actor));
   return d.db.runTransaction(async tx=>{
+    if(uid&&Account.enabled(d.env))Account.assertSnapshot(await tx.get(d.db.doc(Account.MARKERS+'/'+uid)));
     const snapshot=await tx.get(ref),rate=await tx.get(rateRef),old=snapshot.exists?snapshot.data():{};
     const trendRef=Trends.ref(d),trend=choices.analytics===true?await tx.get(trendRef):null;
     const current=rate.exists?rate.data():{},window=Math.floor(now/60000);
@@ -106,7 +109,7 @@ async function collect(request,d) {
   });
 }
 async function profile(request,d) {
-  Core.authorizeOrigin(request,d.env);const decoded=await verifiedIdentity(request,d,request.httpMethod!=='DELETE'),uid=decoded?decoded.uid:null;
+  Core.authorizeOrigin(request,d.env,{native:true});const decoded=await verifiedIdentity(request,d,request.httpMethod!=='DELETE'),uid=decoded?decoded.uid:null;
   if(request.httpMethod!=='DELETE'&&excludedAccount(decoded,d.env))return {jobs:{},updatedAt:null,excluded:true};
   const input=request.httpMethod==='DELETE'?body(request):{};
   const guest=Anonymous.read(request,d);
@@ -119,7 +122,7 @@ async function profile(request,d) {
     let deleted=0;
     for(const target of actors){
       const targetRef=d.db.doc('suAnalyticsProfiles/'+target);
-      const exists=await d.db.runTransaction(async tx=>{const snap=await tx.get(targetRef);if(!snap.exists)return false;tx.set(targetRef,{...snap.data(),jobs:{},resetAt:now,updatedAt:now,expiresAt:new Date(now+90*DAY),nextSignalExpiryAt:new Date(now+90*DAY)});return true;});
+      const exists=await d.db.runTransaction(async tx=>{if(uid&&Account.enabled(d.env))Account.assertSnapshot(await tx.get(d.db.doc(Account.MARKERS+'/'+uid)));const snap=await tx.get(targetRef);if(!snap.exists)return false;tx.set(targetRef,{...snap.data(),jobs:{},resetAt:now,updatedAt:now,expiresAt:new Date(now+90*DAY),nextSignalExpiryAt:new Date(now+90*DAY)});return true;});
       if(!exists)continue;
       for(let pass=0;pass<5;pass++){const docs=await d.db.collection('suAnalyticsEvents').where('actor','==',target).limit(400).get();if(docs.empty)break;const batch=d.db.batch();docs.docs.forEach(doc=>batch.delete(doc.ref));await batch.commit();deleted+=docs.size;}
       if(!(await d.db.collection('suAnalyticsEvents').where('actor','==',target).limit(1).get()).empty)throw error(503,'Reset is still processing. Please retry.');
@@ -132,7 +135,7 @@ async function profile(request,d) {
   return {jobs,updatedAt:data.updatedAt||null};
 }
 async function newsletter(request,d){
-  Core.authorizeOrigin(request,d.env);
+  Core.authorizeOrigin(request,d.env,{native:true});
   const input=body(request),now=d.now();
   if(input.action==='revoke'){
     // Possession of a random receipt can only disable that receipt, never read it.
@@ -157,6 +160,7 @@ async function newsletter(request,d){
   const page=['home','board','internships'].includes(input.page)?input.page:'other';
   const ref=d.db.doc('suAnalyticsEvents/newsletter-receipt-'+input.token),profileRef=d.db.doc('suAnalyticsProfiles/'+actor),rateRef=d.db.doc('suAnalyticsRates/newsletter-'+hmac(d.env,request.headers['x-nf-client-connection-ip']||actor));
   return d.db.runTransaction(async tx=>{
+    if(decoded&&Account.enabled(d.env))Account.assertSnapshot(await tx.get(d.db.doc(Account.MARKERS+'/'+decoded.uid)));
     const old=await tx.get(ref),profile=await tx.get(profileRef),rate=await tx.get(rateRef);
     if(old.exists) return old.data().revoked||old.data().actor!==actor?{excluded:true}:{campaign:'su_'+input.token};
     if(profile.exists&&input.occurredAt<=(profile.data().resetAt||0))return {excluded:true};
@@ -205,6 +209,7 @@ async function cleanup(d) {
   }
   for(const collection of ['suAnalyticsEvents','suAnalyticsProfiles','suAnalyticsRates','suAnalyticsDaily']){const remainder=await d.db.collection(collection).where('expiresAt','<=',new Date(d.now())).limit(1).get();if(!remainder.empty)throw error(503,'Retention backlog requires another run');}
   const due=await d.db.collection('suAnalyticsProfiles').where('nextSignalExpiryAt','<=',new Date(d.now())).limit(1).get();if(!due.empty)throw error(503,'Signal retention backlog requires another run');
+  deleted+=await Account.cleanupExpired(d);
   return {deleted,pruned};
 }
 function handler(action,methods){return async request=>{
