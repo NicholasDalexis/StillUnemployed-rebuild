@@ -52,7 +52,7 @@
     // Hourly cents are meaningful employer pay, including narrow ranges.
     function amount(value) {
       if (useK) return String(Math.round(value / 1000)) + 'K';
-      return parsed.basis === 'hour' ? value.toLocaleString('en-US', { minimumFractionDigits:Number.isInteger(value) ? 0 : 2, maximumFractionDigits:20 }) : whole(value);
+      return (parsed.basis === 'hour' || ((!parsed.basis || parsed.basis==='not_listed') && value<100)) ? value.toLocaleString('en-US', { minimumFractionDigits:Number.isInteger(value) ? 0 : 2, maximumFractionDigits:20 }) : whole(value);
     }
     var low = amount(parsed.low), high = amount(parsed.high);
     var suffix = { hour:'/hour', week:'/week', month:'/month', program:'/program', annualized_year:'/year', year:'/year' }[parsed.basis] || '';
@@ -72,7 +72,7 @@
     if (!parsed) return value;
     // Nic's internship-only display convention. An explicit period always wins;
     // never apply it to ranges, multiple rates, K amounts or the Jobs board.
-    if (options.internship === true && parts.length === 1 && !parsed.range && !parsed.k && parsed.low > 0 && parsed.low < 100 && !basisOf(value) && (!parsed.basis || parsed.basis === 'not_listed')) parsed.basis = 'hour';
+    if (options.internship === true && !/time unit not listed/i.test(value) && parts.length === 1 && !parsed.range && !parsed.k && parsed.low > 0 && parsed.low < 100 && !basisOf(value) && (!parsed.basis || parsed.basis === 'not_listed')) parsed.basis = 'hour';
     if (/\b(?:estimated|approximately|approximate|projected)\b/i.test(value) && !parsed.prefix) parsed.prefix = '~';
     for (var i = 1; i < parts.length; i++) {
       var next = parse(parts[i], fallbackBasis);
@@ -80,7 +80,10 @@
       if (next.basis !== parsed.basis || next.currency !== parsed.currency || next.prefix !== parsed.prefix) return parts.map(function (part) { var item = parse(part, fallbackBasis); return item ? label(item) : part.trim(); }).join('; ');
       parsed.low = Math.min(parsed.low, next.low); parsed.high = Math.max(parsed.high, next.high);
     }
-    return label(parsed);
+    var result=label(parsed);
+    if(/\bOTE\b|on[- ]target earnings/i.test(value))result+=' OTE';
+    if(/time unit not listed/i.test(value))result+=' (time unit not listed)';
+    return result;
   }
   return { compact:compact };
 });

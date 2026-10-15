@@ -1,7 +1,93 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.24",
+  "currentVersion": "2.7.7.30",
   "releases": [
+    {
+      "version": "2.7.7.30",
+      "date": "2026-10-14",
+      "title": "Enforce explicit written deadlines and current Figma source",
+      "changes": [
+        "Parse one complete written deadline including explicit employer time and timezone; reject partial/multi-cohort/estimated windows and ambiguous DST wall times.",
+        "Refresh full source after verified Figma retirement; 86 approved records, 85 current; retain all surviving facts and saved history."
+      ],
+      "public": {
+        "title": "Accurate application deadlines",
+        "changes": [
+          "Explicit written deadlines now leave current listings at the stated closing time."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.29",
+      "date": "2026-10-14",
+      "title": "Complete corrected Google deadline presentation",
+      "changes": [
+        "Align the source-bound Google TPM compact summary with October 23 and retain its checksum; local 28 was a preparation checkpoint."
+      ],
+      "public": {
+        "title": "Current deadlines and availability",
+        "changes": [
+          "Current internship listings use the latest verified deadline, with expired records excluded from discovery."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.28",
+      "date": "2026-10-14",
+      "title": "Correct current internship deadlines and preserve saved history",
+      "changes": [
+        "Refresh Google TPM deadline and eligibility to October 23 from current employer evidence; remove retired APM from the approved snapshot.",
+        "Exclude elapsed deadlines from current board discovery and counts while preserving readable saved history and approved compact presentation."
+      ],
+      "public": {
+        "title": "Current deadlines and clearer availability",
+        "changes": [
+          "Expired application deadlines leave the current board; saved job details remain available."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.27",
+      "date": "2026-10-14",
+      "title": "Small improvements",
+      "changes": [
+        "Finish mobile career controls, preserve experience months and annual OTE qualifiers, retain explicit unknown pay units, and integrate the source-approved88internship snapshot with all86prior records unchanged. Local25/26 preparation checkpoints were not deployed; separate source-only25worktree is not shipped."
+      ],
+      "public": {
+        "title": "Find related work and keep the details clear",
+        "changes": [
+          "Search adjacent specialties, browse career fields and see disclosed deadlines. Experience months and OTE pay labels stay clear, with two new student opportunities."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.26",
+      "date": "2026-10-14",
+      "title": "Small improvements",
+      "changes": [
+        "Finalize policy effective dates, explicit cache refresh and Netlify dependency packaging for the broader career fields candidate. Local25 retained as an unpublished preparation checkpoint."
+      ],
+      "public": {
+        "title": "More ways to find your next job",
+        "changes": [
+          "Browse related work by career field. Search adjacent specialties and check disclosed application deadlines before applying."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.25",
+      "date": "2026-10-14",
+      "title": "Small improvements",
+      "changes": [
+        "Implement broader work-family search and filters, compatible deadline metadata, paused-state suppression, and editorial brand/annual-pay default preference without changing admissions or source catalog. Existing preference history and explicit sorts preserved."
+      ],
+      "public": {
+        "title": "Find more kinds of early-career work",
+        "changes": [
+          "Search related work together and browse by career field. Disclosed application deadlines stay visible, with clear timezone handling."
+        ]
+      }
+    },
     {
       "version": "2.7.7.24",
       "date": "2026-10-14",
@@ -1250,7 +1336,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "3eead560136c00fa88bf6bbf238aaebe45fb68b4ba70c37c01b6a9731b62c928",
-    "fileCount": 225
+    "digest": "fa7ebcbbeac186561e8e1cf3a2737b95dd9357dc41fdd9102715926c139c4184",
+    "fileCount": 227
   }
 }

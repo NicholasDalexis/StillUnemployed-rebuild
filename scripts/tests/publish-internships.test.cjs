@@ -223,7 +223,7 @@ test('private input must be explicit, readable and outside the public repository
 test('CLI rejects undeclared output/network flags and publishes only to its own repository snapshot', t => {
   const b = sandbox(t);fs.mkdirSync(path.join(b.root, 'scripts/lib'), { recursive:true });fs.mkdirSync(path.join(b.root, 'js'));
   const repo = path.resolve(__dirname, '../..');
-  for (const file of ['scripts/publish-internships.mjs','scripts/lib/internship-projection.cjs','js/internships.js','js/job-identity.js']) fs.copyFileSync(path.join(repo, file), path.join(b.root, file));
+  for (const file of ['scripts/publish-internships.mjs','scripts/lib/internship-projection.cjs','js/internships.js','js/job-identity.js','js/job-deadlines.js']) fs.copyFileSync(path.join(repo, file), path.join(b.root, file));
   const cli = path.join(b.root, 'scripts/publish-internships.mjs');
   const run = args => spawnSync(process.execPath, [cli, ...args], { encoding:'utf8' });
   const help = run(['--help']);assert.equal(help.status, 0);assert.match(help.stdout, /No network/);
@@ -243,11 +243,14 @@ test('carry-forward preserves real check dates and rejects changed, new or unbou
   const input=envelope([old,fresh]); const b=sandbox(t,input);
   const prior=(await api).createSnapshot(envelope([old]),{now:NOW}).snapshot;
   prior.jobs[0].verification.checkedAt='2030-08-01T15:00:00Z';prior.sourceExportedAt='2030-08-01T16:00:00Z';
+  const I=require('../../js/internships.js');prior.jobs[0]=I.withPresentation(prior.jobs[0],{sourceKey:I.displayKey?I.displayKey(prior.jobs[0]):'',locationLabel:'Chicago, IL',detailBullets:['Prepare design work.','Collaborate with the team.','Document the work.','See employer eligibility.']});
   const bytes=JSON.stringify(prior)+'\n';fs.writeFileSync(b.output,bytes);
   input.admissions[0]={carryForward:true,previousSnapshotSha256:createHash('sha256').update(bytes).digest('hex')};b.write(input);
   assert.equal((await b.invoke({check:true})).included,2);
   await b.invoke();let result=JSON.parse(fs.readFileSync(b.output,'utf8'));
   assert.equal(result.jobs.find(j=>j.link===old.Link).verification.checkedAt,'2030-08-01T15:00:00Z');
+  assert.deepEqual(result.jobs.find(j=>j.link===old.Link).presentation,prior.jobs[0].presentation);
+  assert.ok(prior.jobs[0].presentation,'fixture has an approved compact view to preserve');
   fs.writeFileSync(b.output,bytes);input.source.rows[0][P.HEADERS.indexOf('Salary')]='$999/hour';b.write(input);
   await assert.rejects(b.invoke(),/Changed public facts/);
   input.source.rows[0]=P.HEADERS.map(key=>old[key]);input.admissions[0].previousSnapshotSha256='0'.repeat(64);b.write(input);

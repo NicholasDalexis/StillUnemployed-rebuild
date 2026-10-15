@@ -86,7 +86,7 @@ function board({search='',saved={},tracker=[],look='original',response,fetchErro
  };
  document.body=new Element('body');document.head=new Element('head');document.activeElement=document.body;
  const grid=document.body.appendChild(new Element('div',{id:'board'})),overlay=document.body.appendChild(new Element('div',{id:'overlay-root'}));
- const window={crypto:{randomUUID:()=> '11111111-1111-4111-8111-111111111111'},SUStates:require('../../js/us-states.js'),SUJobIdentity:identityAvailable?identity:undefined,SUThemeArt:artAvailable?themeArt:undefined,innerWidth:390,innerHeight:844,addEventListener(k,f){(windowEvents[k]??=[]).push(f);},matchMedia(){return{matches:true};},open(...args){opened.push(args);},suTrack(...args){tracking.push(args);}};
+ const window={crypto:{randomUUID:()=> '11111111-1111-4111-8111-111111111111'},SUStates:require('../../js/us-states.js'),SUCareerFields:require('../../js/career-fields.js'),SUJobDeadlines:require('../../js/job-deadlines.js'),SUJobIdentity:identityAvailable?identity:undefined,SUThemeArt:artAvailable?themeArt:undefined,innerWidth:390,innerHeight:844,addEventListener(k,f){(windowEvents[k]??=[]).push(f);},matchMedia(){return{matches:true};},open(...args){opened.push(args);},suTrack(...args){tracking.push(args);}};
  // Other feature tests use a ready moderation transport; dedicated tests exercise the real module and failure paths.
  window.SUJobModeration={reportUnavailable:async()=>({globallyHidden:false,status:'queued_check'}),refresh:async()=>({status:'ready',revision:0,removed:[]}),filter:jobs=>jobs,blocked:()=>false,watch:()=>()=>{},subscribe:()=>()=>{},navigate:link=>{window.open(link,'_blank','noopener');return Promise.resolve(true);}};
  if(analyticsAvailable)window.SUAnalytics={choices:()=>({analytics:data.get('su_consent_v3')==='granted',personalization:data.get('su_personalization_v1')==='granted'}),registerJobs(){},job(){},generation:()=>0,profile:()=>({})};
@@ -112,7 +112,7 @@ test('every approved sourcing lane is selectable and searchable by category name
  const lanes=['Brand & Marketing','Content & Copy','Creative Tech','Growth & CRM','Influencer','PR & Partnerships','Social','Video & Creative','Photography','Videography','UX/UI Design','Web Development','Artificial Intelligence','Fashion Design'];
  b.init(lanes.map((ind,i)=>job({ind,link:'https://example.com/job/'+i})));
  for(const lane of lanes){
-  assert(b.app.catList().some(c=>c.match===lane),lane+' has a category control');
+  assert(b.app.catList().some(c=>c.match===b.window.SUCareerFields.field({ind:lane})),lane+' has a grouped career-field control');
   b.app.state.q=lane;b.app.state.cat='all';
   assert(b.app.computeShown().shown.some(j=>j.ind===lane),lane+' is found by search');
   b.app.state.q='';b.app.state.cat=lane;

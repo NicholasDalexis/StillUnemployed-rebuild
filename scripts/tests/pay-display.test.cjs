@@ -31,7 +31,7 @@ test('employer-confirmed basis is added while amounts alone never invent a curre
   assert.equal(Pay.compact('28'), '28');
   assert.equal(Pay.compact('$75,600', { basis:'not_listed' }), '$75,600');
   assert.equal(Pay.compact('$45-55', { basis:'hour', status:'paid' }), '$45–55/hour');
-  assert.equal(Pay.compact('$85,000 (time unit not listed)', { basis:'annual' }), '$85,000');
+  assert.equal(Pay.compact('$85,000 (time unit not listed)', { basis:'annual' }), '$85,000 (time unit not listed)');
 });
 
 test('known currencies are retained or normalized without turning non-USD pay into dollars', () => {
@@ -80,7 +80,7 @@ test('current internship pay labels are compact and formatting leaves all source
     const label = Pay.compact(job.pay, options);
     assert(label.length <= 36, job.co + ': ' + label);
     assert.doesNotMatch(label, /not listed|not stated|amount not disclosed/i, job.co + ': ' + label);
-    if (job.payBasis !== 'hour') assert.doesNotMatch(label, /\d\.\d/, job.co + ': ' + label);
+    if (job.payBasis !== 'hour' && job.payBasis !== 'not_listed') assert.doesNotMatch(label, /\d\.\d/, job.co + ': ' + label);
     if (job.payBasis === 'not_listed') assert.doesNotMatch(label, /\/(?:hour|week|month|year|program)\b/, job.co);
     assert.equal(Pay.compact(job.pay, options), label, 'pure repeated formatting');
   }
@@ -96,7 +96,7 @@ test('browser export works without DOM, storage, network or CommonJS dependencie
 
 test('internship-only small single rates use the requested hourly convention without overwriting an explicit period',()=>{
  const options={internship:true,basis:'not_listed',status:'paid'};
- for(const [raw,want] of [['$23.00','$23/hour'],['$28 (time unit not listed)','$28/hour'],['From $23','$23/hour+'],['Up to $25','≤$25/hour'],['$25/month','$25/month'],['$25/year','$25/year'],['$25 for the program','$25/program'],['$100','$100'],['$20–25','$20–25'],['$25; $30','$25–30'],['$25K','$25K']])assert.equal(Pay.compact(raw,options),want,raw);
+ for(const [raw,want] of [['$23.00','$23/hour'],['$28 (time unit not listed)','$28 (time unit not listed)'],['From $23','$23/hour+'],['Up to $25','≤$25/hour'],['$25/month','$25/month'],['$25/year','$25/year'],['$25 for the program','$25/program'],['$100','$100'],['$20–25','$20–25'],['$25; $30','$25–30'],['$25K','$25K']])assert.equal(Pay.compact(raw,options),want,raw);
  assert.equal(Pay.compact('$23.00',{basis:'not_listed'}),'$23');
  assert.equal(Pay.compact('$23.00',{...options,basis:'month'}),'$23/month');
  assert.equal(Pay.compact('Paid; amount not disclosed',options),'$ Paid');
