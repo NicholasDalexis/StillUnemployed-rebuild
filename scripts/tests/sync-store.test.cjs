@@ -199,3 +199,22 @@ test('confirmed closure identity accepts a Set supplied by a separate browser re
  const a=S.create(memory()),job=savedJob();a.saveSaved({[job.link]:true},job);
  const closed=require('node:vm').runInNewContext('new Set(["https://example.com/jobs/1"])');assert.equal(a.archivedSaved([],closed)[0].confirmedClosed,true);
 });
+
+test('SeatGeek alias grouping leaves historical saved keys and tracker rows intact',()=>{
+ const greenhouse='https://job-boards.greenhouse.io/seatgeek/jobs/8180508';
+ const employer='https://seatgeek.com/jobs/8180508?gh_jid=8180508';
+ const saved={[greenhouse]:true,[employer]:true};
+ const tracker=[{id:'first',link:greenhouse,status:'Interview',notes:'Keep first application history',dateApplied:'2026-09-01'},
+  {id:'second',link:employer,status:'Applied',notes:'Keep second application history',dateApplied:'2026-09-02'}];
+ const storage=memory({su_saved_jobs:saved,su_tracker:tracker}),store=S.create(storage);
+ assert.deepEqual(store.view().saved,saved);
+ assert.deepEqual([...store.view().tracker].sort((a,b)=>a.id.localeCompare(b.id)),tracker);
+ store.captureSaved([savedJob(1,{link:greenhouse})]);
+ assert.deepEqual(store.view().saved,saved);
+ assert.deepEqual(store.archivedSaved([savedJob(1,{link:employer})]),[]);
+ assert.equal(store.archivedSaved([]).length,1,'only the display groups aliases');
+ assert.deepEqual(JSON.parse(storage.getItem('su_tracker')).sort((a,b)=>a.id.localeCompare(b.id)),tracker);
+ const copy=S.create(memory());copy.receive(store.snapshot());
+ assert.deepEqual(copy.view().saved,saved);
+ assert.deepEqual([...copy.view().tracker].sort((a,b)=>a.id.localeCompare(b.id)),tracker);
+});

@@ -21,6 +21,23 @@ test('board counter keeps one representative for admitted Active aliases without
  assert.equal((await Discovery.catalogFromCSV(csv)).length,0,'separate discovery API still applies its original stricter conflict policy');
 });
 async function handler(overrides={}){return (await mod).createHandler({now:()=>now,getJobs:source,getInternships,getIndex:index,...overrides});}
+test('SeatGeek employer alias counts once and retains both generated share identities',async()=>{
+ const {catalogFromCSV}=await mod,Discovery=require('../../netlify/functions/lib/job-discovery.cjs'),Source=require('../../netlify/functions/lib/job-source.cjs');
+ const links=['https://job-boards.greenhouse.io/seatgeek/jobs/8180508','https://seatgeek.com/jobs/8180508?gh_jid=8180508'];
+ const rows=[Discovery.EXPECTED,...links.map(link=>['SeatGeek','Paid Social & Programmatic Analyst',link,'New York, NY','Hybrid','$70K–90K','1+ yrs','Marketing','','','Active','','','',''])];
+ const csv=rows.map(row=>row.map(v=>'"'+v.replace(/"/g,'""')+'"').join(',')).join('\n');
+ const catalog=catalogFromCSV(csv);
+ assert.equal(catalog.length,1);
+ assert.deepEqual(catalog[0]._aliases,links);
+ assert.deepEqual(Source.shareEntries(catalog[0]).map(s=>s.link),links);
+ assert.equal(new Set(Source.shareEntries(catalog[0]).map(s=>s.slug)).size,2);
+ for(const alias of links){
+  const body=await (await (await handler({getJobs:()=>({checkedAt:now,jobs:catalog}),getIndex:()=>({...index(),removed:[{keys:Identity.keys(alias)}]})}))(new Request('https://stillunemployed.com/api/public-counts'))).json();
+  assert.equal(body.jobs.count,0,'existing moderation through either verified alias applies to the same posting');
+ }
+ const body=await (await (await handler({getJobs:()=>({checkedAt:now,jobs:catalog})}))(new Request('https://stillunemployed.com/api/public-counts'))).json();
+ assert.equal(body.jobs.count,1);
+});
 test('complete counts deduplicate aliases, respect global removals and include published Upcoming internships',async()=>{
  const internship=Internships.jobs(snapshot,now)[0];
  const getIndex=()=>({...index(),removed:[{keys:Identity.keys('https://example.com/job/2'),slugs:[]},{keys:Identity.keys(internship.link),slugs:[]}]});

@@ -1,7 +1,23 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.30",
+  "currentVersion": "2.7.7.32",
   "releases": [
+    {
+      "version": "2.7.7.32",
+      "date": "2026-10-15",
+      "title": "Recognize the verified SeatGeek employer-domain Greenhouse alias",
+      "changes": [
+        "Group SeatGeek employer-domain and Greenhouse links by employer-scoped requisition identity while preserving original URLs, saved keys, tracker rows and generated share pages.",
+        "Reject conflicting IDs, unverified hosts and meaningful query/hash differences; no source row or account configuration change.",
+        "Version31 remains an independent account-release candidate under App Launch ownership."
+      ],
+      "public": {
+        "title": "One card per SeatGeek job",
+        "changes": [
+          "Shared employer and application links now open the same job, without duplicate cards."
+        ]
+      }
+    },
     {
       "version": "2.7.7.30",
       "date": "2026-10-14",
@@ -1336,7 +1352,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "fa7ebcbbeac186561e8e1cf3a2737b95dd9357dc41fdd9102715926c139c4184",
+    "digest": "45d495187ec552f0f14e8c663caf8197970c66b940fc438e3906ddbe4dd1f503",
     "fileCount": 227
   }
 }
