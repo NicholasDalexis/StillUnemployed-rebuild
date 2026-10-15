@@ -11,6 +11,7 @@ const observed = [
   ['Code and Theory 8558982002', 'https://www.codeandtheory.com/careers/8558982002', 'https://www.codeandtheory.com/careers/8558982002?gh_jid=8558982002'],
   ['CarGurus marketing 7972453', 'https://job-boards.greenhouse.io/cargurus/jobs/7972453', 'https://careers.cargurus.com/us/en/job/7972453?gh_jid=7972453'],
   ['Glossier influencer 8077849', 'https://job-boards.greenhouse.io/glossier/jobs/8077849', 'https://boards.greenhouse.io/glossier/jobs/8077849?gh_jid=8077849'],
+  ['SeatGeek paid social 8180508', 'https://job-boards.greenhouse.io/seatgeek/jobs/8180508', 'https://seatgeek.com/jobs/8180508?gh_jid=8180508'],
 ];
 
 for (const [label, a, b] of observed) test('observed duplicate: ' + label, () => {
@@ -53,6 +54,7 @@ const equal = [
   ['known global tracking only', 'https://example.com/jobs/one?job_id=1&utm_source=test&gclid=xyz', 'https://example.com/jobs/one?job_id=1'],
   ['safe host, default port and unreserved escape', 'HTTPS://EXAMPLE.COM:443/jobs/%7eone?job_id=%31', 'https://example.com/jobs/~one?job_id=1'],
   ['Greenhouse provider tracking', 'https://boards.greenhouse.io/glossier/jobs/8054875?gh_src=tracking', 'https://job-boards.greenhouse.io/glossier/jobs/8054875'],
+  ['SeatGeek employer path with provider tracking', 'https://seatgeek.com/jobs/8180508/?gh_jid=8180508&gh_src=tracking&utm_source=linkedin', 'https://boards.greenhouse.io/seatgeek/jobs/8180508'],
 ];
 for (const [label, a, b] of equal) test('equivalent: ' + label, () => assert.equal(identity.equivalent(a, b), true));
 
@@ -101,6 +103,15 @@ const different = [
   ['trailing slash preserved for unknown server', 'https://example.com/job/1', 'https://example.com/job/1/'],
   ['nonstandard provider port does not infer', 'https://boards.greenhouse.io:8443/glossier/jobs/1', 'https://boards.greenhouse.io/glossier/jobs/1'],
   ['HTTP and HTTPS remain separate for unknown server', 'http://example.com/job/1', 'https://example.com/job/1'],
+  ['SeatGeek does not merge another employer', 'https://seatgeek.com/jobs/8180508?gh_jid=8180508', 'https://boards.greenhouse.io/another-employer/jobs/8180508'],
+  ['SeatGeek does not merge another requisition', 'https://seatgeek.com/jobs/8180508?gh_jid=8180508', 'https://boards.greenhouse.io/seatgeek/jobs/8180509'],
+  ['SeatGeek does not merge another Greenhouse region', 'https://seatgeek.com/jobs/8180508?gh_jid=8180508', 'https://boards.eu.greenhouse.io/seatgeek/jobs/8180508'],
+  ['SeatGeek lookalike host stays distinct', 'https://seatgeek.com.evil.example/jobs/8180508?gh_jid=8180508', 'https://boards.greenhouse.io/seatgeek/jobs/8180508'],
+  ['SeatGeek unverified subdomain stays distinct', 'https://unverified.seatgeek.com/jobs/8180508?gh_jid=8180508', 'https://boards.greenhouse.io/seatgeek/jobs/8180508'],
+  ['SeatGeek unrelated employer path stays distinct', 'https://seatgeek.com/events/8180508?gh_jid=8180508', 'https://boards.greenhouse.io/seatgeek/jobs/8180508'],
+  ['SeatGeek unknown query stays distinct', 'https://seatgeek.com/jobs/8180508?gh_jid=8180508&job_id=another', 'https://boards.greenhouse.io/seatgeek/jobs/8180508'],
+  ['SeatGeek hash route stays distinct', 'https://seatgeek.com/jobs/8180508?gh_jid=8180508#/jobs/another', 'https://boards.greenhouse.io/seatgeek/jobs/8180508'],
+  ['SeatGeek nonstandard port stays distinct', 'https://seatgeek.com:8443/jobs/8180508?gh_jid=8180508', 'https://boards.greenhouse.io/seatgeek/jobs/8180508'],
 ];
 for (const [label, a, b] of different) test('distinct: ' + label, () => assert.equal(identity.equivalent(a, b), false));
 
@@ -118,6 +129,9 @@ for (const value of [
   'https://www.codeandtheory.com/careers/8558982002?gh_jid=8558982003',
   'https://careers.cargurus.com/us/en/job/7972453?gh_jid=999',
   'https://boards.greenhouse.io/embed/job_app?for=one&for=two&token=1',
+  'https://seatgeek.com/jobs/8180508?gh_jid=8180509',
+  'https://seatgeek.com/jobs/8180508?gh_jid=8180508&gh_jid=8180509',
+  'https://seatgeek.com/jobs/8180508?gh_jid=not-a-number',
 ]) test('contradictory trusted identity fails closed: ' + value, () => {
   assert.deepEqual(identity.keys(value), []);
   const description = identity.inspect(value);
@@ -149,10 +163,10 @@ test('groupJobs preserves original objects and URLs and chooses first input', ()
   assert.equal(b.Link, observed[0][2]);
 });
 
-test('groupJobs collapses all five observed pairs without mixing employers', () => {
+test('groupJobs collapses all observed pairs without mixing employers', () => {
   const jobs = observed.flatMap(pair => [{ link: pair[1], title: 'Same fixture title' }, { link: pair[2], title: 'Same fixture title' }]);
   const groups = identity.groupJobs(jobs);
-  assert.equal(groups.length, 5);
+  assert.equal(groups.length, observed.length);
   assert.ok(groups.every(g => g.members.length === 2 && g.aliases.length === 2));
 });
 

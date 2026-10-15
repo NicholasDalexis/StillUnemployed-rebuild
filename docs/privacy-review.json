@@ -1,24 +1,23 @@
 {
-  "version": "2.7.7.30",
+  "version": "2.7.7.32",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-15T01:37:20.435Z",
+  "reviewedAt": "2026-10-15T05:04:13.126Z",
   "reviewer": "Codex StillUnemployed owner",
-  "sourceDigest": "fa7ebcbbeac186561e8e1cf3a2737b95dd9357dc41fdd9102715926c139c4184",
-  "sourceFileCount": 227,
+  "sourceDigest": "ae0da11edaa2d73e0468c3127632cc8bbb5cff7c79e9f2298bbc8871bf4bfb7f",
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Review current deadline exclusion and saved-history behavior including exact, unambiguous written employer dates/times/zones. Partial dates, multiple cohorts, expected posting duration and DST-ambiguous wall times are not guessed. Fresh source-bound Figma retirement yields86raw/85current. Current Privacy/Terms already describe known-deadline removal, employer time priority and retained saved history; no additional wording change needed. No data/provider/auth/API/schedule expansion.",
+  "scope": "Reviewed Privacy and Terms; no wording change needed. Verified employer-scoped SeatGeek alias affects deduplicated display/counts and matching existing saved/share links; original URLs/history are retained. No new collection, permissions, provider, data transmission, analytics field, retention, account flow or service.",
   "checks": {
-    "disclosures": "Privacy/Terms disclose default familiar-brand and annual USD minimum-over-80K preference without annualizing hourly/estimated/variable pay, professional scope and deadline semantics. Effective dates October14; no legal certification.",
-    "choices": "Existing consent/GPC, account isolation, stored preference labels/history, explicit sorts and daily order preserved. No new provider, identity/event, raw-search collection, retention or schedule.",
-    "publication": "Native optional-column migration waits for compatible deployed readers. Original86 internship records/receipts and daily source manifest unchanged. Separate Chicory20 not included; Muse/jobs connector remains disabled."
+    "identity": "Exact seatgeek.com/jobs/numeric-id maps only to Greenhouse seatgeek tenant; path/query conflicts fail closed, unknown parameters/hash/ports remain meaningful.",
+    "history": "Saved keys and all existing tracker rows/notes/statuses retained and synchronized in regression; display grouping does not retroactively merge stored records.",
+    "deployment": "Independent patch based production30, no pending31 auth/provider/rules code or flags included; normal preview and production readiness required."
   },
   "openItems": [
-    "Hosted preview and actual-domain QA pending under existing Preview-Release-Workflow.",
-    "Optional native-column migration follows compatible reader deployment; no source admissions performed.",
-    "Fresh OAuth and physical iPhone not tested.",
-    "Two new student cards public pending until approved candidate release. No source-only25 deploy attempted."
+    "Hosted exact preview and production acceptance pending.",
+    "App Launch31 provider/account activation remains separately owned and unmodified.",
+    "Sourcing/vendor/shared-writer helper copies require coordinated propagation by their owners after website verification."
   ],
   "author": "Codex",
-  "platform_signature": "-Codex"
+  "platform_signature": "-Codex",
+  "sourceFileCount": 227
 }
