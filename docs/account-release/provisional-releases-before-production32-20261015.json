@@ -1,0 +1,1356 @@
+{
+  "schemaVersion": 1,
+  "currentVersion": "2.7.7.31",
+  "releases": [
+    {
+      "version": "2.7.7.31",
+      "date": "2026-10-14",
+      "title": "Complete app account lifecycle and native compatibility",
+      "changes": [
+        "Integrate confirmed resumable account deletion, explicit Apple and Google provider linking, native-origin transport and legal/support pages over production 2.7.7.30."
+      ],
+      "public": {
+        "title": "Your account, on your terms",
+        "changes": [
+          "Account settings support connecting sign-in methods and requesting account deletion where enabled. Updated privacy, terms and support information."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.30",
+      "date": "2026-10-14",
+      "title": "Enforce explicit written deadlines and current Figma source",
+      "changes": [
+        "Parse one complete written deadline including explicit employer time and timezone; reject partial/multi-cohort/estimated windows and ambiguous DST wall times.",
+        "Refresh full source after verified Figma retirement; 86 approved records, 85 current; retain all surviving facts and saved history."
+      ],
+      "public": {
+        "title": "Accurate application deadlines",
+        "changes": [
+          "Explicit written deadlines now leave current listings at the stated closing time."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.29",
+      "date": "2026-10-14",
+      "title": "Complete corrected Google deadline presentation",
+      "changes": [
+        "Align the source-bound Google TPM compact summary with October 23 and retain its checksum; local 28 was a preparation checkpoint."
+      ],
+      "public": {
+        "title": "Current deadlines and availability",
+        "changes": [
+          "Current internship listings use the latest verified deadline, with expired records excluded from discovery."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.28",
+      "date": "2026-10-14",
+      "title": "Correct current internship deadlines and preserve saved history",
+      "changes": [
+        "Refresh Google TPM deadline and eligibility to October 23 from current employer evidence; remove retired APM from the approved snapshot.",
+        "Exclude elapsed deadlines from current board discovery and counts while preserving readable saved history and approved compact presentation."
+      ],
+      "public": {
+        "title": "Current deadlines and clearer availability",
+        "changes": [
+          "Expired application deadlines leave the current board; saved job details remain available."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.27",
+      "date": "2026-10-14",
+      "title": "Small improvements",
+      "changes": [
+        "Finish mobile career controls, preserve experience months and annual OTE qualifiers, retain explicit unknown pay units, and integrate the source-approved88internship snapshot with all86prior records unchanged. Local25/26 preparation checkpoints were not deployed; separate source-only25worktree is not shipped."
+      ],
+      "public": {
+        "title": "Find related work and keep the details clear",
+        "changes": [
+          "Search adjacent specialties, browse career fields and see disclosed deadlines. Experience months and OTE pay labels stay clear, with two new student opportunities."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.26",
+      "date": "2026-10-14",
+      "title": "Small improvements",
+      "changes": [
+        "Finalize policy effective dates, explicit cache refresh and Netlify dependency packaging for the broader career fields candidate. Local25 retained as an unpublished preparation checkpoint."
+      ],
+      "public": {
+        "title": "More ways to find your next job",
+        "changes": [
+          "Browse related work by career field. Search adjacent specialties and check disclosed application deadlines before applying."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.25",
+      "date": "2026-10-14",
+      "title": "Small improvements",
+      "changes": [
+        "Implement broader work-family search and filters, compatible deadline metadata, paused-state suppression, and editorial brand/annual-pay default preference without changing admissions or source catalog. Existing preference history and explicit sorts preserved."
+      ],
+      "public": {
+        "title": "Find more kinds of early-career work",
+        "changes": [
+          "Search related work together and browse by career field. Disclosed application deadlines stay visible, with clear timezone handling."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.24",
+      "date": "2026-10-14",
+      "title": "Student opportunities with eligibility",
+      "changes": [
+        "Finalize eighteen source-verified student internships and co-ops with source-bound eligibility summaries; preserve sixty-eight approved records and unchanged Jobs. Local21/22/23 were preparation and preview checkpoints, never production releases."
+      ],
+      "public": {
+        "title": "More student opportunities",
+        "changes": [
+          "Eighteen internships and co-ops added with cohort, location and eligibility details."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.23",
+      "date": "2026-10-14",
+      "title": "Student opportunities with eligibility",
+      "changes": [
+        "Finalize eighteen verified internship/co-op admissions with source-bound compact eligibility summaries, preserving full original public eligibility and previous68 approved records. Local21/22 preview checkpoints were not deployed."
+      ],
+      "public": false,
+      "preparedPublic": {
+        "title": "More student opportunities",
+        "changes": [
+          "Eighteen internships and co-ops added with cohort, location and eligibility details."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.22",
+      "date": "2026-10-14",
+      "title": "Student opportunities publication",
+      "changes": [
+        "Post-build seal for eighteen verified internships/co-ops and sixty-eight unchanged approved records. Include only existing approved due October14 daily projection; exclude unrelated Chicory local20 patch. Local21 was a preparation checkpoint, never deployed."
+      ],
+      "public": false,
+      "preparedPublic": {
+        "title": "More student opportunities",
+        "changes": [
+          "Eighteen internships and co-ops across design, content, research, marketing and engineering."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.21",
+      "date": "2026-10-14",
+      "title": "New student opportunities",
+      "changes": [
+        "Publish eighteen independently verified student internships and co-ops; preserve sixty-eight previously approved listings and their original verification dates. Keep unpublished NEON Design and Sony program watch held."
+      ],
+      "public": false,
+      "preparedPublic": {
+        "title": "More student opportunities",
+        "changes": [
+          "Eighteen internships and co-ops added across design, content, research, marketing and engineering."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.18",
+      "date": "2026-10-13",
+      "title": "Shared daily board and complete public counts",
+      "changes": [
+        "Combine the previously reviewed Home daily entry, bottom version links and complete live public counters with the two source-approved Sephora Summer 2027 internships. Preserve all existing published admissions, held UNKNOWN records, moderation and scheduled daily release boundaries."
+      ],
+      "public": {
+        "title": "Daily picks and board totals",
+        "changes": [
+          "Daily picks use the familiar board navigation, search and filters, with weekday dates and a Home entry.",
+          "See complete live Jobs and Internships totals at the top of version history, with version links at the bottom of public pages.",
+          "Two paid Sephora Summer 2027 internships are now on the internship board."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.17",
+      "date": "2026-10-13",
+      "title": "Public counts and version links",
+      "changes": [
+        "Add bottom version links on every public page, live complete public Jobs/Internships counts on version overview and the local Home daily entry. Counts reuse board admissions, moderation and published internship status; unavailable is not zero. Preserve due-only daily collections and disabled connector activation."
+      ],
+      "public": {
+        "title": "What is on the board",
+        "changes": [
+          "See current Jobs and Internships counts from version history, linked at the bottom of each page."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.16",
+      "date": "2026-10-13",
+      "title": "Stage Wednesday through Friday daily jobs",
+      "changes": [
+        "Stage the exact approved October14-16 Top4 collections at9AM Eastern, preserving nine prior dates and repaired2.7.7.15 behavior. Source marketing-wedfri-20261013-v2."
+      ]
+    },
+    {
+      "version": "2.7.7.15",
+      "date": "2026-10-13",
+      "title": "Recover interrupted board loading",
+      "changes": [
+        "Retry one transient Jobs or Internships feed/moderation failure, preserve epoch and visibility boundaries, report sanitized local failure stages, and show unavailable live counts instead of false zeroes. Keep moderation mandatory and preserve saved roles."
+      ],
+      "public": {
+        "title": "More reliable job board loading",
+        "changes": [
+          "The board retries a temporary loading problem automatically and makes unavailable counts clearer."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.14",
+      "date": "2026-10-13",
+      "title": "Restore internship publication and hourly pay precision",
+      "changes": [
+        "Publish freshly verified Whitney Spring 2027 Marketing and Khan Academy Summer 2027 SWE internships; carry forward unchanged approved listings, exclude current removals and unresolved unpublished NEON Design, and preserve employer hourly cents across cards and shares."
+      ],
+      "public": {
+        "title": "More student opportunities",
+        "changes": [
+          "New Whitney and Khan Academy internships are available, with exact hourly pay shown on listing cards."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.13",
+      "date": "2026-10-11",
+      "title": "Monday and Tuesday daily selections",
+      "changes": [
+        "Stage the exact Marketing-approved October 12 and October 13 ordered four-job collections for 9 AM Eastern, preserve all seven published dates and shared board UI, and regenerate admitted job Share and OG artifacts."
+      ]
+    },
+    {
+      "version": "2.7.7.12",
+      "date": "2026-10-09",
+      "title": "Revised Sunday daily selection",
+      "changes": [
+        "Supersede only the unpublished October11 slots2 and3 with exact source-approved Genius Sports and Precision AQ replacements; retain Saturday, published history, shared board UI and future visibility guards."
+      ]
+    },
+    {
+      "version": "2.7.7.11",
+      "date": "2026-10-09",
+      "title": "Schedule exact weekend daily picks and refresh share pages",
+      "changes": [
+        "Stage Marketing-approved ordered October 10 and October 11 collections for 9 AM Eastern. Preserve all previous collections and shared board layout; rebuild individual-job share artifacts from current admitted catalogs."
+      ],
+      "public": {
+        "title": "Weekend picks",
+        "changes": [
+          "Weekend daily selections are scheduled for 9 AM Eastern, with refreshed job share previews."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.10",
+      "date": "2026-10-06",
+      "title": "Daily publication QA fixes",
+      "changes": [
+        "Keep unknown/loading availability separate from off-board states and retain bounded s1–s10 marketing slot attribution through both sanitizers."
+      ],
+      "public": {
+        "title": "Daily picks",
+        "changes": [
+          "Browse four daily picks with the same search, filters and job cards as the full board."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.9",
+      "date": "2026-10-06",
+      "title": "Daily jobs production",
+      "changes": [
+        "Shared board daily UI, approved October6 collection and server-timed October7–9 sets; existing privacy and availability boundaries retained."
+      ],
+      "public": {
+        "title": "Daily picks",
+        "changes": [
+          "Browse four daily picks with the same search, filters and job cards as the full board."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.8",
+      "date": "2026-10-05",
+      "title": "Small improvements",
+      "changes": [
+        "Preserve daily date contrast in alternate themes and keep one availability retry in the shared board section."
+      ]
+    },
+    {
+      "version": "2.7.7.7",
+      "date": "2026-10-05",
+      "title": "Small improvements",
+      "changes": [
+        "Make daily jobs a native board section with shared navigation, search, category, filters, account, Saved and theme controls; show larger weekday/date without year and keep dated identity."
+      ]
+    },
+    {
+      "version": "2.7.7.6",
+      "date": "2026-10-05",
+      "title": "Small improvements",
+      "changes": [
+        "Connect daily Post-it bookmarks to shared Save action; hosted availability bundles now contain installed dependencies."
+      ]
+    },
+    {
+      "version": "2.7.7.5",
+      "date": "2026-10-05",
+      "title": "Small improvements",
+      "changes": [
+        "Connect daily collection feed-error retry to the existing guarded feed loader."
+      ]
+    },
+    {
+      "version": "2.7.7.4",
+      "date": "2026-10-05",
+      "title": "Daily jobs preview",
+      "changes": [
+        "Four-job dated collections, honest current availability, shared TLDR flow and compact main-board discovery.",
+        "Bounded consent-aware cross-platform acquisition and daily collection counts; preview-only review candidate."
+      ],
+      "public": {
+        "title": "Daily picks",
+        "changes": [
+          "Open four jobs from a daily selection and find earlier published picks by date."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.3",
+      "date": "2026-10-03",
+      "title": "Complete verified internship publication data",
+      "changes": [
+        "Complete the fourteen October 3 additions with source-bound concise summaries and lossless DoorDash level/range formatting. No application, moderation, collector, checker or product behavior changes."
+      ]
+    },
+    {
+      "version": "2.7.7.2",
+      "date": "2026-10-03",
+      "title": "Verified October 3 student internships",
+      "changes": [
+        "Fourteen employer-verified, deduplicated student internships added from the operational Internships source. Existing public facts retain their original verification dates."
+      ]
+    },
+    {
+      "version": "2.7.7.1",
+      "date": "2026-10-02",
+      "title": "Correct Figma Winter 2027 program facts",
+      "changes": [
+        "Update the existing Figma internship start to January 5 and mark AI-tool experience as preferred, with fresh exact employer and native readback evidence."
+      ]
+    },
+    {
+      "version": "2.7.7",
+      "date": "2026-10-01",
+      "title": "Small improvements",
+      "changes": [
+        "Retire AccuWeather 8081615 and Capitals Media Relations 5211651007 after exact employer closure notices; preserve all other internship cards and the 2.7.6 product release."
+      ]
+    },
+    {
+      "version": "2.7.6",
+      "date": "2026-09-30",
+      "title": "Elevate Media company link",
+      "changes": [
+        "Link the existing company credit on Home, Jobs, Internships, Tracker, Privacy and Terms to https://elevatemedia.ai/. Preserve the production 2.7.5.6 feature set. Reserve ordinary web version 2.7.6 separately from concurrent mobile-only 2.7.5 revision checkpoints."
+      ]
+    },
+    {
+      "version": "2.7.5.6",
+      "date": "2026-09-30",
+      "title": "Small improvements",
+      "changes": [
+        "Added thirteen exact-employer-verified student internships; full source export and preserved prior card receipts. No data-flow or legal wording change."
+      ],
+      "public": {
+        "title": "New internships",
+        "changes": [
+          "Thirteen new internships in design, marketing, software, data and AI."
+        ]
+      }
+    },
+    {
+      "version": "2.7.5.5",
+      "date": "2026-09-29",
+      "title": "Small improvements",
+      "changes": [
+        "Retire Workiva R12318 and R12249 after verified deadline and exact requisition closure"
+      ]
+    },
+    {
+      "version": "2.7.5.4",
+      "date": "2026-09-28",
+      "title": "Five verified internships",
+      "changes": [
+        "Add five verified Summer 2027 internship cards from Caterpillar, Radio Flyer, Stellantis and Henkel while preserving the existing 47-card catalog."
+      ],
+      "public": {
+        "title": "Five new internships",
+        "changes": [
+          "New student opportunities in communications, graphic and industrial design, visual storytelling and marketing."
+        ]
+      }
+    },
+    {
+      "version": "2.7.5.3",
+      "date": "2026-09-27",
+      "title": "Small improvements",
+      "changes": [
+        "Production readiness: preserve newsletter return context on exact production origins and enable authorized owner Restore on production, retaining all backend checks."
+      ]
+    },
+    {
+      "version": "2.7.5.2",
+      "date": "2026-09-27",
+      "title": "Newsletter confirmation transition",
+      "changes": [
+        "Remove the intermediate newsletter return screen and show welcome feedback before catalog loading; retain the original note and dismiss state."
+      ],
+      "public": {
+        "title": "Smoother newsletter signup",
+        "changes": [
+          "Your welcome confirmation appears without flashing another page, while your job or advice note stays open."
+        ]
+      }
+    },
+    {
+      "version": "2.7.5.1",
+      "date": "2026-09-27",
+      "title": "Newsletter confirmation copy",
+      "changes": [
+        "Lead signup confirmation with Welcome email sent, place the promotions or spam reminder above the Gmail action, and place the underlined Free Resume note beneath it. Includes the four verified internships already published in production 2.7.5."
+      ],
+      "public": {
+        "title": "A clearer welcome note",
+        "changes": [
+          "The signup confirmation puts the email reminder first and the resume template note below the Gmail link."
+        ]
+      }
+    },
+    {
+      "version": "2.7.5",
+      "date": "2026-09-27",
+      "title": "Internship board publication",
+      "changes": [
+        "Publish four verified Summer 2027 internship cards from the operational Internships sheet with preserved existing cards and one unresolved source-only hold."
+      ],
+      "public": {
+        "title": "New internships",
+        "changes": [
+          "Four new design and marketing internships are now on the board."
+        ]
+      }
+    },
+    {
+      "version": "2.7.4.5",
+      "date": "2026-09-27",
+      "title": "Newsletter confirmation return cleanup",
+      "changes": [
+        "Remove the P.S. line from the signup confirmation and reopen a shared job without starting a second signup form after a successful Beehiiv return."
+      ],
+      "public": {
+        "title": "A cleaner signup confirmation",
+        "changes": [
+          "The thank-you note is shorter, and your job card stays open after signup without another email form."
+        ]
+      }
+    },
+    {
+      "version": "2.7.4.4",
+      "date": "2026-09-27",
+      "title": "Newsletter confirmation polish",
+      "changes": [
+        "Remove the browser focus rectangle from the programmatically focused thank-you heading while retaining accessible focus on its controls."
+      ],
+      "public": {
+        "title": "Signup feedback",
+        "changes": [
+          "A cleaner thank-you after subscribing on preview."
+        ]
+      }
+    },
+    {
+      "version": "2.7.4.3",
+      "date": "2026-09-27",
+      "title": "Keep signup confirmation on its job",
+      "changes": [
+        "A Beehiiv success return retains the same job note and does not advance the every-other-job prompt counter."
+      ],
+      "public": {
+        "title": "Signup feedback",
+        "changes": [
+          "The confirmation stays with the job you were viewing."
+        ]
+      }
+    },
+    {
+      "version": "2.7.4.2",
+      "date": "2026-09-27",
+      "title": "Newsletter signup confirmation",
+      "changes": [
+        "Preview signup uses a dedicated Beehiiv form with a success redirect and restores a StillUnemployed thank-you over the current job or advice note.",
+        "Production remains on its existing Beehiiv form pending the production readiness check."
+      ],
+      "public": {
+        "title": "Newsletter signup confirmation",
+        "changes": [
+          "A clear thank-you after subscribing on preview."
+        ]
+      }
+    },
+    {
+      "version": "2.7.4.1",
+      "date": "2026-09-27",
+      "title": "Founder note and signup feedback",
+      "changes": [
+        "Restore Tracker About Nic and full advice close hit area.",
+        "Add notebook newsletter confirmation, preserve the job dialog and Gmail handoff; live provider completion acceptance remains pending on preview.",
+        "End signup loading when the connected Beehiiv frame reports readiness."
+      ],
+      "public": {
+        "title": "A few notebook fixes",
+        "changes": [
+          "Open the note behind this board from your Tracker.",
+          "Close advice notes by tapping anywhere on the X button."
+        ]
+      }
+    },
+    {
+      "version": "2.7.4",
+      "date": "2026-09-27",
+      "title": "Small improvements",
+      "changes": [
+        "Complete source-bound display summaries for new internships and preserve historical display regression fixtures. Supersedes unpublished local 2.7.3 candidate; includes its internship publication and validation fixes."
+      ],
+      "public": {
+        "title": "More internships to explore",
+        "changes": [
+          "New summer 2027 internships, including Google and DoorDash."
+        ]
+      }
+    },
+    {
+      "version": "2.7.3",
+      "date": "2026-09-27",
+      "title": "Small improvements",
+      "changes": [
+        "Publish verified Google Summer 2027 internships, DoorDash and other current admissions from a fresh native export. Preserve unchanged prior source receipts and honor current Sheet removals; fix Not listed pay basis and long multi-location eligibility validation."
+      ],
+      "public": {
+        "title": "More internships to explore",
+        "changes": [
+          "New summer 2027 internships, including Google and DoorDash."
+        ]
+      }
+    },
+    {
+      "version": "2.7.2",
+      "date": "2026-09-27",
+      "title": "Small improvements",
+      "changes": [
+        "Allow verified owner moderation on production as well as preview; preserve authentication, origin checks, audit receipts, concurrency controls and separate state."
+      ],
+      "public": {
+        "title": "A board maintenance fix",
+        "changes": [
+          "Fixed an issue preventing board maintenance on the live site."
+        ]
+      }
+    },
+    {
+      "version": "2.7.1",
+      "date": "2026-09-26",
+      "title": "Compact pay-key selection",
+      "changes": [
+        "Replace desktop pay-band arrows with black checks inside the colored squares; retain underlines and reduce legend gaps."
+      ],
+      "public": {
+        "title": "A quieter pay key",
+        "changes": [
+          "Selected pay bands have a check inside their colored square, with tighter spacing."
+        ]
+      }
+    },
+    {
+      "version": "2.7.0",
+      "date": "2026-09-26",
+      "title": "Small improvements",
+      "changes": [
+        "Desktop pay-band unions and independent reset; recognizable-brand or newest-first ordering below pay; 44px work options; three distinct guest saves before sign-in reminder; advice motion twice as fast. Privacy reminder disclosure updated."
+      ],
+      "public": {
+        "title": "Find your kind of job faster",
+        "changes": [
+          "Filter desktop pay bands, choose newest jobs or big-name brands first, and see quicker advice illustrations."
+        ]
+      }
+    },
+    {
+      "version": "2.6.9",
+      "date": "2026-09-26",
+      "title": "Discovery, shared jobs and measurement",
+      "changes": [
+        "Centered accessible Filters popup, concise optional study/industry/location preferences, adjacent-field ranking, guest-device isolation, job suggestion validation, compact Recently viewed and plain resume headlines.",
+        "Cold shared jobs and internships resolve only against the current catalog, open the correct TLDR without scrolling and pin the shared card first.",
+        "Successful Google login measurement, stable advice IDs, signed anonymous identity and bounded reset work, consented 400-day daily totals, LinkedIn post/link attribution and private job/advice report breakdowns. Muse public API stays disabled."
+      ],
+      "public": {
+        "title": "Find your fit faster",
+        "changes": [
+          "Filters open in their own popup. Tune your feed with optional interests, and scan Recently viewed more easily.",
+          "Shared job links open the job details directly, with that posting first on the board."
+        ]
+      }
+    },
+    {
+      "version": "2.6.8",
+      "date": "2026-09-23",
+      "title": "Use resume spelling in board headlines",
+      "changes": [
+        "Preview-only copy correction: use resume without accents in the rotating Jobs and Internships headline."
+      ]
+    },
+    {
+      "version": "2.6.7",
+      "date": "2026-09-22",
+      "title": "Carry independent board signup into preview",
+      "changes": [
+        "Preview 2.6.7 includes the separate orange StillUnemployed Beehiiv form alongside previously approved preview features."
+      ]
+    },
+    {
+      "version": "2.6.6",
+      "date": "2026-09-22",
+      "title": "Restore independent StillUnemployed signup",
+      "changes": [
+        "Production-line hotfix: use a dedicated orange Beehiiv form for the board; preserve the Job Hunt Recipe form and exclude preview-only features."
+      ]
+    },
+    {
+      "version": "2.6.5",
+      "date": "2026-09-21",
+      "title": "Read-only jobs API preview",
+      "changes": [
+        "RD1085: bounded public jobs search and details, OpenAPI, current visibility authorities and fail-closed responses; preview-only enablement.",
+        "Privacy and Terms describe agent/API queries and narrow job-search reuse. No account access, automatic applications or Muse approval."
+      ],
+      "public": {
+        "title": "Job discovery integration support",
+        "changes": [
+          "Behind-the-scenes support for read-only job-search integrations where enabled. Account and application actions are not included.",
+          "Updated Privacy and Terms to explain API searches and third-party agents."
+        ]
+      }
+    },
+    {
+      "version": "2.6.4",
+      "date": "2026-09-21",
+      "title": "Illustrated advice in motion",
+      "changes": [
+        "Animate the original advice drawings with short viewport-triggered sequences, reduced-motion fallback and no card movement. Subscriber matching remains a separate unfinished integration."
+      ],
+      "public": {
+        "title": "Advice that draws itself",
+        "changes": [
+          "The drawings in job-hunt notes now come to life as you scroll."
+        ]
+      }
+    },
+    {
+      "version": "2.6.3",
+      "date": "2026-09-20",
+      "title": "Newsletter attribution",
+      "changes": [
+        "Local candidate: consented newsletter exposures and provider-confirmed subscription attribution by approved invitation, placement and canonical job. Disabled until Beehiiv webhook setup and production verification. Separate board accounts from newsletter acquisitions."
+      ]
+    },
+    {
+      "version": "2.6.2",
+      "date": "2026-09-19",
+      "title": "Production handoff checks and search accuracy",
+      "changes": [
+        "Geographic search, production artifact and private configuration gates, branded recovery and public guides. Analytics preview configuration; production activation requires hosted verification."
+      ],
+      "public": {
+        "title": "Find the right location",
+        "changes": [
+          "State searches now recognize state names and abbreviations, with clearer recovery when a page is missing."
+        ]
+      }
+    },
+    {
+      "version": "2.6.1",
+      "date": "2026-09-19",
+      "title": "Smoother mobile search",
+      "changes": [
+        "Fix residual SU-BUG-086 typing lag by rendering search results in cancellable batches, yielding between appends and releasing replaced impression observers."
+      ],
+      "public": {
+        "title": "Smoother search",
+        "changes": [
+          "Keep typing while search results load, with your keyboard and cursor staying in place."
+        ]
+      }
+    },
+    {
+      "version": "2.6.0",
+      "date": "2026-09-18",
+      "title": "Small improvements",
+      "changes": [
+        "Fix SU-BUG-086 mobile search input lag: retain the native input during result and background renders, preserve composition and draft state, and avoid repeated employer normalization/counting."
+      ],
+      "public": {
+        "title": "Faster search",
+        "changes": [
+          "Search responds faster while keeping your keyboard and cursor in place."
+        ]
+      }
+    },
+    {
+      "version": "2.5.9",
+      "date": "2026-09-13",
+      "title": "Compact job controls",
+      "changes": [
+        "Group smaller Save, Share and Close icons at the top right of job details with transparent 44px targets; preserve the Share hint and readable mobile company names.",
+        "Use one consistent round-cap X icon across site-owned close, dismiss and remove controls without changing their actions."
+      ],
+      "public": {
+        "title": "A tidier job card",
+        "changes": [
+          "Save, share and close sit together, with smaller icons and the same familiar controls."
+        ]
+      }
+    },
+    {
+      "version": "2.5.8",
+      "date": "2026-09-13",
+      "title": "Newsletter invitations and quieter detail controls",
+      "changes": [
+        "Move the detail bookmark beside the company, restore explicit newsletter footer chunks and show signup recovery only after unresolved loading or observed error.",
+        "Rotate twenty approved newsletter invitations with stable IDs in page memory, keeping the selected copy and form stable while reading.",
+        "Use a circular closer homepage portrait, exact recipe hover wording, photo-mounted graduation arrows and the quieter creator chip copy."
+      ],
+      "public": {
+        "title": "A little less in the way",
+        "changes": [
+          "Save jobs beside the company name, with a cleaner detail note.",
+          "Fresh newsletter invitations and clearer photo controls on the homepage."
+        ]
+      }
+    },
+    {
+      "version": "2.5.7",
+      "date": "2026-09-13",
+      "title": "Homepage photo progress and inline board switching",
+      "changes": [
+        "Active homepage carousel pill fills on the slide timer; manual graduation arrows browse the six existing photos.",
+        "Desktop homepage switches Jobs and Internships inline with section filters, view restoration, moderation and stale-response guards; dedicated and mobile headings are plain.",
+        "Five approved headline variants stay stable while browsing. Homepage job calls to action return to Jobs. No newsletter subscriber matching or new conversion collection activated."
+      ]
+    },
+    {
+      "version": "2.5.6",
+      "date": "2026-09-13",
+      "title": "Local homepage and board navigation polish",
+      "changes": [
+        "Localhost QA: move homepage sign-in left, expose the grad photo, write category links on the white Polaroid margin, and fade desktop edge notes while preserving autoplay and centered tabs.",
+        "Remove newsletter issue-number labels, split the unsubscribe message, and shorten the footer. Covers and issue titles remain a static snapshot; the existing Beehiiv signup stays embedded.",
+        "Add a theme-preserving Jobs and Internships heading picker and alternate the two approved screenshot and resume headlines on page load, with tab-only storage disclosure and no A/B analytics.",
+        "Simplify advice cards to one hook and handwritten artwork, use warm cream Casino low-salary cards, retain signup retry recovery, and correct narrow desktop header and picker clipping. Trust stamps and advice signup copy await a separate choice."
+      ]
+    },
+    {
+      "version": "2.5.5",
+      "date": "2026-09-13",
+      "title": "Local homepage notes and board polish",
+      "changes": [
+        "Local review only. Desktop homepage gains Nic and newsletter edge notes, an on-site signup with three published issue previews, handwritten corner privacy choices, upper carousel dots and continued automatic rotation without a visible Pause control.",
+        "Simplifies the board menu and moves written preferences to Filters: Tune your feed; removes generic board subtitles; reduces the founder version link; corrects all-theme filters and mobile salary input formatting, dragging, Reset click handling and narrow-screen placement.",
+        "Preserves the 2.5.4 identity correction, Google sign-in, account ownership and optional privacy choices. Copy alternatives await Nic selection. 877 tests and responsive browser checks pass; preview and production are unchanged."
+      ]
+    },
+    {
+      "version": "2.5.4",
+      "date": "2026-09-13",
+      "title": "Restore homepage identity and centered navigation",
+      "changes": [
+        "Local review only: restore the original Playfair Display headline, brown italic line and orange drawn underline; center the three desktop navigation tabs independently of the account control; use the Google logo with the shorter visible Sign in label. Preserve the approved simpler copy, full board, mobile entry, and Lexend body text."
+      ]
+    },
+    {
+      "version": "2.5.3",
+      "date": "2026-09-13",
+      "title": "Clearer browsing and reliable report review",
+      "changes": [
+        "Shared responsive homepage and board; compact onboarding; Lexend body copy; source-backed labels; salary range, calendar-day shuffle and employer spacing; Save, Recently viewed and Tracker source/report improvements; production auth gate and consent-aware analytics; signed report quarantine with canonical evidence checks and durable notification retries."
+      ],
+      "public": {
+        "title": "Find your next role, with fewer detours",
+        "changes": [
+          "Start browsing immediately on mobile, or explore the shorter desktop homepage with the full board below.",
+          "Save from job details, revisit recently viewed roles and record where you found each application.",
+          "Read shorter advice in Lexend, choose a salary range and explore a more varied mix of employers."
+        ]
+      }
+    },
+    {
+      "version": "2.5.2",
+      "date": "2026-09-09",
+      "title": "Production launch of reviewed Version 2 board",
+      "changes": [
+        "Promote reviewed 2.5.1 features to production. Redirect the default Netlify production address to the canonical domain so the existing account/privacy boundary is consistent. Google account sync and owner report writes remain staged on preview."
+      ]
+    },
+    {
+      "version": "2.5.1",
+      "date": "2026-09-09",
+      "title": "Internship sharing and Version 2 overview",
+      "changes": [
+        "Give internships specific themed share pages and images with fresh availability checks, and share the readable Jobs detail layout.",
+        "Restore first-card artwork on both boards and refine the Latest Update notes and dismissible welcome toast.",
+        "Present eight major Version 2 features with the exact current version while preserving full private release history."
+      ]
+    },
+    {
+      "version": "2.5.0",
+      "date": "2026-09-09",
+      "title": "Keep saved jobs across devices",
+      "changes": [
+        "Added a one-time Google sign-in reminder after a successful new guest bookmark, using the existing application reminder design and a separate browser receipt. It yields safely around other notes, does not stack with the first Saved shortcut, and keeps the existing three-application reminder and later Saved shortcut cadence.",
+        "Updated the privacy disclosure for the new reminder marker and confirmed Nic’s three-part numbering choice for 2.5.0 and future patch carries."
+      ]
+    },
+    {
+      "version": "2.4.9",
+      "date": "2026-09-08",
+      "title": "Cleaner Latest Update cards",
+      "changes": [
+        "Removed the decorative brown tape above the four Latest Update cards on desktop and mobile. The miniature theme swatches retain their tape, and the four title arrows and existing announcement behavior are unchanged."
+      ]
+    },
+    {
+      "version": "2.4.8",
+      "date": "2026-09-08",
+      "title": "Clearer Latest Update card links",
+      "changes": [
+        "Replace Click here with a decorative drawn arrow after each Latest Update card title; remove duplicate orange arrows inside the advice and internship previews. Existing announcement receipts, interaction, data flows and four-card order are unchanged."
+      ]
+    },
+    {
+      "version": "2.4.7",
+      "date": "2026-09-08",
+      "title": "Keep owner restoration available after Undo expires",
+      "changes": [
+        "Add owner-only Reported jobs to Board menu, using the existing authenticated private read and guarded restore action. Keep only removed posting fields in memory, preserve stable retry IDs and global revision conflicts, and retain keyboard navigation.",
+        "Includes the accepted 2.4.6 compact header, second-card drawings, pointer-focus correction and preview moderation. Native recovery tests cover 320, 390 and 1440px; no new server powers, storage recipients or retention. Production unchanged."
+      ]
+    },
+    {
+      "version": "2.4.6",
+      "date": "2026-09-08",
+      "title": "Complete preview runtime packaging",
+      "changes": [
+        "Fix the Edge method declaration and separate unchanged source parsing from image generation. All seven Netlify Functions packages and the Edge package validate; all seven emitted handlers cold-load with credentials and network absent.",
+        "807 tests pass. Includes compact board header, second-card drawing, accessible pointer and keyboard dialogs, reversible owner-only preview reporting, privacy disclosures and security corrections. Earlier 2.4.3 and 2.4.4 stayed local; 2.4.5 failed host packaging and was never served."
+      ],
+      "public": {
+        "title": "A little more room for the roles",
+        "changes": [
+          "A compact board header brings roles closer, with the drawings still along for the hunt.",
+          "Clearer mobile dialogs and a more reliable way to keep listings current."
+        ]
+      }
+    },
+    {
+      "version": "2.4.5",
+      "date": "2026-09-08",
+      "title": "Finish owner reporting and compact board QA",
+      "changes": [
+        "Final keyboard browser check caught native disabled-button blur during Undo. Preserve action focus ownership and return focus on success or retry without taking later user focus.",
+        "Includes compact header, second-card art, pointer-focus correction, server-authorized preview unlisting, policy updates, dependency and local-launcher fixes from the undeployed2.4.3/2.4.4 candidate checkpoints.803 tests pass; bounded native keyboard/click/retry/expiry and all-theme checks completed."
+      ],
+      "public": false,
+      "unpublishedPublicDraft": {
+        "title": "A little more room for the roles",
+        "changes": [
+          "A compact board header brings roles closer, with the drawings still along for the hunt.",
+          "Clearer mobile dialogs and a more reliable way to keep listings current."
+        ]
+      },
+      "deploymentStatus": "failed-preview-build"
+    },
+    {
+      "version": "2.4.4",
+      "date": "2026-09-08",
+      "title": "Preserve keyboard access to report undo",
+      "changes": [
+        "Final candidate review found Reported could expire while Undo held keyboard focus. Pause expiry inside the note and resume five seconds after focus leaves; retain ordinary five-second timing.",
+        "Includes the compact header, second-card illustration, reversible owner reporting and privacy/security corrections prepared in 2.4.3. Earlier 2.4.3 seal remained local and was never deployed."
+      ],
+      "public": false,
+      "unpublishedPublicDraft": {
+        "title": "A little more room for the roles",
+        "changes": [
+          "The board starts closer to the controls, with the drawings still along for the hunt.",
+          "Clearer mobile dialogs and a more reliable way to keep listings current."
+        ]
+      },
+      "deploymentStatus": "superseded-local-only"
+    },
+    {
+      "version": "2.4.3",
+      "date": "2026-09-08",
+      "title": "Compact board and owner reporting",
+      "changes": [
+        "Remove visible result counts, align the board menu with the pay legend and move the first drawing to the second displayed card.",
+        "Add authenticated reversible preview-only owner reporting with durable acknowledgments and active-listing checks.",
+        "Preserve keyboard focus while removing automatic pointer-focus outlines; restrict local preview to loopback and update privacy disclosures."
+      ],
+      "public": false,
+      "unpublishedPublicDraft": {
+        "title": "A little more room for the roles",
+        "changes": [
+          "A more compact board header brings the first roles closer.",
+          "Small improvements to mobile dialogs and listing availability."
+        ]
+      },
+      "deploymentStatus": "superseded-local-only"
+    },
+    {
+      "version": "2.4.2",
+      "date": "2026-09-08",
+      "title": "Keep Tracker status messages readable in every theme",
+      "changes": [
+        "Final hosted 2.4.1 review found an inherited Casino Tracker sync-caption contrast defect: dark inherited ink on burgundy. Bind only that status paragraph to existing Tracker theme ink; bump account.css cache references.",
+        "All 744 tests pass. Ten rendered caption checks cover eight themes at390px plusOriginal/Casino1440px, each above4.5:1. No change to status, Saved, auth, storage, analytics, policies, data, sounds or creators. Preview only."
+      ],
+      "public": {
+        "title": "A clearer Tracker message",
+        "changes": [
+          "Tracker save and sync messages now stay readable in every theme, including Casino."
+        ]
+      }
+    },
+    {
+      "version": "2.4.1",
+      "date": "2026-09-08",
+      "title": "Saved reminders and steadier mobile navigation",
+      "changes": [
+        "Add a current-owner device-only Saved shortcut after successful new bookmarks 1,5,10; coordinate with other reminders and preserve saved records.",
+        "Preserve native Tracker selects through status changes and sync echoes; clear suspended previous-account views before showing board or Tracker state.",
+        "Clear Saved-only views on section navigation; put count left and Board menu right with protected illustration spacing; normalize known single-office city/state and trailing hourly plus.",
+        "Latest Update adds current version at footer left and removes only the static heading outline. Privacy discloses bookmark cadence and tab section storage. Sound effects and creator subsections remain deferred; preview only."
+      ],
+      "public": {
+        "title": "A smoother board on your phone",
+        "changes": [
+          "Find saved jobs with a small Saved shortcut after your first bookmark and every fifth one.",
+          "Tracker status changes stay steady, and switching sections opens the full board again.",
+          "Shorter location labels and clearer spacing keep job cards easier to scan.",
+          "Latest Update now shows the current version at the bottom."
+        ]
+      }
+    },
+    {
+      "version": "2.4.0",
+      "date": "2026-09-08",
+      "title": "Compact multi-location job cards",
+      "changes": [
+        "Main job card fronts and generated share images use Multiple locations for listings with more than one location; complete source geography remains in job details, search and state filters.",
+        "Verified all 162 current location labels, 34 affected listings, same-state offices, DC, remote alternatives, address notes, city aliases and ZIP codes."
+      ],
+      "public": {
+        "title": "A little more room on every job card",
+        "changes": [
+          "Jobs with several locations now say Multiple locations. Open the job for the full list of cities."
+        ]
+      }
+    },
+    {
+      "version": "2.3.9",
+      "date": "2026-09-08",
+      "title": "Fit shared job text and provide the browser icon",
+      "changes": [
+        "Measure company, role and location in generated share images; retain fitting text and use an explicit word-boundary ellipsis when needed. Preserve salary, fonts, layout and vector star.",
+        "Provide the existing orange brand star as a browser icon so the automatic favicon request succeeds. No sounds or new collection."
+      ],
+      "public": {
+        "title": "Clearer shared job cards",
+        "changes": [
+          "Shared cards keep complete titles when they fit and make shortened text clear."
+        ]
+      }
+    },
+    {
+      "version": "2.3.8",
+      "date": "2026-09-08",
+      "title": "Hosted theme navigation and share-image correction",
+      "changes": [
+        "Make generated theme-page navigation root-relative so hosted pretty URLs preserve Home and board routes.",
+        "Render share-image footer stars as vector paths to remove dependence on hosting system font coverage; no sounds or new data collection."
+      ],
+      "public": {
+        "title": "A smoother trip around the board",
+        "changes": [
+          "Theme links take you to the right place, and shared job cards keep their star."
+        ]
+      }
+    },
+    {
+      "version": "2.3.7",
+      "date": "2026-09-07",
+      "title": "Clearer sign-in and a calmer first visit",
+      "changes": [
+        "Show a compact, theme-aware Latest Update at the initial board shell, once per deliberate announcement with browser acknowledgment; preserve OAuth return tasks and manual-reopen scroll. Add a five-second version welcome note.",
+        "Label Google sign-in on mobile and offer a one-time reminder after three newly saved guest applications. Preserve verified QA owner exclusions and surface analytics service configuration failures accurately.",
+        "Replace the application nudge with a Tracker sticky note, enlarge mobile bookmarks, compact About Nic, prevent internship stamp overlap and align counts away from doodles.",
+        "Remove salary preference from discovery ordering, preserve ordering after feed refresh, update Privacy and Terms, and correct small-text contrast across board and Tracker surfaces. Sound effects remain deferred outside the website."
+      ],
+      "public": {
+        "title": "A clearer board, from the first visit",
+        "changes": [
+          "Sign-in is easier to find, with a reminder to keep your applications together.",
+          "Larger save buttons, a smaller About note and clearer internship cards make phone browsing easier.",
+          "The latest updates appear before you start browsing and stay available in Board menu.",
+          "Higher pay no longer decides which roles appear first."
+        ]
+      }
+    },
+    {
+      "version": "2.3.6",
+      "date": "2026-09-07",
+      "title": "Keep filter panels above the closed board menu",
+      "changes": [
+        "Fix the closed Board menu stacking layer so its summary cannot cover All Roles or the Filters close button. Add regression coverage for both panels on Jobs and Internships."
+      ],
+      "public": {
+        "title": "Clearer filters",
+        "changes": [
+          "Board menu stays out of the way when you open filters or choose a role."
+        ]
+      }
+    },
+    {
+      "version": "2.3.5",
+      "date": "2026-09-07",
+      "title": "Readable actions across every theme",
+      "changes": [
+        "Apply links on Jobs now share the readable paper-specific ink already used by internships. Hover underlines preserve contrast. Girlies navigation and Tracker status use matching dark ink; filter counts have a darker readable badge."
+      ],
+      "public": {
+        "title": "Clearer actions in every theme",
+        "changes": [
+          "Apply links, navigation and filter counts are easier to read, including on pink and dark themes."
+        ]
+      }
+    },
+    {
+      "version": "2.3.4",
+      "date": "2026-09-07",
+      "title": "Keep your place, with clearer internship cards",
+      "changes": [
+        "Preserve account-owned public saved-card snapshots and backfill existing bookmarks from retained retired Jobs rows. Confirm closure only from exact Dead evidence; missing or cross-board saves stay distinct and never disappear silently.",
+        "Simplify the internship pay filter and labels, use a stable diverse decorative paper cycle, add full-contrast Internship stamps, enlarge bookmarks and remove redundant Pay Details in job popups while retaining raw source data.",
+        "Use one lined help note at a time, remove Tracker help and Google Preferred Sources promotion, move State first, close filters on outside taps, put About Nic in Board menu, open notebook preferences without input focus and remove Clear answers.",
+        "Keep newsletter iframe nodes through background refresh, render the form as it arrives, replace external fallback with inline retry; shrink advice art, randomize appropriate open notes, suppress notes in hidden review, and show themed feedback for five seconds with four-second wider toasts.",
+        "Exclude the verified QA account from measurement and closure reports. Creator Version 3 experiment stays paused and separate; open-note, Portfolio Graded CTA and Lexend mockups remain private review artifacts."
+      ],
+      "public": {
+        "title": "Your saved jobs stay with you",
+        "changes": [
+          "Saved listings keep their card details when they leave the board, with a clear note about availability.",
+          "Internships have shorter pay labels, varied paper colors and their own stamp. Bookmarks are easier to tap.",
+          "Smaller theme previews, clearer menus and quieter notebook popups make browsing easier on your phone."
+        ]
+      }
+    },
+    {
+      "version": "2.3.3",
+      "date": "2026-09-07",
+      "title": "Mobile polish and quieter discovery",
+      "changes": [
+        "Remove feed signup promotions; actual job-detail openings show signup every second time, with a reserved loading state and direct fallback. Every published advice ID has artwork and quieter invitation copy.",
+        "Render the real board before current feed resolves, preload local fonts and remove skeleton placeholders. Preserve typed filters, unavailable-feed recovery and no cached catalog. Remove automatic dialog focus outline and correct inherited body font.",
+        "Use a one-line tracker reminder after the first and every tenth newly stored application. Top-right tracker removal opens a No-default confirmation with keyboard wrapping and account guards; notes grow without an extra toggle and Export is nearly straight.",
+        "Public style guide retains visual brand sections; full prior guide is privately archived. Public HTML and JSON explicitly project two viewer-facing releases while the full ledger remains internal. Privacy describes local cadence counters. Retain Board menu while alternate More placement awaits feedback."
+      ],
+      "public": {
+        "title": "A little less in your way",
+        "changes": [
+          "A smaller tracker reminder, clearer delete confirmation and notes that grow as you type.",
+          "More illustrated advice and fewer newsletter invitations while you browse.",
+          "Smoother page loading, cleaner job popups and a shorter visual style guide."
+        ]
+      }
+    },
+    {
+      "version": "2.3.2",
+      "date": "2026-09-07",
+      "title": "A quieter board, clearer pay",
+      "changes": [
+        "Move preferences, hidden jobs, suggestions and what’s new into one Board menu. Preferences open by request; the returning-job introduction is deferred.",
+        "Simplify Latest Update, redraw the tracker preview, use white internship paper and keep every arrow drawn.",
+        "Use compact whole-number pay labels with exact employer amounts under Pay details, and one list of 50 state names on both boards.",
+        "Show one lined-paper tooltip at a time and keep menu and dialog focus predictable."
+      ],
+      "public": {
+        "title": "A quieter board, clearer pay",
+        "changes": [
+          "Find preferences, hidden jobs, suggestions and what’s new in one Board menu.",
+          "Compare shorter pay labels, open Pay details for the original amounts, and filter by one clear list of 50 states.",
+          "A simpler Latest Update note gives you more room to explore."
+        ]
+      }
+    },
+    {
+      "version": "2.3.1",
+      "date": "2026-09-06",
+      "title": "Latest Update, with room to settle in",
+      "changes": [
+        "The Latest Update popup waits 30 seconds before opening automatically. Existing dismissals are remembered, and What’s new still opens it immediately.",
+        "An Internships card replaces the Portfolio Graded teaser, with a short overview and a direct link to browse internships."
+      ],
+      "public": {
+        "title": "Internships have a place on the board",
+        "changes": [
+          "Browse internships from the Latest Update note.",
+          "The update waits 30 seconds, remembers dismissal, and is always available through What’s new."
+        ]
+      }
+    },
+    {
+      "version": "2.3.0",
+      "date": "2026-09-06",
+      "title": "Keep each account’s place its own",
+      "changes": [
+        "Remember your filters during a short visit and clear them when accounts change. A background refresh keeps navigation in place while current roles are checked."
+      ]
+    },
+    {
+      "version": "2.2.9",
+      "date": "2026-09-06",
+      "title": "A clearer board, with better recovery",
+      "changes": [
+        "Keep filters through short visits, retry loading without losing your place, and get clearer save and sign-in feedback. Find an optional Prefer us on Google link after Apply, plus a new explanation of how the board works."
+      ]
+    },
+    {
+      "version": "2.2.8",
+      "date": "2026-09-06",
+      "title": "Keep your place when changing themes",
+      "changes": [
+        "Changing an internship theme keeps you on Internships when you refresh or share the address."
+      ]
+    },
+    {
+      "version": "2.2.7",
+      "date": "2026-09-06",
+      "title": "A lighter build for the same board",
+      "changes": [
+        "Share-image generation now reuses its drawing canvas so large boards can deploy reliably.",
+        "Includes the compact internship cards, short summaries and varied theme paper from 2.2.6."
+      ]
+    },
+    {
+      "version": "2.2.6",
+      "date": "2026-09-06",
+      "title": "Compact internship cards and clearer summaries",
+      "changes": [
+        "Internship cards show the company, role, exact pay, city and state.",
+        "Short TLDR notes put known program dates and key eligibility in the final bullet.",
+        "Internships use varied theme paper colors, with more of the strongest accent. Job salary bands stay unchanged."
+      ]
+    },
+    {
+      "version": "2.2.5",
+      "date": "2026-09-06",
+      "title": "The first internships are on the board",
+      "changes": [
+        "Browse 46 source-checked internships with exact pay, eligibility and application dates.",
+        "A separate internship inventory keeps unavailable and held listings out of the board while preserving their review records.",
+        "Clearer empty states and program-pay labels, with current internship status checked before hosted listings load."
+      ]
+    },
+    {
+      "version": "2.2.4",
+      "date": "2026-09-06",
+      "title": "Internship pay and eligibility up front",
+      "changes": [
+        "Internship cards keep exact hourly, monthly and program pay, with the full duties and eligibility in a readable note.",
+        "Accepting applications and upcoming programs have separate counts and actions. Announced dates do not automatically open applications.",
+        "Internship sharing stays on the internship board, and keyboard focus stays visible inside job details."
+      ]
+    },
+    {
+      "version": "2.2.3",
+      "date": "2026-09-06",
+      "title": "Preferences without leaving the board",
+      "changes": [
+        "Your preferences now opens as a compact paper pop-up, with a light background blur and clear syncing, saved and retry states.",
+        "Optional analytics count preference save, clear and skip actions and not-a-fit responses without collecting typed answers or job identities for those actions."
+      ]
+    },
+    {
+      "version": "2.2.2",
+      "date": "2026-09-06",
+      "title": "Clearer sign-in and a coffee break",
+      "changes": [
+        "The welcome-back card shows Google with Sign In while signed out, and returns to its close button when signed in.",
+        "Replaced the Original theme’s push-up figure with a coffee-break drawing on the board and in the style guide."
+      ]
+    },
+    {
+      "version": "2.2.1",
+      "date": "2026-09-06",
+      "title": "A welcome that remembers this browser",
+      "changes": [
+        "Dismiss the Version 2 welcome once without signing in; automatic appearances are capped at two, and What’s new remains available.",
+        "Open Portfolio Graded inside the welcome for a tier-list example and a coming-soon link.",
+        "More Themes uses the same white note paper as the other updates.",
+        "Release numbering now pauses before 2.5.0 for a decision on the version format."
+      ]
+    },
+    {
+      "version": "2.2.0",
+      "date": "2026-09-06",
+      "title": "A board that gets to know your interests",
+      "changes": [
+        "Added optional account preferences, personal job hiding and returning-visitor suggestions on enabled previews.",
+        "Opened an internship section with separate review, eligibility and compensation details; its first listings are still being checked.",
+        "Added six illustrated lessons about experience during college and expanded drawings across the advice notes."
+      ]
+    },
+    {
+      "version": "2.1.9",
+      "date": "2026-09-06",
+      "title": "A calmer application routine",
+      "changes": [
+        "Kept Monday clear and moved the calendar cross-out to Friday, alongside Saturday and Sunday.",
+        "Reworded the advice as a suggested routine, with a reminder to apply when ready and respect deadlines."
+      ]
+    },
+    {
+      "version": "2.1.8",
+      "date": "2026-09-06",
+      "title": "The Original stick figures are back",
+      "changes": [
+        "Restored the earlier Original stick figures and matching examples in the style guide.",
+        "Kept the other seven themes and gave the first figure room below the board links."
+      ]
+    },
+    {
+      "version": "2.1.7",
+      "date": "2026-09-06",
+      "title": "Advice notes in the style guide",
+      "changes": [
+        "Open sample advice notes and see how the paper, handwriting and calls to action fit together.",
+        "Find guidance for clear promotional labels, everyday wording, photos and the site name, with contents links for quicker browsing."
+      ]
+    },
+    {
+      "version": "2.1.6",
+      "date": "2026-09-06",
+      "title": "Texture, character and theme feedback",
+      "changes": [
+        "Added texture guides and three matching drawings for every theme, shared with the job board.",
+        "Separated optional theme likes and dislikes from theme selections in the analytics dashboard.",
+        "Made theme feedback easier to dismiss and kept it out of job detail windows."
+      ]
+    },
+    {
+      "version": "2.1.5",
+      "date": "2026-09-06",
+      "title": "Quieter notices and a familiar homepage",
+      "changes": [
+        "Replaced the automatic privacy form with a short notice and optional detailed choices.",
+        "Restored graduation-photo enlargement within the homepage, without a popup.",
+        "Updated the mobile bookmark prompt and made its instructions easier to read."
+      ]
+    },
+    {
+      "version": "2.1.4",
+      "date": "2026-09-06",
+      "title": "A clearer way back",
+      "changes": [
+        "Shortened the welcome detail action to go back."
+      ]
+    },
+    {
+      "version": "2.1.3",
+      "date": "2026-09-06",
+      "title": "Your interests, your choices",
+      "changes": [
+        "Optional personalized ordering follows the career fields and roles you explore, with higher disclosed pay among comparable jobs.",
+        "Separate analytics and recommendation controls, a history reset, and clearer privacy explanations.",
+        "A private owner dashboard summarizes measured activity and answers supported questions."
+      ]
+    },
+    {
+      "version": "2.1.2",
+      "date": "2026-09-05",
+      "title": "Every theme, with a clearer welcome",
+      "changes": [
+        "Explore all eight themes in the style guide, now linked from Version History.",
+        "A roomier Version 2 welcome puts the tracker first and gives each feature one clear way back.",
+        "Optional Google sign-in in the application feedback note keeps your unanswered question through sign-in."
+      ]
+    },
+    {
+      "version": "2.1.1",
+      "date": "2026-09-05",
+      "title": "Back to the notebook",
+      "changes": [
+        "Shared warm yellow, handwritten welcome and suggestion notes, a visual style guide, and a shorter mobile bookmark reminder.",
+        "Featured job cards follow salary bands, with clearer action text."
+      ]
+    },
+    {
+      "version": "2.1.0",
+      "date": "2026-09-05",
+      "title": "Meet Version 2",
+      "changes": [
+        "A welcome on your first Jobs visit introduces advice, themes, Google sync and Tracker, plus a Portfolio Graded preview.",
+        "A tighter homepage, Apply to Jobs beside Nic’s signature, and easier access to Bookmark and Suggest Jobs.",
+        "Version history is available from the founder note, board footer and welcome.",
+        "Six additional verified job URL variants now group into their original postings."
+      ]
+    },
+    {
+      "version": "2",
+      "date": "2026-09-05",
+      "title": "The new board",
+      "changes": [
+        "Saved jobs and applications sync across devices with Google sign-in.",
+        "Clearer navigation and mobile controls.",
+        "One card per recognized job posting, with existing saved links preserved.",
+        "Search and filter across all 14 job categories.",
+        "A roomier desktop homepage, clearer bookmark shortcut and clickable graduation photo.",
+        "Restored founder notes and clearer Sign In and Signed In labels.",
+        "Suggest Jobs sends links to a private review inbox before any publishing decision.",
+        "Version history now lives beside the homepage footer links."
+      ]
+    }
+  ],
+  "sourceFingerprint": {
+    "algorithm": "sha256-public-source-v1",
+    "digest": "11d60833fdb9116a644c0ef0839ad54bd09a71a073acdfb780197f67ef2ef3c6",
+    "fileCount": 234
+  }
+}

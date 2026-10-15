@@ -114,6 +114,12 @@ var SUJobIdentity = (function () {
     }
 
     // Explicit employer-owned aliases. gh_jid on an arbitrary host is never enough.
+    // SeatGeek's Greenhouse API supplies this employer-domain absolute_url
+    // (verified requisition 8180508, 2026-10-15). Retain tenant and full ID.
+    if (host === 'seatgeek.com') {
+      if ((match = path.match(/^\/jobs\/(\d+)$/))) return greenhouse(parsed, 'seatgeek', match[1], false);
+      return null;
+    }
     if (host === 'careers.cargurus.com') {
       if ((match = path.match(/^\/us\/en\/job\/(\d+)$/))) return greenhouse(parsed, 'cargurus', match[1], false);
       return null;

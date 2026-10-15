@@ -1,18 +1,35 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.31",
+  "currentVersion": "2.7.7.33",
   "releases": [
     {
-      "version": "2.7.7.31",
-      "date": "2026-10-14",
-      "title": "Complete app account lifecycle and native compatibility",
+      "version": "2.7.7.33",
+      "date": "2026-10-15",
+      "title": "Complete account lifecycle for web and iOS",
       "changes": [
-        "Integrate confirmed resumable account deletion, explicit Apple and Google provider linking, native-origin transport and legal/support pages over production 2.7.7.30."
+        "Preserve production 2.7.7.32 SeatGeek identity and saved-link compatibility while adding optional Apple sign-in, explicit provider linking and recent-auth resumable account deletion.",
+        "Retain current production feeds, filters, deadlines, original URLs, shared visibility decisions and every published release record. Cloud provider, rules and credential activation remains pending."
       ],
       "public": {
-        "title": "Your account, on your terms",
+        "title": "More control over your account",
         "changes": [
-          "Account settings support connecting sign-in methods and requesting account deletion where enabled. Updated privacy, terms and support information."
+          "Optional account controls include provider linking and account deletion, with guest browsing still available."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.32",
+      "date": "2026-10-15",
+      "title": "Recognize the verified SeatGeek employer-domain Greenhouse alias",
+      "changes": [
+        "Group SeatGeek employer-domain and Greenhouse links by employer-scoped requisition identity while preserving original URLs, saved keys, tracker rows and generated share pages.",
+        "Reject conflicting IDs, unverified hosts and meaningful query/hash differences; no source row or account configuration change.",
+        "Version31 remains an independent account-release candidate under App Launch ownership."
+      ],
+      "public": {
+        "title": "One card per SeatGeek job",
+        "changes": [
+          "Shared employer and application links now open the same job, without duplicate cards."
         ]
       }
     },
@@ -1350,7 +1367,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "11d60833fdb9116a644c0ef0839ad54bd09a71a073acdfb780197f67ef2ef3c6",
+    "digest": "c482227d80a9cc1bf80cec54d9bd3912aa7266e6c8d9228f959c58fb5088c792",
     "fileCount": 234
   }
 }
