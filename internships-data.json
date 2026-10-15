@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-15T01:21:59.441Z",
+  "sourceExportedAt": "2026-10-15T01:35:40.156Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -1343,45 +1343,6 @@
         "status": "open",
         "checkedAt": "2026-09-27T10:45:00.000Z",
         "sourceUrl": "https://careersatdoordash.com/jobs/product-design-intern-summer-2027/8176863/",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Figma",
-      "role": "Brand Design Intern (Summer 2027)",
-      "link": "https://job-boards.greenhouse.io/figma/jobs/6144755004",
-      "loc": "San Francisco, CA",
-      "ind": "Graphic / Visual Design",
-      "desc": "Support Figma Brand Studio campaigns, visual identity and scalable brand systems with mentorship.",
-      "pay": "$29/hour",
-      "style": "In-person",
-      "exp": "Not listed",
-      "state": "San Francisco, CA",
-      "eligibility": "Portfolio with 2–3 accessible projects (school, personal or internship work); working Figma proficiency; visual communication and feedback skills. Must work from San Francisco Hub. Application asks US work authorization, sponsorship need and graduation date if currently enrolled.",
-      "cycle": "Summer 2027",
-      "deadline": "October 2, 2026, 5:00 PM PT",
-      "applicationsOpen": "Not listed",
-      "startDate": "June 1 or June 14, 2027",
-      "timingSourceUrl": "https://job-boards.greenhouse.io/figma/jobs/6144755004",
-      "payStatus": "paid",
-      "payBasis": "hour",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Create brand work for campaigns and launches.",
-        "Explore typography, imagery and visual directions.",
-        "Build scalable brand toolkits with team feedback."
-      ],
-      "eligibilityFlags": [
-        "Portfolio with 2–3 accessible projects (school, personal or internship work); working Figma proficiency; visual communication and feedback skills. Must work from San Francisco Hub. Application asks US work authorization, sponsorship need and graduation date if currently enrolled."
-      ],
-      "benefits": [
-        "Housing stipend and travel reimbursement."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-28T01:40:22.215Z",
-        "sourceUrl": "https://boards-api.greenhouse.io/v1/boards/figma/jobs/6144755004?questions=true",
         "reviewerType": "source_check"
       }
     },

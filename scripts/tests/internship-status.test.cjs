@@ -39,14 +39,14 @@ test('manual dead, cleared link, deleted row, inactive and unknown statuses supp
 
 test('server-only display copy is attached only after its source row survives live suppression',async()=>{
   const source=require('../../internships-data.json'),displayCopy=require('../../netlify/functions/lib/internship-display.json');
-  const [first,retired]=source.jobs;assert(first&&retired);
+  const now=Date.parse(source.sourceExportedAt),[first,retired]=require('../../js/job-deadlines.js').current(source.jobs,now);assert(first&&retired);
   const data=snapshot([first,retired]);
-  const result=await handler(data,async()=>response(csv([[first.link,'Active','Open'],[retired.link,'Dead','Closed']])),{displayCopy})(request);
+  const result=await handler(data,async()=>response(csv([[first.link,'Active','Open'],[retired.link,'Dead','Closed']])),{displayCopy,now:()=>now})(request);
   assert.equal(result.statusCode,200);
   const body=payload(result);assert.equal(body.jobs.length,1);assert.equal(body.jobs[0].link,first.link);
   assert.deepEqual(body.jobs[0].presentation,displayCopy[first.link]);
   assert(!result.body.includes(retired.link));assert(!result.body.includes(displayCopy[retired.link].detailBullets[0]));
-  const failed=await handler(data,async()=>response('<html>Sign in</html>',{headers:{'Content-Type':'text/html'}}),{displayCopy})(request);
+  const failed=await handler(data,async()=>response('<html>Sign in</html>',{headers:{'Content-Type':'text/html'}}),{displayCopy,now:()=>now})(request);
   assert.equal(failed.statusCode,503);assert(!failed.body.includes(first.link));assert(!failed.body.includes(displayCopy[first.link].detailBullets[0]));
 });
 
@@ -211,4 +211,11 @@ test('current public feed suppresses elapsed deadlines but preserves raw approve
  assert.equal(Status.suppress(Status.approvedSnapshot(snapshot,before),index,before).jobs.length,1);
  assert.equal(Status.suppress(Status.approvedSnapshot(snapshot,after),index,after).jobs.length,0);
  assert.equal(snapshot.jobs.length,1);assert.equal(Internships.jobs(snapshot,after).length,1);assert.equal(Internships.canApply(j,after),false);
+});
+
+test('current feed also excludes an elapsed explicit written deadline with no deadlineISO',()=>{
+ const now=Date.parse('2030-10-03T00:00:00Z'),j=job('87654',{deadline:'October 2, 2030, 5 PM PT'}),snapshot={schemaVersion:2,status:'verified',jobs:[j]};
+ const index=Status.statusIndex('Link,Active/Dead,Application Status\n'+j.link+',Active,Open');
+ assert.equal(Status.approvedSnapshot(snapshot,now).jobs.length,1);
+ assert.equal(Status.suppress(snapshot,index,now).jobs.length,0);assert.equal(Internships.canApply(j,now),false);
 });

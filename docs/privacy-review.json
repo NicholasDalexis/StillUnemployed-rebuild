@@ -1,13 +1,13 @@
 {
-  "version": "2.7.7.29",
+  "version": "2.7.7.30",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-15T01:24:04.874Z",
+  "reviewedAt": "2026-10-15T01:37:20.435Z",
   "reviewer": "Codex StillUnemployed owner",
-  "sourceDigest": "dfcd3548e82fd216750671ffb6c0637f00090992a0be32d0db993c83e31a3774",
+  "sourceDigest": "fa7ebcbbeac186561e8e1cf3a2737b95dd9357dc41fdd9102715926c139c4184",
   "sourceFileCount": 227,
   "privacyChanged": false,
-  "termsChanged": true,
-  "scope": "Current discovery/counts exclude elapsed machine-readable deadlines; raw approved and saved history remain readable without claiming employer closure. Google TPM deadline/eligibility correction and APM retirement follow fresh source evidence. Preserve approved compact copy only for checksum-matching unchanged facts. No new data collection/provider/auth/API activation/schedule. Privacy reviewed, no further wording change needed; Terms explains current-feed removal.",
+  "termsChanged": false,
+  "scope": "Review current deadline exclusion and saved-history behavior including exact, unambiguous written employer dates/times/zones. Partial dates, multiple cohorts, expected posting duration and DST-ambiguous wall times are not guessed. Fresh source-bound Figma retirement yields86raw/85current. Current Privacy/Terms already describe known-deadline removal, employer time priority and retained saved history; no additional wording change needed. No data/provider/auth/API/schedule expansion.",
   "checks": {
     "disclosures": "Privacy/Terms disclose default familiar-brand and annual USD minimum-over-80K preference without annualizing hourly/estimated/variable pay, professional scope and deadline semantics. Effective dates October14; no legal certification.",
     "choices": "Existing consent/GPC, account isolation, stored preference labels/history, explicit sorts and daily order preserved. No new provider, identity/event, raw-search collection, retention or schedule.",

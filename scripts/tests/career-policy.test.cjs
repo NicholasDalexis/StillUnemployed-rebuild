@@ -93,3 +93,16 @@ test('elapsed deadlines leave current discovery without destroying saved source 
  const b=board({response:{ok:true,status:200,text:async()=>csv([row({'Deadline ISO':'2000-01-01','Application Deadline':'2000-01-01'})],['Company','Job Title','Link','Location','Type','Salary','Years of Experience','Category','Description','Pick','Active/Dead','Date Added','Dead Date','TL;DR','Date Posted','Application Deadline','Deadline ISO'])}});
  b.window.SUJobDeadlines=D;await b.boot();assert.equal(b.app.jobs.length,0);assert.equal(b.app._archiveCatalog.length,1);assert.equal(b.app._closedLinks.length,0);
 });
+
+test('explicit written employer deadlines expire at their stated time without guessing partial or cohort dates',()=>{
+ const figma={deadline:'October 2, 2026, 5:00 PM PT'};
+ assert.equal(D.facts(figma,Date.parse('2026-10-02T23:59:59Z')).state,'open');
+ assert.equal(D.facts(figma,Date.parse('2026-10-03T00:00:00Z')).state,'expired');
+ assert.equal(D.facts({deadline:'October 30, 2026, 5 PM PST (employer wording); rolling review'},Date.parse('2026-10-31T00:59:59Z')).state,'open');
+ assert.equal(D.facts({deadline:'October 30, 2026, 5 PM PST (employer wording); rolling review'},Date.parse('2026-10-31T01:00:00Z')).state,'expired');
+ assert.equal(D.facts({deadline:'November 1, 2026'},Date.parse('2026-11-02T04:59:59Z')).state,'open');
+ assert.equal(D.facts({deadline:'November 1, 2026'},Date.parse('2026-11-02T05:00:00Z')).state,'expired');
+ for(const deadline of ['October 30','Spring: October 16, 2026; Summer: March 19, 2027','Not stated; employer anticipates posting for 15 days from August 25, 2026','ATS end date June 11, 2027; description says ongoing applications with no deadline'])assert.equal(D.facts({deadline}).state,'unspecified',deadline);
+ for(const deadline of ['February 30, 2026','October 2, 2026, 13 PM PT','March 8, 2026, 2:30 AM PT','November 1, 2026, 1:30 AM PT'])assert.equal(D.facts({deadline}).state,'unknown',deadline);
+ assert.equal(D.current([figma],Date.parse('2026-10-03T00:00:00Z')).length,0);
+});

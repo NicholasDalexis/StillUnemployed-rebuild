@@ -1,7 +1,22 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.29",
+  "currentVersion": "2.7.7.30",
   "releases": [
+    {
+      "version": "2.7.7.30",
+      "date": "2026-10-14",
+      "title": "Enforce explicit written deadlines and current Figma source",
+      "changes": [
+        "Parse one complete written deadline including explicit employer time and timezone; reject partial/multi-cohort/estimated windows and ambiguous DST wall times.",
+        "Refresh full source after verified Figma retirement; 86 approved records, 85 current; retain all surviving facts and saved history."
+      ],
+      "public": {
+        "title": "Accurate application deadlines",
+        "changes": [
+          "Explicit written deadlines now leave current listings at the stated closing time."
+        ]
+      }
+    },
     {
       "version": "2.7.7.29",
       "date": "2026-10-14",
@@ -1321,7 +1336,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "dfcd3548e82fd216750671ffb6c0637f00090992a0be32d0db993c83e31a3774",
+    "digest": "fa7ebcbbeac186561e8e1cf3a2737b95dd9357dc41fdd9102715926c139c4184",
     "fileCount": 227
   }
 }
