@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-15T01:35:40.156Z",
+  "sourceExportedAt": "2026-10-16T03:24:51.007Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -263,52 +263,6 @@
         "status": "open",
         "checkedAt": "2026-09-06T21:45:40.001Z",
         "sourceUrl": "https://jobs.lever.co/palantir/1a935143-e857-480c-bc5a-ad625d754eb6",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Telemundo 60 / NBCUniversal",
-      "role": "KVDA News Internship",
-      "link": "https://jobs.smartrecruiters.com/NBCUniversal3/744000145605599-kvda-news-internship",
-      "loc": "San Antonio, TX (in person)",
-      "ind": "Content / Copywriting",
-      "desc": "Report, write web stories and produce newsroom social videos.",
-      "pay": "Up to $15/hour",
-      "style": "In-person",
-      "exp": "Not listed",
-      "state": "San Antonio, TX (in person)",
-      "eligibility": "Actively enrolled in an accredited degree-granting program throughout the internship, with proof of degree progress.\nSophomore standing or above, at least 30 completed credits.\nAuthorized to work in the US without NBCUniversal visa sponsorship.\nMust work at the San Antonio, Texas station.\nFluent spoken/written Spanish and English.\nCourse credit is not required; whether credit is offered is not listed.\nJournalism/communications study, Premiere/Photoshop, AP Style, social platforms and WordPress are desired.\nAn in-person interview at an NBCUniversal location may be required.",
-      "cycle": "Academic year; exact dates not listed",
-      "deadline": "Not listed",
-      "applicationsOpen": "Not listed",
-      "startDate": "Not listed",
-      "timingSourceUrl": "https://api.smartrecruiters.com/v1/companies/NBCUniversal3/postings/744000145605599",
-      "payStatus": "paid",
-      "payBasis": "hour",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Support reporting, producing, assignment-desk work and social video in a television newsroom.",
-        "Research story ideas, sources and trends and contribute to daily planning.",
-        "Write news/web segments and prepare videos and metadata for digital channels."
-      ],
-      "eligibilityFlags": [
-        "Actively enrolled in an accredited degree-granting program throughout the internship, with proof of degree progress.",
-        "Sophomore standing or above, at least 30 completed credits.",
-        "Authorized to work in the US without NBCUniversal visa sponsorship.",
-        "Must work at the San Antonio, Texas station.",
-        "Fluent spoken/written Spanish and English.",
-        "Course credit is not required; whether credit is offered is not listed.",
-        "Journalism/communications study, Premiere/Photoshop, AP Style, social platforms and WordPress are desired.",
-        "An in-person interview at an NBCUniversal location may be required."
-      ],
-      "benefits": [
-        "Not listed"
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-06T21:57:25.458Z",
-        "sourceUrl": "https://api.smartrecruiters.com/v1/companies/NBCUniversal3/postings/744000145605599",
         "reviewerType": "source_check"
       }
     },
@@ -2814,53 +2768,6 @@
         "status": "open",
         "checkedAt": "2026-10-14T02:44:17.500Z",
         "sourceUrl": "https://jobs.sephora.com/USA/job/Remote-Intern%2C-Product-Management%2C-Connecting-Clients%2C-Channels-and-Fulfillment-CA-USA_519958/1371172755/",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Sephora",
-      "role": "Intern, Technology, DevOps & Site Reliability Engineering (SRE)",
-      "link": "https://jobs.sephora.com/USA/job/San-Francisco-Intern%2C-Technology%2C-DevOps-%26-Site-Reliability-Engineering-%28SRE%29-CA-USA_519959/1371172655/",
-      "loc": "San Francisco, CA",
-      "ind": "Software Engineering",
-      "desc": "Improve cloud infrastructure reliability, automation and engineering productivity with Sephora's DevOps, SRE and Platform Operations teams.",
-      "pay": "$30.00/hour",
-      "style": "Hybrid",
-      "exp": "Not listed",
-      "state": "San Francisco, CA",
-      "eligibility": "Currently pursuing Bachelor's or Master's in Computer Science, Software Engineering, Computer Engineering, Information Systems, Information Technology or related technical discipline.\nProgramming/scripting in at least one of Python, Java, Go, JavaScript or Bash; foundational Linux, networking, APIs, Git and cloud concepts.\nCoursework/project/internship exposure to cloud, containers, infrastructure automation, CI/CD, observability, platform/reliability engineering or distributed systems; technical communication and problem-solving skills.\nGraduating in 2027 or 2028 (undergraduate or graduate degree).\n36 hours/week, Monday–Friday; work schedule must align with 9–5 PM Pacific Standard Time (employer wording).\nMust permanently reside and work in the United States; available June 14–August 20, 2027.\nMust be open to relocating to the San Francisco Bay Area upon graduation for consideration for full-time hybrid positions; this is a future-employment consideration, not a promise of conversion.",
-      "cycle": "Summer 2027; June 14–August 20",
-      "deadline": "Not listed",
-      "applicationsOpen": "Not listed",
-      "startDate": "2027-06-14",
-      "timingSourceUrl": "https://jobs.sephora.com/USA/job/San-Francisco-Intern%2C-Technology%2C-DevOps-%26-Site-Reliability-Engineering-%28SRE%29-CA-USA_519959/1371172655/",
-      "startDateISO": "2027-06-14",
-      "payStatus": "paid",
-      "payBasis": "hour",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Analyze service health and identify reliability and automation improvements.",
-        "Develop scripts, tools and dashboards to reduce manual work.",
-        "Support CI/CD, observability, infrastructure automation and developer self-service."
-      ],
-      "eligibilityFlags": [
-        "Currently pursuing Bachelor's or Master's in Computer Science, Software Engineering, Computer Engineering, Information Systems, Information Technology or related technical discipline.",
-        "Programming/scripting in at least one of Python, Java, Go, JavaScript or Bash; foundational Linux, networking, APIs, Git and cloud concepts.",
-        "Coursework/project/internship exposure to cloud, containers, infrastructure automation, CI/CD, observability, platform/reliability engineering or distributed systems; technical communication and problem-solving skills.",
-        "Graduating in 2027 or 2028 (undergraduate or graduate degree).",
-        "36 hours/week, Monday–Friday; work schedule must align with 9–5 PM Pacific Standard Time (employer wording).",
-        "Must permanently reside and work in the United States; available June 14–August 20, 2027.",
-        "Must be open to relocating to the San Francisco Bay Area upon graduation for consideration for full-time hybrid positions; this is a future-employment consideration, not a promise of conversion."
-      ],
-      "benefits": [
-        "Weekly virtual workshops, networking and career panels; hands-on projects.",
-        "Optional intern summer shutdown July 6–9, 2027; paid/unpaid shutdown status not stated."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-10-14T02:44:17.500Z",
-        "sourceUrl": "https://jobs.sephora.com/USA/job/San-Francisco-Intern%2C-Technology%2C-DevOps-%26-Site-Reliability-Engineering-%28SRE%29-CA-USA_519959/1371172655/",
         "reviewerType": "source_check"
       }
     },
