@@ -1,23 +1,14 @@
 {
-  "version": "2.7.7.32",
+  "version": "2.7.7.34",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-15T05:13:49.635Z",
-  "reviewer": "Codex StillUnemployed owner",
-  "sourceDigest": "45d495187ec552f0f14e8c663caf8197970c66b940fc438e3906ddbe4dd1f503",
+  "reviewedAt": "2026-10-16T03:27:00.420Z",
+  "reviewer": "Codex Internship Review",
+  "sourceDigest": "12d2aa6cbd8693fbfd3928b1ae0ee5edc2a5a0202979452b8869d74398a957fb",
+  "sourceFileCount": 227,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Reviewed Privacy and Terms; no wording change needed. Verified employer-scoped SeatGeek alias affects deduplicated display/counts and matching existing saved/share links; original URLs/history are retained. No new collection, permissions, provider, data transmission, analytics field, retention, account flow or service.",
-  "checks": {
-    "identity": "Exact seatgeek.com/jobs/numeric-id maps only to Greenhouse seatgeek tenant; path/query conflicts fail closed, unknown parameters/hash/ports remain meaningful.",
-    "history": "Saved keys and all existing tracker rows/notes/statuses retained and synchronized in regression; display grouping does not retroactively merge stored records. Preserve production30 URL fallback keys verbatim, including unrecognized gh_src queries; do not strip new provider tracking on this custom host.",
-    "deployment": "Independent patch based production30, no pending31 auth/provider/rules code or flags included; normal preview and production readiness required."
-  },
-  "openItems": [
-    "Hosted exact preview and production acceptance pending.",
-    "App Launch31 provider/account activation remains separately owned and unmodified.",
-    "Sourcing/vendor/shared-writer helper copies require coordinated propagation by their owners after website verification."
-  ],
+  "scope": "Read complete Privacy and Terms and compared diffs. Data-only removal of two employer-closed internships; surviving facts, verification times, saved history and all product behavior preserved. Only generated policy footer version changes. No new collection, provider, permissions, retention, account flow or service.",
+  "predecessor": "docs/privacy-reviews/2.7.7.32-pre-internship-review.json",
   "author": "Codex",
-  "platform_signature": "-Codex",
-  "sourceFileCount": 227
+  "platform_signature": "-Codex"
 }

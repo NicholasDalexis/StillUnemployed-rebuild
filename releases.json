@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.32",
+  "currentVersion": "2.7.7.34",
   "releases": [
+    {
+      "version": "2.7.7.34",
+      "date": "2026-10-15",
+      "title": "Refresh internship snapshot after exact employer closures",
+      "changes": [
+        "Exclude the employer-filled Sephora DevOps/SRE internship and Google-maintenance-retired NBCUniversal KVDA internship from the validated source snapshot; preserve all surviving public facts and their original check times.",
+        "Version33 remains an independent App Launch account candidate and is not included in this data-only release. No product or checker logic changed. -Codex",
+        "Normal build regenerates the already-approved due October15 daily projection; all ten prior published selections remain byte-equivalent. -Codex"
+      ],
+      "public": {
+        "title": "Current internship availability",
+        "changes": ["Closed internships leave the current board while saved history is preserved."]
+      }
+    },
     {
       "version": "2.7.7.32",
       "date": "2026-10-15",
@@ -1352,7 +1366,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "45d495187ec552f0f14e8c663caf8197970c66b940fc438e3906ddbe4dd1f503",
+    "digest": "12d2aa6cbd8693fbfd3928b1ae0ee5edc2a5a0202979452b8869d74398a957fb",
     "fileCount": 227
   }
 }
