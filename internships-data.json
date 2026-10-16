@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-16T03:24:51.007Z",
+  "sourceExportedAt": "2026-10-16T17:18:09.972Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -131,50 +131,6 @@
         "status": "open",
         "checkedAt": "2026-09-06T21:45:55.328Z",
         "sourceUrl": "https://ehac.fa.us6.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/20125",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Hypebeast",
-      "role": "Marketing Designer Intern",
-      "link": "https://jobs.lever.co/hypebeast/f1c8949f-cbde-40bd-915e-80306950f7eb",
-      "loc": "New York, NY; on-site",
-      "ind": "Graphic / Visual Design",
-      "desc": "Create mood boards, website mockups, marketing decks and editorial/social assets.",
-      "pay": "$19-20/hour",
-      "style": "In-person",
-      "exp": "Not listed",
-      "state": "New York, NY; on-site",
-      "eligibility": "Currently enrolled in college/university or a recent graduate.\nProficient written/spoken English; teamwork and independent-working skills.\nUnderstand Hypebeast’s visual identity and youth culture, fashion and sneakers.\nIdeally available Monday-Friday, 9 AM-6 PM.\nNew York onsite; must be eligible to work in the US.\nProvide portfolio/website, cover letter, CV and expected salary.",
-      "cycle": "Not listed",
-      "deadline": "Not listed",
-      "applicationsOpen": "Not listed",
-      "startDate": "Not listed",
-      "timingSourceUrl": "https://jobs.lever.co/hypebeast/f1c8949f-cbde-40bd-915e-80306950f7eb",
-      "payStatus": "paid",
-      "payBasis": "hour",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Research design references and brainstorm branded-content ideas.",
-        "Create mood boards, website mockups and marketing decks.",
-        "Produce editorial/social assets with creative, production and editorial teams."
-      ],
-      "eligibilityFlags": [
-        "Currently enrolled in college/university or a recent graduate.",
-        "Proficient written/spoken English; teamwork and independent-working skills.",
-        "Understand Hypebeast’s visual identity and youth culture, fashion and sneakers.",
-        "Ideally available Monday-Friday, 9 AM-6 PM.",
-        "New York onsite; must be eligible to work in the US.",
-        "Provide portfolio/website, cover letter, CV and expected salary."
-      ],
-      "benefits": [
-        "Not listed"
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-06T21:44:11.027Z",
-        "sourceUrl": "https://jobs.lever.co/hypebeast/f1c8949f-cbde-40bd-915e-80306950f7eb",
         "reviewerType": "source_check"
       }
     },
@@ -3750,6 +3706,170 @@
           "Collaborate with engineering, product, sales and support teams.",
           "US-based current bachelor students; degree by June 2028; 12 weeks May/June 2027; arrangement confirmed at offer."
         ]
+      }
+    },
+    {
+      "co": "Sony Pictures Entertainment",
+      "role": "Intern, Casting, Sony Pictures Television - Spring 2027",
+      "link": "https://www.sonypicturesjobs.com/job/culver-city/intern-casting-sony-pictures-television-spring-2027/22978/101958159776",
+      "loc": "Culver City, CA",
+      "ind": "Film & Television",
+      "desc": "Support casting research, talent tracking and executive coordination for Sony Pictures Television scripted series.",
+      "pay": "$19/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Culver City, CA",
+      "eligibility": "Available part-time 10–29 hours/week in person in Culver City; start/end dates flexible.\nPassion for casting and entertainment; Microsoft Office, web/social-media proficiency, talent judgment and strong written/verbal communication.\nCasting-office, agency or office experience preferred, not required. No completed-degree requirement or numerical professional experience minimum stated.",
+      "cycle": "Spring 2027; January 4 or 11–April 16, 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "January 4 or 11, 2027; dates flexible",
+      "timingSourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/intern-casting-sony-pictures-television-spring-2027/22978/101958159776",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Research actors and prepare lists for upcoming series.",
+        "Track emerging talent and support tests and table reads.",
+        "Assist executive scheduling, office coordination and data entry."
+      ],
+      "eligibilityFlags": [
+        "Available part-time 10–29 hours/week in person in Culver City; start/end dates flexible.",
+        "Passion for casting and entertainment; Microsoft Office, web/social-media proficiency, talent judgment and strong written/verbal communication.",
+        "Casting-office, agency or office experience preferred, not required. No completed-degree requirement or numerical professional experience minimum stated."
+      ],
+      "benefits": [
+        "Structured learning, executive engagement and networking opportunities. May qualify for comprehensive benefits; eligibility not guaranteed."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-16T17:09:24.905Z",
+        "sourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/intern-casting-sony-pictures-television-spring-2027/22978/101958159776",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Sony Pictures Entertainment",
+      "role": "Current Programming Intern, Sony Pictures Television – Spring 2027",
+      "link": "https://www.sonypicturesjobs.com/job/culver-city/current-programming-intern-sony-pictures-television-spring-2027/22978/101958159792",
+      "loc": "Culver City, CA",
+      "ind": "Film & Television",
+      "desc": "Support Sony Pictures Television current programming teams with show information, scheduling and studio coordination.",
+      "pay": "$19/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Culver City, CA",
+      "eligibility": "Enrollment in an accredited college/university for the duration of the internship.\nAvailable part-time 10–29 hours/week in person in Culver City; start/end dates flexible.\nPassion for scripted television; excellent communication, discretion, organization and attention to detail. Airtable and previous entertainment internship experience preferred. No numerical professional experience minimum stated.",
+      "cycle": "Spring 2027; January 4 or 11–April 16, 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "January 4 or 11, 2027; dates flexible",
+      "timingSourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/current-programming-intern-sony-pictures-television-spring-2027/22978/101958159792",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Support assistants with calls, meeting notes and scheduling.",
+        "Maintain show information in Xpanse and Airtable.",
+        "Learn studio operations alongside current programming executives."
+      ],
+      "eligibilityFlags": [
+        "Enrollment in an accredited college/university for the duration of the internship.",
+        "Available part-time 10–29 hours/week in person in Culver City; start/end dates flexible.",
+        "Passion for scripted television; excellent communication, discretion, organization and attention to detail. Airtable and previous entertainment internship experience preferred. No numerical professional experience minimum stated."
+      ],
+      "benefits": [
+        "Structured learning, executive engagement and networking opportunities. May qualify for comprehensive benefits; eligibility not guaranteed."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-16T17:09:25.465Z",
+        "sourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/current-programming-intern-sony-pictures-television-spring-2027/22978/101958159792",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Sony Pictures Entertainment",
+      "role": "Intern, U.S. Business Affairs, Sony Pictures Television, Spring 2027",
+      "link": "https://www.sonypicturesjobs.com/job/culver-city/intern-u-s-business-affairs-sony-pictures-television-spring-2027/22978/101958159728",
+      "loc": "Culver City, CA",
+      "ind": "Legal & Business Affairs",
+      "desc": "Support Sony Pictures Television business affairs with agreement drafting, deal research and production-related business/legal analysis.",
+      "pay": "$19/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Culver City, CA",
+      "eligibility": "Currently enrolled as a second-year law student (2L) at an ABA-accredited law school.\nAvailable part-time 10–29 hours/week with in-person work at the designated Culver City office; employer labels Hybrid.\nRelevant education or experience in agreements, legal and budgeting; Excel, analytical, presentation and communication skills. Ability to manage deadlines and multiple priorities. Previous studio entertainment experience preferred. No numerical professional experience minimum stated.",
+      "cycle": "Spring 2027; January 4 or 11–April 16, 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "January 4 or 11, 2027; dates flexible",
+      "timingSourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/intern-u-s-business-affairs-sony-pictures-television-spring-2027/22978/101958159728",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Research deal terms and summarize legal or business issues.",
+        "Draft and revise agreements, amendments and deal materials.",
+        "Review credits and organize meeting notes and digital documents."
+      ],
+      "eligibilityFlags": [
+        "Currently enrolled as a second-year law student (2L) at an ABA-accredited law school.",
+        "Available part-time 10–29 hours/week with in-person work at the designated Culver City office; employer labels Hybrid.",
+        "Relevant education or experience in agreements, legal and budgeting; Excel, analytical, presentation and communication skills. Ability to manage deadlines and multiple priorities. Previous studio entertainment experience preferred. No numerical professional experience minimum stated."
+      ],
+      "benefits": [
+        "Structured learning, executive engagement and networking opportunities. May qualify for comprehensive benefits; eligibility not guaranteed."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-16T17:09:25.983Z",
+        "sourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/intern-u-s-business-affairs-sony-pictures-television-spring-2027/22978/101958159728",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Sony Pictures Entertainment",
+      "role": "Operations Analyst Trainee, Distribution & Networks - Spring 2027",
+      "link": "https://www.sonypicturesjobs.com/job/culver-city/operations-analyst-trainee-distribution-and-networks-spring-2027/22978/101958159744",
+      "loc": "Culver City, CA",
+      "ind": "Operations & Supply Chain",
+      "desc": "Learn Sony Pictures Home Entertainment physical distribution through retail inventory, customer operations and process-improvement work.",
+      "pay": "$27/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Culver City, CA",
+      "eligibility": "Available full-time 40 hours/week with in-person work at the designated Culver City office; employer labels Hybrid. Start/end dates flexible.\nAdaptability, ability to learn systems/databases, strong interpersonal and written/verbal communication, attention to detail and workload prioritization.\nRetail, entertainment or consumer-packaged-goods experience preferred. No completed degree or numerical professional experience minimum stated. This is a year-long trainee assignment, not a summer-only internship. Employer includes an undefined qualification entry; no requirement is inferred from it.",
+      "cycle": "Spring 2027 intake; January 4 or 11–December 17, 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "January 4 or 11, 2027; dates flexible",
+      "timingSourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/operations-analyst-trainee-distribution-and-networks-spring-2027/22978/101958159744",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Support retail inventory planning, orders and product delivery.",
+        "Investigate backorders, customer issues and performance exceptions.",
+        "Perform analysis and support supply-chain process improvements."
+      ],
+      "eligibilityFlags": [
+        "Available full-time 40 hours/week with in-person work at the designated Culver City office; employer labels Hybrid. Start/end dates flexible.",
+        "Adaptability, ability to learn systems/databases, strong interpersonal and written/verbal communication, attention to detail and workload prioritization.",
+        "Retail, entertainment or consumer-packaged-goods experience preferred. No completed degree or numerical professional experience minimum stated. This is a year-long trainee assignment, not a summer-only internship. Employer includes an undefined qualification entry; no requirement is inferred from it."
+      ],
+      "benefits": [
+        "Structured learning, executive engagement and networking opportunities. May qualify for comprehensive benefits; eligibility not guaranteed."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-16T17:09:29.925Z",
+        "sourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/operations-analyst-trainee-distribution-and-networks-spring-2027/22978/101958159744",
+        "reviewerType": "source_check"
       }
     }
   ]
