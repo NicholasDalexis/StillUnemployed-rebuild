@@ -1,14 +1,14 @@
 {
-  "version": "2.7.7.34",
+  "version": "2.7.7.36",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-16T03:27:00.420Z",
-  "reviewer": "Codex Internship Review",
-  "sourceDigest": "12d2aa6cbd8693fbfd3928b1ae0ee5edc2a5a0202979452b8869d74398a957fb",
+  "reviewedAt": "2026-10-16T17:25:48.217Z",
+  "reviewer": "Codex StillUnemployed",
+  "sourceDigest": "4d89d11d4d662c7f7c6f9a1563266dfd5d99bd27ef7c8d0e9ba647c8676bc909",
   "sourceFileCount": 227,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Read complete Privacy and Terms and compared diffs. Data-only removal of two employer-closed internships; surviving facts, verification times, saved history and all product behavior preserved. Only generated policy footer version changes. No new collection, provider, permissions, retention, account flow or service.",
-  "predecessor": "docs/privacy-reviews/2.7.7.32-pre-internship-review.json",
+  "scope": "Reviewed complete Privacy and Terms and current data-only diff. Four public employer internship/trainee records with their existing public-source fields; current source closures and original verification histories preserved. No new event, personal data, auth/provider, retention, eligibility engine, rule, service or permission. Reviewed, no wording change needed. Four new source-bound compact display entries preserve the existing public-source records and visibly retain student/2L/hours/year-long conditions. Existing display entries unchanged.",
+  "predecessor": "docs/privacy-reviews/2.7.7.34-pre-sony.json",
   "author": "Codex",
   "platform_signature": "-Codex"
 }
