@@ -1,14 +1,14 @@
 {
-  "version": "2.7.7.36",
+  "version": "2.7.7.37",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-16T17:25:48.217Z",
+  "reviewedAt": "2026-10-17T00:14:24.793Z",
   "reviewer": "Codex StillUnemployed",
-  "sourceDigest": "4d89d11d4d662c7f7c6f9a1563266dfd5d99bd27ef7c8d0e9ba647c8676bc909",
+  "sourceDigest": "892e55e6f41b26f3bb21ae3e41b7fa36b02b5aa5387ff470170894fda7ca7657",
   "sourceFileCount": 227,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Reviewed complete Privacy and Terms and current data-only diff. Four public employer internship/trainee records with their existing public-source fields; current source closures and original verification histories preserved. No new event, personal data, auth/provider, retention, eligibility engine, rule, service or permission. Reviewed, no wording change needed. Four new source-bound compact display entries preserve the existing public-source records and visibly retain student/2L/hours/year-long conditions. Existing display entries unchanged.",
-  "predecessor": "docs/privacy-reviews/2.7.7.34-pre-sony.json",
+  "scope": "Reviewed current Privacy/Terms and exact data-only staging behavior. Two approved future collections under existing server publication rules, no changed personal data, event, identity, retention, auth, provider, permissions or disclosures. Policy bodies exact predecessors apart from generated release footer. Reviewed, no wording change needed.",
+  "predecessor": "docs/privacy-reviews/2.7.7.36-pre-weekend.json",
   "author": "Codex",
   "platform_signature": "-Codex"
 }

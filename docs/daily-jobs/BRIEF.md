@@ -64,3 +64,11 @@ Author: Codex. Timezone: America/New_York. Source: Marketing marketing-wedfri-20
 Stage exact October14,15,16 ordered four-job collections at13:00UTC/9AM Eastern. Nine previous collections remain structurally identical. All twelve live admitted IDs/links and six before/at publication boundaries verified. Current canonical data/moderation still governs titles, TLDR and Apply; archived snapshots preserve the approved source wording. Only Friday slot4 uses finalCarGurus8094246 rather than heldUNKNOWN UnderArmour. Preserve repaired.15 runtime recovery/hourly cents,66 internship approvals and all auth/privacy behavior. No source Sheet, social schedule, ManyChat, new provider or spend change. Future API/static fallback stays hidden until server due-time; actual activation/publication remains a later check.
 
 -Codex
+
+## Weekend content continuation | October 16, 2026, America/New_York
+
+Author: Codex. Source: Marketing marketing-weekend-20261016-v1, packet SHA25635d123ad087f2f8b3e23c41ea6a2462568841f14bafcbe938e5b474647d8d631, existing Nic-approved production continuation. Status:2.7.7.37 candidate; hosted and production readback recorded separately.
+
+Stage the exact October17 NFL/Hive/Alo Junior Supply Planner/DEPT8259204 and October18 Discord/Workwell Wizards/Alo Assistant Buyer/Reddit ordered four at13:00UTC/9AM Eastern. All12 earlier collections and their snapshot facts/order remain exact. Eight currently admitted identities, four before/at activation boundaries, current-public12 and caller-clock rejection verified. Exact approved snapshots retain NFL no sponsorship/relocation and Workwell W2/Renton commute/12months; current canonical feed and moderation still win over historical fallback. The existing live NFL TLDR omits its sponsorship/relocation warning and remains an SU-BUG-126 qualification follow-up; this data-only staging does not claim that unrelated renderer issue fixed. Preserve Sony36/86internships, source status, auth and all other candidates. No source Sheet, social post/queue, schedule, provider, spend, ManyChat or runtime logic change. Future membership stays out of public API/fallback until due; actual future activation and social delivery need later verification.
+
+-Codex
