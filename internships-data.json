@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-17T03:11:51.652Z",
+  "sourceExportedAt": "2026-10-17T18:16:04.640Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -3826,6 +3826,594 @@
         "checkedAt": "2026-10-16T17:09:29.925Z",
         "sourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/operations-analyst-trainee-distribution-and-networks-spring-2027/22978/101958159744",
         "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Coinbase",
+      "role": "Accounting Intern",
+      "link": "https://www.coinbase.com/careers/positions/8173991?gh_jid=8173991",
+      "loc": "Hybrid - New York, NY",
+      "ind": "Finance & Accounting",
+      "desc": "Prepare reconciliations, journal entries and close schedules. Support audits, controls and cross-functional accounting projects. Improve accounting systems and process documentation.",
+      "pay": "$40/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Hybrid - New York, NY",
+      "eligibility": "Currently pursuing a BA/BS in Accounting or related field; foundational US GAAP, accounting/finance analysis, time management and SQL/Snowflake/Looker or related analytics/digital-assets familiarity. Responsible AI use. Application asks age18+, potential full-time availability before September2028 and work authorization/sponsorship. New York hybrid and quarterly in-person surges. Maximum3applications per6months; no guaranteed job or blanket internship benefits.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Summer 2027; exact date not listed",
+      "timingSourceUrl": "https://www.coinbase.com/careers/positions/8173991?gh_jid=8173991",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Prepare reconciliations, journal entries and close schedules.",
+        "Support audits, controls and cross-functional accounting projects.",
+        "Improve accounting systems and process documentation."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a BA/BS in Accounting or related field; foundational US GAAP, accounting/finance analysis, time management and SQL/Snowflake/Looker or related analytics/digital-assets familiarity. Responsible AI use. Application asks age18+, potential full-time availability before September2028 and work authorization/sponsorship. New York hybrid and quarterly in-person surges. Maximum3applications per6months; no guaranteed job or blanket internship benefits."
+      ],
+      "benefits": [
+        "Not listed; generic employee benefits are not treated as confirmed internship entitlement."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-17T18:08:09.784Z",
+        "sourceUrl": "https://www.coinbase.com/careers/positions/8173991?gh_jid=8173991",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "d52b28f4:733c9a58",
+        "locationLabel": "New York, NY",
+        "detailBullets": [
+          "Prepare reconciliations, journal entries and close schedules.",
+          "Support audits, controls and cross-functional accounting projects.",
+          "Improve accounting systems and process documentation.",
+          "Accounting-related BA/BS students; 12-week Summer2027; potential full-time availability before September2028."
+        ]
+      }
+    },
+    {
+      "co": "Coinbase",
+      "role": "Accelerations Programs Intern",
+      "link": "https://www.coinbase.com/careers/positions/8175363?gh_jid=8175363",
+      "loc": "Hybrid - New York, NY",
+      "ind": "HR & Recruiting",
+      "desc": "Help design and execute talent-development programs. Analyze feedback and recommend program improvements. Maintain project plans, documentation and stakeholder communications.",
+      "pay": "$40/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Hybrid - New York, NY",
+      "eligibility": "Demonstrated project delivery, analytical problem solving, organization and cross-team communication; responsible AI use. No specific degree/enrollment requirement stated in description, not invented. Application asks potential full-time availability before September2028, prior internship experience, age18+, work authorization and sponsorship. New York hybrid, quarterly in-person surges. Maximum3applications per6months. No professional-years minimum or guaranteed full-time offer inferred.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Summer 2027; exact date not listed",
+      "timingSourceUrl": "https://www.coinbase.com/careers/positions/8175363?gh_jid=8175363",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Help design and execute talent-development programs.",
+        "Analyze feedback and recommend program improvements.",
+        "Maintain project plans, documentation and stakeholder communications."
+      ],
+      "eligibilityFlags": [
+        "Demonstrated project delivery, analytical problem solving, organization and cross-team communication; responsible AI use. No specific degree/enrollment requirement stated in description, not invented. Application asks potential full-time availability before September2028, prior internship experience, age18+, work authorization and sponsorship. New York hybrid, quarterly in-person surges. Maximum3applications per6months. No professional-years minimum or guaranteed full-time offer inferred."
+      ],
+      "benefits": [
+        "Not listed; generic employee benefits are not treated as confirmed internship entitlement."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-17T18:07:01.833Z",
+        "sourceUrl": "https://www.coinbase.com/careers/positions/8175363?gh_jid=8175363",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "da98cdae:d089327a",
+        "locationLabel": "New York, NY",
+        "detailBullets": [
+          "Help design and execute talent-development programs.",
+          "Analyze feedback and recommend program improvements.",
+          "Maintain project plans, documentation and stakeholder communications.",
+          "Project/program experience; 12-week Summer2027; 18+; potential full-time availability before September2028."
+        ]
+      }
+    },
+    {
+      "co": "Coinbase",
+      "role": "Employee and Workplace Experience Intern",
+      "link": "https://www.coinbase.com/careers/positions/8175429?gh_jid=8175429",
+      "loc": "Hybrid - New York, NY",
+      "ind": "Business & Operations",
+      "desc": "Analyze employee-program participation, effectiveness and engagement. Prototype AI-assisted operational workflows and reporting. Improve systems, communications and program experiences.",
+      "pay": "$40/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Hybrid - New York, NY",
+      "eligibility": "Pursuing or recently completed a degree in Data Science, Business Analytics, Operations Management, Industrial/Organizational Psychology or related field; process-improvement projects/coursework. Data analysis, Google Workspace, a project/process tool and hands-on generative-AI experience. Application asks age18+, potential full-time availability before September2028 and work authorization/sponsorship. New York hybrid and quarterly in-person surges; maximum3applications per6months. No guaranteed offer or broad internship benefits.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Summer 2027; exact date not listed",
+      "timingSourceUrl": "https://www.coinbase.com/careers/positions/8175429?gh_jid=8175429",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Analyze employee-program participation, effectiveness and engagement.",
+        "Prototype AI-assisted operational workflows and reporting.",
+        "Improve systems, communications and program experiences."
+      ],
+      "eligibilityFlags": [
+        "Pursuing or recently completed a degree in Data Science, Business Analytics, Operations Management, Industrial/Organizational Psychology or related field; process-improvement projects/coursework. Data analysis, Google Workspace, a project/process tool and hands-on generative-AI experience. Application asks age18+, potential full-time availability before September2028 and work authorization/sponsorship. New York hybrid and quarterly in-person surges; maximum3applications per6months. No guaranteed offer or broad internship benefits."
+      ],
+      "benefits": [
+        "Not listed; generic employee benefits are not treated as confirmed internship entitlement."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-17T18:07:03.345Z",
+        "sourceUrl": "https://www.coinbase.com/careers/positions/8175429?gh_jid=8175429",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "9f854c76:ef99189a",
+        "locationLabel": "New York, NY",
+        "detailBullets": [
+          "Analyze employee-program participation, effectiveness and engagement.",
+          "Prototype AI-assisted operational workflows and reporting.",
+          "Improve systems, communications and program experiences.",
+          "Relevant degree students/recent graduates; 12-week Summer2027; potential full-time availability before September2028."
+        ]
+      }
+    },
+    {
+      "co": "Coinbase",
+      "role": "Strategic Finance Intern",
+      "link": "https://www.coinbase.com/careers/positions/8175438?gh_jid=8175438",
+      "loc": "Hybrid - New York, NY",
+      "ind": "Finance & Accounting",
+      "desc": "Build revenue models, forecasts and financial dashboards. Analyze macroeconomic drivers and product performance. Partner across finance, data and business operations.",
+      "pay": "$40/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Hybrid - New York, NY",
+      "eligibility": "Pursuing a degree or certificate in Finance, Economics, Business Administration, Data Science or related quantitative field. Financial modeling in Excel/Sheets, SQL or BI tools, digital-assets business interest and proficiency with an agentic coding tool. Responsible AI use. Application asks age18+, potential full-time availability before September2028 and work authorization/sponsorship. New York hybrid and quarterly in-person surges; maximum3applications per6months.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Summer 2027; exact date not listed",
+      "timingSourceUrl": "https://www.coinbase.com/careers/positions/8175438?gh_jid=8175438",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build revenue models, forecasts and financial dashboards.",
+        "Analyze macroeconomic drivers and product performance.",
+        "Partner across finance, data and business operations."
+      ],
+      "eligibilityFlags": [
+        "Pursuing a degree or certificate in Finance, Economics, Business Administration, Data Science or related quantitative field. Financial modeling in Excel/Sheets, SQL or BI tools, digital-assets business interest and proficiency with an agentic coding tool. Responsible AI use. Application asks age18+, potential full-time availability before September2028 and work authorization/sponsorship. New York hybrid and quarterly in-person surges; maximum3applications per6months."
+      ],
+      "benefits": [
+        "Not listed; generic employee benefits are not treated as confirmed internship entitlement."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-17T18:08:42.646Z",
+        "sourceUrl": "https://www.coinbase.com/careers/positions/8175438?gh_jid=8175438",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "11a982ed:f9e7ff49",
+        "locationLabel": "New York, NY",
+        "detailBullets": [
+          "Build revenue models, forecasts and financial dashboards.",
+          "Analyze macroeconomic drivers and product performance.",
+          "Partner across finance, data and business operations.",
+          "Finance/quantitative degree or certificate students; 12-week Summer2027; potential full-time availability before September2028."
+        ]
+      }
+    },
+    {
+      "co": "Coinbase",
+      "role": "Policy Intern",
+      "link": "https://www.coinbase.com/careers/positions/8175556?gh_jid=8175556",
+      "loc": "Hybrid - New York, NY",
+      "ind": "Legal & Compliance",
+      "desc": "Research legislation, regulation and digital-assets policy. Draft briefs, advocacy content and stakeholder materials. Support policy projects, outreach and operational coordination.",
+      "pay": "$40/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Hybrid - New York, NY",
+      "eligibility": "Currently pursuing a degree or certificate in public policy, political science, law, international relations or related field. Research/writing experience in legislative or regulatory topics, digital-assets policy interest, collaboration and responsible AI use. Application requires age18+ and availability for a potential full-time role before September2028, and asks work authorization/sponsorship. New York hybrid; quarterly in-person surges described. Maximum3applications per6months. No full-time offer or internship benefit entitlement inferred.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Summer 2027; exact date not listed",
+      "timingSourceUrl": "https://www.coinbase.com/careers/positions/8175556?gh_jid=8175556",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Research legislation, regulation and digital-assets policy.",
+        "Draft briefs, advocacy content and stakeholder materials.",
+        "Support policy projects, outreach and operational coordination."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a degree or certificate in public policy, political science, law, international relations or related field. Research/writing experience in legislative or regulatory topics, digital-assets policy interest, collaboration and responsible AI use. Application requires age18+ and availability for a potential full-time role before September2028, and asks work authorization/sponsorship. New York hybrid; quarterly in-person surges described. Maximum3applications per6months. No full-time offer or internship benefit entitlement inferred."
+      ],
+      "benefits": [
+        "Not listed; generic employee benefits are not treated as confirmed internship entitlement."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-17T18:06:44.670Z",
+        "sourceUrl": "https://www.coinbase.com/careers/positions/8175556?gh_jid=8175556",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "c9b7132d:a1f92f39",
+        "locationLabel": "New York, NY",
+        "detailBullets": [
+          "Research legislation, regulation and digital-assets policy.",
+          "Draft briefs, advocacy content and stakeholder materials.",
+          "Support policy projects, outreach and operational coordination.",
+          "Policy-related degree/certificate students; 12-week Summer2027; potential full-time availability before September2028."
+        ]
+      }
+    },
+    {
+      "co": "Gemini",
+      "role": "Prediction Markets Operations Intern (Winter 2027)",
+      "link": "https://job-boards.greenhouse.io/gemini/jobs/8240204",
+      "loc": "New York, New York",
+      "ind": "Business & Operations",
+      "desc": "Research event contracts and authoritative resolution sources. Check market listings, timing and operational documentation. Monitor issues and prepare settlements for supervised review.",
+      "pay": "$40/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "New York, New York",
+      "eligibility": "Currently pursuing a bachelor’s, associate’s or master’s degree. New York office three days/week January-April2027; scheduled lightweight evening/weekend monitoring rotation. Research, written communication, careful data handling and spreadsheets required. Application asks US work authorization and future sponsorship. Work concerns regulated prediction-market operations under supervision; no independent trading authority or continuous on-call claim.",
+      "cycle": "Winter 2027; January-April semester",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "January 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/gemini/jobs/8240204",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Research event contracts and authoritative resolution sources.",
+        "Check market listings, timing and operational documentation.",
+        "Monitor issues and prepare settlements for supervised review."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a bachelor’s, associate’s or master’s degree. New York office three days/week January-April2027; scheduled lightweight evening/weekend monitoring rotation. Research, written communication, careful data handling and spreadsheets required. Application asks US work authorization and future sponsorship. Work concerns regulated prediction-market operations under supervision; no independent trading authority or continuous on-call claim."
+      ],
+      "benefits": [
+        "Not listed; generic employee benefits are not treated as confirmed internship entitlement."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-17T18:06:46.595Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/gemini/jobs/8240204",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "9e964c38:54899cac",
+        "locationLabel": "New York, NY",
+        "detailBullets": [
+          "Research event contracts and authoritative resolution sources.",
+          "Check market listings, timing and operational documentation.",
+          "Monitor issues and prepare settlements for supervised review.",
+          "Associate/bachelor/master students; New York three days/week January–April2027; scheduled lightweight evening/weekend monitoring."
+        ]
+      }
+    },
+    {
+      "co": "Mirakl",
+      "role": "Talent Acquisition Co-Op",
+      "link": "https://job-boards.greenhouse.io/miraklamer/jobs/6218560004",
+      "loc": "Boston, Massachusetts, United States",
+      "ind": "HR & Recruiting",
+      "desc": "Coordinate interviews and support co-op recruiting. Maintain candidate records and improve hiring processes. Help deliver candidate events and employer-branding projects.",
+      "pay": "$22/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Boston, Massachusetts, United States",
+      "eligibility": "Restricted to currently enrolled Northeastern University co-op students eligible for co-op credit. Pursuing Human Resources, Business Administration or related degree. Boston office five days/week; professional English, organization and communication skills. Application asks US work authorization and future sponsorship; no sponsorship guarantee or blanket exclusion inferred. Employer describes AI screening with a non-AI alternative available without disadvantage.",
+      "cycle": "Six-month co-op; January 2027 start",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "January 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/miraklamer/jobs/6218560004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "required",
+      "applicationStatus": "open",
+      "duties": [
+        "Coordinate interviews and support co-op recruiting.",
+        "Maintain candidate records and improve hiring processes.",
+        "Help deliver candidate events and employer-branding projects."
+      ],
+      "eligibilityFlags": [
+        "Restricted to currently enrolled Northeastern University co-op students eligible for co-op credit. Pursuing Human Resources, Business Administration or related degree. Boston office five days/week; professional English, organization and communication skills. Application asks US work authorization and future sponsorship; no sponsorship guarantee or blanket exclusion inferred. Employer describes AI screening with a non-AI alternative available without disadvantage."
+      ],
+      "benefits": [
+        "Not listed; generic employee benefits are not treated as confirmed internship entitlement."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-17T18:06:12.285Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/miraklamer/jobs/6218560004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "d21df3e3:39c50ac7",
+        "locationLabel": "Boston, MA",
+        "detailBullets": [
+          "Coordinate interviews and support co-op recruiting.",
+          "Maintain candidate records and improve hiring processes.",
+          "Help deliver candidate events and employer-branding projects.",
+          "Northeastern co-op students only; credit required; Boston five days/week; six months starting January 2027."
+        ]
+      }
+    },
+    {
+      "co": "Later",
+      "role": "Data & Analytics Co-op",
+      "link": "https://job-boards.greenhouse.io/later/jobs/8880737002",
+      "loc": "Boston, MA",
+      "ind": "Data & Analytics",
+      "desc": "Build data sources, reports and analytics dashboards. Validate datasets and automate data-quality guardrails. Explain business findings with an experienced analytics team.",
+      "pay": "$21/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Boston, MA",
+      "eligibility": "Only students currently enrolled in Northeastern University’s co-op program. Pursuing Statistics, Data Science, Computer Science, Economics, Math or related technical degree. January-June2027; Boston office five days/week. BigQuery or comparable SQL warehouse experience, data-validation and communication skills. R/Python/dbt/Omni/Domo are a plus. Co-ops are not eligible for company benefits.",
+      "cycle": "Northeastern co-op; January-June 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "January 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/later/jobs/8880737002",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build data sources, reports and analytics dashboards.",
+        "Validate datasets and automate data-quality guardrails.",
+        "Explain business findings with an experienced analytics team."
+      ],
+      "eligibilityFlags": [
+        "Only students currently enrolled in Northeastern University’s co-op program. Pursuing Statistics, Data Science, Computer Science, Economics, Math or related technical degree. January-June2027; Boston office five days/week. BigQuery or comparable SQL warehouse experience, data-validation and communication skills. R/Python/dbt/Omni/Domo are a plus. Co-ops are not eligible for company benefits."
+      ],
+      "benefits": [
+        "Co-ops are not eligible for company benefits; work with a Senior Analyst and gain dashboard/process ownership."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-17T18:06:45.313Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/later/jobs/8880737002",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "17aa4801:b85a4875",
+        "locationLabel": "Boston, MA",
+        "detailBullets": [
+          "Build data sources, reports and analytics dashboards.",
+          "Validate datasets and automate data-quality guardrails.",
+          "Explain business findings with an experienced analytics team.",
+          "Northeastern co-op students only; technical degree; Boston five days/week January–June2027; no company benefits."
+        ]
+      }
+    },
+    {
+      "co": "Later",
+      "role": "HR Coordinator Co-op",
+      "link": "https://job-boards.greenhouse.io/later/jobs/8886675002",
+      "loc": "Boston, MA",
+      "ind": "HR & Recruiting",
+      "desc": "Support HR records, recruiting and onboarding logistics. Coordinate employee programs and Boston office operations. Build People-team reporting, communications and process documentation.",
+      "pay": "$21/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Boston, MA",
+      "eligibility": "Only currently enrolled Northeastern University co-op students eligible for a full-time six-month term, located within the Boston hub. Boston office five days/week. Coursework or interest in HR, Organizational Behavior, Business, Communications or equivalent readiness; professional English, organization and digital-tool proficiency. Prior HR/office/hospitality experience is a plus, not mandatory. Co-ops are not eligible for company benefits. Exact start date not stated; January timing from other Later roles is not borrowed.",
+      "cycle": "Full-time six-month Northeastern co-op; exact start not listed",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/later/jobs/8886675002",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Support HR records, recruiting and onboarding logistics.",
+        "Coordinate employee programs and Boston office operations.",
+        "Build People-team reporting, communications and process documentation."
+      ],
+      "eligibilityFlags": [
+        "Only currently enrolled Northeastern University co-op students eligible for a full-time six-month term, located within the Boston hub. Boston office five days/week. Coursework or interest in HR, Organizational Behavior, Business, Communications or equivalent readiness; professional English, organization and digital-tool proficiency. Prior HR/office/hospitality experience is a plus, not mandatory. Co-ops are not eligible for company benefits. Exact start date not stated; January timing from other Later roles is not borrowed."
+      ],
+      "benefits": [
+        "Co-ops are not eligible for company benefits. Hands-on employee-lifecycle work and exposure to senior People leaders."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-17T18:06:45.763Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/later/jobs/8886675002",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "a804b09a:f10dbf96",
+        "locationLabel": "Boston, MA",
+        "detailBullets": [
+          "Support HR records, recruiting and onboarding logistics.",
+          "Coordinate employee programs and Boston office operations.",
+          "Build People-team reporting, communications and process documentation.",
+          "Northeastern co-op students only; Boston five days/week; full-time six months; exact start not listed; no company benefits."
+        ]
+      }
+    },
+    {
+      "co": "Later",
+      "role": "Social Media Content Coordinator Co-op - Corporate Marketing",
+      "link": "https://job-boards.greenhouse.io/later/jobs/8885717002",
+      "loc": "Boston, MA",
+      "ind": "Social / Content",
+      "desc": "Pitch and produce short-form videos, photos and graphics. Track trends and plan social-media content. Collaborate with designers, strategists and influencer teams.",
+      "pay": "$21/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Boston, MA",
+      "eligibility": "Northeastern University co-op enrollment required; January-June2027, Boston office five days/week. Design/digital media/visual communication or related study; body also mentions recent graduates, but required current Northeastern co-op enrollment is retained as the stricter condition. Adobe Photoshop/Illustrator/After Effects, basic video editing, social-content skills and digital/social portfolio. Motion graphics, scheduling tools and marketing-trend knowledge preferred.",
+      "cycle": "Northeastern co-op; January-June 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "January 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/later/jobs/8885717002",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Pitch and produce short-form videos, photos and graphics.",
+        "Track trends and plan social-media content.",
+        "Collaborate with designers, strategists and influencer teams."
+      ],
+      "eligibilityFlags": [
+        "Northeastern University co-op enrollment required; January-June2027, Boston office five days/week. Design/digital media/visual communication or related study; body also mentions recent graduates, but required current Northeastern co-op enrollment is retained as the stricter condition. Adobe Photoshop/Illustrator/After Effects, basic video editing, social-content skills and digital/social portfolio. Motion graphics, scheduling tools and marketing-trend knowledge preferred."
+      ],
+      "benefits": [
+        "Mentorship, networking and access to industry events; no unverified general benefits promise."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-17T18:06:46.237Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/later/jobs/8885717002",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "15823ae:a0d6a5a",
+        "locationLabel": "Boston, MA",
+        "detailBullets": [
+          "Pitch and produce short-form videos, photos and graphics.",
+          "Track trends and plan social-media content.",
+          "Collaborate with designers, strategists and influencer teams.",
+          "Northeastern design co-op students only; portfolio; Boston five days/week January–June2027."
+        ]
+      }
+    },
+    {
+      "co": "Duolingo",
+      "role": "Data Scientist, Intern",
+      "link": "https://careers.duolingo.com/jobs/8888721002?gh_jid=8888721002",
+      "loc": "New York, NY; Pittsburgh, PA",
+      "ind": "Data & Analytics",
+      "desc": "Analyze user behavior and evaluate product experiments. Build dashboards, reports and forecasts. Improve tracking quality and inform product decisions.",
+      "pay": "$54–56/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "New York, NY; Pittsburgh, PA",
+      "eligibility": "Pursuing an undergraduate or master’s degree in a quantitative field; expected graduation Fall2027 or Spring/Summer2028. Prior large-dataset analysis, SQL/Python/R or statistical methods and communication/presentation skills. Must relocate to Pittsburgh or New York and work from the role office. GPA3.5+, big-data/cloud and AI-tool familiarity are preferred, not all mandatory. Application asks US work authorization, sponsorship and OPT eligibility; no blanket sponsorship conclusion. Program term/dates not stated; Summer2027 is not invented.",
+      "cycle": "Internship; exact program dates not listed",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://careers.duolingo.com/jobs/8888721002?gh_jid=8888721002",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Analyze user behavior and evaluate product experiments.",
+        "Build dashboards, reports and forecasts.",
+        "Improve tracking quality and inform product decisions."
+      ],
+      "eligibilityFlags": [
+        "Pursuing an undergraduate or master’s degree in a quantitative field; expected graduation Fall2027 or Spring/Summer2028. Prior large-dataset analysis, SQL/Python/R or statistical methods and communication/presentation skills. Must relocate to Pittsburgh or New York and work from the role office. GPA3.5+, big-data/cloud and AI-tool familiarity are preferred, not all mandatory. Application asks US work authorization, sponsorship and OPT eligibility; no blanket sponsorship conclusion. Program term/dates not stated; Summer2027 is not invented."
+      ],
+      "benefits": [
+        "Language-learning opportunities, catered meals, hackathon and team events described; intern-specific benefits to confirm with recruiter."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-17T18:08:23.086Z",
+        "sourceUrl": "https://careers.duolingo.com/jobs/8888721002?gh_jid=8888721002",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "5f5ba915:6d84d191",
+        "locationLabel": "Multiple locations",
+        "detailBullets": [
+          "Analyze user behavior and evaluate product experiments.",
+          "Build dashboards, reports and forecasts.",
+          "Improve tracking quality and inform product decisions.",
+          "Quantitative undergraduate/master students graduating Fall2027–Summer2028; Pittsburgh/New York office; exact internship dates not listed."
+        ]
+      }
+    },
+    {
+      "co": "Figma",
+      "role": "PhD Intern, Software Engineer - Graphics (2027)",
+      "link": "https://boards.greenhouse.io/figma/jobs/6219995004?gh_jid=6219995004",
+      "loc": "San Francisco, CA • New York, NY",
+      "ind": "Software & Engineering",
+      "desc": "Research and build rendering, graphics or media systems. Validate prototypes and production-ready engineering solutions. Collaborate across graphics engineers, designers and researchers.",
+      "pay": "$74/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "San Francisco, CA • New York, NY",
+      "eligibility": "Restricted to current4th/5th-year PhD students in Computer Graphics, Media Processing or related field. Low-level graphics APIs/shader-language expertise, C++ or Rust and research/problem-solving record required. Full-time onsite12–16weeks starting May/June2027 at San Francisco or New York hub; application asks work authorization. Strong graphics publications and related specialization are preferred. Camera-on video interviews and in-person onboarding required. Maximum5applications per rolling30days; same-role active/90-day rejection reapplication limits. Not an undergraduate/general software internship.",
+      "cycle": "Summer 2027; 12 or 16 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May or June 2027",
+      "timingSourceUrl": "https://boards.greenhouse.io/figma/jobs/6219995004?gh_jid=6219995004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Research and build rendering, graphics or media systems.",
+        "Validate prototypes and production-ready engineering solutions.",
+        "Collaborate across graphics engineers, designers and researchers."
+      ],
+      "eligibilityFlags": [
+        "Restricted to current4th/5th-year PhD students in Computer Graphics, Media Processing or related field. Low-level graphics APIs/shader-language expertise, C++ or Rust and research/problem-solving record required. Full-time onsite12–16weeks starting May/June2027 at San Francisco or New York hub; application asks work authorization. Strong graphics publications and related specialization are preferred. Camera-on video interviews and in-person onboarding required. Maximum5applications per rolling30days; same-role active/90-day rejection reapplication limits. Not an undergraduate/general software internship."
+      ],
+      "benefits": [
+        "Housing stipend and travel reimbursement; amounts not stated and subject to change."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-17T18:08:42.262Z",
+        "sourceUrl": "https://boards.greenhouse.io/figma/jobs/6219995004?gh_jid=6219995004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "c01b5b22:16f00fd6",
+        "locationLabel": "Multiple locations",
+        "detailBullets": [
+          "Research and build rendering, graphics or media systems.",
+          "Validate prototypes and production-ready engineering solutions.",
+          "Collaborate across graphics engineers, designers and researchers.",
+          "Fourth/fifth-year graphics/media PhD students only; full-time; 12–16weeks May/June2027; housing/travel support."
+        ]
       }
     }
   ]
