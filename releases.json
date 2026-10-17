@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.37",
+  "currentVersion": "2.7.7.38",
   "releases": [
+    {
+      "version": "2.7.7.38",
+      "date": "2026-10-16",
+      "title": "Retire unavailable Khan Academy internship",
+      "changes": [
+        "Exact employer posting confirms the Summer 2027 internship is no longer open; preserve source history and all remaining approved internship facts."
+      ]
+    },
     {
       "version": "2.7.7.37",
       "date": "2026-10-16",
@@ -1397,7 +1405,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "892e55e6f41b26f3bb21ae3e41b7fa36b02b5aa5387ff470170894fda7ca7657",
+    "digest": "e6343cc487473fb935ee06a9eb3c00380ee191f3b4d49924468d701206c31101",
     "fileCount": 227
   }
 }

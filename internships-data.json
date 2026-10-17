@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-16T17:18:09.972Z",
+  "sourceExportedAt": "2026-10-17T03:11:51.652Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -2634,50 +2634,6 @@
         "status": "open",
         "checkedAt": "2026-10-13T22:05:43.846Z",
         "sourceUrl": "https://jobs.whitney.org/apply/CuF0WKRJaP/Spring-2027-Marketing-Internship",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Khan Academy",
-      "role": "Software Engineer Intern (Summer 2027)",
-      "link": "https://job-boards.greenhouse.io/khanacademy/jobs/8250259",
-      "loc": "Remote, US / Canada",
-      "ind": "Software Engineering",
-      "desc": "Build education software for learners and teachers.",
-      "pay": "$46.15/hour (US target rate)",
-      "style": "Remote",
-      "exp": "Not listed",
-      "state": "Remote, US / Canada",
-      "eligibility": "Current Bachelor's enrollment in Computer Science or related field; graduation in 2028 or 2029 (employer calls this rising Junior or Senior).\nAt least one previous software internship required.\nStart in May or June 2027 with 10–12 weeks available; work/live in the United States or Canada for the internship.\nAbility to learn AI-assisted development, review and validate generated code with a mentor, strong communication and openness to feedback. No particular programming language or tool experience required.\nUS target pay is $46.15/hour; employer separately lists CAD $54.51/hour for Canada.\nSponsorship is asked in the application, but no sponsorship policy is stated; do not infer eligibility or exclusion.",
-      "cycle": "Summer 2027; 12-week program",
-      "deadline": "October 16, 2026 at 5 PM PDT",
-      "applicationsOpen": "Not listed",
-      "startDate": "May or June 2027",
-      "timingSourceUrl": "https://job-boards.greenhouse.io/khanacademy/jobs/8250259",
-      "payStatus": "paid",
-      "payBasis": "hour",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Build education products used by learners and teachers.",
-        "Use AI tools for coding, debugging and testing.",
-        "Review and validate code with an engineering mentor."
-      ],
-      "eligibilityFlags": [
-        "Current Bachelor's enrollment in Computer Science or related field; graduation in 2028 or 2029 (employer calls this rising Junior or Senior).",
-        "At least one previous software internship required.",
-        "Start in May or June 2027 with 10–12 weeks available; work/live in the United States or Canada for the internship.",
-        "Ability to learn AI-assisted development, review and validate generated code with a mentor, strong communication and openness to feedback. No particular programming language or tool experience required.",
-        "US target pay is $46.15/hour; employer separately lists CAD $54.51/hour for Canada.",
-        "Sponsorship is asked in the application, but no sponsorship policy is stated; do not infer eligibility or exclusion."
-      ],
-      "benefits": [
-        "Onboarding and engineering mentorship; opportunity to build educational products."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-10-13T22:07:54.822Z",
-        "sourceUrl": "https://job-boards.greenhouse.io/khanacademy/jobs/8250259",
         "reviewerType": "source_check"
       }
     },

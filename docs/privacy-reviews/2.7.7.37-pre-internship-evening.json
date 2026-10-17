@@ -1,0 +1,14 @@
+{
+  "version": "2.7.7.37",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-10-17T00:14:24.793Z",
+  "reviewer": "Codex StillUnemployed",
+  "sourceDigest": "892e55e6f41b26f3bb21ae3e41b7fa36b02b5aa5387ff470170894fda7ca7657",
+  "sourceFileCount": 227,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Reviewed current Privacy/Terms and exact data-only staging behavior. Two approved future collections under existing server publication rules, no changed personal data, event, identity, retention, auth, provider, permissions or disclosures. Policy bodies exact predecessors apart from generated release footer. Reviewed, no wording change needed.",
+  "predecessor": "docs/privacy-reviews/2.7.7.36-pre-weekend.json",
+  "author": "Codex",
+  "platform_signature": "-Codex"
+}

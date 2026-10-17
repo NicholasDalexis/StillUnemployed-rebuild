@@ -1,14 +1,14 @@
 {
-  "version": "2.7.7.37",
+  "version": "2.7.7.38",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-17T00:14:24.793Z",
-  "reviewer": "Codex StillUnemployed",
-  "sourceDigest": "892e55e6f41b26f3bb21ae3e41b7fa36b02b5aa5387ff470170894fda7ca7657",
+  "reviewedAt": "2026-10-17T03:13:07Z",
+  "reviewer": "Codex NEW Internship Review",
+  "sourceDigest": "e6343cc487473fb935ee06a9eb3c00380ee191f3b4d49924468d701206c31101",
   "sourceFileCount": 227,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Reviewed current Privacy/Terms and exact data-only staging behavior. Two approved future collections under existing server publication rules, no changed personal data, event, identity, retention, auth, provider, permissions or disclosures. Policy bodies exact predecessors apart from generated release footer. Reviewed, no wording change needed.",
-  "predecessor": "docs/privacy-reviews/2.7.7.36-pre-weekend.json",
+  "scope": "Current full Privacy and Terms reviewed. Data-only removal of one exact employer-unavailable Khan Academy internship and mechanical release footers. No changed personal data flows, auth, consent, storage, retention, provider, event or runtime logic. All86 surviving raw approved objects and real verification dates exact. Reviewed, no wording change needed.",
+  "predecessor": "docs/privacy-reviews/2.7.7.37-pre-internship-evening.json",
   "author": "Codex",
   "platform_signature": "-Codex"
 }
