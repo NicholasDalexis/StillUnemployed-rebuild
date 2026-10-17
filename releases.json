@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.36",
+  "currentVersion": "2.7.7.37",
   "releases": [
+    {
+      "version": "2.7.7.37",
+      "date": "2026-10-16",
+      "title": "Stage approved October 17–18 daily collections",
+      "changes": [
+        "Stage the exact Marketing weekend v1 ordered four for October17 and18, both9AM Eastern. Preserve all12 prior sets, current-source/moderation precedence and private future visibility. No source Sheet, social, runtime, auth/provider or schedule changes. -Codex"
+      ],
+      "public": {
+        "title": "Weekend job collections",
+        "changes": [
+          "New daily collections appear at 9 AM Eastern, with the same search, filters and job details."
+        ]
+      }
+    },
     {
       "version": "2.7.7.36",
       "date": "2026-10-16",
@@ -1383,7 +1397,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "4d89d11d4d662c7f7c6f9a1563266dfd5d99bd27ef7c8d0e9ba647c8676bc909",
+    "digest": "892e55e6f41b26f3bb21ae3e41b7fa36b02b5aa5387ff470170894fda7ca7657",
     "fileCount": 227
   }
 }

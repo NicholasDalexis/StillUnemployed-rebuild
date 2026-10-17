@@ -779,6 +779,134 @@
           }
         }
       ]
+    },
+    {
+      "date": "2026-10-17",
+      "kind": "jobs",
+      "state": "scheduled",
+      "publishAt": "2026-10-17T13:00:00.000Z",
+      "jobs": [
+        {
+          "id": "1jfg3dl9lmpgs",
+          "link": "https://job-boards.greenhouse.io/nflcareers/jobs/5311969008",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/nflcareers/jobs/5311969008",
+            "co": "NFL",
+            "role": "Seasonal Graphics Designer/Animator",
+            "pay": "$37–$80/hour",
+            "loc": "Inglewood, CA · In-person · No sponsorship/relocation",
+            "exp": "Design/animation experience; no numeric minimum listed",
+            "ind": "Video & Creative",
+            "tldr": "• Design and animate graphics for NFL programming\n• Create show key art and adapt creative toolkits\n• Seasonal: up to 7 months, 40 hours/week\n• No sponsorship/relocation; nights/weekends possible"
+          }
+        },
+        {
+          "id": "1801iv713tfq1i",
+          "link": "https://jobs.lever.co/hive/c9da614c-7ebe-493f-a770-b79b711fd7df",
+          "snapshot": {
+            "link": "https://jobs.lever.co/hive/c9da614c-7ebe-493f-a770-b79b711fd7df",
+            "co": "Hive",
+            "role": "Associate Product Manager, Hive Models",
+            "pay": "$90,000–$120,000/year",
+            "loc": "San Francisco, CA · In-person",
+            "exp": "0–2 years ML/product; related BS; ML coursework accepted",
+            "ind": "Product & Project Management",
+            "tldr": "• Support AI model roadmaps and product requirements\n• Work with engineering, sales and customers\n• Help track delivery and improve model features\n• 0–2 years; related BS and ML exposure required"
+          }
+        },
+        {
+          "id": "1y0e62r6xavg1",
+          "link": "https://boards.greenhouse.io/aloyoga/jobs/6209885004?gh_jid=6209885004",
+          "snapshot": {
+            "link": "https://boards.greenhouse.io/aloyoga/jobs/6209885004?gh_jid=6209885004",
+            "co": "Alo Yoga",
+            "role": "Junior Supply Planner",
+            "pay": "$75,000–$80,000/year",
+            "loc": "Commerce, CA · In-person",
+            "exp": "0–2 years; related degree or equivalent experience",
+            "ind": "Business & Operations",
+            "tldr": "• Translate forecasts into raw-material supply needs\n• Maintain ERP, planning data and inventory reports\n• Support seasonal plans and process improvements\n• 0–2 years; related degree or equivalent experience"
+          }
+        },
+        {
+          "id": "1j1cy7ehnydbu",
+          "link": "https://job-boards.greenhouse.io/dept/jobs/8259204",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/dept/jobs/8259204",
+            "co": "DEPT",
+            "role": "Account Coordinator, Paid Social",
+            "pay": "$47,900–$60,000/year",
+            "loc": "Remote, US",
+            "exp": "6+ months paid social; Facebook Ads required",
+            "ind": "Marketing & Communications",
+            "tldr": "• Build and launch paid social campaigns\n• Traffic assets and support campaign testing\n• Analyze data and prepare performance reports\n• 6+ months paid social; Facebook Ads required"
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-10-18",
+      "kind": "jobs",
+      "state": "scheduled",
+      "publishAt": "2026-10-18T13:00:00.000Z",
+      "jobs": [
+        {
+          "id": "1q9yd02eax2ox",
+          "link": "https://job-boards.greenhouse.io/discord/jobs/8575166002",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/discord/jobs/8575166002",
+            "co": "Discord",
+            "role": "Strategic Finance Analyst",
+            "pay": "$116,000–$130,500/year",
+            "loc": "San Francisco Bay Area, CA · Residence/relocation required",
+            "exp": "1+ year banking, consulting or tech FP&A; financial modeling",
+            "ind": "Finance & Accounting",
+            "tldr": "• Build revenue forecasts and subscription models\n• Analyze retention, revenue drivers and performance\n• Automate finance reporting with Excel and AI tools\n• 1+ year relevant finance; Bay Area residence required"
+          }
+        },
+        {
+          "id": "165ids2ughzce",
+          "link": "https://job-boards.greenhouse.io/hasbro/jobs/4422565009",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/hasbro/jobs/4422565009",
+            "co": "Wizards of the Coast (Workwell contract)",
+            "role": "Content Specialist (Contract/Temporary) - Marketing",
+            "pay": "$35–$45/hour",
+            "loc": "Renton, WA · Commute required · 12-month Workwell W2",
+            "exp": "Web content creation/editing experience; no numeric minimum",
+            "ind": "Content & Copy",
+            "tldr": "• Write and edit Magic: The Gathering announcements\n• Maintain content calendars across web platforms\n• Partner with designers, producers and marketing\n• 12-month Workwell W2 assignment, not Hasbro employment"
+          }
+        },
+        {
+          "id": "rjl6acnoqh5h",
+          "link": "https://boards.greenhouse.io/aloyoga/jobs/6123742004?gh_jid=6123742004",
+          "snapshot": {
+            "link": "https://boards.greenhouse.io/aloyoga/jobs/6123742004?gh_jid=6123742004",
+            "co": "Alo Yoga",
+            "role": "Assistant Buyer - APAC",
+            "pay": "$70,000–$80,000/year",
+            "loc": "Beverly Hills, CA · In-person",
+            "exp": "0–2 years or relevant buying/planning internships",
+            "ind": "Business & Operations",
+            "tldr": "• Prepare APAC buying reports and sales analyses\n• Track inventory, shipments and seasonal buying\n• Coordinate planning and merchandising updates\n• 0–2 years or relevant internships; BA/BS preferred"
+          }
+        },
+        {
+          "id": "uxlfckde5hri",
+          "link": "https://job-boards.greenhouse.io/reddit/jobs/8240716",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/reddit/jobs/8240716",
+            "co": "Reddit",
+            "role": "Frontend Engineer, Ads Campaign Manager",
+            "pay": "$164,200–$229,900/year",
+            "loc": "Remote, US",
+            "exp": "3+ years software engineering, including 2+ frontend",
+            "ind": "Web Development",
+            "tldr": "• Build accessible advertiser campaign interfaces\n• Own frontend design, testing and release work\n• Improve performance, reliability and reusable UI\n• 3+ years software, including 2+ in frontend"
+          }
+        }
+      ]
     }
   ]
 }
