@@ -1,7 +1,35 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.38",
+  "currentVersion": "2.7.7.40",
   "releases": [
+    {
+      "version": "2.7.7.40",
+      "date": "2026-10-17",
+      "title": "Verified internship display and publication",
+      "changes": [
+        "Finalize the twelve verified student additions after concise-display regression correction. Work-arrangement facts remain in original source eligibility and location. Prior 2.7.7.39 was an unreleased local candidate; preserve that history. No runtime, checker or schema changes."
+      ],
+      "public": {
+        "title": "Twelve new student opportunities",
+        "changes": [
+          "New internships and co-ops across people operations, marketing, finance, data and graphics engineering. Exact employer eligibility is included."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.39",
+      "date": "2026-10-17",
+      "title": "Verified student internship additions",
+      "changes": [
+        "Publish twelve exact employer/application-verified student internships and co-ops from a complete144-row native export; preserve all86previous raw objects, Sony and daily histories, honest eligibility/pay and the unrelated Registry provenance hold."
+      ],
+      "public": {
+        "title": "More student opportunities",
+        "changes": [
+          "Explore new internships and co-ops in marketing, people operations, finance, data and graphics engineering."
+        ]
+      }
+    },
     {
       "version": "2.7.7.38",
       "date": "2026-10-16",
@@ -1405,7 +1433,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "e6343cc487473fb935ee06a9eb3c00380ee191f3b4d49924468d701206c31101",
+    "digest": "4278343355cb094ab44023fb7b48c09a62a0ee2556ce0cd6b86f575a30464814",
     "fileCount": 227
   }
 }
