@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-17T18:16:04.640Z",
+  "sourceExportedAt": "2026-10-18T15:27:11.972Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -445,52 +445,6 @@
         "status": "open",
         "checkedAt": "2026-09-06T21:47:32.258Z",
         "sourceUrl": "https://careers.victoriassecret.com/en/job/23762349/summer-2027-product-development-internship-with-victoria-s-secret/",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "IBM",
-      "role": "User Experience Design, Research and Content Intern 2027",
-      "link": "https://careers.ibm.com/en_US/careers/JobDetail?jobId=130118",
-      "loc": "Poughkeepsie, NY",
-      "ind": "UI/UX / Content Design",
-      "desc": "Support UX research, product design or technical content for IBM Z products; learn enterprise design and content practices.",
-      "pay": "$75,600.00-138,600.00/year (projected, full-calendar-year basis; internship total not stated)",
-      "style": "Hybrid",
-      "exp": "Not listed",
-      "state": "Poughkeepsie, NY",
-      "eligibility": "Actively enrolled in college or university; high school diploma/GED required. Bachelor's degree is preferred, not a completed-degree requirement.\nFixed-term co-op, hybrid, general daytime shift; exact weekly hours, duration and compatibility with full-time classes are not listed.\nMust be able to work without current or future visa sponsorship.\nCreativity, adaptability and strong communication/presentation skills required.\nPreferred: UX design/research, enterprise design thinking, IBM Z familiarity, or technical content development using XML/DITA/GitHub and structured-content AI.\nUI development, modern frameworks, accessible interfaces and component/design systems are preferred; relevant design, technical communication or engineering degree routes listed.\nCompensation and benefits are based on a full-time full calendar year and may be adjusted/prorated; this is not the internship total.",
-      "cycle": "2027 co-op (fixed term)",
-      "deadline": "Not stated; employer anticipates posting for 15 days from August 25, 2026 or less, not a guaranteed deadline.",
-      "applicationsOpen": "Not announced",
-      "startDate": "Not listed",
-      "timingSourceUrl": "https://careers.ibm.com/en_US/careers/JobDetail?jobId=130118",
-      "payStatus": "paid",
-      "payBasis": "annualized_year",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Contribute to IBM Z product design, user research or technical content with senior guidance.",
-        "Apply a user-centered perspective and, where relevant, engage with customers.",
-        "Support design/content community activities and shared knowledge."
-      ],
-      "eligibilityFlags": [
-        "Actively enrolled in college or university; high school diploma/GED required. Bachelor's degree is preferred, not a completed-degree requirement.",
-        "Fixed-term co-op, hybrid, general daytime shift; exact weekly hours, duration and compatibility with full-time classes are not listed.",
-        "Must be able to work without current or future visa sponsorship.",
-        "Creativity, adaptability and strong communication/presentation skills required.",
-        "Preferred: UX design/research, enterprise design thinking, IBM Z familiarity, or technical content development using XML/DITA/GitHub and structured-content AI.",
-        "UI development, modern frameworks, accessible interfaces and component/design systems are preferred; relevant design, technical communication or engineering degree routes listed.",
-        "Compensation and benefits are based on a full-time full calendar year and may be adjusted/prorated; this is not the internship total."
-      ],
-      "benefits": [
-        "Eligible supplemental employees may receive up to eight paid holidays, at least 56 hours sick time and the employee stock purchase plan.",
-        "Family medical leave and disability benefits where required for eligible employees; benefits may be prorated."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-06T21:47:35.898Z",
-        "sourceUrl": "https://careers.ibm.com/en_US/careers/JobDetail?jobId=130118",
         "reviewerType": "source_check"
       }
     },
@@ -3219,55 +3173,6 @@
           "Prototype multiplayer experiences and event triggers.",
           "Playtest and iterate with artists and engineers.",
           "Unreal/Blueprints and playable portfolio; students/recent grads; US authorization; 40 hours/week in Cary; flexible 2027 start."
-        ]
-      }
-    },
-    {
-      "co": "Later",
-      "role": "Social Media Content Creator Co-op - Client Services",
-      "link": "https://job-boards.greenhouse.io/later/jobs/8802822002",
-      "loc": "Boston, MA",
-      "ind": "Social Media",
-      "desc": "Pitch creative concepts for brand campaigns.",
-      "pay": "$21/hour",
-      "style": "In-person",
-      "exp": "Not listed",
-      "state": "Boston, MA",
-      "eligibility": "Current Northeastern University co-op enrollment is explicitly required by the posting and application. Design/digital media/visual communication background, Adobe Creative Suite and video editing familiarity; digital/social portfolio. In-office five days/week January-July 2027; not a general summer-only internship. Generic recently-graduated wording does not waive the stated Northeastern co-op condition.",
-      "cycle": "Co-op 2027; January-July",
-      "deadline": "Not listed",
-      "applicationsOpen": "Not listed",
-      "startDate": "January 2027",
-      "timingSourceUrl": "https://job-boards.greenhouse.io/later/jobs/8802822002",
-      "payStatus": "paid",
-      "payBasis": "hour",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Pitch creative concepts for brand campaigns.",
-        "Capture and edit social videos and graphics.",
-        "Monitor trends and schedule platform-specific content."
-      ],
-      "eligibilityFlags": [
-        "Current Northeastern University co-op enrollment is explicitly required by the posting and application. Design/digital media/visual communication background, Adobe Creative Suite and video editing familiarity; digital/social portfolio. In-office five days/week January-July 2027; not a general summer-only internship. Generic recently-graduated wording does not waive the stated Northeastern co-op condition."
-      ],
-      "benefits": [
-        "Hands-on experience; mentorship/networking explicitly offered on content co-op; permanent-employee equity/benefits not attributed to co-ops."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-10-14T18:09:59.207Z",
-        "sourceUrl": "https://job-boards.greenhouse.io/later/jobs/8802822002",
-        "reviewerType": "source_check"
-      },
-      "presentation": {
-        "sourceKey": "bae98610:9fe31b94",
-        "locationLabel": "Boston, MA",
-        "detailBullets": [
-          "Pitch creative concepts for brand campaigns.",
-          "Capture and edit social videos and graphics.",
-          "Monitor trends and schedule platform-specific content.",
-          "Northeastern design co-op students only; portfolio; Boston five days/week, January–July 2027."
         ]
       }
     },

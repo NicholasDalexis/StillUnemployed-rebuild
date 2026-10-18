@@ -1,0 +1,14 @@
+{
+  "version": "2.7.7.40",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-10-17T18:23:57Z",
+  "reviewer": "Codex NEW Internship Sourcing",
+  "sourceDigest": "4278343355cb094ab44023fb7b48c09a62a0ee2556ce0cd6b86f575a30464814",
+  "sourceFileCount": 227,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Current full Privacy and Terms reviewed. Listings-only addition of twelve exact employer/application-verified student internships and co-ops, with source-key-bound compact presentation and mechanical release footers. No changed personal data flows, authentication, consent, storage, retention, providers, events, schema or runtime logic. All86 prior raw objects and actual verification dates remain exact. Reviewed, no wording change needed; not legal clearance.",
+  "predecessor": "docs/privacy-reviews/2.7.7.38-pre-internship-sourcing.json",
+  "author": "Codex",
+  "platform_signature": "-Codex"
+}

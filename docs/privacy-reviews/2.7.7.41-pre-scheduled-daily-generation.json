@@ -1,0 +1,14 @@
+{
+  "version": "2.7.7.41",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-10-18T15:28:35.872Z",
+  "reviewer": "Codex NEW Internship Review",
+  "sourceDigest": "f00a9dd2153f37e4c2a7273934f05917a7a5a218269189252c058776cd99ee07",
+  "sourceFileCount": 227,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Full current Privacy and Terms reviewed. Data-only retirement of IBM130118 and Later8802822002 after explicit current employer closure notices. All96 surviving raw public objects and actual verification timestamps preserved exactly; mechanical release footers only. No change to personal-data flows, providers, consent, authentication, storage, retention, schema, events or runtime logic. Reviewed, no wording change needed; not legal clearance. Unchanged consent/account/retention tests are regression evidence, not fresh physical-device or provider-settings acceptance.",
+  "predecessor": "docs/privacy-reviews/2.7.7.40-pre-internship-review.json",
+  "author": "Codex",
+  "platform_signature": "-Codex"
+}
