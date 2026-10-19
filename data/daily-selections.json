@@ -907,6 +907,134 @@
           }
         }
       ]
+    },
+    {
+      "date": "2026-10-19",
+      "kind": "jobs",
+      "state": "scheduled",
+      "publishAt": "2026-10-19T13:00:00.000Z",
+      "jobs": [
+        {
+          "id": "1eo6y0w1d9a9hh",
+          "link": "https://stripe.com/careers/listing/product-manager-new-grad-accelerator/7737124",
+          "snapshot": {
+            "link": "https://stripe.com/careers/listing/product-manager-new-grad-accelerator/7737124",
+            "co": "Stripe",
+            "role": "Product Manager: New Grad Accelerator",
+            "pay": "$120,000–$180,000/year base",
+            "loc": "South San Francisco, CA / Seattle, WA / New York, NY · In-person",
+            "exp": "New grad/0–2 years; CS or engineering degree",
+            "ind": "Product & Project Management",
+            "tldr": "• Build AI-enabled financial products from research to launch\n• Own design, coding, deployment and iteration\n• Full-time 12-month accelerator; CS/engineering degree\n• New grad/0–2 years; later PM placement not guaranteed"
+          }
+        },
+        {
+          "id": "1uf5cxwi6hhrw",
+          "link": "https://jobs.ashbyhq.com/suno/8db54a59-4778-4c51-886e-dfdc974894ec",
+          "snapshot": {
+            "link": "https://jobs.ashbyhq.com/suno/8db54a59-4778-4c51-886e-dfdc974894ec",
+            "co": "Suno",
+            "role": "Office Coordinator, LA (contract)",
+            "pay": "$40–$45/hour",
+            "loc": "Los Angeles, CA · Onsite Mon–Fri · Contract",
+            "exp": "1–2 years office/facilities coordination; US work eligibility",
+            "ind": "Business & Operations",
+            "tldr": "• Coordinate guests, vendors and workplace records\n• Manage facilities, supplies and office logistics\n• Support team events, hiring visits and onboarding\n• Contract; LA onsite Mon–Fri; US work eligibility required"
+          }
+        },
+        {
+          "id": "jve0zscy6khy",
+          "link": "https://boards.greenhouse.io/aloyoga/jobs/6144732004?gh_jid=6144732004",
+          "snapshot": {
+            "link": "https://boards.greenhouse.io/aloyoga/jobs/6144732004?gh_jid=6144732004",
+            "co": "Alo Yoga",
+            "role": "FP&A Analyst",
+            "pay": "$75,000–$90,000/year base",
+            "loc": "Beverly Hills, CA · Onsite full-time",
+            "exp": "1–3 years finance; advanced Excel/PowerPoint",
+            "ind": "Finance & Accounting",
+            "tldr": "• Support e-commerce budgets, forecasts and financial reports\n• Analyze web P&L and paid-marketing performance\n• Maintain revenue dashboards and assess digital investments\n• 1–3 years finance; advanced Excel/PowerPoint; onsite"
+          }
+        },
+        {
+          "id": "lbxnww3bsvbg",
+          "link": "https://job-boards.greenhouse.io/voxmedia/jobs/8259059",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/voxmedia/jobs/8259059",
+            "co": "Vox Media",
+            "role": "Video & Social Media Producer, Criminal",
+            "pay": "$81,000–$100,000/year base",
+            "loc": "Remote, US · 9AM–5PM Eastern · 6-month full-time temp",
+            "exp": "Podcast/editorial video production; no numeric minimum",
+            "ind": "Video & Creative",
+            "tldr": "• Produce Criminal podcast videos and social assets\n• Create thumbnails, captions and platform-specific edits\n• Track performance and coordinate with podcast producers\n• 6-month full-time temp; remote, 9AM–5PM Eastern"
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-10-20",
+      "kind": "jobs",
+      "state": "scheduled",
+      "publishAt": "2026-10-20T13:00:00.000Z",
+      "jobs": [
+        {
+          "id": "931a5l16os8i2",
+          "link": "https://jobs.ashbyhq.com/plaid/9de91efe-7adc-4288-87fb-7bd04af36b3b",
+          "snapshot": {
+            "link": "https://jobs.ashbyhq.com/plaid/9de91efe-7adc-4288-87fb-7bd04af36b3b",
+            "co": "Plaid",
+            "role": "Technical Support Engineer",
+            "pay": "$73,872–$110,000/year base",
+            "loc": "Remote, US · Must reside/work Pacific Time",
+            "exp": "2+ years customer-facing; 6+ months APIs/SQL/HTML/CSS/coding",
+            "ind": "Software & Engineering",
+            "tldr": "• Investigate API integrations and product-support issues\n• Escalate technical cases and improve support processes\n• 2+ years customer-facing; 6+ months APIs/SQL/web/coding\n• US remote; primarily Pacific Time residence/business hours"
+          }
+        },
+        {
+          "id": "wbmb6f195i383",
+          "link": "https://careers.roblox.com/jobs/8143976?gh_jid=8143976",
+          "snapshot": {
+            "link": "https://careers.roblox.com/jobs/8143976?gh_jid=8143976",
+            "co": "Roblox",
+            "role": "[2027] Associate Product Manager, Early Career",
+            "pay": "$143,000/year base",
+            "loc": "San Mateo, CA · Office Tue–Thu",
+            "exp": "Related degree underway/completed; visa/H-1B limits; 18+; due Oct 30, 5 PM PST (employer wording)",
+            "ind": "Product & Project Management",
+            "tldr": "• Build Roblox features through a 21-month APM rotation\n• Research users and define roadmaps and experiments\n• 18+; related degree underway/completed; some visa/H-1B limits\n• San Mateo Tue–Thu; due Oct 30, 5PM PST (employer wording)"
+          }
+        },
+        {
+          "id": "1oaujyi1dpy06s",
+          "link": "https://jcrew.wd1.myworkdayjobs.com/MadewellCareers/job/New-York-NY-USA-Headquarters/Associate-Designer-jewelry-and-Soft-Accessories_126310",
+          "snapshot": {
+            "link": "https://jcrew.wd1.myworkdayjobs.com/MadewellCareers/job/New-York-NY-USA-Headquarters/Associate-Designer-jewelry-and-Soft-Accessories_126310",
+            "co": "Madewell",
+            "role": "Associate Designer jewelry and Soft Accessories",
+            "pay": "$64,200–$79,600 base salary (period not stated)",
+            "loc": "New York, NY · Headquarters",
+            "exp": "2–4 years design incl. accessories; design degree",
+            "ind": "Fashion Design",
+            "tldr": "• Design jewelry, scarves, socks, sunglasses and hats\n• Build seasonal concepts, CADs and presentation boards\n• Partner with technical design, production and merchandising\n• 2–4 years incl. accessories; design degree; pay period unstated"
+          }
+        },
+        {
+          "id": "s5eclfflaur1",
+          "link": "https://jobs.ashbyhq.com/rilla/e36f5eb6-18f5-4b36-8448-6da4830e8071",
+          "snapshot": {
+            "link": "https://jobs.ashbyhq.com/rilla/e36f5eb6-18f5-4b36-8448-6da4830e8071",
+            "co": "Rilla",
+            "role": "AR and Billing Specialist",
+            "pay": "$87,000–$100,000/year base",
+            "loc": "New York, NY · Onsite ~70h/week; 6 days/week",
+            "exp": "1–2+ years billing/AR/finance; degree preferred",
+            "ind": "Finance & Accounting",
+            "tldr": "• Own invoicing, billing and customer collections\n• Reconcile payments and maintain AR records\n• Improve billing processes with Sales and Finance\n• 1–2+ years billing/AR; NYC onsite ~70h/week, 6 days"
+          }
+        }
+      ]
     }
   ]
 }
