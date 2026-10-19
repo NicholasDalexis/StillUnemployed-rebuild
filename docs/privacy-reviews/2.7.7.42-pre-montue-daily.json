@@ -1,0 +1,14 @@
+{
+  "version": "2.7.7.42",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-10-18T15:31:24.723Z",
+  "reviewer": "Codex NEW Internship Review",
+  "sourceDigest": "5bd27c111fdc3be15f09c85405b004e3bb7bf9a1fd56dc417c9aa521ca56e87c",
+  "sourceFileCount": 227,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Full current Privacy and Terms reviewed. Data-only retirement of IBM130118 and Later8802822002 after explicit current employer closure notices. All96 surviving raw public objects and actual verification timestamps preserved exactly; mechanical release footers only. No change to personal-data flows, providers, consent, authentication, storage, retention, schema, events or runtime logic. Reviewed, no wording change needed; not legal clearance. Unchanged consent/account/retention tests are regression evidence, not fresh physical-device or provider-settings acceptance. Normal scheduled generation additionally exposes the preapproved October18 daily collection already stored in data/daily-selections.json; no source selection or prior thirteen histories changed.",
+  "predecessor": "docs/privacy-reviews/2.7.7.41-pre-scheduled-daily-generation.json",
+  "author": "Codex",
+  "platform_signature": "-Codex"
+}
