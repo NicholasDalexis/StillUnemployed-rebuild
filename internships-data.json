@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-18T15:27:11.972Z",
+  "sourceExportedAt": "2026-10-19T21:54:31.830Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -4318,6 +4318,1552 @@
           "Validate prototypes and production-ready engineering solutions.",
           "Collaborate across graphics engineers, designers and researchers.",
           "Fourth/fifth-year graphics/media PhD students only; full-time; 12–16weeks May/June2027; housing/travel support."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Backend Software Engineering Intern - Undergraduate",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221802004",
+      "loc": "San Mateo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Build personalized game discovery services. Integrate APIs and data processing. Test scalable backend systems.",
+      "pay": "$50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Mateo, CA",
+      "eligibility": "Currently pursuing a Bachelor's degree in Computer Science, Computer Engineering, Software Engineering, or a related field.\nProficiency in at least one programming language, such as Java, Kotlin, Python, or C++.\nStrong foundation in data structures, algorithms, object-oriented programming, and software design principles.\nBasic understanding of databases, APIs, and backend software development.\nSelf-motivated with a strong sense of ownership, curiosity, and willingness to learn new technologies.\nStrong problem-solving and communication skills, with the ability to collaborate effectively in a team environment.\nFamiliarity with microservice architectures, distributed systems, or cloud technologies is a plus.\nExperience with technologies such as Spring Boot, AWS, Docker, or Kubernetes is a plus.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221802004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build personalized game discovery services.",
+        "Integrate APIs and data processing.",
+        "Test scalable backend systems."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a Bachelor's degree in Computer Science, Computer Engineering, Software Engineering, or a related field.",
+        "Proficiency in at least one programming language, such as Java, Kotlin, Python, or C++.",
+        "Strong foundation in data structures, algorithms, object-oriented programming, and software design principles.",
+        "Basic understanding of databases, APIs, and backend software development.",
+        "Self-motivated with a strong sense of ownership, curiosity, and willingness to learn new technologies.",
+        "Strong problem-solving and communication skills, with the ability to collaborate effectively in a team environment.",
+        "Familiarity with microservice architectures, distributed systems, or cloud technologies is a plus.",
+        "Experience with technologies such as Spring Boot, AWS, Docker, or Kubernetes is a plus.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:24.313Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221802004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "51ab921e:cc885072",
+        "locationLabel": "San Mateo, CA",
+        "detailBullets": [
+          "Build personalized game discovery services.",
+          "Integrate APIs and data processing.",
+          "Test scalable backend systems.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Developer Experience (DevEx) AI Engineering Intern - Master's",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221766004",
+      "loc": "San Mateo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Prototype AI developer tools. Connect models with engineering systems. Evaluate model quality and reliability.",
+      "pay": "$55.25/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Mateo, CA",
+      "eligibility": "Pursuing a master's or doctoral degree in Computer Science, Artificial Intelligence, Machine Learning, Software Engineering, or a related field, with graduation expected between December 2027 and Spring 2028.\nStrong Python skills and a solid foundation in software design, data structures, debugging, and testing.\nHands-on experience building or evaluating machine learning or large language model applications through research, coursework, internships, or personal projects.\nFamiliarity with REST APIs, Git, cloud services, and data stores; experience with retrieval systems or vector search is a plus.\nAbility to explain technical choices clearly, incorporate feedback, and work effectively with a collaborative engineering team.\nInterest in developer productivity and responsible AI, with a willingness to learn unfamiliar systems and tools.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree - Master's\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221766004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Prototype AI developer tools.",
+        "Connect models with engineering systems.",
+        "Evaluate model quality and reliability."
+      ],
+      "eligibilityFlags": [
+        "Pursuing a master's or doctoral degree in Computer Science, Artificial Intelligence, Machine Learning, Software Engineering, or a related field, with graduation expected between December 2027 and Spring 2028.",
+        "Strong Python skills and a solid foundation in software design, data structures, debugging, and testing.",
+        "Hands-on experience building or evaluating machine learning or large language model applications through research, coursework, internships, or personal projects.",
+        "Familiarity with REST APIs, Git, cloud services, and data stores; experience with retrieval systems or vector search is a plus.",
+        "Ability to explain technical choices clearly, incorporate feedback, and work effectively with a collaborative engineering team.",
+        "Interest in developer productivity and responsible AI, with a willingness to learn unfamiliar systems and tools.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree - Master's",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:37.589Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221766004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "fb5f548e:5a75c6d2",
+        "locationLabel": "San Mateo, CA",
+        "detailBullets": [
+          "Prototype AI developer tools.",
+          "Connect models with engineering systems.",
+          "Evaluate model quality and reliability.",
+          "Master's/doctoral students graduating December 2027–Spring 2028; 12 weeks; US work authorization; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Frontend Software Engineering Intern - Undergraduate",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221826004",
+      "loc": "Los Angeles, CA; San Mateo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Build React audience-management interfaces. Integrate marketing data and APIs. Test accessible user experiences.",
+      "pay": "$45.75–50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Los Angeles, CA; San Mateo, CA",
+      "eligibility": "Currently pursuing an undergraduate degree in Computer Science, Computer Engineering, or a related field.\nWorking knowledge of HTML, CSS, and JavaScript, with the ability to build and explain a small interactive web page or application.\nBasic familiarity with React components, props, and state through coursework or personal projects, with a willingness to learn TypeScript in a production codebase.\nComfort reading JSON and making simple API requests, along with introductory experience using Git or another version control system.\nCuriosity about how data, permissions, and shared components affect user interfaces, with a willingness to ask questions when requirements are unclear.\nClear communication, collaborative problem-solving skills, and openness to feedback and code review.\nJava experience and MVC design pattern familiarity are a plus.\nInterest in testing, accessibility, and clear user experiences is beneficial, with related coursework or project experience considered a plus.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221826004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build React audience-management interfaces.",
+        "Integrate marketing data and APIs.",
+        "Test accessible user experiences."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing an undergraduate degree in Computer Science, Computer Engineering, or a related field.",
+        "Working knowledge of HTML, CSS, and JavaScript, with the ability to build and explain a small interactive web page or application.",
+        "Basic familiarity with React components, props, and state through coursework or personal projects, with a willingness to learn TypeScript in a production codebase.",
+        "Comfort reading JSON and making simple API requests, along with introductory experience using Git or another version control system.",
+        "Curiosity about how data, permissions, and shared components affect user interfaces, with a willingness to ask questions when requirements are unclear.",
+        "Clear communication, collaborative problem-solving skills, and openness to feedback and code review.",
+        "Java experience and MVC design pattern familiarity are a plus.",
+        "Interest in testing, accessibility, and clear user experiences is beneficial, with related coursework or project experience considered a plus.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:24.759Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221826004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "7411e665:fb328c69",
+        "locationLabel": "Multiple locations",
+        "detailBullets": [
+          "Build React audience-management interfaces.",
+          "Integrate marketing data and APIs.",
+          "Test accessible user experiences.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Machine Learning Intern - Master's",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221769004",
+      "loc": "San Mateo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Research multimodal game anomaly detection. Develop machine-learning experiments and prototypes. Evaluate automated game-testing approaches.",
+      "pay": "$55.25/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Mateo, CA",
+      "eligibility": "Currently pursuing a Master’s degree in Computer Science, Machine Learning, Electrical Engineering, Robotics, or a related field.\nStrong foundation in machine learning, computer vision, or natural language processing.\nProficiency in Python programming and familiarity with modern ML libraries.\nHands-on experience with deep learning frameworks such as PyTorch or TensorFlow.\nStrong problem-solving skills, curiosity, and the ability to collaborate effectively as part of a research team.\nCoursework or prior experience in areas such as self-supervised learning, contrastive learning, state-space models, multimodal AI, or vision-language models is a plus.\nProficiency in data analysis, signal processing, or statistical modeling is desirable.\nInterest in audio, gaming, game engines, or the intersection of machine learning and game technology is highly desirable.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree - Master’s\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221769004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Research multimodal game anomaly detection.",
+        "Develop machine-learning experiments and prototypes.",
+        "Evaluate automated game-testing approaches."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a Master’s degree in Computer Science, Machine Learning, Electrical Engineering, Robotics, or a related field.",
+        "Strong foundation in machine learning, computer vision, or natural language processing.",
+        "Proficiency in Python programming and familiarity with modern ML libraries.",
+        "Hands-on experience with deep learning frameworks such as PyTorch or TensorFlow.",
+        "Strong problem-solving skills, curiosity, and the ability to collaborate effectively as part of a research team.",
+        "Coursework or prior experience in areas such as self-supervised learning, contrastive learning, state-space models, multimodal AI, or vision-language models is a plus.",
+        "Proficiency in data analysis, signal processing, or statistical modeling is desirable.",
+        "Interest in audio, gaming, game engines, or the intersection of machine learning and game technology is highly desirable.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree - Master’s",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:44.732Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221769004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "b224f238:77398cbc",
+        "locationLabel": "San Mateo, CA",
+        "detailBullets": [
+          "Research multimodal game anomaly detection.",
+          "Develop machine-learning experiments and prototypes.",
+          "Evaluate automated game-testing approaches.",
+          "12 weeks; Master's students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Machine Learning Intern - PhD",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221745004",
+      "loc": "San Mateo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Research anomalous gameplay behavior. Design multimodal machine-learning experiments. Collaborate on publishable research findings.",
+      "pay": "$63.50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Mateo, CA",
+      "eligibility": "Currently pursuing a PhD in Computer Science, Machine Learning, Computer Vision, Natural Language Processing or a related field, ideally in the later stages of your program.\nStrong research background in machine learning, computer vision, multimodal learning or related areas, with experience independently exploring open-ended research problems.\nProficiency in Python programming and hands-on experience with deep learning frameworks such as PyTorch or TensorFlow.\nExperience designing experiments, evaluating machine learning models, and interpreting research results.\nStrong problem-solving, communication, and collaboration skills, including the ability to seek, receive and incorporate feedback from researchers and engineers.\nPublication record in relevant conferences (e.g. NeurIPS, ICML, ICLR, CVPR, ACL or EMNLP).\nInterest in gaming, game engines, or the intersection of machine learning and game technology is highly desirable.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree - PhD\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221745004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Research anomalous gameplay behavior.",
+        "Design multimodal machine-learning experiments.",
+        "Collaborate on publishable research findings."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a PhD in Computer Science, Machine Learning, Computer Vision, Natural Language Processing or a related field, ideally in the later stages of your program.",
+        "Strong research background in machine learning, computer vision, multimodal learning or related areas, with experience independently exploring open-ended research problems.",
+        "Proficiency in Python programming and hands-on experience with deep learning frameworks such as PyTorch or TensorFlow.",
+        "Experience designing experiments, evaluating machine learning models, and interpreting research results.",
+        "Strong problem-solving, communication, and collaboration skills, including the ability to seek, receive and incorporate feedback from researchers and engineers.",
+        "Publication record in relevant conferences (e.g. NeurIPS, ICML, ICLR, CVPR, ACL or EMNLP).",
+        "Interest in gaming, game engines, or the intersection of machine learning and game technology is highly desirable.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree - PhD",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:45.286Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221745004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "88096960:6c53bc",
+        "locationLabel": "San Mateo, CA",
+        "detailBullets": [
+          "Research anomalous gameplay behavior.",
+          "Design multimodal machine-learning experiments.",
+          "Collaborate on publishable research findings.",
+          "12 weeks; PhD students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Marketing Intern - MBA",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221783004",
+      "loc": "San Mateo, CA",
+      "ind": "Brand & Marketing",
+      "desc": "Analyze player audiences and campaign insights. Develop PlayStation brand messaging. Create adaptable marketing templates.",
+      "pay": "$43.75/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Mateo, CA",
+      "eligibility": "Marketing or Advertising emphasis preferred.\nKnowledge of Excel and PowerPoint.\nPassion for entertainment and gaming is highly recommended.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. MBA\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221783004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Analyze player audiences and campaign insights.",
+        "Develop PlayStation brand messaging.",
+        "Create adaptable marketing templates."
+      ],
+      "eligibilityFlags": [
+        "Marketing or Advertising emphasis preferred.",
+        "Knowledge of Excel and PowerPoint.",
+        "Passion for entertainment and gaming is highly recommended.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. MBA",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:23.120Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221783004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "284cbaad:ead96aa9",
+        "locationLabel": "San Mateo, CA",
+        "detailBullets": [
+          "Analyze player audiences and campaign insights.",
+          "Develop PlayStation brand messaging.",
+          "Create adaptable marketing templates.",
+          "12 weeks; MBA students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Software Development Engineer in Test Intern (AI/ML) - Undergraduate",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221796004",
+      "loc": "San Mateo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Test PlayStation experiences across platforms. Develop automated software tests. Investigate defects with engineering teams.",
+      "pay": "$50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Mateo, CA",
+      "eligibility": "Currently pursuing a BS in Computer Science, Computer Engineering, Software Engineering, or a related technical field.\nStrong interest in software quality engineering, test automation, and software development.\nProgramming or scripting exposure using Python, JavaScript, Node.js, Java, C++, or another programming language.\nFamiliarity with UI automation tools such as Selenium WebDriver, Appium, Playwright, or Cypress.\nExposure to testing web, mobile, desktop, or other non-PC applications and devices.\nFamiliarity with web technologies such as JavaScript, HTML, and CSS.\nBasic understanding of APIs, client-server applications, or RESTful services.\nExposure to version-control systems, preferably Git.\nStrong analytical, troubleshooting, and problem-solving skills, with an interest in learning new technologies and testing practices.\nStrong verbal and written communication skills and the ability to collaborate effectively with team members at different levels.\nPrevious internship, coursework, or project experience involving software testing or test automation is a plus.\nExperience in Project Development or Testing is beneficial.\nExposure to CI/CD and development tools such as Jenkins, CircleCI, GitHub Actions, or Docker is a plus.\nCoursework, projects, or practical exposure related to artificial intelligence, machine learning, or generative AI is beneficial.\nFamiliarity with AI-assisted development tools for coding, debugging, test-case generation, or test automation is a plus.\nInterest in applying AI/ML techniques to improve test coverage, defect analysis, failure triage, and automation efficiency is beneficial.\nExposure to testing AI-powered features or evaluating AI-generated outputs for quality, reliability, accuracy, and edge cases is a plus.\nInterest in gaming, game consoles, digital entertainment, or the PlayStation ecosystem is a plus.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221796004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Test PlayStation experiences across platforms.",
+        "Develop automated software tests.",
+        "Investigate defects with engineering teams."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a BS in Computer Science, Computer Engineering, Software Engineering, or a related technical field.",
+        "Strong interest in software quality engineering, test automation, and software development.",
+        "Programming or scripting exposure using Python, JavaScript, Node.js, Java, C++, or another programming language.",
+        "Familiarity with UI automation tools such as Selenium WebDriver, Appium, Playwright, or Cypress.",
+        "Exposure to testing web, mobile, desktop, or other non-PC applications and devices.",
+        "Familiarity with web technologies such as JavaScript, HTML, and CSS.",
+        "Basic understanding of APIs, client-server applications, or RESTful services.",
+        "Exposure to version-control systems, preferably Git.",
+        "Strong analytical, troubleshooting, and problem-solving skills, with an interest in learning new technologies and testing practices.",
+        "Strong verbal and written communication skills and the ability to collaborate effectively with team members at different levels.",
+        "Previous internship, coursework, or project experience involving software testing or test automation is a plus.",
+        "Experience in Project Development or Testing is beneficial.",
+        "Exposure to CI/CD and development tools such as Jenkins, CircleCI, GitHub Actions, or Docker is a plus.",
+        "Coursework, projects, or practical exposure related to artificial intelligence, machine learning, or generative AI is beneficial.",
+        "Familiarity with AI-assisted development tools for coding, debugging, test-case generation, or test automation is a plus.",
+        "Interest in applying AI/ML techniques to improve test coverage, defect analysis, failure triage, and automation efficiency is beneficial.",
+        "Exposure to testing AI-powered features or evaluating AI-generated outputs for quality, reliability, accuracy, and edge cases is a plus.",
+        "Interest in gaming, game consoles, digital entertainment, or the PlayStation ecosystem is a plus.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:25.961Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221796004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "f58a6d38:59b24d74",
+        "locationLabel": "San Mateo, CA",
+        "detailBullets": [
+          "Test PlayStation experiences across platforms.",
+          "Develop automated software tests.",
+          "Investigate defects with engineering teams.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Software Development Engineer in Test Intern - Master's",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221823004",
+      "loc": "San Diego, CA; San Mateo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Test customer-facing PlayStation applications. Build automated quality checks. Troubleshoot cross-platform software defects.",
+      "pay": "$50.50–55.25/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Diego, CA; San Mateo, CA",
+      "eligibility": "Currently pursuing a Master’s in Computer Science, Computer Engineering, Software Engineering, or a related technical field.\nStrong interest in software quality engineering, test automation, and software development.\nProgramming or scripting exposure using Python, JavaScript, Node.js, Java, C++, or another programming language.\nFamiliarity with UI automation tools such as Selenium WebDriver, Appium, Playwright, or Cypress.\nExposure to testing web, mobile, desktop, or other non-PC applications and devices.\nFamiliarity with web technologies such as JavaScript, HTML, and CSS.\nBasic understanding of APIs, client-server applications, or RESTful services.\nExposure to version-control systems, preferably Git.\nStrong analytical, troubleshooting, and problem-solving skills, with an interest in learning new technologies and testing practices.\nStrong verbal and written communication skills and the ability to collaborate effectively with team members at different levels.\nPrevious internship, coursework, or project experience involving software testing or test automation is a plus.\nExperience in Project Development or Testing is beneficial.\nExposure to CI/CD and development tools such as Jenkins, CircleCI, GitHub Actions, or Docker is a plus.\nCoursework, projects, or practical exposure related to artificial intelligence, machine learning, or generative AI is beneficial.\nFamiliarity with AI-assisted development tools for coding, debugging, test-case generation, or test automation is a plus.\nInterest in applying AI/ML techniques to improve test coverage, defect analysis, failure triage, and automation efficiency is beneficial.\nExposure to testing AI-powered features or evaluating AI-generated outputs for quality, reliability, accuracy, and edge cases is a plus.\nInterest in gaming, game consoles, digital entertainment, or the PlayStation ecosystem is a plus.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree – Master's\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221823004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Test customer-facing PlayStation applications.",
+        "Build automated quality checks.",
+        "Troubleshoot cross-platform software defects."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a Master’s in Computer Science, Computer Engineering, Software Engineering, or a related technical field.",
+        "Strong interest in software quality engineering, test automation, and software development.",
+        "Programming or scripting exposure using Python, JavaScript, Node.js, Java, C++, or another programming language.",
+        "Familiarity with UI automation tools such as Selenium WebDriver, Appium, Playwright, or Cypress.",
+        "Exposure to testing web, mobile, desktop, or other non-PC applications and devices.",
+        "Familiarity with web technologies such as JavaScript, HTML, and CSS.",
+        "Basic understanding of APIs, client-server applications, or RESTful services.",
+        "Exposure to version-control systems, preferably Git.",
+        "Strong analytical, troubleshooting, and problem-solving skills, with an interest in learning new technologies and testing practices.",
+        "Strong verbal and written communication skills and the ability to collaborate effectively with team members at different levels.",
+        "Previous internship, coursework, or project experience involving software testing or test automation is a plus.",
+        "Experience in Project Development or Testing is beneficial.",
+        "Exposure to CI/CD and development tools such as Jenkins, CircleCI, GitHub Actions, or Docker is a plus.",
+        "Coursework, projects, or practical exposure related to artificial intelligence, machine learning, or generative AI is beneficial.",
+        "Familiarity with AI-assisted development tools for coding, debugging, test-case generation, or test automation is a plus.",
+        "Interest in applying AI/ML techniques to improve test coverage, defect analysis, failure triage, and automation efficiency is beneficial.",
+        "Exposure to testing AI-powered features or evaluating AI-generated outputs for quality, reliability, accuracy, and edge cases is a plus.",
+        "Interest in gaming, game consoles, digital entertainment, or the PlayStation ecosystem is a plus.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree – Master's",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:34.079Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221823004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "24296b36:f429307a",
+        "locationLabel": "Multiple locations",
+        "detailBullets": [
+          "Test customer-facing PlayStation applications.",
+          "Build automated quality checks.",
+          "Troubleshoot cross-platform software defects.",
+          "12 weeks; Master's students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Software Development Engineer in Test Intern - Master's",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221778004",
+      "loc": "San Mateo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Automate video playback tests. Evaluate streaming quality and reliability. Improve Python testing workflows.",
+      "pay": "$55.25/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Mateo, CA",
+      "eligibility": "Currently pursuing a Master’s degree in Computer Science, Computer Engineering, or a closely related field.\nStrong Python programming skills.\nExperience with a test automation framework such as pytest.\nExperience with Git for version control and CI tools like Github Actions or Jenkins.\nInterest in writing code, troubleshooting technical issues, and improving software quality.\nInterest in or experience with video, streaming, or media technology is a plus.\nFamiliarity with JIRA and Agile is a plus.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced degree- Masters\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221778004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Automate video playback tests.",
+        "Evaluate streaming quality and reliability.",
+        "Improve Python testing workflows."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a Master’s degree in Computer Science, Computer Engineering, or a closely related field.",
+        "Strong Python programming skills.",
+        "Experience with a test automation framework such as pytest.",
+        "Experience with Git for version control and CI tools like Github Actions or Jenkins.",
+        "Interest in writing code, troubleshooting technical issues, and improving software quality.",
+        "Interest in or experience with video, streaming, or media technology is a plus.",
+        "Familiarity with JIRA and Agile is a plus.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Advanced degree- Masters",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:34.539Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221778004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "a869bb1b:3d9623af",
+        "locationLabel": "San Mateo, CA",
+        "detailBullets": [
+          "Automate video playback tests.",
+          "Evaluate streaming quality and reliability.",
+          "Improve Python testing workflows.",
+          "12 weeks; Master's students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Software Development Engineer in Test Intern - Undergraduate",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221820004",
+      "loc": "San Mateo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Test console stores and applications. Develop and execute automated tests. Collaborate with software and QA engineers.",
+      "pay": "$50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Mateo, CA",
+      "eligibility": "Programming experience in popular test scripting languages.\nGood understanding of object-oriented principles.\nGood understanding of the software development life cycle and testing methodologies.\nExperience with test automation is a plus.\nProficiency with JavaScript and Python is preferred.\nKnowledge of HTML5 and CSS3 features and modern browser architecture is beneficial.\nFamiliarity with version control (ex. GitHub) is a plus.\nExperience testing single-page web applications is a plus.\nExperience working and testing REST API's is beneficial.\nExperience with Agile/Scrum software development methodologies and an understanding of engineering best practices is preferred.\nExcellent communication skills and a good sense of humor!\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221820004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Test console stores and applications.",
+        "Develop and execute automated tests.",
+        "Collaborate with software and QA engineers."
+      ],
+      "eligibilityFlags": [
+        "Programming experience in popular test scripting languages.",
+        "Good understanding of object-oriented principles.",
+        "Good understanding of the software development life cycle and testing methodologies.",
+        "Experience with test automation is a plus.",
+        "Proficiency with JavaScript and Python is preferred.",
+        "Knowledge of HTML5 and CSS3 features and modern browser architecture is beneficial.",
+        "Familiarity with version control (ex. GitHub) is a plus.",
+        "Experience testing single-page web applications is a plus.",
+        "Experience working and testing REST API's is beneficial.",
+        "Experience with Agile/Scrum software development methodologies and an understanding of engineering best practices is preferred.",
+        "Excellent communication skills and a good sense of humor!",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:34.922Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221820004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "a25bcfa3:d4b1efff",
+        "locationLabel": "San Mateo, CA",
+        "detailBullets": [
+          "Test console stores and applications.",
+          "Develop and execute automated tests.",
+          "Collaborate with software and QA engineers.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Software Engineering Intern (Compilers) - Undergraduate",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221775004",
+      "loc": "San Mateo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Improve PlayStation compiler tools. Develop C++ tooling and libraries. Automate testing and investigate performance.",
+      "pay": "$50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Mateo, CA",
+      "eligibility": "Pursuing or possessing a Bachelor’s or higher degree in Computer Science, Electrical Engineering, Applied Physics or related field.\nProficiency in C++ and Python programming.\nExperience writing software in both Windows and Linux systems.\nStrong verbal and written communication skills, with the ability to collaborate effectively with team members at all levels.\nMotivation to learn new technologies, solve technical challenges, and contribute to software development projects.\nExperience/interest in compilers, language design, and/or the LLVM project is a plus.\nData analysis and relational database experience is beneficial.\nExperience developing automation using Jenkins is a plus.\nKnowledge of collaborative software engineering best practice including usage of Source Control Management systems, Continuous Integration/Deployment frameworks is beneficial.\nAGILE/Scrum training is a plus.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221775004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Improve PlayStation compiler tools.",
+        "Develop C++ tooling and libraries.",
+        "Automate testing and investigate performance."
+      ],
+      "eligibilityFlags": [
+        "Pursuing or possessing a Bachelor’s or higher degree in Computer Science, Electrical Engineering, Applied Physics or related field.",
+        "Proficiency in C++ and Python programming.",
+        "Experience writing software in both Windows and Linux systems.",
+        "Strong verbal and written communication skills, with the ability to collaborate effectively with team members at all levels.",
+        "Motivation to learn new technologies, solve technical challenges, and contribute to software development projects.",
+        "Experience/interest in compilers, language design, and/or the LLVM project is a plus.",
+        "Data analysis and relational database experience is beneficial.",
+        "Experience developing automation using Jenkins is a plus.",
+        "Knowledge of collaborative software engineering best practice including usage of Source Control Management systems, Continuous Integration/Deployment frameworks is beneficial.",
+        "AGILE/Scrum training is a plus.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:35.424Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221775004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "f69c095:768c1069",
+        "locationLabel": "San Mateo, CA",
+        "detailBullets": [
+          "Improve PlayStation compiler tools.",
+          "Develop C++ tooling and libraries.",
+          "Automate testing and investigate performance.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Software Engineering Intern - Master's",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221729004",
+      "loc": "Los Angeles, CA",
+      "ind": "Software & Engineering",
+      "desc": "Develop personalized creative web applications. Build React and Java features. Test interfaces and resolve defects.",
+      "pay": "$50.50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Los Angeles, CA",
+      "eligibility": "Bachelor's degree in computer science or equivalent.\nCurrently pursuing a Master’s degree in Computer Science or a related field.\nExperience in React, JavaScript, or Java application development.\nFamiliarity with agile software development practices and collaborative engineering workflows.\nExperience using source control tools like Git and SVN.\nExperience working in a team-focused software development environment.\nStrong communication and problem-solving skills, curiosity, and a willingness to learn and contribute.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree - Master’s\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221729004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop personalized creative web applications.",
+        "Build React and Java features.",
+        "Test interfaces and resolve defects."
+      ],
+      "eligibilityFlags": [
+        "Bachelor's degree in computer science or equivalent.",
+        "Currently pursuing a Master’s degree in Computer Science or a related field.",
+        "Experience in React, JavaScript, or Java application development.",
+        "Familiarity with agile software development practices and collaborative engineering workflows.",
+        "Experience using source control tools like Git and SVN.",
+        "Experience working in a team-focused software development environment.",
+        "Strong communication and problem-solving skills, curiosity, and a willingness to learn and contribute.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree - Master’s",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:25.173Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221729004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "a6e68a94:8db8668",
+        "locationLabel": "Los Angeles, CA",
+        "detailBullets": [
+          "Develop personalized creative web applications.",
+          "Build React and Java features.",
+          "Test interfaces and resolve defects.",
+          "12 weeks; Master's students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Software Engineering Intern - Master's",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221814004",
+      "loc": "San Diego, CA",
+      "ind": "Software & Engineering",
+      "desc": "Build PlayStation application features. Develop frontend and backend services. Collaborate with global engineering teams.",
+      "pay": "$50.50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Diego, CA",
+      "eligibility": "Currently pursuing a Master’s degree in Computer Science or Software Engineering.\nExperience with React, JavaScript, Java, and web applications.\nExperience with Python programming language.\nAbility to collaborate effectively with geographically remote and culturally diverse teams.\nInterest in gaming and related social features.\nExperience with SQL is a plus.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree - Master’s\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221814004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build PlayStation application features.",
+        "Develop frontend and backend services.",
+        "Collaborate with global engineering teams."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a Master’s degree in Computer Science or Software Engineering.",
+        "Experience with React, JavaScript, Java, and web applications.",
+        "Experience with Python programming language.",
+        "Ability to collaborate effectively with geographically remote and culturally diverse teams.",
+        "Interest in gaming and related social features.",
+        "Experience with SQL is a plus.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree - Master’s",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:36.271Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221814004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "1010f3d1:b4b0a3a5",
+        "locationLabel": "San Diego, CA",
+        "detailBullets": [
+          "Build PlayStation application features.",
+          "Develop frontend and backend services.",
+          "Collaborate with global engineering teams.",
+          "12 weeks; Master's students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Software Engineering Intern – Undergraduate",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221739004",
+      "loc": "Aliso Viejo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Develop real-time video streaming software. Improve cloud gaming experiences. Debug and test C++ applications.",
+      "pay": "$45.75/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Aliso Viejo, CA",
+      "eligibility": "Currently pursuing a Bachelor's degree in Computer Science, Software Engineering, or related field.\nProficiency with C/C++ programming languages.\nKnowledge of software methodologies, including object-oriented programming and functional programming.\nFamiliarity with concepts of agile development methodology.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221739004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop real-time video streaming software.",
+        "Improve cloud gaming experiences.",
+        "Debug and test C++ applications."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a Bachelor's degree in Computer Science, Software Engineering, or related field.",
+        "Proficiency with C/C++ programming languages.",
+        "Knowledge of software methodologies, including object-oriented programming and functional programming.",
+        "Familiarity with concepts of agile development methodology.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:43.766Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221739004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "26720034:3df7f928",
+        "locationLabel": "Aliso Viejo, CA",
+        "detailBullets": [
+          "Develop real-time video streaming software.",
+          "Improve cloud gaming experiences.",
+          "Debug and test C++ applications.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Software Engineering Intern – Undergraduate",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221754004",
+      "loc": "San Diego, CA",
+      "ind": "Software & Engineering",
+      "desc": "Build real-time financial microservices. Explore AI-assisted data analysis. Improve testing and data reliability.",
+      "pay": "$45.75/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Diego, CA",
+      "eligibility": "Currently pursuing a Bachelor's degree in Computer Science, Engineering, or a related field.\nFamiliarity with Golang, PYTHON, or similar languages, with an interest in building scalable, real-time microservices and REST APIs.\nExperience with SQL and data modelling across different databases. Familiarity with additional reporting databases such as Oracle and Snowflake is a plus.\nUnderstanding of software development principles, design best practices, and architecture standards.\nStrong communication skills and the ability to collaborate with technical and non-technical teams in a global environment.\nInterest in exploring new technologies and continuously developing technical skills.\nFamiliarity with cloud platforms, including hybrid cloud/on-prem environments in AWS.\nUnderstanding of governance standards within controlled/compliance-based environments, particularly Sarbanes Oxley.\nExperience designing, building, or maintaining single-page applications using React or similar frameworks is a plus.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221754004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build real-time financial microservices.",
+        "Explore AI-assisted data analysis.",
+        "Improve testing and data reliability."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a Bachelor's degree in Computer Science, Engineering, or a related field.",
+        "Familiarity with Golang, PYTHON, or similar languages, with an interest in building scalable, real-time microservices and REST APIs.",
+        "Experience with SQL and data modelling across different databases. Familiarity with additional reporting databases such as Oracle and Snowflake is a plus.",
+        "Understanding of software development principles, design best practices, and architecture standards.",
+        "Strong communication skills and the ability to collaborate with technical and non-technical teams in a global environment.",
+        "Interest in exploring new technologies and continuously developing technical skills.",
+        "Familiarity with cloud platforms, including hybrid cloud/on-prem environments in AWS.",
+        "Understanding of governance standards within controlled/compliance-based environments, particularly Sarbanes Oxley.",
+        "Experience designing, building, or maintaining single-page applications using React or similar frameworks is a plus.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:23.838Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221754004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "7a1cd18a:1cbd156e",
+        "locationLabel": "San Diego, CA",
+        "detailBullets": [
+          "Build real-time financial microservices.",
+          "Explore AI-assisted data analysis.",
+          "Improve testing and data reliability.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Software Engineering Intern – Undergraduate",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221763004",
+      "loc": "Aliso Viejo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Build internal React applications. Improve accessible engineering workflows. Explore AI-assisted development tools.",
+      "pay": "$45.75/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Aliso Viejo, CA",
+      "eligibility": "Currently pursuing a Bachelor's degree in Computer Science, Software Engineering, or related field.\nExperience with front-end development using HTML, CSS, and JavaScript.\nFamiliarity with modern frameworks such as React and tools like Git.\nBasic understanding of REST APIs and web application architecture.\nExposure to Node.js or other backend technologies.\nStrong problem-solving skills, attention to detail, and the ability to communicate and collaborate effectively with a team.\nInterest in using AI assisted development tools to build, prototype, and solve engineering problems more effectively.\nFamiliarity with foundational AI/ML concepts is a plus.\nHands-on experience with generative AI tools, models, or frameworks (e.g., Claude, Codex, Cursor) is a plus.\nUnderstanding of containerization and orchestration platforms such as Docker and Kubernetes is a plus.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221763004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build internal React applications.",
+        "Improve accessible engineering workflows.",
+        "Explore AI-assisted development tools."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a Bachelor's degree in Computer Science, Software Engineering, or related field.",
+        "Experience with front-end development using HTML, CSS, and JavaScript.",
+        "Familiarity with modern frameworks such as React and tools like Git.",
+        "Basic understanding of REST APIs and web application architecture.",
+        "Exposure to Node.js or other backend technologies.",
+        "Strong problem-solving skills, attention to detail, and the ability to communicate and collaborate effectively with a team.",
+        "Interest in using AI assisted development tools to build, prototype, and solve engineering problems more effectively.",
+        "Familiarity with foundational AI/ML concepts is a plus.",
+        "Hands-on experience with generative AI tools, models, or frameworks (e.g., Claude, Codex, Cursor) is a plus.",
+        "Understanding of containerization and orchestration platforms such as Docker and Kubernetes is a plus.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:43.340Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221763004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "86cce113:2aeed527",
+        "locationLabel": "Aliso Viejo, CA",
+        "detailBullets": [
+          "Build internal React applications.",
+          "Improve accessible engineering workflows.",
+          "Explore AI-assisted development tools.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Software Engineering Intern – Undergraduate",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221724004",
+      "loc": "San Mateo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Automate large-scale data pipelines. Support event streaming and ingestion. Troubleshoot data reliability issues.",
+      "pay": "$50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Mateo, CA",
+      "eligibility": "Proficiency in Java for developing data processing pipelines and real-time streaming applications.\nExperience with Apache Kafka.\nExperience using Docker, Jenkins, and Kubernetes for CICD.\nProficiency with Git for version control and collaborative development.\nStrong problem-solving, analytical, and communication skills, with the ability to collaborate and document technical work.\nExperience with SQL (MySQL) or NoSQL (DynamoDB, Aerospike, Cassandra, Couchbase) databases is a plus.\nFamiliarity with building scalable, fault-tolerant data pipelines is a plus.\nUnderstanding of Data Mesh and Data Fabric principles is beneficial.\nKnowledge of data processing frameworks such as Apache Spark or Apache Flink is a plus.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate Degree\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221724004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Automate large-scale data pipelines.",
+        "Support event streaming and ingestion.",
+        "Troubleshoot data reliability issues."
+      ],
+      "eligibilityFlags": [
+        "Proficiency in Java for developing data processing pipelines and real-time streaming applications.",
+        "Experience with Apache Kafka.",
+        "Experience using Docker, Jenkins, and Kubernetes for CICD.",
+        "Proficiency with Git for version control and collaborative development.",
+        "Strong problem-solving, analytical, and communication skills, with the ability to collaborate and document technical work.",
+        "Experience with SQL (MySQL) or NoSQL (DynamoDB, Aerospike, Cassandra, Couchbase) databases is a plus.",
+        "Familiarity with building scalable, fault-tolerant data pipelines is a plus.",
+        "Understanding of Data Mesh and Data Fabric principles is beneficial.",
+        "Knowledge of data processing frameworks such as Apache Spark or Apache Flink is a plus.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate Degree",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:25.524Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221724004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "6cedb6f7:1712af13",
+        "locationLabel": "San Mateo, CA",
+        "detailBullets": [
+          "Automate large-scale data pipelines.",
+          "Support event streaming and ingestion.",
+          "Troubleshoot data reliability issues.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Software Engineering Intern – Undergraduate",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221817004",
+      "loc": "San Mateo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Maintain PlayStation backend microservices. Debug and improve service reliability. Build and test engineering features.",
+      "pay": "$50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Mateo, CA",
+      "eligibility": "Currently pursuing an undergraduate degree in a related technical field.\nGood written and verbal communication skills, with the ability to collaborate effectively with team members.\nAbility and willingness to quickly learn new technologies, including unit testing frameworks and CI/CD.\nFamiliarity with backend software development (e.g. Java).\nExperience with back end services is a plus.\nKnowledge of Java and Asynchronous Web Application Programming is a plus.\nFamiliarity with NoSQL and SQL databases is a plus.\nExperience with Kubernetes and AWS is a plus.\nFamiliarity with Automated Testing is a plus.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate Degree\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221817004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Maintain PlayStation backend microservices.",
+        "Debug and improve service reliability.",
+        "Build and test engineering features."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing an undergraduate degree in a related technical field.",
+        "Good written and verbal communication skills, with the ability to collaborate effectively with team members.",
+        "Ability and willingness to quickly learn new technologies, including unit testing frameworks and CI/CD.",
+        "Familiarity with backend software development (e.g. Java).",
+        "Experience with back end services is a plus.",
+        "Knowledge of Java and Asynchronous Web Application Programming is a plus.",
+        "Familiarity with NoSQL and SQL databases is a plus.",
+        "Experience with Kubernetes and AWS is a plus.",
+        "Familiarity with Automated Testing is a plus.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate Degree",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:37.139Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221817004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "8c1e156b:955e01e7",
+        "locationLabel": "San Mateo, CA",
+        "detailBullets": [
+          "Maintain PlayStation backend microservices.",
+          "Debug and improve service reliability.",
+          "Build and test engineering features.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Software Engineering Intern – Undergraduate",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221787004",
+      "loc": "San Mateo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Develop large-scale gaming backend services. Build APIs and data-processing features. Improve service quality through testing.",
+      "pay": "$50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Mateo, CA",
+      "eligibility": "Currently pursuing an undergraduate degree in Computer Science or a related field.\nGood understanding of object-oriented design and programming, with exposure to Java highly desired.\nUnderstanding of database concepts, including familiarity with relational and non-relational systems.\nKnowledge of and some experience in developing web server applications.\nInterest in writing high-quality, well-architected code and applying software development best practices.\nStrong written and verbal communication skills, with a willingness to ask questions, collaborate, and seek guidance.\nKnowledge of design and architectural patterns is a plus.\nExperience with Amazon Web Services (AWS) is a plus.\nPrior exposure to backend services development is a plus.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221787004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop large-scale gaming backend services.",
+        "Build APIs and data-processing features.",
+        "Improve service quality through testing."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing an undergraduate degree in Computer Science or a related field.",
+        "Good understanding of object-oriented design and programming, with exposure to Java highly desired.",
+        "Understanding of database concepts, including familiarity with relational and non-relational systems.",
+        "Knowledge of and some experience in developing web server applications.",
+        "Interest in writing high-quality, well-architected code and applying software development best practices.",
+        "Strong written and verbal communication skills, with a willingness to ask questions, collaborate, and seek guidance.",
+        "Knowledge of design and architectural patterns is a plus.",
+        "Experience with Amazon Web Services (AWS) is a plus.",
+        "Prior exposure to backend services development is a plus.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:36.742Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221787004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "7a0cdb74:18f4fb38",
+        "locationLabel": "San Mateo, CA",
+        "detailBullets": [
+          "Develop large-scale gaming backend services.",
+          "Build APIs and data-processing features.",
+          "Improve service quality through testing.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Software Engineering Intern – Undergraduate",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221793004",
+      "loc": "San Mateo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Develop PlayStation Portal software features. Build Android interfaces and system software. Test and improve consumer gaming experiences.",
+      "pay": "$50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Mateo, CA",
+      "eligibility": "Currently pursuing a Bachelor's degree in Computer Science, Computer Engineering, Software Engineering, or a related technical field.\nExperience programming in at least one language such as C++, Java, Kotlin, or JavaScript.\nUnderstanding of fundamental software engineering concepts, including data structures, algorithms, object-oriented programming, and debugging.\nStrong problem-solving skills, a willingness to learn new technologies, and an interest in software development for gaming platforms and consumer devices.\nAbility to communicate and collaborate effectively as part of a software engineering team.\nInterest in working in an Agile/Scrum development environment.\nExperience developing applications or software for Android is a plus.\nExperience with Java, Kotlin, C++, JavaScript, or Android development tools is beneficial.\nExperience with UI or application development is a plus.\nFamiliarity with Git or other version control systems is beneficial.\nExperience developing software applications through coursework, personal projects, or previous internships is a plus.\nFamiliarity with Agile or Scrum software development is beneficial.\nInterest in PlayStation, PlayStation Portal, gaming technology, or consumer electronics is a plus.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221793004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop PlayStation Portal software features.",
+        "Build Android interfaces and system software.",
+        "Test and improve consumer gaming experiences."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a Bachelor's degree in Computer Science, Computer Engineering, Software Engineering, or a related technical field.",
+        "Experience programming in at least one language such as C++, Java, Kotlin, or JavaScript.",
+        "Understanding of fundamental software engineering concepts, including data structures, algorithms, object-oriented programming, and debugging.",
+        "Strong problem-solving skills, a willingness to learn new technologies, and an interest in software development for gaming platforms and consumer devices.",
+        "Ability to communicate and collaborate effectively as part of a software engineering team.",
+        "Interest in working in an Agile/Scrum development environment.",
+        "Experience developing applications or software for Android is a plus.",
+        "Experience with Java, Kotlin, C++, JavaScript, or Android development tools is beneficial.",
+        "Experience with UI or application development is a plus.",
+        "Familiarity with Git or other version control systems is beneficial.",
+        "Experience developing software applications through coursework, personal projects, or previous internships is a plus.",
+        "Familiarity with Agile or Scrum software development is beneficial.",
+        "Interest in PlayStation, PlayStation Portal, gaming technology, or consumer electronics is a plus.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:45.687Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221793004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "f399dd0b:1524fc87",
+        "locationLabel": "San Mateo, CA",
+        "detailBullets": [
+          "Develop PlayStation Portal software features.",
+          "Build Android interfaces and system software.",
+          "Test and improve consumer gaming experiences.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Software Engineering Intern – Undergraduate",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221799004",
+      "loc": "San Mateo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Build automated testing tools. Improve testing infrastructure and CI/CD. Explore AI-assisted testing initiatives.",
+      "pay": "$50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Mateo, CA",
+      "eligibility": "Currently pursuing an undergraduate degree in Computer Science or related degree.\nFamiliarity with Python or TypeScript/JavaScript.\nBasic understanding of REST APIs, Git and CI/CD.\nComfortable working in Linux and Windows-based development environments.\nStrong software debugging, analytical, and problem-solving skills.\nAbility to work independently, take ownership of tasks, and collaborate effectively with team members.\nInterest in experimentation and the ability to communicate complex ideas and analysis clearly, both verbally and in writing.\nAbility to write clean, maintainable, and well-documented code.\nWillingness to participate in code reviews, team discussions, and knowledge-sharing sessions.\nBroad understanding of microservice architecture is a plus.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221799004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build automated testing tools.",
+        "Improve testing infrastructure and CI/CD.",
+        "Explore AI-assisted testing initiatives."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing an undergraduate degree in Computer Science or related degree.",
+        "Familiarity with Python or TypeScript/JavaScript.",
+        "Basic understanding of REST APIs, Git and CI/CD.",
+        "Comfortable working in Linux and Windows-based development environments.",
+        "Strong software debugging, analytical, and problem-solving skills.",
+        "Ability to work independently, take ownership of tasks, and collaborate effectively with team members.",
+        "Interest in experimentation and the ability to communicate complex ideas and analysis clearly, both verbally and in writing.",
+        "Ability to write clean, maintainable, and well-documented code.",
+        "Willingness to participate in code reviews, team discussions, and knowledge-sharing sessions.",
+        "Broad understanding of microservice architecture is a plus.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:35.906Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221799004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "d1a6a253:aef2fef",
+        "locationLabel": "San Mateo, CA",
+        "detailBullets": [
+          "Build automated testing tools.",
+          "Improve testing infrastructure and CI/CD.",
+          "Explore AI-assisted testing initiatives.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Strategy Intern – MBA",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221790004",
+      "loc": "Los Angeles, CA; San Mateo, CA",
+      "ind": "Business & Operations",
+      "desc": "Research gaming trends and business opportunities. Evaluate strategic options and trade-offs. Present recommendations to senior leaders.",
+      "pay": "$40.25–43.75/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Los Angeles, CA; San Mateo, CA",
+      "eligibility": "Currently pursuing an MBA at an accredited university.\nKnowledge of the video game and/or digital entertainment industry.\nExperience conducting research and data analysis to support business strategy and planning.\nStrong structured problem-solving skills, with the ability to evaluate complex and ambiguous business questions.\nStrong interpersonal, written, and verbal communication skills, with the ability to manage priorities and meet fixed deadlines.\nA proactive, self-motivated approach, with the ability to identify, propose, and manage projects with minimal supervision.\nAdvanced proficiency in Excel and PowerPoint.\nPrior work experience in corporate strategy, management consulting, investment banking, commercial strategy, or product marketing is a plus.\nExperience using AI tools to support research, analysis, synthesis, or the development of business recommendations is a plus.\nExperience with market sizing, business-model evaluation, consumer strategy, commercial strategy, or financial analysis is beneficial.\nFamiliarity with database-driven analytics and visualization tools (e.g., Tableau, R, Power BI, MicroStrategy) is a plus.\nFamiliarity with emerging technologies, business models, and consumer trends shaping gaming and digital entertainment is beneficial.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. MBA\nA cover letter is encouraged but not required.\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221790004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Research gaming trends and business opportunities.",
+        "Evaluate strategic options and trade-offs.",
+        "Present recommendations to senior leaders."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing an MBA at an accredited university.",
+        "Knowledge of the video game and/or digital entertainment industry.",
+        "Experience conducting research and data analysis to support business strategy and planning.",
+        "Strong structured problem-solving skills, with the ability to evaluate complex and ambiguous business questions.",
+        "Strong interpersonal, written, and verbal communication skills, with the ability to manage priorities and meet fixed deadlines.",
+        "A proactive, self-motivated approach, with the ability to identify, propose, and manage projects with minimal supervision.",
+        "Advanced proficiency in Excel and PowerPoint.",
+        "Prior work experience in corporate strategy, management consulting, investment banking, commercial strategy, or product marketing is a plus.",
+        "Experience using AI tools to support research, analysis, synthesis, or the development of business recommendations is a plus.",
+        "Experience with market sizing, business-model evaluation, consumer strategy, commercial strategy, or financial analysis is beneficial.",
+        "Familiarity with database-driven analytics and visualization tools (e.g., Tableau, R, Power BI, MicroStrategy) is a plus.",
+        "Familiarity with emerging technologies, business models, and consumer trends shaping gaming and digital entertainment is beneficial.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. MBA",
+        "A cover letter is encouraged but not required.",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:23.518Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221790004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "e123822b:6c6167b7",
+        "locationLabel": "Multiple locations",
+        "detailBullets": [
+          "Research gaming trends and business opportunities.",
+          "Evaluate strategic options and trade-offs.",
+          "Present recommendations to senior leaders.",
+          "12 weeks; MBA students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment",
+      "role": "Technical Program Management Intern - Undergraduate",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221742004",
+      "loc": "Aliso Viejo, CA",
+      "ind": "Business & Operations",
+      "desc": "Support technical project planning. Coordinate cross-functional project delivery. Track progress and communicate risks.",
+      "pay": "$36.50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Aliso Viejo, CA",
+      "eligibility": "Pursuing an undergraduate degree in Information Systems, Computer Science, Engineering, or a related field, with an interest in technical project or program management.\nBasic knowledge of IT concepts, including network, storage, cloud, and information security.\nSelf-motivated and able to take ownership of assigned work.\nStrong communication skills, both verbal and written.\nEnthusiasm for learning and working with cross-functional teams to achieve project goals.\nComfort with ambiguity and the ability to bring structure to complex challenges.\nA customer-first mindset with a positive, solutions-oriented approach.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221742004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Support technical project planning.",
+        "Coordinate cross-functional project delivery.",
+        "Track progress and communicate risks."
+      ],
+      "eligibilityFlags": [
+        "Pursuing an undergraduate degree in Information Systems, Computer Science, Engineering, or a related field, with an interest in technical project or program management.",
+        "Basic knowledge of IT concepts, including network, storage, cloud, and information security.",
+        "Self-motivated and able to take ownership of assigned work.",
+        "Strong communication skills, both verbal and written.",
+        "Enthusiasm for learning and working with cross-functional teams to achieve project goals.",
+        "Comfort with ambiguity and the ability to bring structure to complex challenges.",
+        "A customer-first mindset with a positive, solutions-oriented approach.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:44.277Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221742004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "e4e6b0d6:1044bb6a",
+        "locationLabel": "Aliso Viejo, CA",
+        "detailBullets": [
+          "Support technical project planning.",
+          "Coordinate cross-functional project delivery.",
+          "Track progress and communicate risks.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "Pod Development Manager Intern- Undergraduate",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6227083004",
+      "loc": "Burbank, CA",
+      "ind": "Business & Operations",
+      "desc": "Track game-development tasks and milestones. Coordinate project teams and roadmaps. Improve production workflows.",
+      "pay": "$36.50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Burbank, CA",
+      "eligibility": "Currently pursuing an undergraduate degree in a related field, such as game development, production, or project management.\nStrong collaboration and communication skills, with the ability to work effectively with different teams.\nA proactive approach to problem-solving, with the ability to take initiative while knowing when to seek guidance.\nInterest in project management, game development processes, and improving team workflows.\nAlignment with our Insomniac Code—respectfully working together to deliver exceptional player experiences.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227083004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Track game-development tasks and milestones.",
+        "Coordinate project teams and roadmaps.",
+        "Improve production workflows."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing an undergraduate degree in a related field, such as game development, production, or project management.",
+        "Strong collaboration and communication skills, with the ability to work effectively with different teams.",
+        "A proactive approach to problem-solving, with the ability to take initiative while knowing when to seek guidance.",
+        "Interest in project management, game development processes, and improving team workflows.",
+        "Alignment with our Insomniac Code—respectfully working together to deliver exceptional player experiences.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:46.023Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227083004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "74955386:398989c2",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Track game-development tasks and milestones.",
+          "Coordinate project teams and roadmaps.",
+          "Improve production workflows.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "VFX Intern – Undergraduate-Graduate",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6228743004",
+      "loc": "Burbank, CA",
+      "ind": "3D Art & Animation",
+      "desc": "Create visual effects for AAA games. Polish and optimize gameplay effects. Collaborate with senior effects artists.",
+      "pay": "$36.50–40.25/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Burbank, CA",
+      "eligibility": "Currently pursuing a B.F.A. in Computer Art, Illustration, Game Design, Product Design, or equivalent.\nSix to twelve months of related experience and/or training is beneficial.\nStrong foundation skills and production design skills.\nProficiency in Maya, Photoshop, and a real-time toolset such as Unreal or Unity.\nCreative, self-motivated, and responsible, with the ability to contribute in a collaborative, fast-paced studio environment.\nPassion for video games and art, with an interest in learning visual effects techniques used in game development.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate- Graduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6228743004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Create visual effects for AAA games.",
+        "Polish and optimize gameplay effects.",
+        "Collaborate with senior effects artists."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a B.F.A. in Computer Art, Illustration, Game Design, Product Design, or equivalent.",
+        "Six to twelve months of related experience and/or training is beneficial.",
+        "Strong foundation skills and production design skills.",
+        "Proficiency in Maya, Photoshop, and a real-time toolset such as Unreal or Unity.",
+        "Creative, self-motivated, and responsible, with the ability to contribute in a collaborative, fast-paced studio environment.",
+        "Passion for video games and art, with an interest in learning visual effects techniques used in game development.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate- Graduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-19T21:50:46.335Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6228743004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "f0a6791b:fb473097",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Create visual effects for AAA games.",
+          "Polish and optimize gameplay effects.",
+          "Collaborate with senior effects artists.",
+          "12 weeks; BFA students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
         ]
       }
     }

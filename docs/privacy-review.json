@@ -1,14 +1,14 @@
 {
-  "version": "2.7.7.43",
+  "version": "2.7.7.44",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-19T00:13:48.284Z",
-  "reviewer": "Codex StillUnemployed",
-  "sourceDigest": "dd431079cc9f2862d50f53545c22fd17e96d1e614a22f2fac550b94d04950ed8",
+  "reviewedAt": "2026-10-19T21:56:02.400Z",
+  "reviewer": "Codex NEW Internship Sourcing",
+  "sourceDigest": "739e6b029588da6e88501199ce96fd3253bc3675d8c9b382148db87f86428531",
   "sourceFileCount": 227,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Full current Privacy and Terms reviewed. Data-only staging of two source-approved daily collections for October19/20 at9AM Eastern, preserving14prior collections and all95current internships. Current canonical data/moderation precedence unchanged; no personal-data flows, providers, consent, authentication, storage, retention, schema, events or runtime changes. No wording change needed; not legal clearance. Actual future activation, fresh OAuth and physical-device acceptance remain separate.",
-  "predecessor": "docs/privacy-reviews/2.7.7.42-pre-montue-daily.json",
+  "scope": "Reviewed current Privacy and Terms. Data-only admission of25exact Sony/Insomniac student roles with25matching employer application forms,169row full native source,96exact carried objects. Public roles/pay/eligibility only; no applicant data, private source/review/intake records, new provider, events, consent, authentication, storage, retention or runtime change. No wording change needed; not legal clearance. No fresh OAuth or physical-device acceptance claimed.",
+  "predecessor": "docs/privacy-reviews/2.7.7.43-pre-internship-sourcing.json",
   "author": "Codex",
   "platform_signature": "-Codex"
 }

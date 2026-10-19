@@ -1,0 +1,14 @@
+{
+  "version": "2.7.7.43",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-10-19T00:13:48.284Z",
+  "reviewer": "Codex StillUnemployed",
+  "sourceDigest": "dd431079cc9f2862d50f53545c22fd17e96d1e614a22f2fac550b94d04950ed8",
+  "sourceFileCount": 227,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Full current Privacy and Terms reviewed. Data-only staging of two source-approved daily collections for October19/20 at9AM Eastern, preserving14prior collections and all95current internships. Current canonical data/moderation precedence unchanged; no personal-data flows, providers, consent, authentication, storage, retention, schema, events or runtime changes. No wording change needed; not legal clearance. Actual future activation, fresh OAuth and physical-device acceptance remain separate.",
+  "predecessor": "docs/privacy-reviews/2.7.7.42-pre-montue-daily.json",
+  "author": "Codex",
+  "platform_signature": "-Codex"
+}

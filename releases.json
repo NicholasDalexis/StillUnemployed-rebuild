@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.43",
+  "currentVersion": "2.7.7.44",
   "releases": [
+    {
+      "version": "2.7.7.44",
+      "date": "2026-10-19",
+      "title": "Add 25 current Sony internships",
+      "changes": [
+        "Publish 25 exact Sony Interactive Entertainment and Insomniac undergraduate and advanced-degree internships after current employer application and native-source checks. Preserve session month/day precision without inventing a year; retain all prior internship objects and moderation."
+      ],
+      "public": {
+        "title": "More Sony internships",
+        "changes": [
+          "Explore new Sony and Insomniac internships in software, AI, marketing, strategy, project management and visual effects."
+        ]
+      }
+    },
     {
       "version": "2.7.7.43",
       "date": "2026-10-18",
@@ -1457,7 +1471,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "dd431079cc9f2862d50f53545c22fd17e96d1e614a22f2fac550b94d04950ed8",
+    "digest": "739e6b029588da6e88501199ce96fd3253bc3675d8c9b382148db87f86428531",
     "fileCount": 227
   }
 }
