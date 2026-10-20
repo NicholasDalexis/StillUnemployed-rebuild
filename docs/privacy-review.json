@@ -1,14 +1,14 @@
 {
-  "version": "2.7.7.44",
+  "version": "2.7.7.49",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-19T21:56:02.400Z",
+  "reviewedAt": "2026-10-20T15:46:59Z",
   "reviewer": "Codex NEW Internship Sourcing",
-  "sourceDigest": "739e6b029588da6e88501199ce96fd3253bc3675d8c9b382148db87f86428531",
+  "sourceDigest": "22c2de896b9b72b0c7051ee176923643e3493e0efb65b59986c56f635b165fca",
   "sourceFileCount": 227,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Reviewed current Privacy and Terms. Data-only admission of25exact Sony/Insomniac student roles with25matching employer application forms,169row full native source,96exact carried objects. Public roles/pay/eligibility only; no applicant data, private source/review/intake records, new provider, events, consent, authentication, storage, retention or runtime change. No wording change needed; not legal clearance. No fresh OAuth or physical-device acceptance claimed.",
-  "predecessor": "docs/privacy-reviews/2.7.7.43-pre-internship-sourcing.json",
+  "scope": "Reviewed current Privacy and Terms against data-only admission of13exact Insomniac student roles.182record full native source;121exact raw carried objects;13matching original blank application forms. Public job facts and compact sourced summaries only. No applicant data, private intake/review records, new provider, events, consent, authentication, storage, retention or runtime change. No policy wording change needed; not legal clearance. Local-only45and46candidates were superseded before deployment by47after compact-location QA correction. Full source location remains unchanged. No fresh OAuth or physical-device acceptance claimed.",
+  "predecessor": "docs/privacy-reviews/2.7.7.44-pre-sony-watch.json",
   "author": "Codex",
   "platform_signature": "-Codex"
 }
