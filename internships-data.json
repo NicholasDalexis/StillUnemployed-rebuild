@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-19T21:54:31.830Z",
+  "sourceExportedAt": "2026-10-20T15:45:44.274Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -5864,6 +5864,842 @@
           "Polish and optimize gameplay effects.",
           "Collaborate with senior effects artists.",
           "12 weeks; BFA students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "Accessibility Intern- Master's or PhD",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6227618004",
+      "loc": "Burbank, CA",
+      "ind": "UI/UX & Product Design",
+      "desc": "Review gameplay for accessibility barriers. Support inclusive player research. Document accessibility findings and design recommendations.",
+      "pay": "$40.25–46.75/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Burbank, CA",
+      "eligibility": "Recently completed or currently pursuing a bachelor’s or higher degree in accessibility, inclusive design, game design, interaction design, UX design, or a related field. \nInterest in accessibility, inclusive design, user research, and creating better gaming experiences for players with disabilities. \nStrong verbal and written communication skills, with the ability to document observations, summarize information, and present findings to small internal groups with guidance. \nStrong organizational skills, attention to detail, and the ability to follow instructions, ask questions, and manage assigned tasks. \nFoundational ability to work with percentages, rates, and basic descriptive data, including reading tables and charts. \nWorking knowledge of Microsoft Office or Google Workspace. \nCuriosity, problem-solving skills, and a willingness to learn from feedback and collaborate with cross-functional teams. \nInterest in learning about video game production processes and accessibility features in games. \nCoursework, portfolio projects, volunteer work, or professional experience demonstrating an interest in accessible design, inclusive game experiences, accessibility standards, or designing for people with disabilities is preferred. \nExperience using accessibility features in games is a plus. \nFamiliarity with survey tools such as Qualtrics or SurveyMonkey is a plus, with training provided as needed. \nInterest in developing quantitative research skills is encouraged. \n\nEligibility \n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree- Master's or PhD \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication form screening questions (not inferred answers):\nDo you have a demonstrated interest in video games and player experience, or experience contributing to a game project?*\nHave you contributed to accessibility or disability-inclusive design or research through coursework, a project, volunteer work, or professional experience?*\nCan you work 40 hours per week for the full internship, including 2-3 days per week at the Insomniac Games' Burbank studio and relocate before the start date if needed?*\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227618004",
+      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Review gameplay for accessibility barriers.",
+        "Support inclusive player research.",
+        "Document accessibility findings and design recommendations."
+      ],
+      "eligibilityFlags": [
+        "Recently completed or currently pursuing a bachelor’s or higher degree in accessibility, inclusive design, game design, interaction design, UX design, or a related field.",
+        "Interest in accessibility, inclusive design, user research, and creating better gaming experiences for players with disabilities.",
+        "Strong verbal and written communication skills, with the ability to document observations, summarize information, and present findings to small internal groups with guidance.",
+        "Strong organizational skills, attention to detail, and the ability to follow instructions, ask questions, and manage assigned tasks.",
+        "Foundational ability to work with percentages, rates, and basic descriptive data, including reading tables and charts.",
+        "Working knowledge of Microsoft Office or Google Workspace.",
+        "Curiosity, problem-solving skills, and a willingness to learn from feedback and collaborate with cross-functional teams.",
+        "Interest in learning about video game production processes and accessibility features in games.",
+        "Coursework, portfolio projects, volunteer work, or professional experience demonstrating an interest in accessible design, inclusive game experiences, accessibility standards, or designing for people with disabilities is preferred.",
+        "Experience using accessibility features in games is a plus.",
+        "Familiarity with survey tools such as Qualtrics or SurveyMonkey is a plus, with training provided as needed.",
+        "Interest in developing quantitative research skills is encouraged.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree- Master's or PhD",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "Application form screening questions (not inferred answers):",
+        "Do you have a demonstrated interest in video games and player experience, or experience contributing to a game project?*",
+        "Have you contributed to accessibility or disability-inclusive design or research through coursework, a project, volunteer work, or professional experience?*",
+        "Can you work 40 hours per week for the full internship, including 2-3 days per week at the Insomniac Games' Burbank studio and relocate before the start date if needed?*",
+        "The dedicated role eligibility and screening above control over the generic program page. Session year is not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-20T15:35:35.233Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227618004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "d2888b1d:bcca5429",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Review gameplay for accessibility barriers.",
+          "Support inclusive player research.",
+          "Document accessibility findings and design recommendations.",
+          "12 weeks; Master's/PhD; graduation May2026–Dec2029; 40h/week; 2–3 Burbank days; US work authorization; no sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "Animation Intern (Gameplay)- Undergraduate",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6226213004",
+      "loc": "Burbank, CA",
+      "ind": "3D Art & Animation",
+      "desc": "Animate gameplay characters, props and cinematics. Support animation development and bug fixes. Learn game animation workflows with studio mentors.",
+      "pay": "$36.50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Burbank, CA",
+      "eligibility": "Currently pursuing a Bachelor's degree in Computer, Traditional, or Experimental Animation. Students majoring in Art, Illustration, or Graphic Design with animation experience will also be considered. \nSix to twelve months of related experience and/or training is beneficial but not required for currently enrolled students. \nA creative, self-motivated, and responsible approach to learning and completing assigned work. \nPassion for video games and animation, with a willingness to learn new techniques and contribute to team projects. \nIntroductory 3D animation experience, drawing skills and previous experience with Maya are preferred. \n\nEligibility \n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate  \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication form screening questions (not inferred answers):\nDo you have experience animating in Maya or similar software? *\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226213004",
+      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Animate gameplay characters, props and cinematics.",
+        "Support animation development and bug fixes.",
+        "Learn game animation workflows with studio mentors."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a Bachelor's degree in Computer, Traditional, or Experimental Animation. Students majoring in Art, Illustration, or Graphic Design with animation experience will also be considered.",
+        "Six to twelve months of related experience and/or training is beneficial but not required for currently enrolled students.",
+        "A creative, self-motivated, and responsible approach to learning and completing assigned work.",
+        "Passion for video games and animation, with a willingness to learn new techniques and contribute to team projects.",
+        "Introductory 3D animation experience, drawing skills and previous experience with Maya are preferred.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "Application form screening questions (not inferred answers):",
+        "Do you have experience animating in Maya or similar software? *",
+        "The dedicated role eligibility and screening above control over the generic program page. Session year is not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-20T15:35:35.751Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226213004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "db422a1a:c0196e0e",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Animate gameplay characters, props and cinematics.",
+          "Support animation development and bug fixes.",
+          "Learn game animation workflows with studio mentors.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "Character Artist Intern- Undergraduate",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6226237004",
+      "loc": "Burbank, CA",
+      "ind": "3D Art & Animation",
+      "desc": "Model and texture characters and props. Create corrective blendshapes and UV layouts. Develop materials with the Character Art team.",
+      "pay": "$36.50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Burbank, CA",
+      "eligibility": "Currently pursuing a Bachelor's degree working towards Character Art. \nSix to twelve months of related experience and/or training is beneficial but not required for currently enrolled students. \nA creative, self-motivated, and responsible approach to learning and completing assigned work. \nPassion for video games and animation, with an interest in character modeling, texturing, and game development. \nPython skills and previous experience with Maya are preferred. \n\nEligibility \n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226237004",
+      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Model and texture characters and props.",
+        "Create corrective blendshapes and UV layouts.",
+        "Develop materials with the Character Art team."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a Bachelor's degree working towards Character Art.",
+        "Six to twelve months of related experience and/or training is beneficial but not required for currently enrolled students.",
+        "A creative, self-motivated, and responsible approach to learning and completing assigned work.",
+        "Passion for video games and animation, with an interest in character modeling, texturing, and game development.",
+        "Python skills and previous experience with Maya are preferred.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "The dedicated role eligibility and screening above control over the generic program page. Session year is not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-20T15:35:36.237Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226237004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "d3dd9db4:1a906120",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Model and texture characters and props.",
+          "Create corrective blendshapes and UV layouts.",
+          "Develop materials with the Character Art team.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "Character TD (Rigging) Intern- Undergraduate",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6226243004",
+      "loc": "Burbank, CA",
+      "ind": "3D Art & Animation",
+      "desc": "Build animation rigs for game assets. Troubleshoot rigging issues and animation bugs. Collaborate across rigging and animation teams.",
+      "pay": "$36.50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Burbank, CA",
+      "eligibility": "Currently pursuing a Bachelor's degree working towards Character Rigging. Computer Science majors with rigging experience will also be considered. \nSix to twelve months of related experience and/or training is beneficial but not required for currently enrolled students. \nA creative, self-motivated, and responsible approach to learning and completing assigned work. \nPassion for video games and animation, with an interest in character rigging and game development. \nPython skills and previous experience with Maya are preferred. \n\nEligibility:\n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226243004",
+      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build animation rigs for game assets.",
+        "Troubleshoot rigging issues and animation bugs.",
+        "Collaborate across rigging and animation teams."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a Bachelor's degree working towards Character Rigging. Computer Science majors with rigging experience will also be considered.",
+        "Six to twelve months of related experience and/or training is beneficial but not required for currently enrolled students.",
+        "A creative, self-motivated, and responsible approach to learning and completing assigned work.",
+        "Passion for video games and animation, with an interest in character rigging and game development.",
+        "Python skills and previous experience with Maya are preferred.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "The dedicated role eligibility and screening above control over the generic program page. Session year is not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-20T15:35:36.573Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226243004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "6a413a85:b179b971",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Build animation rigs for game assets.",
+          "Troubleshoot rigging issues and animation bugs.",
+          "Collaborate across rigging and animation teams.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "Concept Art Intern- Undergraduate",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6226354004",
+      "loc": "Burbank, CA",
+      "ind": "3D Art & Animation",
+      "desc": "Create concept sketches and production paintings. Design characters, environments, creatures and props. Refine visual targets with artists and mentors.",
+      "pay": "$36.50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Burbank, CA",
+      "eligibility": "Currently pursuing a Bachelor’s degree in a related field at an accredited university. \nStrong 2D artistic skills and an understanding of foundational art principles. \nAbility to apply design, perspective, composition, color theory, lighting, anatomy, detail distribution, and visual balance to concept artwork. \nCreative problem-solving skills, with the ability to translate ideas into visual concepts that support game development. \nStrong communication and collaboration skills, with a willingness to receive direction, incorporate feedback, and work closely with a team. \nA self-motivated, creative, and responsible approach to learning and completing assigned work. \nAbility to manage tasks and meet deadlines in a collaborative production environment. \nPassion for video games and art, with an interest in learning how concept art contributes to AAA game development. \n3D experience is a strong plus. \n\nEligibility \n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "November 21, 2026 (date-only; Eastern board default)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226354004",
+      "deadlineISO": "2026-11-21T23:59:59-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Create concept sketches and production paintings.",
+        "Design characters, environments, creatures and props.",
+        "Refine visual targets with artists and mentors."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a Bachelor’s degree in a related field at an accredited university.",
+        "Strong 2D artistic skills and an understanding of foundational art principles.",
+        "Ability to apply design, perspective, composition, color theory, lighting, anatomy, detail distribution, and visual balance to concept artwork.",
+        "Creative problem-solving skills, with the ability to translate ideas into visual concepts that support game development.",
+        "Strong communication and collaboration skills, with a willingness to receive direction, incorporate feedback, and work closely with a team.",
+        "A self-motivated, creative, and responsible approach to learning and completing assigned work.",
+        "Ability to manage tasks and meet deadlines in a collaborative production environment.",
+        "Passion for video games and art, with an interest in learning how concept art contributes to AAA game development.",
+        "3D experience is a strong plus.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "The dedicated role eligibility and screening above control over the generic program page. Session year is not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-20T15:35:46.754Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226354004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "e9b16436:1e4b6bda",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Create concept sketches and production paintings.",
+          "Design characters, environments, creatures and props.",
+          "Refine visual targets with artists and mentors.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "Dialogue Intern- Unergraduate",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6228761004",
+      "loc": "Burbank, CA",
+      "ind": "Audio / Music Production",
+      "desc": "Coordinate voice-over recording sessions. Edit and implement game dialogue assets. Support dialogue QA, bug fixing and polish.",
+      "pay": "$36.50/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Burbank, CA",
+      "eligibility": "Currently pursuing an undergraduate degree at a college or university, with an emphasis on audio production, recording or engineering, preferably within the game development field. \nStrong interest in game dialogue, audio production, and storytelling through video games. \nFamiliarity with audio production and editing software such as Pro Tools, Reaper, and similar DAWs. \nUnderstanding of signal flow, audio editing and mastering techniques. \nStrong attention to detail, communication, and collaboration skills, with a self-motivated and responsible approach to learning. \nPassion for video games and an understanding of what makes them fun (or not). \nAdditional experience with field recording and microphone setups, dialogue editing, sound effect creation and editing, and post-processing is a plus. \nUnderstanding and experience with Wwise or other middleware solutions is strongly preferred. \n\nEligibility: \n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication form screening questions (not inferred answers):\nAre you available to work for the full duration of the 12-week internship program?*\nAre you able to work fully on-site (in person) at the designated office location for the entire duration of the internship?*\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6228761004",
+      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Coordinate voice-over recording sessions.",
+        "Edit and implement game dialogue assets.",
+        "Support dialogue QA, bug fixing and polish."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing an undergraduate degree at a college or university, with an emphasis on audio production, recording or engineering, preferably within the game development field.",
+        "Strong interest in game dialogue, audio production, and storytelling through video games.",
+        "Familiarity with audio production and editing software such as Pro Tools, Reaper, and similar DAWs.",
+        "Understanding of signal flow, audio editing and mastering techniques.",
+        "Strong attention to detail, communication, and collaboration skills, with a self-motivated and responsible approach to learning.",
+        "Passion for video games and an understanding of what makes them fun (or not).",
+        "Additional experience with field recording and microphone setups, dialogue editing, sound effect creation and editing, and post-processing is a plus.",
+        "Understanding and experience with Wwise or other middleware solutions is strongly preferred.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "Application form screening questions (not inferred answers):",
+        "Are you available to work for the full duration of the 12-week internship program?*",
+        "Are you able to work fully on-site (in person) at the designated office location for the entire duration of the internship?*",
+        "The dedicated role eligibility and screening above control over the generic program page. Session year is not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-20T15:35:47.245Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6228761004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "cd632ed6:84e3d102",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Coordinate voice-over recording sessions.",
+          "Edit and implement game dialogue assets.",
+          "Support dialogue QA, bug fixing and polish.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "Environment Art Intern- Undergraduate",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6221850004",
+      "loc": "Burbank, CA",
+      "ind": "3D Art & Animation",
+      "desc": "Model environments and props from references. Create UVs, textures and materials. Build game worlds with environment artists.",
+      "pay": "$36.50/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Burbank, CA",
+      "eligibility": "Currently enrolled at a college or university studying a related Arts field. No prior professional experience or training required. \nA creative, self-motivated, and responsible approach to learning and completing assigned work. \nPassion for video games and art, with an interest in environment modeling, texturing, and game development. \nWillingness to learn new tools and techniques and collaborate with experienced artists. \nPython skills and previous experience with Maya are preferred. \n\nEligibility:\n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication form screening questions (not inferred answers):\nAre you able and willing to work fully on-site at the designated office location for the duration of the internship?*\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "November 21, 2026 (date-only; Eastern board default)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6221850004",
+      "deadlineISO": "2026-11-21T23:59:59-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Model environments and props from references.",
+        "Create UVs, textures and materials.",
+        "Build game worlds with environment artists."
+      ],
+      "eligibilityFlags": [
+        "Currently enrolled at a college or university studying a related Arts field. No prior professional experience or training required.",
+        "A creative, self-motivated, and responsible approach to learning and completing assigned work.",
+        "Passion for video games and art, with an interest in environment modeling, texturing, and game development.",
+        "Willingness to learn new tools and techniques and collaborate with experienced artists.",
+        "Python skills and previous experience with Maya are preferred.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "Application form screening questions (not inferred answers):",
+        "Are you able and willing to work fully on-site at the designated office location for the duration of the internship?*",
+        "The dedicated role eligibility and screening above control over the generic program page. Session year is not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-20T15:35:47.645Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6221850004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "4e36218c:1d62f218",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Model environments and props from references.",
+          "Create UVs, textures and materials.",
+          "Build game worlds with environment artists.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "Game Design Intern-Undergraduate",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6226630004",
+      "loc": "Burbank, CA",
+      "ind": "Game Design",
+      "desc": "Create and implement gameplay content. Script gameplay events and mechanics. Explore level design with experienced designers.",
+      "pay": "$36.50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Burbank, CA",
+      "eligibility": "Currently pursuing a Game Design degree at a college or university. Master's candidates may also apply. \nSix to twelve months of related experience and/or training is beneficial but not required for currently enrolled students. \nBasic familiarity with a 3D package such as Maya or 3DSMax is required; experience with Maya is preferred. \nScripting experience is required, preferably visual scripting, although knowledge of programming or scripting languages is also acceptable. \nFamiliarity with development tools such as Unity, Unreal Engine, Maya, or other 3D modeling software. \nStrong technical skills, including visual scripting or programming experience. \nStrong attention to detail, creativity, and an understanding of game design fundamentals. \nA self-motivated and responsible approach to learning, with the ability to articulate creative goals and turn ideas into actionable solutions. \nPassion for next-gen video games, with knowledge of the gaming industry and narrative action games. \nPrevious experience with level-editing tools, such as Unreal, Unity, or Hammer is a plus. \n\nEligibility: \n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication form screening questions (not inferred answers):\nHave you ever built the blockout or first iteration of a playable level?*\nHave you created gameplay scripts in programs like Blueprint or C# that perform gameplay functions in a level or, alternatively, used either to create gameplay mechanics?*\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226630004",
+      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Create and implement gameplay content.",
+        "Script gameplay events and mechanics.",
+        "Explore level design with experienced designers."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a Game Design degree at a college or university. Master's candidates may also apply.",
+        "Six to twelve months of related experience and/or training is beneficial but not required for currently enrolled students.",
+        "Basic familiarity with a 3D package such as Maya or 3DSMax is required; experience with Maya is preferred.",
+        "Scripting experience is required, preferably visual scripting, although knowledge of programming or scripting languages is also acceptable.",
+        "Familiarity with development tools such as Unity, Unreal Engine, Maya, or other 3D modeling software.",
+        "Strong technical skills, including visual scripting or programming experience.",
+        "Strong attention to detail, creativity, and an understanding of game design fundamentals.",
+        "A self-motivated and responsible approach to learning, with the ability to articulate creative goals and turn ideas into actionable solutions.",
+        "Passion for next-gen video games, with knowledge of the gaming industry and narrative action games.",
+        "Previous experience with level-editing tools, such as Unreal, Unity, or Hammer is a plus.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "Application form screening questions (not inferred answers):",
+        "Have you ever built the blockout or first iteration of a playable level?*",
+        "Have you created gameplay scripts in programs like Blueprint or C# that perform gameplay functions in a level or, alternatively, used either to create gameplay mechanics?*",
+        "The dedicated role eligibility and screening above control over the generic program page. Session year is not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-20T15:35:48.085Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226630004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "fbeef46e:4e7316c2",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Create and implement gameplay content.",
+          "Script gameplay events and mechanics.",
+          "Explore level design with experienced designers.",
+          "12 weeks; Undergraduate/Master's students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "Gameplay Programming Intern - Undergraduate",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6226611004",
+      "loc": "Burbank, CA; Remote",
+      "ind": "Software & Engineering",
+      "desc": "Build gameplay features using C++. Develop player controls, cameras and abilities. Investigate bugs and improve gameplay performance.",
+      "pay": "$41.50–50/hour",
+      "style": "Remote",
+      "exp": "Not listed",
+      "state": "Burbank, CA; Remote",
+      "eligibility": "Currently pursuing a BS/BSE in Computer Science or Computer Engineering. Students majoring in Physics or Math with computer programming experience will also be considered. \nSix to twelve months of related experience and/or training is beneficial but not required for currently enrolled students. \nAbility to program in C++. \nStrong interest in gameplay programming and using technical skills to create engaging player experiences. \nA creative, self-motivated, and responsible approach to learning and completing assigned work. \nPassion for video games and programming, with an interest in developing gameplay features and solving technical challenges. \n\nEligibility:\n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226611004",
+      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build gameplay features using C++.",
+        "Develop player controls, cameras and abilities.",
+        "Investigate bugs and improve gameplay performance."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a BS/BSE in Computer Science or Computer Engineering. Students majoring in Physics or Math with computer programming experience will also be considered.",
+        "Six to twelve months of related experience and/or training is beneficial but not required for currently enrolled students.",
+        "Ability to program in C++.",
+        "Strong interest in gameplay programming and using technical skills to create engaging player experiences.",
+        "A creative, self-motivated, and responsible approach to learning and completing assigned work.",
+        "Passion for video games and programming, with an interest in developing gameplay features and solving technical challenges.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "The dedicated role eligibility and screening above control over the generic program page. Session year is not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-20T15:35:48.598Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226611004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "d0683016:75eb2a52",
+        "locationLabel": "Burbank, CA / Remote",
+        "detailBullets": [
+          "Build gameplay features using C++.",
+          "Develop player controls, cameras and abilities.",
+          "Investigate bugs and improve gameplay performance.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "Publishing Project Management Intern - Undergraduate",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6226347004",
+      "loc": "Burbank, CA",
+      "ind": "Business & Operations",
+      "desc": "Document legal clearance workflows. Coordinate asset approvals and project follow-ups. Catalog game assets across development teams.",
+      "pay": "$36.50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Burbank, CA",
+      "eligibility": "Currently pursuing a degree in a related field, such as game development, production, or project management, or have six to twelve months of related experience and/or training. \nStrong organizational and communication skills, with the ability to document processes, track tasks, and collaborate with cross-functional teams. \nAbility to read, analyze, and interpret business documents, technical procedures, and relevant regulations. \nStrong written communication skills, including the ability to prepare reports, business correspondence, and procedure manuals. \nAbility to present information clearly and respond to questions from managers, clients, customers, and other stakeholders. \nStrong problem-solving and reasoning skills, with the ability to follow instructions and work through practical challenges. \nFoundational mathematical skills, including percentages, proportions, basic algebra, and geometry. \nKnowledge of Microsoft Office Suite. \nExposure to bug tracking database(s) such as DevTrack, TFS, Jira or other industry standard is preferred. \nExposure to version control software, with Perforce preferred. \n\nEligibility:\n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication form screening questions (not inferred answers):\nDo you have basic proficiency in Microsoft Office applications, including Word and Excel?*\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226347004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Document legal clearance workflows.",
+        "Coordinate asset approvals and project follow-ups.",
+        "Catalog game assets across development teams."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a degree in a related field, such as game development, production, or project management, or have six to twelve months of related experience and/or training.",
+        "Strong organizational and communication skills, with the ability to document processes, track tasks, and collaborate with cross-functional teams.",
+        "Ability to read, analyze, and interpret business documents, technical procedures, and relevant regulations.",
+        "Strong written communication skills, including the ability to prepare reports, business correspondence, and procedure manuals.",
+        "Ability to present information clearly and respond to questions from managers, clients, customers, and other stakeholders.",
+        "Strong problem-solving and reasoning skills, with the ability to follow instructions and work through practical challenges.",
+        "Foundational mathematical skills, including percentages, proportions, basic algebra, and geometry.",
+        "Knowledge of Microsoft Office Suite.",
+        "Exposure to bug tracking database(s) such as DevTrack, TFS, Jira or other industry standard is preferred.",
+        "Exposure to version control software, with Perforce preferred.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "Application form screening questions (not inferred answers):",
+        "Do you have basic proficiency in Microsoft Office applications, including Word and Excel?*",
+        "The dedicated role eligibility and screening above control over the generic program page. Session year is not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-20T15:36:03.094Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226347004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "96195bef:3cd4a8c3",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Document legal clearance workflows.",
+          "Coordinate asset approvals and project follow-ups.",
+          "Catalog game assets across development teams.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "Story Intern - Undergraduate",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6227611004",
+      "loc": "Burbank, CA",
+      "ind": "Content / Copywriting",
+      "desc": "Develop game stories and character arcs. Write cinematic and in-game dialogue. Review scripts with the writing team.",
+      "pay": "$36.50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Burbank, CA",
+      "eligibility": "Currently pursuing a degree in Writing, Game Design, or equivalent. \nSix to twelve months of related experience and/or training is beneficial but not required for currently enrolled students. \nStrong critical thinking and writing skills, with the ability to develop, evaluate, and refine creative ideas. \nA creative, self-motivated, and responsible approach to learning and completing assigned work. \nPassion for writing video games, with an interest in storytelling, character development, and collaborative game production. \n\nEligibility:\n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate  \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication form screening questions (not inferred answers):\nScreenplay Samples*\nDo you have student game development experience or collaborative group experience?*\nScreenplay samples are required with the application.\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227611004",
+      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop game stories and character arcs.",
+        "Write cinematic and in-game dialogue.",
+        "Review scripts with the writing team."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a degree in Writing, Game Design, or equivalent.",
+        "Six to twelve months of related experience and/or training is beneficial but not required for currently enrolled students.",
+        "Strong critical thinking and writing skills, with the ability to develop, evaluate, and refine creative ideas.",
+        "A creative, self-motivated, and responsible approach to learning and completing assigned work.",
+        "Passion for writing video games, with an interest in storytelling, character development, and collaborative game production.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "Application form screening questions (not inferred answers):",
+        "Screenplay Samples*",
+        "Do you have student game development experience or collaborative group experience?*",
+        "Screenplay samples are required with the application.",
+        "The dedicated role eligibility and screening above control over the generic program page. Session year is not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-20T15:36:03.521Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227611004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "44ef0f9d:36509d9",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Develop game stories and character arcs.",
+          "Write cinematic and in-game dialogue.",
+          "Review scripts with the writing team.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "User Research Intern (Tools)- Master's",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6227520004",
+      "loc": "Burbank, CA",
+      "ind": "UI/UX & Product Design",
+      "desc": "Research internal development tools and workflows. Conduct surveys, interviews and usability studies. Analyze findings and present practical improvements.",
+      "pay": "$40.25/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Burbank, CA",
+      "eligibility": "Currently pursuing or have completed a bachelor’s or master’s degree in Psychology, Human-Computer Interaction, Human Factors, Cognitive Science, or a related field; or equivalent relevant experience gained through work, research projects, community work, or independent study. \nExperience contributing to a game project or a demonstrated passion for games and player experience. \nFamiliarity with research methods such as surveys, interviews, usability testing, or observation through coursework, projects, or practical experience. \nCuriosity about how people work, with an empathetic listening style and the ability to ask clear, neutral follow-up questions. \nStrong written and verbal communication skills, with the ability to organize research findings and share insights clearly. \nStrong organizational skills and attention to detail when working with research participants, study materials, and data. \nWillingness to learn unfamiliar tools and collaborate with researchers, tool owners, and game development teams. \nFamiliarity with Jira, Miro, Confluence, survey platforms, or similar tools is a plus. Prior experience with specific studio tools is not required. \n\nEligibility: \n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced degree- Master's\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication form screening questions (not inferred answers):\nDo you have a demonstrated interest in games and player experience, or experience contributing to a game project?*\nDo you have familiarity with at least one research method (surveys, interviews, usability testing, or observation) through coursework, projects, or practical experience?*\nAre you able to work from the Insomniac Games' Burbank studio 2-3 days per week during the internship and relocating before the start date if needed?*\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227520004",
+      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Research internal development tools and workflows.",
+        "Conduct surveys, interviews and usability studies.",
+        "Analyze findings and present practical improvements."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing or have completed a bachelor’s or master’s degree in Psychology, Human-Computer Interaction, Human Factors, Cognitive Science, or a related field; or equivalent relevant experience gained through work, research projects, community work, or independent study.",
+        "Experience contributing to a game project or a demonstrated passion for games and player experience.",
+        "Familiarity with research methods such as surveys, interviews, usability testing, or observation through coursework, projects, or practical experience.",
+        "Curiosity about how people work, with an empathetic listening style and the ability to ask clear, neutral follow-up questions.",
+        "Strong written and verbal communication skills, with the ability to organize research findings and share insights clearly.",
+        "Strong organizational skills and attention to detail when working with research participants, study materials, and data.",
+        "Willingness to learn unfamiliar tools and collaborate with researchers, tool owners, and game development teams.",
+        "Familiarity with Jira, Miro, Confluence, survey platforms, or similar tools is a plus. Prior experience with specific studio tools is not required.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Advanced degree- Master's",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "Application form screening questions (not inferred answers):",
+        "Do you have a demonstrated interest in games and player experience, or experience contributing to a game project?*",
+        "Do you have familiarity with at least one research method (surveys, interviews, usability testing, or observation) through coursework, projects, or practical experience?*",
+        "Are you able to work from the Insomniac Games' Burbank studio 2-3 days per week during the internship and relocating before the start date if needed?*",
+        "The dedicated role eligibility and screening above control over the generic program page. Session year is not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-20T15:36:03.970Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227520004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "508b97be:e7f60af2",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Research internal development tools and workflows.",
+          "Conduct surveys, interviews and usability studies.",
+          "Analyze findings and present practical improvements.",
+          "12 weeks; Master's; graduation May2026–Dec2029; 2–3 Burbank days; US work authorization; no sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "XDev Props Intern- Undergraduate",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6226349004",
+      "loc": "Burbank, CA",
+      "ind": "3D Art & Animation",
+      "desc": "Prepare briefs for external art vendors. Review models, textures, materials and UVs. Support prop optimization and production feedback.",
+      "pay": "$36.50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Burbank, CA",
+      "eligibility": "Strong skills in modeling, baking and UV layout using Maya, Max, or equivalent. \nStrong skills in texture and material creation using Photoshop, Substance Painter, Substance Designer. \nExperience with ZBrush. \nAbility to review 3D assets, identify areas for improvement, and communicate clear, actionable feedback. \nStrong written and verbal communication skills, including the ability to interpret technical information, prepare documentation, and present ideas clearly. \nStrong organizational and time management skills, with the ability to prioritize tasks, manage multiple assignments, and meet deadlines. \nAbility to solve practical problems, follow written and verbal instructions, and collaborate effectively with artists and external partners. \nFoundational mathematical skills, including percentages, proportions, basic algebra, and geometry. \nWillingness to receive direction, incorporate feedback, and work closely with a team. \nExperience with vehicles and weapons is a plus. \n\nEligibility:\n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate  \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226349004",
+      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Prepare briefs for external art vendors.",
+        "Review models, textures, materials and UVs.",
+        "Support prop optimization and production feedback."
+      ],
+      "eligibilityFlags": [
+        "Strong skills in modeling, baking and UV layout using Maya, Max, or equivalent.",
+        "Strong skills in texture and material creation using Photoshop, Substance Painter, Substance Designer.",
+        "Experience with ZBrush.",
+        "Ability to review 3D assets, identify areas for improvement, and communicate clear, actionable feedback.",
+        "Strong written and verbal communication skills, including the ability to interpret technical information, prepare documentation, and present ideas clearly.",
+        "Strong organizational and time management skills, with the ability to prioritize tasks, manage multiple assignments, and meet deadlines.",
+        "Ability to solve practical problems, follow written and verbal instructions, and collaborate effectively with artists and external partners.",
+        "Foundational mathematical skills, including percentages, proportions, basic algebra, and geometry.",
+        "Willingness to receive direction, incorporate feedback, and work closely with a team.",
+        "Experience with vehicles and weapons is a plus.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "The dedicated role eligibility and screening above control over the generic program page. Session year is not stated."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-20T15:36:04.333Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226349004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "adfb774:1eef81e0",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Prepare briefs for external art vendors.",
+          "Review models, textures, materials and UVs.",
+          "Support prop optimization and production feedback.",
+          "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
         ]
       }
     }

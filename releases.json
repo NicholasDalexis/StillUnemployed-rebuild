@@ -1,7 +1,47 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.44",
+  "currentVersion": "2.7.7.49",
   "releases": [
+    {
+      "version": "2.7.7.49",
+      "date": "2026-10-20",
+      "title": "Insomniac internship additions",
+      "changes": [
+        "Add13application-verified Insomniac student roles with source-bound pay, cohort, deadlines and compact copy.45–48remain local-only QA candidates and were never released."
+      ]
+    },
+    {
+      "version": "2.7.7.48",
+      "date": "2026-10-20",
+      "title": "Insomniac student opportunities",
+      "changes": [
+        "Add13exact application-verified Insomniac student opportunities with exact pay, eligibility, source dates, deadline and compact summaries.45–47were local-only QA candidates, never published."
+      ]
+    },
+    {
+      "version": "2.7.7.47",
+      "date": "2026-10-20",
+      "title": "More Insomniac internships",
+      "changes": [
+        "Publish13verified Insomniac student roles with compact source-bound summaries. Local-only45and46candidates were not deployed."
+      ]
+    },
+    {
+      "version": "2.7.7.46",
+      "date": "2026-10-20",
+      "title": "Insomniac internship publication",
+      "changes": [
+        "Finish compact source-bound summaries for13new Insomniac student roles; prior2.7.7.45was local-only, never deployed."
+      ]
+    },
+    {
+      "version": "2.7.7.45",
+      "date": "2026-10-20",
+      "title": "More Insomniac student opportunities",
+      "changes": [
+        "Add13exact application-verified Insomniac student roles; preserve all prior public objects, source dates, eligibility, deadline and session-year uncertainty."
+      ]
+    },
     {
       "version": "2.7.7.44",
       "date": "2026-10-19",
@@ -1471,7 +1511,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "739e6b029588da6e88501199ce96fd3253bc3675d8c9b382148db87f86428531",
+    "digest": "22c2de896b9b72b0c7051ee176923643e3493e0efb65b59986c56f635b165fca",
     "fileCount": 227
   }
 }
