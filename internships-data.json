@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-21T03:33:39.113Z",
+  "sourceExportedAt": "2026-10-21T18:22:01.296Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -7023,6 +7023,645 @@
           "Improve test automation and failure triage.",
           "Support PlayStation App release readiness.",
           "12 weeks; Undergraduate students; graduation May2026–Dec2029; US work authorization; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "DoorDash",
+      "role": "Software Engineer, Intern - Labs (Summer 2027)",
+      "link": "https://job-boards.greenhouse.io/doordashusa/jobs/8263774",
+      "loc": "San Francisco, CA; Sunnyvale, CA",
+      "ind": "Software & Engineering",
+      "desc": "Build robotic delivery and automation software. Develop reliable systems with the Labs engineering team. Test and improve software across the development lifecycle.",
+      "pay": "$107,400–158,000; period not listed",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "San Francisco, CA; Sunnyvale, CA",
+      "eligibility": "Pursuing a B.S. or M.S. in Computer Science or equivalent, graduating Fall 2027 through Summer 2028; no more than two years of full-time work experience. Requires algorithms/data structures, an object-oriented language such as Python, Java or Kotlin, databases/SQL, version control and unit testing. Previous internships are preferred, not required. US work authorization required; F-1 CPT eligible, J-1 not eligible. Onsite in San Francisco or Sunnyvale. Employer pay range has no stated period; do not infer annual pay or internship total.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May or June 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/doordashusa/jobs/8263774",
+      "payStatus": "paid",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build robotic delivery and automation software.",
+        "Develop reliable systems with the Labs engineering team.",
+        "Test and improve software across the development lifecycle."
+      ],
+      "eligibilityFlags": [
+        "Pursuing a B.S. or M.S. in Computer Science or equivalent, graduating Fall 2027 through Summer 2028; no more than two years of full-time work experience. Requires algorithms/data structures, an object-oriented language such as Python, Java or Kotlin, databases/SQL, version control and unit testing. Previous internships are preferred, not required. US work authorization required; F-1 CPT eligible, J-1 not eligible. Onsite in San Francisco or Sunnyvale. Employer pay range has no stated period; do not infer annual pay or internship total."
+      ],
+      "benefits": [
+        "Mentorship, leader speaker series and intern social events; regular-employee benefits are not an internship guarantee."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T18:07:43.467Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/doordashusa/jobs/8263774",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "7ab51667:c3e5185b",
+        "locationLabel": "San Francisco, CA; Sunnyvale, CA",
+        "detailBullets": [
+          "Build robotic delivery and automation software.",
+          "Develop reliable systems with the Labs engineering team.",
+          "Test and improve software across the development lifecycle.",
+          "Summer 2027; 12 weeks; CS-related BS/MS graduating Fall 2027–Summer 2028; F-1 CPT eligible, J-1 ineligible."
+        ]
+      }
+    },
+    {
+      "co": "DLR Group",
+      "role": "Acoustic Design Intern | Summer 2027",
+      "link": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441203008",
+      "loc": "Cleveland, OH; Lincoln, NE; Omaha, NE",
+      "ind": "Engineering",
+      "desc": "Support acoustic analysis for building design projects. Assist with calculations, documentation and design coordination. Learn from multidisciplinary design professionals.",
+      "pay": "Suggested $20–26/hour",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "Cleveland, OH; Lincoln, NE; Omaha, NE",
+      "eligibility": "At least third year of an accredited Acoustical Engineering or similar program. Communication, technology, organization, multitasking, problem-solving and teamwork required. Acoustic metrics, building drawings, Revit, CadnaA, CATT and Odeon are preferred. Required full-time availability May 18 through August 6, 2027. Not a remote position. US work authorization required without current or future sponsorship, including school or employment visas. Application asks about prior acoustic internships but the description does not make prior internships mandatory.",
+      "cycle": "Summer 2027; May 18–August 6; full-time",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 18, 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441203008",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Support acoustic analysis for building design projects.",
+        "Assist with calculations, documentation and design coordination.",
+        "Learn from multidisciplinary design professionals."
+      ],
+      "eligibilityFlags": [
+        "At least third year of an accredited Acoustical Engineering or similar program. Communication, technology, organization, multitasking, problem-solving and teamwork required. Acoustic metrics, building drawings, Revit, CadnaA, CATT and Odeon are preferred. Required full-time availability May 18 through August 6, 2027. Not a remote position. US work authorization required without current or future sponsorship, including school or employment visas. Application asks about prior acoustic internships but the description does not make prior internships mandatory."
+      ],
+      "benefits": [
+        "EPX mentorship, real project work and weekly learning. Role is not remote; company-wide Friday flexibility is not a remote guarantee. Relocation is at the applicant’s expense per application."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T18:07:56.780Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441203008",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "d224e100:6ae7e6fc",
+        "locationLabel": "Cleveland, OH; Lincoln, NE; Omaha, NE",
+        "detailBullets": [
+          "Support acoustic analysis for building design projects.",
+          "Assist with calculations, documentation and design coordination.",
+          "Learn from multidisciplinary design professionals.",
+          "Full-time May 18–August 6, 2027; current students in specified program/year; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "DLR Group",
+      "role": "Lighting Design Intern | Summer 2027",
+      "link": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441280008",
+      "loc": "Cleveland, OH; Denver, CO; Las Vegas, NV",
+      "ind": "Design",
+      "desc": "Develop lighting concepts with experienced designers. Assist with calculations, drawings and lighting documentation. Coordinate lighting work across project disciplines.",
+      "pay": "Suggested $20–26/hour",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "Cleveland, OH; Denver, CO; Las Vegas, NV",
+      "eligibility": "At least third year of Lighting Design, Architecture, Electrical Engineering or a similar accredited program. Communication, organization, technology, teamwork and problem-solving skills required. Revit, AGi32, ElumTools and LightStanza are preferred. Full-time availability May 18 through August 6, 2027 required. Not remote. US work authorization without current or future school/employment visa sponsorship. Prior lighting internships are a screening question, not a stated mandatory requirement.",
+      "cycle": "Summer 2027; May 18–August 6; full-time",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 18, 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441280008",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop lighting concepts with experienced designers.",
+        "Assist with calculations, drawings and lighting documentation.",
+        "Coordinate lighting work across project disciplines."
+      ],
+      "eligibilityFlags": [
+        "At least third year of Lighting Design, Architecture, Electrical Engineering or a similar accredited program. Communication, organization, technology, teamwork and problem-solving skills required. Revit, AGi32, ElumTools and LightStanza are preferred. Full-time availability May 18 through August 6, 2027 required. Not remote. US work authorization without current or future school/employment visa sponsorship. Prior lighting internships are a screening question, not a stated mandatory requirement."
+      ],
+      "benefits": [
+        "EPX mentorship, real project work and weekly learning. Role is not remote; company-wide Friday flexibility is not a remote guarantee. Relocation is at the applicant’s expense per application."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T18:07:57.068Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441280008",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "f73aba58:e82fac4",
+        "locationLabel": "Cleveland, OH; Denver, CO; Las Vegas, NV",
+        "detailBullets": [
+          "Develop lighting concepts with experienced designers.",
+          "Assist with calculations, drawings and lighting documentation.",
+          "Coordinate lighting work across project disciplines.",
+          "Full-time May 18–August 6, 2027; current students in specified program/year; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "DLR Group",
+      "role": "Theater Planning Intern | Summer  2027",
+      "link": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441685008",
+      "loc": "Los Angeles, CA",
+      "ind": "Design",
+      "desc": "Assist with theater planning and performance-space design. Document rigging, lighting and theatrical equipment systems. Coordinate design solutions with multidisciplinary teams.",
+      "pay": "Suggested $20–26/hour",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "Los Angeles, CA",
+      "eligibility": "At least third year of Architecture, Design, Theater or a similar program. Revit/AutoCAD, theatrical practice and performance equipment systems knowledge required. Strong knowledge of one theatrical system is preferred. Full-time May 18 through August 6, 2027; nonremote. US work authorization without current or future sponsorship, including school or employment visas. Application asks about earlier Theater Planning/Design internships; no mandatory prior internship is stated.",
+      "cycle": "Summer 2027; May 18–August 6; full-time",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 18, 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441685008",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Assist with theater planning and performance-space design.",
+        "Document rigging, lighting and theatrical equipment systems.",
+        "Coordinate design solutions with multidisciplinary teams."
+      ],
+      "eligibilityFlags": [
+        "At least third year of Architecture, Design, Theater or a similar program. Revit/AutoCAD, theatrical practice and performance equipment systems knowledge required. Strong knowledge of one theatrical system is preferred. Full-time May 18 through August 6, 2027; nonremote. US work authorization without current or future sponsorship, including school or employment visas. Application asks about earlier Theater Planning/Design internships; no mandatory prior internship is stated."
+      ],
+      "benefits": [
+        "EPX mentorship, real project work and weekly learning. Role is not remote; company-wide Friday flexibility is not a remote guarantee. Relocation is at the applicant’s expense per application."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T18:07:57.492Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441685008",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "b6ac0d10:4aa81e4",
+        "locationLabel": "Los Angeles, CA",
+        "detailBullets": [
+          "Assist with theater planning and performance-space design.",
+          "Document rigging, lighting and theatrical equipment systems.",
+          "Coordinate design solutions with multidisciplinary teams.",
+          "Full-time May 18–August 6, 2027; current students in specified program/year; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "DLR Group",
+      "role": "Landscape Architecture Intern | Summer 2027",
+      "link": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441426008",
+      "loc": "Dallas, TX; Los Angeles, CA; Overland Park, KS; Phoenix, AZ",
+      "ind": "Design",
+      "desc": "Support landscape design concepts and project documentation. Prepare drawings, models and visual presentations. Collaborate with multidisciplinary project design teams.",
+      "pay": "Suggested $18–26/hour",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "Dallas, TX; Los Angeles, CA; Overland Park, KS; Phoenix, AZ",
+      "eligibility": "Currently pursuing a BLA or MLA with at least three years of design education completed before the internship. Revit/AutoCAD/LandFX and Adobe/Microsoft skills required. Portfolio PDF required. SketchUp, Enscape, Rhino, Mural and prior experience preferred. Full-time May 18 through August 6, 2027; not remote. US work authorization without current/future school or employment visa sponsorship. Posting contains an unfilled [CITY] boilerplate token; explicit named offices are Dallas, Los Angeles, Overland Park and Phoenix.",
+      "cycle": "Summer 2027; May 18–August 6; full-time",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 18, 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441426008",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Support landscape design concepts and project documentation.",
+        "Prepare drawings, models and visual presentations.",
+        "Collaborate with multidisciplinary project design teams."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a BLA or MLA with at least three years of design education completed before the internship. Revit/AutoCAD/LandFX and Adobe/Microsoft skills required. Portfolio PDF required. SketchUp, Enscape, Rhino, Mural and prior experience preferred. Full-time May 18 through August 6, 2027; not remote. US work authorization without current/future school or employment visa sponsorship. Posting contains an unfilled [CITY] boilerplate token; explicit named offices are Dallas, Los Angeles, Overland Park and Phoenix."
+      ],
+      "benefits": [
+        "EPX mentorship, real project work and weekly learning. Role is not remote; company-wide Friday flexibility is not a remote guarantee. Relocation is at the applicant’s expense per application."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T18:07:57.924Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441426008",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "f94c130a:2cb3a716",
+        "locationLabel": "Dallas, TX; Los Angeles, CA; Overland Park, KS; Phoenix, AZ",
+        "detailBullets": [
+          "Support landscape design concepts and project documentation.",
+          "Prepare drawings, models and visual presentations.",
+          "Collaborate with multidisciplinary project design teams.",
+          "Full-time May 18–August 6, 2027; current students in specified program/year; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "DLR Group",
+      "role": "Civil Engineering Intern | Summer 2027",
+      "link": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441842008",
+      "loc": "Omaha, NE",
+      "ind": "Engineering",
+      "desc": "Support civil engineering design and project documentation. Assist with site and infrastructure design tasks. Collaborate with engineers on integrated building projects.",
+      "pay": "Paid; amount not disclosed",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "Omaha, NE",
+      "eligibility": "At least one year completed in an ABET-accredited Civil Engineering program. Revit experience required. Third-year standing and interest in sustainable/low-impact design preferred, not mandatory. Full-time May 18 through August 6, 2027; not remote. US work authorization required without current or future school/employment visa sponsorship. Prior internships are asked about, not stated as mandatory.",
+      "cycle": "Summer 2027; May 18–August 6; full-time",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 18, 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441842008",
+      "payStatus": "paid",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Support civil engineering design and project documentation.",
+        "Assist with site and infrastructure design tasks.",
+        "Collaborate with engineers on integrated building projects."
+      ],
+      "eligibilityFlags": [
+        "At least one year completed in an ABET-accredited Civil Engineering program. Revit experience required. Third-year standing and interest in sustainable/low-impact design preferred, not mandatory. Full-time May 18 through August 6, 2027; not remote. US work authorization required without current or future school/employment visa sponsorship. Prior internships are asked about, not stated as mandatory."
+      ],
+      "benefits": [
+        "EPX mentorship, real project work and weekly learning. Role is not remote; company-wide Friday flexibility is not a remote guarantee. Relocation is at the applicant’s expense per application."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T18:07:58.372Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441842008",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "1991875:c1a01f21",
+        "locationLabel": "Omaha, NE",
+        "detailBullets": [
+          "Support civil engineering design and project documentation.",
+          "Assist with site and infrastructure design tasks.",
+          "Collaborate with engineers on integrated building projects.",
+          "Full-time May 18–August 6, 2027; current students in specified program/year; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "DLR Group",
+      "role": "Structural Engineering Intern | Summer 2027",
+      "link": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441877008",
+      "loc": "Omaha, NE",
+      "ind": "Engineering",
+      "desc": "Assist with structural engineering design and calculations. Develop models and construction documentation. Coordinate structural solutions with project teams.",
+      "pay": "Paid; amount not disclosed",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "Omaha, NE",
+      "eligibility": "At least one year completed in an ABET-accredited Structural, Civil or Architectural Engineering program. Experience or interest in BIM/Revit MEP. Third-year standing and passing the FE exam are preferred, not mandatory. Full-time May 18 through August 6, 2027; not remote. US work authorization without current or future school/employment visa sponsorship. Prior engineering internships are a screening question, not a required minimum.",
+      "cycle": "Summer 2027; May 18–August 6; full-time",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 18, 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441877008",
+      "payStatus": "paid",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Assist with structural engineering design and calculations.",
+        "Develop models and construction documentation.",
+        "Coordinate structural solutions with project teams."
+      ],
+      "eligibilityFlags": [
+        "At least one year completed in an ABET-accredited Structural, Civil or Architectural Engineering program. Experience or interest in BIM/Revit MEP. Third-year standing and passing the FE exam are preferred, not mandatory. Full-time May 18 through August 6, 2027; not remote. US work authorization without current or future school/employment visa sponsorship. Prior engineering internships are a screening question, not a required minimum."
+      ],
+      "benefits": [
+        "EPX mentorship, real project work and weekly learning. Role is not remote; company-wide Friday flexibility is not a remote guarantee. Relocation is at the applicant’s expense per application."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T18:07:58.939Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441877008",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "4818e738:e965f1c",
+        "locationLabel": "Omaha, NE",
+        "detailBullets": [
+          "Assist with structural engineering design and calculations.",
+          "Develop models and construction documentation.",
+          "Coordinate structural solutions with project teams.",
+          "Full-time May 18–August 6, 2027; current students in specified program/year; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Gallup",
+      "role": "Workplace Advisory Consulting Intern — Summer 2027",
+      "link": "https://job-boards.greenhouse.io/gallup/jobs/4398625009",
+      "loc": "Omaha, NE",
+      "ind": "Business & Operations",
+      "desc": "Support workplace advisory and employee-engagement consulting projects. Analyze research and prepare client-facing insights. Collaborate with consultants on practical client solutions.",
+      "pay": "$20/hour",
+      "style": "Hybrid",
+      "exp": "See eligibility",
+      "state": "Omaha, NE",
+      "eligibility": "Undergraduate attending a college or university within 250 miles of Omaha, graduating by spring 2028. Demonstrated leadership and experience in project management, business development, fundraising, recruiting, sales or entrepreneurship; school, volunteer, internship or professional experience qualifies. Monday–Thursday onsite; Friday optional remote. US work authorization required; no sponsorship. Application deadline October 30, 2026; employer time/zone not stated, board defaults to 11:59 PM America/New_York.",
+      "cycle": "Summer 2027; 12 weeks; 40 hours/week",
+      "deadline": "October 30, 2026, 11:59 PM Eastern (board default; employer date only)",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/gallup/jobs/4398625009",
+      "deadlineISO": "2026-10-30T23:59:59-04:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Support workplace advisory and employee-engagement consulting projects.",
+        "Analyze research and prepare client-facing insights.",
+        "Collaborate with consultants on practical client solutions."
+      ],
+      "eligibilityFlags": [
+        "Undergraduate attending a college or university within 250 miles of Omaha, graduating by spring 2028. Demonstrated leadership and experience in project management, business development, fundraising, recruiting, sales or entrepreneurship; school, volunteer, internship or professional experience qualifies. Monday–Thursday onsite; Friday optional remote. US work authorization required; no sponsorship. Application deadline October 30, 2026; employer time/zone not stated, board defaults to 11:59 PM America/New_York."
+      ],
+      "benefits": [
+        "Mentorship, hands-on client projects and strengths-based development."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T18:08:16.251Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/gallup/jobs/4398625009",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "e31734e0:dc65290c",
+        "locationLabel": "Omaha, NE",
+        "detailBullets": [
+          "Support workplace advisory and employee-engagement consulting projects.",
+          "Analyze research and prepare client-facing insights.",
+          "Collaborate with consultants on practical client solutions.",
+          "Summer 2027; 12 weeks; undergraduate college within 250 miles of Omaha; graduate by spring 2028; deadline October 30."
+        ]
+      }
+    },
+    {
+      "co": "Gallup",
+      "role": "Fintech Intern — Summer 2027",
+      "link": "https://job-boards.greenhouse.io/gallup/jobs/4393289009",
+      "loc": "Omaha, NE",
+      "ind": "Finance & Accounting",
+      "desc": "Analyze financial processes, systems and business data. Support financial technology and process-improvement projects. Collaborate with finance and technology specialists.",
+      "pay": "$20/hour",
+      "style": "Hybrid",
+      "exp": "See eligibility",
+      "state": "Omaha, NE",
+      "eligibility": "Attending college within 250 miles of Omaha, pursuing a bachelor’s or graduate degree in fintech, business, analytics, computer science, MIS, engineering or a related field. Graduation August 2027–May 2028 preferred; 2029 considered. SQL, financial analytics and Oracle are preferred. Monday–Thursday onsite, Friday optional remote. US work authorization required; no employment sponsorship. Possible school-year work up to 20 hours/week and a future full-time opportunity are not guaranteed.",
+      "cycle": "Summer 2027; 12 weeks; 40 hours/week",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/gallup/jobs/4393289009",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Analyze financial processes, systems and business data.",
+        "Support financial technology and process-improvement projects.",
+        "Collaborate with finance and technology specialists."
+      ],
+      "eligibilityFlags": [
+        "Attending college within 250 miles of Omaha, pursuing a bachelor’s or graduate degree in fintech, business, analytics, computer science, MIS, engineering or a related field. Graduation August 2027–May 2028 preferred; 2029 considered. SQL, financial analytics and Oracle are preferred. Monday–Thursday onsite, Friday optional remote. US work authorization required; no employment sponsorship. Possible school-year work up to 20 hours/week and a future full-time opportunity are not guaranteed."
+      ],
+      "benefits": [
+        "Mentorship, strengths-based development and hands-on finance technology projects."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T18:08:19.864Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/gallup/jobs/4393289009",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "9a0b8860:471d781c",
+        "locationLabel": "Omaha, NE",
+        "detailBullets": [
+          "Analyze financial processes, systems and business data.",
+          "Support financial technology and process-improvement projects.",
+          "Collaborate with finance and technology specialists.",
+          "Summer 2027; 12 weeks; relevant college/graduate students within 250 miles of Omaha; no sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Astranis",
+      "role": "Harness Design Engineer Intern (Summer 2027)",
+      "link": "https://job-boards.greenhouse.io/astranis/jobs/4704779006",
+      "loc": "San Francisco, CA",
+      "ind": "Engineering",
+      "desc": "Design spacecraft electrical harnesses and wiring diagrams. Build cable assemblies and support harness fabrication. Develop interface documentation and three-dimensional cable routing.",
+      "pay": "$29/hour",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "San Francisco, CA",
+      "eligibility": "Currently enrolled at a four-year university pursuing a B.S., M.S. or Ph.D. in mechatronics, electrical engineering or an equivalent technical field. Graduated candidates should use Associate Engineer roles instead. Power/data transmission familiarity required; Zuken, connectors and 3D CAD preferred. Application requires at least 12 weeks and five days/week onsite in San Francisco. Export-control eligibility: US citizen, lawful permanent resident, refugee, asylee or other protected individual under applicable law.",
+      "cycle": "Summer 2027; minimum 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/astranis/jobs/4704779006",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Design spacecraft electrical harnesses and wiring diagrams.",
+        "Build cable assemblies and support harness fabrication.",
+        "Develop interface documentation and three-dimensional cable routing."
+      ],
+      "eligibilityFlags": [
+        "Currently enrolled at a four-year university pursuing a B.S., M.S. or Ph.D. in mechatronics, electrical engineering or an equivalent technical field. Graduated candidates should use Associate Engineer roles instead. Power/data transmission familiarity required; Zuken, connectors and 3D CAD preferred. Application requires at least 12 weeks and five days/week onsite in San Francisco. Export-control eligibility: US citizen, lawful permanent resident, refugee, asylee or other protected individual under applicable law."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T18:08:20.543Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/astranis/jobs/4704779006",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "b50466f3:8e887c97",
+        "locationLabel": "San Francisco, CA",
+        "detailBullets": [
+          "Design spacecraft electrical harnesses and wiring diagrams.",
+          "Build cable assemblies and support harness fabrication.",
+          "Develop interface documentation and three-dimensional cable routing.",
+          "Summer 2027; minimum 12 weeks; current technical-degree students; US export-control eligibility required."
+        ]
+      }
+    },
+    {
+      "co": "Anduril Industries",
+      "role": "2027 Product Designer Intern",
+      "link": "https://boards.greenhouse.io/andurilindustries/jobs/5265097007?gh_jid=5265097007",
+      "loc": "Costa Mesa, CA",
+      "ind": "Product Design",
+      "desc": "Design product features from concept through delivery. Create interaction flows and visual design solutions. Collaborate with designers, engineers and product teams.",
+      "pay": "Estimated base $34–42/hour",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "Costa Mesa, CA",
+      "eligibility": "Pursuing a bachelor’s or master’s degree in design, human-centered design, interaction design, visual design or a related discipline. Must return to school for at least one quarter/semester after the internship. US Person export-control eligibility required; clearance eligibility may be required depending on the assigned program. Figma and 3D visualization preferred. Twelve weeks in person in Costa Mesa. Generic full-time benefits are not guaranteed internship benefits.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://boards.greenhouse.io/andurilindustries/jobs/5265097007?gh_jid=5265097007",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Design product features from concept through delivery.",
+        "Create interaction flows and visual design solutions.",
+        "Collaborate with designers, engineers and product teams."
+      ],
+      "eligibilityFlags": [
+        "Pursuing a bachelor’s or master’s degree in design, human-centered design, interaction design, visual design or a related discipline. Must return to school for at least one quarter/semester after the internship. US Person export-control eligibility required; clearance eligibility may be required depending on the assigned program. Figma and 3D visualization preferred. Twelve weeks in person in Costa Mesa. Generic full-time benefits are not guaranteed internship benefits."
+      ],
+      "benefits": [
+        "Mentorship and hands-on product design work."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T18:08:21.082Z",
+        "sourceUrl": "https://boards.greenhouse.io/andurilindustries/jobs/5265097007?gh_jid=5265097007",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "3bbb7c2f:83a22f1b",
+        "locationLabel": "Costa Mesa, CA",
+        "detailBullets": [
+          "Design product features from concept through delivery.",
+          "Create interaction flows and visual design solutions.",
+          "Collaborate with designers, engineers and product teams.",
+          "Summer 2027; 12 weeks; design students returning to school; US Person eligibility required."
+        ]
+      }
+    },
+    {
+      "co": "Duolingo",
+      "role": "Data Scientist, Intern (PhD)",
+      "link": "https://careers.duolingo.com/jobs/8888848002?gh_jid=8888848002",
+      "loc": "New York, NY; Pittsburgh, PA",
+      "ind": "Data & AI",
+      "desc": "Analyze product data and evaluate user behavior. Develop experiments and statistical models. Translate analysis into recommendations for product teams.",
+      "pay": "$63–65/hour",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "New York, NY; Pittsburgh, PA",
+      "eligibility": "Currently in the third year or later of a quantitative Ph.D. program; ideal graduation Fall 2027 or Spring/Summer 2028. Requires large-data analysis, statistical methods and SQL/R/Python skills, interest in consumer digital products and willingness to relocate to New York or Pittsburgh. GPA 3.5+, big-data/cloud experience, business/data internships and AI tools are preferred. Internship season, start and duration are not stated; graduation windows do not establish Summer 2027. Office-based role.",
+      "cycle": "Not listed",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://careers.duolingo.com/jobs/8888848002?gh_jid=8888848002",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Analyze product data and evaluate user behavior.",
+        "Develop experiments and statistical models.",
+        "Translate analysis into recommendations for product teams."
+      ],
+      "eligibilityFlags": [
+        "Currently in the third year or later of a quantitative Ph.D. program; ideal graduation Fall 2027 or Spring/Summer 2028. Requires large-data analysis, statistical methods and SQL/R/Python skills, interest in consumer digital products and willingness to relocate to New York or Pittsburgh. GPA 3.5+, big-data/cloud experience, business/data internships and AI tools are preferred. Internship season, start and duration are not stated; graduation windows do not establish Summer 2027. Office-based role."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T18:09:26.134Z",
+        "sourceUrl": "https://careers.duolingo.com/jobs/8888848002?gh_jid=8888848002",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "117d8ec5:20bbe3e9",
+        "locationLabel": "New York, NY; Pittsburgh, PA",
+        "detailBullets": [
+          "Analyze product data and evaluate user behavior.",
+          "Develop experiments and statistical models.",
+          "Translate analysis into recommendations for product teams.",
+          "Third-year-or-later quantitative PhD students; NYC/Pittsburgh relocation; season and start not stated; see full eligibility."
+        ]
+      }
+    },
+    {
+      "co": "Duolingo",
+      "role": "Product Manager, MBA Intern",
+      "link": "https://careers.duolingo.com/jobs/8888045002?gh_jid=8888045002",
+      "loc": "Pittsburgh, PA",
+      "ind": "Product Management",
+      "desc": "Define product opportunities and prioritize feature improvements. Use data and experiments to guide decisions. Collaborate with design and engineering teams.",
+      "pay": "$63–65/hour",
+      "style": "In-person",
+      "exp": "3+ years professional product-management or related experience",
+      "state": "Pittsburgh, PA",
+      "eligibility": "Currently enrolled in an MBA program graduating December 2027 or Spring 2028. Related bachelor’s degree and at least three years of professional product-management or related experience required. Must relocate to Pittsburgh and work 12 consecutive weeks. Season/start not stated; do not infer Summer 2027. Exact employer API deadline is November 19, 2026 at 12:00 AM EST, the beginning of November 19, not the end of that day.",
+      "cycle": "12 consecutive weeks; season not stated",
+      "deadline": "November 19, 2026, 12:00 AM EST (employer API explicit -05:00)",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://careers.duolingo.com/jobs/8888045002?gh_jid=8888045002",
+      "deadlineISO": "2026-11-19T00:00:00-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Define product opportunities and prioritize feature improvements.",
+        "Use data and experiments to guide decisions.",
+        "Collaborate with design and engineering teams."
+      ],
+      "eligibilityFlags": [
+        "Currently enrolled in an MBA program graduating December 2027 or Spring 2028. Related bachelor’s degree and at least three years of professional product-management or related experience required. Must relocate to Pittsburgh and work 12 consecutive weeks. Season/start not stated; do not infer Summer 2027. Exact employer API deadline is November 19, 2026 at 12:00 AM EST, the beginning of November 19, not the end of that day."
+      ],
+      "benefits": [
+        "Relocation assistance; exact amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T18:08:57.511Z",
+        "sourceUrl": "https://careers.duolingo.com/jobs/8888045002?gh_jid=8888045002",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "40b279df:9c723afb",
+        "locationLabel": "Pittsburgh, PA",
+        "detailBullets": [
+          "Define product opportunities and prioritize feature improvements.",
+          "Use data and experiments to guide decisions.",
+          "Collaborate with design and engineering teams.",
+          "Current MBA; graduation Dec 2027/Spring 2028; 3+ professional years; 12 weeks; deadline November 19, midnight EST."
         ]
       }
     }
