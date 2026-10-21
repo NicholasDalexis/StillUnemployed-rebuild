@@ -80,3 +80,12 @@ Author: Codex. Source: Marketing marketing-montue-20261018-v1, packet SHA25623cb
 Stage exact October19 Stripe/Suno/Alo FP&A/Vox and October20 Plaid/Roblox/Madewell126310/Rilla ordered four at13:00UTC/9AM Eastern. All14 earlier collections remain structurally identical. Eight current admitted identities and four before/at boundaries pass. Preserve exact full approved snapshots, including Madewell precise pay with period not stated, Rilla hours, Plaid Pacific residence, Roblox deadline/degree/visa/age and contract/temporary restrictions. Current canonical data/moderation still wins; this staging does not fix shorter qualification display or integrate the unrelated SU-BUG-126 local candidate. Production42's95 internships/Sony4, source status, auth and other candidates remain intact. No source Sheet/social post/queue/schedule/provider/spend/ManyChat/runtime logic change. Future API/fallback stays hidden until due time; actual activation and social delivery remain later checks.
 
 -Codex
+
+
+## Wednesday through Friday continuation | October 20, 2026, America/New_York
+
+Author: Codex. Source: Marketing marketing-wedfri-20261020-v1, packet SHA256528ed9dcfa49c112362b8a58e93a756bc2d9da06b48c4a657d1c17694ad5cfcd, existing Nic-approved production continuation. Status:2.7.7.50 candidate; hosted and production readbacks recorded separately.
+
+Stage exact October21 Everlane/Bumble/Sierra/Baseten Office, October22 Plaid/NBCUniversal/Runway/829 Studios, and October23 ALO/Harvey/Baseten Recruiting/Airbyte ordered four at13:00UTC/9AM Eastern. All16 earlier collections remain structurally identical. Twelve current admitted identities and six before/at boundaries pass. Preserve all approved archival facts, pay periods and eligibility, including Everlane part-time20hours, Sierra NewGrad2027, Baseten Office five days onsite, NBCdegree/experience/auth/license/18+/24-7 shifts,829eligible states, ALO LA-area onsite and Airbyte US-only. Current canonical feed/moderation still wins; this data-only staging does not integrate or close SU-BUG-126. Production49's133internships/Sony history, source status, auth and other candidates remain intact. No source Sheet, social post/queue, schedule, provider, spend, ManyChat or runtime logic change. Future API/static fallback membership stays private until server due time; actual activation and social publication require later verification.
+
+-Codex

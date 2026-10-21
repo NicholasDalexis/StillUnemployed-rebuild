@@ -1035,6 +1035,198 @@
           }
         }
       ]
+    },
+    {
+      "date": "2026-10-21",
+      "kind": "jobs",
+      "state": "scheduled",
+      "publishAt": "2026-10-21T13:00:00.000Z",
+      "jobs": [
+        {
+          "id": "opct9wvdcw9p",
+          "link": "https://job-boards.greenhouse.io/everlane/jobs/8007752003",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/everlane/jobs/8007752003",
+            "co": "Everlane",
+            "role": "Copywriter (Part-Time Contract)",
+            "pay": "$50–$60/hour",
+            "loc": "Los Angeles, CA · Hybrid Tue–Thu · Contract, 20h/week",
+            "exp": "Proven performance/email/product copy; no numeric minimum",
+            "ind": "Content & Copy",
+            "tldr": "• Write performance ads, email and promotional copy\n• Develop product names, descriptions and subject lines\n• Proven marketing copy; fashion experience preferred\n• Part-time contract, 20h/week; LA office Tue–Thu"
+          }
+        },
+        {
+          "id": "rk0k7heqd6w0",
+          "link": "https://jobs.ashbyhq.com/bumbleinc/51f74d77-fbd4-4893-8213-3e02cff36493",
+          "snapshot": {
+            "link": "https://jobs.ashbyhq.com/bumbleinc/51f74d77-fbd4-4893-8213-3e02cff36493",
+            "co": "Bumble",
+            "role": "Marketing Coordinator, College Marketing",
+            "pay": "$60,000–$65,000/year base",
+            "loc": "Austin, TX / New York, NY · Onsite",
+            "exp": "0–1 years or equivalent skills",
+            "ind": "Marketing",
+            "tldr": "• Coordinate campus ambassadors and partner relationships\n• Support college events, creators and influencer campaigns\n• Track campus trends and record program learnings\n• 0–1 years or equivalent skills; Austin/NYC onsite"
+          }
+        },
+        {
+          "id": "1q7x8ae1ot3h8g",
+          "link": "https://jobs.ashbyhq.com/sierra/149f368c-52d5-408f-ba26-ad888f318a00",
+          "snapshot": {
+            "link": "https://jobs.ashbyhq.com/sierra/149f368c-52d5-408f-ba26-ad888f318a00",
+            "co": "Sierra",
+            "role": "Software Engineer, Agent (New Grad 2027)",
+            "pay": "$150,000–$180,000/year base",
+            "loc": "San Francisco, CA / New York, NY · Onsite",
+            "exp": "New Grad 2027; software-building and customer skills",
+            "ind": "Software & Engineering",
+            "tldr": "• Build and deploy customer-facing AI agents\n• Own agent development, evaluation and iteration\n• Partner with customers to solve production problems\n• New Grad 2027 role; San Francisco or NYC onsite"
+          }
+        },
+        {
+          "id": "z3u1hj1abz1z9",
+          "link": "https://jobs.ashbyhq.com/baseten/5368c7ea-17d0-4927-9fa7-320feec2e836",
+          "snapshot": {
+            "link": "https://jobs.ashbyhq.com/baseten/5368c7ea-17d0-4927-9fa7-320feec2e836",
+            "co": "Baseten",
+            "role": "Office Coordinator",
+            "pay": "$100,000–$125,000/year base",
+            "loc": "New York, NY · Onsite five days/week",
+            "exp": "Office coordination skills; no numeric minimum",
+            "ind": "Business & Operations",
+            "tldr": "• Coordinate workplace spaces, visitors and daily operations\n• Manage vendors, deliveries, supplies and meeting logistics\n• Support office events and resolve workplace issues\n• NYC onsite five days/week; no numeric minimum stated"
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "kind": "jobs",
+      "state": "scheduled",
+      "publishAt": "2026-10-22T13:00:00.000Z",
+      "jobs": [
+        {
+          "id": "1xuc7854fbtet",
+          "link": "https://jobs.ashbyhq.com/plaid/7186a6bb-ea4b-4a5e-bf6e-621a62adce3e",
+          "snapshot": {
+            "link": "https://jobs.ashbyhq.com/plaid/7186a6bb-ea4b-4a5e-bf6e-621a62adce3e",
+            "co": "Plaid",
+            "role": "Executive Assistant",
+            "pay": "$96,000–$108,000/year base",
+            "loc": "New York, NY · Hybrid",
+            "exp": "1–3 years administrative/project support",
+            "ind": "Business & Operations",
+            "tldr": "• Support three to four Product and Engineering leaders\n• Manage calendars, travel, expenses and meeting logistics\n• Coordinate team events, communications and projects\n• 1–3 years administrative/project support; NYC hybrid"
+          }
+        },
+        {
+          "id": "w2ty21q5wexn",
+          "link": "https://jobs.smartrecruiters.com/NBCUniversal3/744000154537239-digital-media-producer-nbc-telemundo-san-diego",
+          "snapshot": {
+            "link": "https://jobs.smartrecruiters.com/NBCUniversal3/744000154537239-digital-media-producer-nbc-telemundo-san-diego",
+            "co": "NBCUniversal",
+            "role": "Digital Media Producer, NBC & Telemundo San Diego",
+            "pay": "$71,000–$90,000/year",
+            "loc": "San Diego, CA · Onsite · Any 24/7 shift",
+            "exp": "2+ years producer; 1+ news editing; degree; US work auth/license",
+            "ind": "Video & Creative",
+            "tldr": "• Produce broadcast/digital news and breaking coverage\n• Write scripts/articles, edit video and manage live streams\n• 2+ years producer; 1+ news editing; relevant bachelor's\n• Onsite; 18+, unrestricted US auth, license, 24/7 shifts"
+          }
+        },
+        {
+          "id": "xokjwy1mxjugw",
+          "link": "https://jobs.ashbyhq.com/runway-ml/4f8e18a4-0f26-4b28-a44d-3ba1afaada74",
+          "snapshot": {
+            "link": "https://jobs.ashbyhq.com/runway-ml/4f8e18a4-0f26-4b28-a44d-3ba1afaada74",
+            "co": "Runway",
+            "role": "Customer Education Specialist",
+            "pay": "$90,000–$120,000/year",
+            "loc": "Remote, US",
+            "exp": "2–3 years technical writing/documentation/education content",
+            "ind": "Content & Copy",
+            "tldr": "• Maintain Help Center articles and self-service guides\n• Write scripts and prepare Runway Academy tutorials\n• Coordinate product launches and track content gaps\n• US remote; 2–3 years writing/documentation/education"
+          }
+        },
+        {
+          "id": "9w6ns964vlyl",
+          "link": "https://jobs.ashbyhq.com/829studios/7eea6592-fdc4-4855-9c6c-7d7dd866b6f3",
+          "snapshot": {
+            "link": "https://jobs.ashbyhq.com/829studios/7eea6592-fdc4-4855-9c6c-7d7dd866b6f3",
+            "co": "829 Studios",
+            "role": "Affiliate Specialist",
+            "pay": "$60,000–$70,000/year",
+            "loc": "Remote, US · Eligible states only; see listing",
+            "exp": "2–3 years affiliate marketing",
+            "ind": "PR & Partnerships",
+            "tldr": "• Execute affiliate campaigns and support partner programs\n• Analyze performance and recommend revenue improvements\n• Communicate with clients and manage affiliate platforms\n• 2–3 years affiliate marketing; listed US states only"
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-10-23",
+      "kind": "jobs",
+      "state": "scheduled",
+      "publishAt": "2026-10-23T13:00:00.000Z",
+      "jobs": [
+        {
+          "id": "1p7npa0obcdqi",
+          "link": "https://job-boards.greenhouse.io/aloyoga/jobs/6138176004",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/aloyoga/jobs/6138176004",
+            "co": "ALO",
+            "role": "Associate Buyer, Men's",
+            "pay": "$90,000–$105,000/year base",
+            "loc": "Beverly Hills, CA · Full-time onsite; LA-area based",
+            "exp": "2+ years merchandising, buying or planning",
+            "ind": "Business & Operations",
+            "tldr": "• Manage men's categories, seasonal buys and receipts\n• Analyze sales, inventory and category performance\n• Build SKU forecasts and coordinate purchase orders\n• 2+ years buying/planning; LA-area, full-time onsite"
+          }
+        },
+        {
+          "id": "1ccaezgk76ve3",
+          "link": "https://jobs.ashbyhq.com/harvey/ac029bf4-0abd-434e-911e-fbb22921ace3",
+          "snapshot": {
+            "link": "https://jobs.ashbyhq.com/harvey/ac029bf4-0abd-434e-911e-fbb22921ace3",
+            "co": "Harvey",
+            "role": "CX Specialist",
+            "pay": "$68,000–$102,000/year",
+            "loc": "Remote, US",
+            "exp": "2 years customer support at a SaaS company",
+            "ind": "Sales & Customer Success",
+            "tldr": "• Resolve first-line, non-technical customer support tickets\n• Route issues, manage queues and maintain ticket quality\n• Improve FAQs, guides and repeat-question documentation\n• US remote; 2 years SaaS customer-support experience"
+          }
+        },
+        {
+          "id": "14me20p15mbo9k",
+          "link": "https://jobs.ashbyhq.com/baseten/b6dc9f81-ba0c-4c6a-9844-97be9f5c9e69",
+          "snapshot": {
+            "link": "https://jobs.ashbyhq.com/baseten/b6dc9f81-ba0c-4c6a-9844-97be9f5c9e69",
+            "co": "Baseten",
+            "role": "Recruiting Coordinator",
+            "pay": "$80,000–$110,000/year base",
+            "loc": "San Francisco, CA / New York, NY · Onsite",
+            "exp": "1+ year recruiting or HR",
+            "ind": "People & Recruiting",
+            "tldr": "• Schedule virtual and in-person interview loops\n• Coordinate recruiters, candidates and hiring managers\n• Manage logistics and communicate interview updates\n• 1+ year recruiting/HR; San Francisco or NYC onsite"
+          }
+        },
+        {
+          "id": "t47zun1dcx0bo",
+          "link": "https://jobs.ashbyhq.com/airbyte/9d81a132-966b-4f37-b198-d950e23a7765",
+          "snapshot": {
+            "link": "https://jobs.ashbyhq.com/airbyte/9d81a132-966b-4f37-b198-d950e23a7765",
+            "co": "Airbyte",
+            "role": "Customer Support Developer (Databases)",
+            "pay": "$99,000–$115,000/year",
+            "loc": "Remote, US",
+            "exp": "2+ years technical work; SQL, Java/Kotlin and database CDC",
+            "ind": "Software & Engineering",
+            "tldr": "• Debug database connector and data-sync issues\n• Contribute Java/Kotlin fixes and test connector changes\n• Investigate logs, SQL queries and database replication\n• US remote; 2+ years technical experience, SQL/Java/CDC"
+          }
+        }
+      ]
     }
   ]
 }

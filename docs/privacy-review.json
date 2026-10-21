@@ -1,14 +1,14 @@
 {
-  "version": "2.7.7.49",
+  "version": "2.7.7.50",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-20T15:46:59Z",
-  "reviewer": "Codex NEW Internship Sourcing",
-  "sourceDigest": "22c2de896b9b72b0c7051ee176923643e3493e0efb65b59986c56f635b165fca",
+  "reviewedAt": "2026-10-21T00:22:49.783Z",
+  "reviewer": "Codex StillUnemployed",
+  "sourceDigest": "eee998b6395ea317763a09008273081c2bf3edc8610caf8846c1c23fae984ec5",
   "sourceFileCount": 227,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Reviewed current Privacy and Terms against data-only admission of13exact Insomniac student roles.182record full native source;121exact raw carried objects;13matching original blank application forms. Public job facts and compact sourced summaries only. No applicant data, private intake/review records, new provider, events, consent, authentication, storage, retention or runtime change. No policy wording change needed; not legal clearance. Local-only45and46candidates were superseded before deployment by47after compact-location QA correction. Full source location remains unchanged. No fresh OAuth or physical-device acceptance claimed.",
-  "predecessor": "docs/privacy-reviews/2.7.7.44-pre-sony-watch.json",
+  "scope": "Reviewed current Privacy and Terms against data-only staging of three source-approved daily collections with twelve public job snapshots and existing 9 AM Eastern server publication. No applicant or private account data, new event/provider/consent/authentication/storage/retention behavior. Future facts stay in the private function bundle until due. Existing canonical feed and moderation govern availability. Policies need no wording changes; this is engineering review, not legal clearance. Hosted verification recorded separately.",
+  "predecessor": "docs/privacy-reviews/2.7.7.49-pre-wedfri-daily.json",
   "author": "Codex",
   "platform_signature": "-Codex"
 }
