@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-20T15:45:44.274Z",
+  "sourceExportedAt": "2026-10-21T03:33:39.113Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -6700,6 +6700,329 @@
           "Review models, textures, materials and UVs.",
           "Support prop optimization and production feedback.",
           "12 weeks; Undergraduate students; graduation May 2026–December 2029; US work authorization required; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "Audio Design Intern- Undergraduate or Master's",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6226346004",
+      "loc": "Burbank, CA",
+      "ind": "Audio / Music Production",
+      "desc": "Design and edit game sound effects. Implement sounds with Wwise and studio tools. Learn audio production alongside experienced sound designers.",
+      "pay": "$36.50–40.25/hour",
+      "style": "Not listed",
+      "exp": "6–12 months related experience/training OR pursuing the specified degree",
+      "state": "Burbank, CA",
+      "eligibility": "Currently enrolled at a college or university, with a focus on audio production, recording, or engineering, or have six to twelve months of related experience and/or training. \n\nUnderstanding of signal flow, audio production, editing and mastering. \n\nFamiliarity with audio production and editing software such as Pro Tools or Sound Forge. \n\nA creative, self-motivated, and responsible approach to learning and completing assigned work. \n\nPassion for video games and an understanding of what makes them engaging. \n\nExperience in game development is a plus. \n\nExperience with field recording and microphone setups, dialogue editing, sound effect creation and editing, and post-processing is preferred. \n\nUnderstanding and experience with Wwise or other middleware solutions is strongly preferred. \n\nEligibility \n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate or Master's\n\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \n\nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nDedicated role eligibility controls. Session year is not stated; do not infer Summer2027. Work arrangement is not explicitly stated; generic hybrid-pay wording is not a role-specific hybrid guarantee.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226346004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Design and edit game sound effects.",
+        "Implement sounds with Wwise and studio tools.",
+        "Learn audio production alongside experienced sound designers."
+      ],
+      "eligibilityFlags": [
+        "Currently enrolled at a college or university, with a focus on audio production, recording, or engineering, or have six to twelve months of related experience and/or training.",
+        "Understanding of signal flow, audio production, editing and mastering.",
+        "Familiarity with audio production and editing software such as Pro Tools or Sound Forge.",
+        "A creative, self-motivated, and responsible approach to learning and completing assigned work.",
+        "Passion for video games and an understanding of what makes them engaging.",
+        "Experience in game development is a plus.",
+        "Experience with field recording and microphone setups, dialogue editing, sound effect creation and editing, and post-processing is preferred.",
+        "Understanding and experience with Wwise or other middleware solutions is strongly preferred.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate or Master's",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "Dedicated role eligibility controls. Session year is not stated; do not infer Summer2027. Work arrangement is not explicitly stated; generic hybrid-pay wording is not a role-specific hybrid guarantee."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T03:24:45.966Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226346004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "1d7d12bd:605229f9",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Design and edit game sound effects.",
+          "Implement sounds with Wwise and studio tools.",
+          "Learn audio production alongside experienced sound designers.",
+          "12 weeks; Undergraduate/Master's students; graduation May2026–Dec2029; US work authorization; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "Engine and Tools Programming Intern – Undergraduate",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6227080004",
+      "loc": "Burbank, CA",
+      "ind": "Software & Engineering",
+      "desc": "Develop engine systems and content-creation tools. Improve runtime performance using C++. Debug engine technology with production teams.",
+      "pay": "$45.75/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Burbank, CA",
+      "eligibility": "Currently pursuing a degree in Computer Science, Computer Graphics, or a related field. \n\nProficiency in programming languages such as C++. \n\nExperience with game engines or game development patterns. \n\nStrong problem-solving and debugging skills, with the ability to investigate and resolve technical issues. \n\nStrong communication and collaboration skills, with the ability to work effectively with artists and programmers. \n\nInterest in learning about emerging game development technologies and staying informed about industry trends. \n\nEligibility:\n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\n\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \n\nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication screening questions (not inferred answers):\nAre you comfortable working in a large C++ codebase?\nHave you built a tool for non-technical users before?\nDedicated role eligibility controls. Session year is not stated; do not infer Summer2027. Work arrangement is not explicitly stated; generic hybrid-pay wording is not a role-specific hybrid guarantee.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227080004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop engine systems and content-creation tools.",
+        "Improve runtime performance using C++.",
+        "Debug engine technology with production teams."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a degree in Computer Science, Computer Graphics, or a related field.",
+        "Proficiency in programming languages such as C++.",
+        "Experience with game engines or game development patterns.",
+        "Strong problem-solving and debugging skills, with the ability to investigate and resolve technical issues.",
+        "Strong communication and collaboration skills, with the ability to work effectively with artists and programmers.",
+        "Interest in learning about emerging game development technologies and staying informed about industry trends.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "Application screening questions (not inferred answers):",
+        "Are you comfortable working in a large C++ codebase?",
+        "Have you built a tool for non-technical users before?",
+        "Dedicated role eligibility controls. Session year is not stated; do not infer Summer2027. Work arrangement is not explicitly stated; generic hybrid-pay wording is not a role-specific hybrid guarantee."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T03:24:46.243Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227080004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "f666ba97:eb77e1eb",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Develop engine systems and content-creation tools.",
+          "Improve runtime performance using C++.",
+          "Debug engine technology with production teams.",
+          "12 weeks; Undergraduate students; graduation May2026–Dec2029; US work authorization; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "Lighting Intern- Undergraduate",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6227101004",
+      "loc": "Burbank, CA",
+      "ind": "3D Art & Animation",
+      "desc": "Create lighting for environments, cinematics and characters. Polish and optimize game lighting. Learn rendering workflows from experienced lighting artists.",
+      "pay": "$36.50/hour",
+      "style": "Not listed",
+      "exp": "6–12 months related experience/training OR pursuing the specified degree",
+      "state": "Burbank, CA",
+      "eligibility": "Currently pursuing a B.F.A. in Computer Art, Illustration, Game Design, Product Design, or have six to twelve months of related experience and/or training. \n\nStrong foundational art skills and an understanding of lighting principles. \n\nProficiency in lighting and rendering using Maya or other similar game engine packages such as Unreal. \n\nStrong communication and collaboration skills, with the ability to work effectively in a creative team environment. \n\nA self-motivated, responsible approach to learning and completing assigned projects. \n\nPassion for video games and art, with an interest in lighting and rendering techniques used in game development. \n\nEligibility:\n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate \n\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \n\nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication screening questions (not inferred answers):\nDo you have any experience working in realtime game engines (such as Unreal or Unity), or a 3D graphics software (such as Maya or Houdini)?\nDedicated role eligibility controls. Session year is not stated; do not infer Summer2027. Work arrangement is not explicitly stated; generic hybrid-pay wording is not a role-specific hybrid guarantee.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227101004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Create lighting for environments, cinematics and characters.",
+        "Polish and optimize game lighting.",
+        "Learn rendering workflows from experienced lighting artists."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a B.F.A. in Computer Art, Illustration, Game Design, Product Design, or have six to twelve months of related experience and/or training.",
+        "Strong foundational art skills and an understanding of lighting principles.",
+        "Proficiency in lighting and rendering using Maya or other similar game engine packages such as Unreal.",
+        "Strong communication and collaboration skills, with the ability to work effectively in a creative team environment.",
+        "A self-motivated, responsible approach to learning and completing assigned projects.",
+        "Passion for video games and art, with an interest in lighting and rendering techniques used in game development.",
+        "Eligibility:",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "Application screening questions (not inferred answers):",
+        "Do you have any experience working in realtime game engines (such as Unreal or Unity), or a 3D graphics software (such as Maya or Houdini)?",
+        "Dedicated role eligibility controls. Session year is not stated; do not infer Summer2027. Work arrangement is not explicitly stated; generic hybrid-pay wording is not a role-specific hybrid guarantee."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T03:24:46.500Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227101004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "97de40d2:956c1156",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Create lighting for environments, cinematics and characters.",
+          "Polish and optimize game lighting.",
+          "Learn rendering workflows from experienced lighting artists.",
+          "12 weeks; Undergraduate students; graduation May2026–Dec2029; US work authorization; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Insomniac Games / Sony Interactive Entertainment",
+      "role": "Tech Art Intern- Undergraduate",
+      "link": "https://job-boards.greenhouse.io/insomniac/jobs/6226344004",
+      "loc": "Burbank, CA",
+      "ind": "3D Art & Animation",
+      "desc": "Develop shaders for game assets. Debug material graphs and graphics issues. Optimize rendering with artists and programmers.",
+      "pay": "$36.50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Burbank, CA",
+      "eligibility": "Currently pursuing a degree in Computer Science, Computer Graphics, or a related field. \n\nProficiency in shader programming languages such as HLSL. \n\nExperience with real-time rendering and graphics pipelines. \n\nStrong understanding of 3D math and algorithms related to computer graphics. \n\nExperience optimizing shaders for performance and quality. \n\nFamiliarity with game engines such as Unity or Unreal Engine. \n\nStrong problem-solving and debugging skills, with the ability to identify and resolve visual issues. \n\nStrong communication and collaboration skills, with the ability to work effectively with artists and programmers. \n\nKnowledge of PBR (Physically Based Rendering) and post-processing effects. \n\nInterest in learning about emerging game development technologies and staying informed about industry trends. \n\nEligibility \n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate \n\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \n\nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication screening questions (not inferred answers):\nHave you worked with game engines (such as Unity, Unreal Engine, etc) in a professional or academic setting?\nDo you have any experience debugging or solving visual issues in shaders or related graphics systems?\nAre you comfortable collaborating with both artists and programmers on technical solutions?\nDedicated role eligibility controls. Session year is not stated; do not infer Summer2027. Work arrangement is not explicitly stated; generic hybrid-pay wording is not a role-specific hybrid guarantee.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226344004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop shaders for game assets.",
+        "Debug material graphs and graphics issues.",
+        "Optimize rendering with artists and programmers."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a degree in Computer Science, Computer Graphics, or a related field.",
+        "Proficiency in shader programming languages such as HLSL.",
+        "Experience with real-time rendering and graphics pipelines.",
+        "Strong understanding of 3D math and algorithms related to computer graphics.",
+        "Experience optimizing shaders for performance and quality.",
+        "Familiarity with game engines such as Unity or Unreal Engine.",
+        "Strong problem-solving and debugging skills, with the ability to identify and resolve visual issues.",
+        "Strong communication and collaboration skills, with the ability to work effectively with artists and programmers.",
+        "Knowledge of PBR (Physically Based Rendering) and post-processing effects.",
+        "Interest in learning about emerging game development technologies and staying informed about industry trends.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "Application screening questions (not inferred answers):",
+        "Have you worked with game engines (such as Unity, Unreal Engine, etc) in a professional or academic setting?",
+        "Do you have any experience debugging or solving visual issues in shaders or related graphics systems?",
+        "Are you comfortable collaborating with both artists and programmers on technical solutions?",
+        "Dedicated role eligibility controls. Session year is not stated; do not infer Summer2027. Work arrangement is not explicitly stated; generic hybrid-pay wording is not a role-specific hybrid guarantee."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T03:24:46.758Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226344004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "8d6573ff:c693ba9b",
+        "locationLabel": "Burbank, CA",
+        "detailBullets": [
+          "Develop shaders for game assets.",
+          "Debug material graphs and graphics issues.",
+          "Optimize rendering with artists and programmers.",
+          "12 weeks; Undergraduate students; graduation May2026–Dec2029; US work authorization; no visa sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "Sony Interactive Entertainment / PlayStation",
+      "role": "Software Development Engineer in Test Intern - Undergraduate",
+      "link": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221772004",
+      "loc": "San Mateo, CA",
+      "ind": "Software & Engineering",
+      "desc": "Prototype AI-assisted software testing workflows. Improve test automation and failure triage. Support PlayStation App release readiness.",
+      "pay": "$50/hour",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "San Mateo, CA",
+      "eligibility": "Interest in AI-assisted software testing, developer productivity, automation triage, or quality intelligence. \n\nCuriosity and willingness to experiment with AI tools and apply them responsibly to quality engineering workflows. \n\nAbility to think critically about where AI can improve productivity while maintaining human review and quality judgment. \n\nExposure to AI/ML concepts, prompt engineering, LLM-based tools, or AI-assisted developer workflows is a plus. \n\nExperience building scripts, bots, dashboards, or tools that summarize data or improve engineering productivity is beneficial. \n\nInterest in using AI to improve test coverage analysis, failure classification, test recommendations, or release readiness reporting is a plus. \n\nEligibility \n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\n\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \n\nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication screening questions (not inferred answers):\nHave you used at least one programming language in coursework, a personal project, or another practical setting?\nAre you willing to learn and use Python and mobile test automation tools during this internship?\nDedicated role eligibility controls. Session year is not stated; do not infer Summer2027. Work arrangement is not explicitly stated; generic hybrid-pay wording is not a role-specific hybrid guarantee.",
+      "cycle": "Summer; 12 weeks (year not stated in role)",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221772004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Prototype AI-assisted software testing workflows.",
+        "Improve test automation and failure triage.",
+        "Support PlayStation App release readiness."
+      ],
+      "eligibilityFlags": [
+        "Interest in AI-assisted software testing, developer productivity, automation triage, or quality intelligence.",
+        "Curiosity and willingness to experiment with AI tools and apply them responsibly to quality engineering workflows.",
+        "Ability to think critically about where AI can improve productivity while maintaining human review and quality judgment.",
+        "Exposure to AI/ML concepts, prompt engineering, LLM-based tools, or AI-assisted developer workflows is a plus.",
+        "Experience building scripts, bots, dashboards, or tools that summarize data or improve engineering productivity is beneficial.",
+        "Interest in using AI to improve test coverage analysis, failure classification, test recommendations, or release readiness reporting is a plus.",
+        "Eligibility",
+        "Students with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate",
+        "Able to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.",
+        "Must be available for the entire 12-week internship period.",
+        "At this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.",
+        "Application screening questions (not inferred answers):",
+        "Have you used at least one programming language in coursework, a personal project, or another practical setting?",
+        "Are you willing to learn and use Python and mobile test automation tools during this internship?",
+        "Dedicated role eligibility controls. Session year is not stated; do not infer Summer2027. Work arrangement is not explicitly stated; generic hybrid-pay wording is not a role-specific hybrid guarantee."
+      ],
+      "benefits": [
+        "Relocation assistance for eligible candidates; amount and conditions not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-21T03:24:47.024Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221772004",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "67428ad:8dd0279",
+        "locationLabel": "San Mateo, CA",
+        "detailBullets": [
+          "Prototype AI-assisted software testing workflows.",
+          "Improve test automation and failure triage.",
+          "Support PlayStation App release readiness.",
+          "12 weeks; Undergraduate students; graduation May2026–Dec2029; US work authorization; no visa sponsorship."
         ]
       }
     }
