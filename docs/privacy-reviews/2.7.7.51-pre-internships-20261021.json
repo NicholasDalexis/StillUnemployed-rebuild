@@ -1,0 +1,14 @@
+{
+  "version": "2.7.7.51",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-10-21T03:35:01Z",
+  "reviewer": "Codex Internship Sourcing",
+  "sourceDigest": "53ffc54ae3a67a2a670aa8f014695266843c7c8fadb4aabcbc5c725cbd3d8ecb",
+  "sourceFileCount": 227,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Read current Privacy and Terms for five new employer-verified public internship records only. Existing 134 raw records and staged daily selections preserved. No applicant/private account data, new event/provider/consent/authentication/storage/retention behavior. Full private employer evidence, native export, Golden decisions and queues remain outside the site; only validated public allowlisted facts and compact summaries are included. Policies need no wording changes; engineering review, not legal clearance. Native and hosted verification are separate.",
+  "predecessor": "docs/privacy-reviews/2.7.7.50-pre-sony-five.json",
+  "author": "Codex",
+  "platform_signature": "-Codex"
+}
