@@ -1,7 +1,21 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.50",
+  "currentVersion": "2.7.7.51",
   "releases": [
+    {
+      "version": "2.7.7.51",
+      "date": "2026-10-20",
+      "title": "Five more PlayStation internships",
+      "changes": [
+        "Add five verified Sony/Insomniac student roles with exact employer pay, eligibility, posting dates and deadline offsets; preserve 134 prior raw records and staged daily collections."
+      ],
+      "public": {
+        "title": "More PlayStation internships",
+        "changes": [
+          "Explore five new roles in audio, lighting, technical art, engine tools and software testing."
+        ]
+      }
+    },
     {
       "version": "2.7.7.50",
       "date": "2026-10-20",
@@ -1519,7 +1533,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "eee998b6395ea317763a09008273081c2bf3edc8610caf8846c1c23fae984ec5",
+    "digest": "53ffc54ae3a67a2a670aa8f014695266843c7c8fadb4aabcbc5c725cbd3d8ecb",
     "fileCount": 227
   }
 }
