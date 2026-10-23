@@ -1,7 +1,24 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.54",
+  "currentVersion": "2.7.7.56",
   "releases": [
+    {
+      "version": "2.7.7.56",
+      "date": "2026-10-23",
+      "title": "Four verified student internships",
+      "changes": [
+        "Add Disney Art and Story plus three Pinterest graduate internships. Preserve all 149 live public records and original verification dates. Keep source-only holds and prior retirements excluded.",
+        "Local-only release 2.7.7.55 was not pushed or deployed after an absent-branch update failed; its history is retained. This release carries its snapshot cleanup forward through the normal reviewed Git workflow."
+      ]
+    },
+    {
+      "version": "2.7.7.55",
+      "date": "2026-10-22",
+      "title": "Two unavailable internship listings retired",
+      "changes": [
+        "Retire Gallup Data Engineering 4395454009 and Sony Pictures Operations Analyst Trainee JR114889 after exact current employer corroboration. Preserve 150 prior raw survivor objects and their genuine verification dates. No product or checker logic changed."
+      ]
+    },
     {
       "version": "2.7.7.54",
       "date": "2026-10-21",
@@ -1557,7 +1574,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "6ffd59745ec999d2899a45dd4b4b82bb380af064bfb746fb89ca54bd63708fea",
+    "digest": "183cfbef557d4fe309add4434105a61f549993555e89c15fc0bdf84a563e3810",
     "fileCount": 227
   }
 }

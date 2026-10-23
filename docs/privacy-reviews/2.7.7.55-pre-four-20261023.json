@@ -1,0 +1,14 @@
+{
+  "version": "2.7.7.55",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-10-22T15:25:36.592Z",
+  "reviewer": "Codex Internship Review",
+  "sourceDigest": "5c3405736c409eeca00cf0be044889a02745d330e79cbbf583137a1934be1604",
+  "sourceFileCount": 227,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Reviewed current Privacy and Terms for two corroborated internship retirements and the already-approved due October22 daily collection. Unchanged approved public fields/verification dates carried forward exactly. No new account, analytics, provider, consent, storage, retention or application submission behavior. Private export, employer evidence, holds and Golden data stay outside site. Reviewed, no wording change needed; engineering check, not legal certification.",
+  "predecessor": "docs/privacy-reviews/2.7.7.54-pre-review-20261022.json",
+  "author": "Codex",
+  "platform_signature": "-Codex"
+}

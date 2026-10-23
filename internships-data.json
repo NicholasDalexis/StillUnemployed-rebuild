@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-21T18:22:01.296Z",
+  "sourceExportedAt": "2026-10-23T17:13:38.489Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -802,52 +802,6 @@
         "status": "open",
         "checkedAt": "2026-09-06T21:44:38.907Z",
         "sourceUrl": "https://mavenagency.com/2026-fall-public-relations-internship/",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "International Justice Mission",
-      "role": "Communications Intern - Spring 2027",
-      "link": "https://ijm.wd5.myworkdayjobs.com/careers-ijm/job/District-of-Columbia---Hybrid/Communications-Intern---Spring-2027_R-02533",
-      "loc": "Washington, DC (in person or hybrid); United States remote for non-local candidates",
-      "ind": "Content & Copy",
-      "desc": "Support internal communications, intranet content, writing and design.",
-      "pay": "Unpaid",
-      "style": "Hybrid",
-      "exp": "Not listed",
-      "state": "Washington, DC (in person or hybrid); United States remote for non-local candidates",
-      "eligibility": "At least two undergraduate years completed by internship start.\nPrior professional internship OR significant leadership in campus, extracurricular, volunteer or community organizations.\nProject-management/process-implementation and intranet-management experience; excellent writing and speaking. Graphic design is a plus.\n20–40 hours/week, primarily 8:30am–5:30pm EST; local hybrid attendance Tuesdays and Thursdays, with remote option for non-local United States candidates.\nEmployer requires mature orthodox Christian faith and a statement of faith with the application.\nResume, cover letter and statement of faith in one PDF; background, police-clearance and reference checks.",
-      "cycle": "Spring 2027; January 11–April 9",
-      "deadline": "September 25, 2026",
-      "applicationsOpen": "Not announced",
-      "startDate": "January 11, 2027",
-      "timingSourceUrl": "https://ijm.wd5.myworkdayjobs.com/careers-ijm/job/District-of-Columbia---Hybrid/Communications-Intern---Spring-2027_R-02533",
-      "deadlineISO": "2026-09-25",
-      "startDateISO": "2027-01-11",
-      "payStatus": "unpaid",
-      "payBasis": "not_listed",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Support regional communications projects, meetings and speaker training.",
-        "Manage and develop intranet content and improve team processes.",
-        "Help with writing, copyediting, graphic design and administrative communications."
-      ],
-      "eligibilityFlags": [
-        "At least two undergraduate years completed by internship start.",
-        "Prior professional internship OR significant leadership in campus, extracurricular, volunteer or community organizations.",
-        "Project-management/process-implementation and intranet-management experience; excellent writing and speaking. Graphic design is a plus.",
-        "20–40 hours/week, primarily 8:30am–5:30pm EST; local hybrid attendance Tuesdays and Thursdays, with remote option for non-local United States candidates.",
-        "Employer requires mature orthodox Christian faith and a statement of faith with the application.",
-        "Resume, cover letter and statement of faith in one PDF; background, police-clearance and reference checks."
-      ],
-      "benefits": [
-        "Monthly volunteer stipend to help defray participation expenses; amount not disclosed. Employer explicitly states it is not an hourly wage or wages for services."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-06T21:44:02.019Z",
-        "sourceUrl": "https://ijm.wd5.myworkdayjobs.com/wday/cxs/ijm/careers-ijm/job/District-of-Columbia---Hybrid/Communications-Intern---Spring-2027_R-02533",
         "reviewerType": "source_check"
       }
     },
@@ -2165,50 +2119,6 @@
         "status": "open",
         "checkedAt": "2026-10-03T18:07:13.443Z",
         "sourceUrl": "https://boards.greenhouse.io/robinhood/jobs/8142963?t=gh_src=&gh_jid=8142963",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Gallup",
-      "role": "Data Engineering Intern — Summer 2027",
-      "link": "https://job-boards.greenhouse.io/gallup/jobs/4395454009",
-      "loc": "Omaha, NE",
-      "ind": "Data Engineering",
-      "desc": "Build data tooling and modernize Python/SQL pipelines.",
-      "pay": "$25–$30/hour",
-      "style": "Hybrid",
-      "exp": "See eligibility",
-      "state": "Omaha, NE",
-      "eligibility": "Enrolled in an associate, bachelor’s or graduate program in a relevant field at a college/university within 250 miles of Omaha.\nSQL, Python, relational data modeling and AI-assisted development experience required.\n40 hours/week for 12 weeks in Summer 2027; onsite Monday–Thursday, remote Friday option.\nUS work eligibility required; no employment visa sponsorship. Graduation August 2027–May 2028 preferred.",
-      "cycle": "Summer 2027",
-      "deadline": "Not listed",
-      "applicationsOpen": "Not listed",
-      "startDate": "Not listed",
-      "timingSourceUrl": "https://job-boards.greenhouse.io/gallup/jobs/4395454009",
-      "payStatus": "paid",
-      "payBasis": "hour",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Build data tooling and modernize Python/SQL pipelines.",
-        "Troubleshoot data quality and validate data across systems.",
-        "Collaborate with technical leaders and stakeholders using AI-enabled development tools."
-      ],
-      "eligibilityFlags": [
-        "Enrolled in an associate, bachelor’s or graduate program in a relevant field at a college/university within 250 miles of Omaha.",
-        "SQL, Python, relational data modeling and AI-assisted development experience required.",
-        "40 hours/week for 12 weeks in Summer 2027; onsite Monday–Thursday, remote Friday option.",
-        "US work eligibility required; no employment visa sponsorship. Graduation August 2027–May 2028 preferred."
-      ],
-      "benefits": [
-        "Mentorship from senior technical leaders.",
-        "Possible school-year work up to 20 hours/week and full-time offer, subject to business needs/performance.",
-        "Omaha campus amenities including cafeteria and fitness center."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-10-03T18:07:13.840Z",
-        "sourceUrl": "https://job-boards.greenhouse.io/gallup/jobs/4395454009",
         "reviewerType": "source_check"
       }
     },
@@ -3689,47 +3599,6 @@
         "status": "open",
         "checkedAt": "2026-10-16T17:09:25.983Z",
         "sourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/intern-u-s-business-affairs-sony-pictures-television-spring-2027/22978/101958159728",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Sony Pictures Entertainment",
-      "role": "Operations Analyst Trainee, Distribution & Networks - Spring 2027",
-      "link": "https://www.sonypicturesjobs.com/job/culver-city/operations-analyst-trainee-distribution-and-networks-spring-2027/22978/101958159744",
-      "loc": "Culver City, CA",
-      "ind": "Operations & Supply Chain",
-      "desc": "Learn Sony Pictures Home Entertainment physical distribution through retail inventory, customer operations and process-improvement work.",
-      "pay": "$27/hour",
-      "style": "Hybrid",
-      "exp": "Not listed",
-      "state": "Culver City, CA",
-      "eligibility": "Available full-time 40 hours/week with in-person work at the designated Culver City office; employer labels Hybrid. Start/end dates flexible.\nAdaptability, ability to learn systems/databases, strong interpersonal and written/verbal communication, attention to detail and workload prioritization.\nRetail, entertainment or consumer-packaged-goods experience preferred. No completed degree or numerical professional experience minimum stated. This is a year-long trainee assignment, not a summer-only internship. Employer includes an undefined qualification entry; no requirement is inferred from it.",
-      "cycle": "Spring 2027 intake; January 4 or 11–December 17, 2027",
-      "deadline": "Not listed",
-      "applicationsOpen": "Not listed",
-      "startDate": "January 4 or 11, 2027; dates flexible",
-      "timingSourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/operations-analyst-trainee-distribution-and-networks-spring-2027/22978/101958159744",
-      "payStatus": "paid",
-      "payBasis": "hour",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Support retail inventory planning, orders and product delivery.",
-        "Investigate backorders, customer issues and performance exceptions.",
-        "Perform analysis and support supply-chain process improvements."
-      ],
-      "eligibilityFlags": [
-        "Available full-time 40 hours/week with in-person work at the designated Culver City office; employer labels Hybrid. Start/end dates flexible.",
-        "Adaptability, ability to learn systems/databases, strong interpersonal and written/verbal communication, attention to detail and workload prioritization.",
-        "Retail, entertainment or consumer-packaged-goods experience preferred. No completed degree or numerical professional experience minimum stated. This is a year-long trainee assignment, not a summer-only internship. Employer includes an undefined qualification entry; no requirement is inferred from it."
-      ],
-      "benefits": [
-        "Structured learning, executive engagement and networking opportunities. May qualify for comprehensive benefits; eligibility not guaranteed."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-10-16T17:09:29.925Z",
-        "sourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/operations-analyst-trainee-distribution-and-networks-spring-2027/22978/101958159744",
         "reviewerType": "source_check"
       }
     },
@@ -7663,6 +7532,169 @@
           "Collaborate with design and engineering teams.",
           "Current MBA; graduation Dec 2027/Spring 2028; 3+ professional years; 12 weeks; deadline November 19, midnight EST."
         ]
+      }
+    },
+    {
+      "co": "Walt Disney Animation Studios",
+      "role": "Art & Story Intern, Disney Animation - Winter 2027",
+      "link": "https://www.disneycareers.com/en/job/burbank/art-and-story-intern-disney-animation-winter-2027/391/102041250720",
+      "loc": "Burbank, CA",
+      "ind": "Animation & Illustration",
+      "desc": "Develop visual-development illustrations and storyboard continuity sequences through a studio internship with Disney artists and mentors.",
+      "pay": "$22/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Burbank, CA",
+      "eligibility": "Age 18 or older. Enrolled in a post-secondary educational program, or graduated within six months of the internship start date. Fully available for the 12-week assignment based at the Burbank studios, starting February 2027. Resume must show expected graduation month and year. Portfolio must include BOTH visual-development work and continuity storyboard sequences; use a website and/or organized Google Drive link, not a social media account as the primary portfolio. Story sequences must use an embedded slideshow or animatic/pitch video. Employer posting gives an approximate February–May term; the earlier recruiter post says February–April. Follow the current employer posting and confirm precise dates with the employer.",
+      "cycle": "Winter 2027; 12 weeks, approximately February–May 2027",
+      "deadline": "November 8, 2026, 11:59 PM PST",
+      "applicationsOpen": "Not listed",
+      "startDate": "February 2027",
+      "timingSourceUrl": "https://www.disneycareers.com/en/job/burbank/art-and-story-intern-disney-animation-winter-2027/391/102041250720",
+      "deadlineISO": "2026-11-08T23:59:00-08:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Create visual-development work depicting character, mood, environments and storytelling.",
+        "Develop storyboard continuity, character emotion, humor, action and cinematic staging.",
+        "Learn through hands-on projects with studio artists, technologists and production leaders."
+      ],
+      "eligibilityFlags": [
+        "Age 18 or older. Enrolled in a post-secondary educational program, or graduated within six months of the internship start date. Fully available for the 12-week assignment based at the Burbank studios, starting February 2027. Resume must show expected graduation month and year. Portfolio must include BOTH visual-development work and continuity storyboard sequences; use a website and/or organized Google Drive link, not a social media account as the primary portfolio. Story sequences must use an embedded slideshow or animatic/pitch video. Employer posting gives an approximate February–May term; the earlier recruiter post says February–April. Follow the current employer posting and confirm precise dates with the employer."
+      ],
+      "benefits": [
+        "Select medical, financial and/or other benefits may be provided; specific eligibility and benefits are not guaranteed."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-23T17:00:52.921Z",
+        "sourceUrl": "https://www.disneycareers.com/en/job/burbank/art-and-story-intern-disney-animation-winter-2027/391/102041250720",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Pinterest",
+      "role": "PhD Machine Learning Internship 2027 (USA)",
+      "link": "https://www.pinterestcareers.com/jobs/?gh_jid=8140140",
+      "loc": "San Francisco, CA; Palo Alto, CA; Seattle, WA; New York, NY; US-based remote/hybrid by team",
+      "ind": "Data & AI",
+      "desc": "Lead a research project in machine learning and artificial intelligence. Build and evaluate production ML systems and AI-assisted engineering work. Write tested, maintainable code and collaborate with mentors and engineering teams.",
+      "pay": "$12,100/month",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "San Francisco, CA; Palo Alto, CA; Seattle, WA; New York, NY; US-based remote/hybrid by team",
+      "eligibility": "Work toward a PhD in Computer Science, ML, NLP, Statistics, Information Sciences or a related field. Proficiency in a systems language (Java, C++ or Python) or an ML framework (TensorFlow, PyTorch or MLflow); research and analytical-problem experience; AI-native engineering, critical review and communication skills. Publications and interest in applied ML research are preferred.\nCurrent school/program enrollment required.\nApplication asks whether the PhD degree in Computer Science or related field will be completed by June 2030 at an accredited four-year institution.\nUS-based applicants only; team-dependent remote or hybrid work in San Francisco, Palo Alto, Seattle or New York, and a commutable distance to an office may be required.\nFully available for one 12-week cohort: May 17–August 6 or June 14–September 3, 2027.\nApply once across USA/Canada for the relevant ML/DS track; multiple applications may delay recruitment.\nApplication asks work authorization and sponsorship questions; sponsorship availability is not stated.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14, 2027",
+      "timingSourceUrl": "https://www.pinterestcareers.com/jobs/?gh_jid=8140140",
+      "payStatus": "paid",
+      "payBasis": "month",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Lead a research project in machine learning and artificial intelligence.",
+        "Build and evaluate production ML systems and AI-assisted engineering work.",
+        "Write tested, maintainable code and collaborate with mentors and engineering teams."
+      ],
+      "eligibilityFlags": [
+        "Work toward a PhD in Computer Science, ML, NLP, Statistics, Information Sciences or a related field. Proficiency in a systems language (Java, C++ or Python) or an ML framework (TensorFlow, PyTorch or MLflow); research and analytical-problem experience; AI-native engineering, critical review and communication skills. Publications and interest in applied ML research are preferred.",
+        "Current school/program enrollment required.",
+        "Application asks whether the PhD degree in Computer Science or related field will be completed by June 2030 at an accredited four-year institution.",
+        "US-based applicants only; team-dependent remote or hybrid work in San Francisco, Palo Alto, Seattle or New York, and a commutable distance to an office may be required.",
+        "Fully available for one 12-week cohort: May 17–August 6 or June 14–September 3, 2027.",
+        "Apply once across USA/Canada for the relevant ML/DS track; multiple applications may delay recruitment.",
+        "Application asks work authorization and sponsorship questions; sponsorship availability is not stated."
+      ],
+      "benefits": [
+        "Mentorship, professional development workshops and networking opportunities."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-23T17:07:30.079Z",
+        "sourceUrl": "https://www.pinterestcareers.com/jobs/?gh_jid=8140140",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Pinterest",
+      "role": "Master's Data Science Internship 2027 (USA)",
+      "link": "https://www.pinterestcareers.com/jobs/?gh_jid=8138097",
+      "loc": "San Francisco, CA; Palo Alto, CA; Seattle, WA; New York, NY; US-based remote/hybrid by team",
+      "ind": "Data & AI",
+      "desc": "Analyze product data to identify user trends and product opportunities. Design metrics and evaluate A/B experiments and alternative experimentation methods. Communicate insights with product, engineering, design and research teams.",
+      "pay": "$11,000/month",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "San Francisco, CA; Palo Alto, CA; Seattle, WA; New York, NY; US-based remote/hybrid by team",
+      "eligibility": "Currently pursuing a Master’s in statistics, mathematics, economics, applied sciences, computer science or a related field. Requires SQL and Python/R, large-data analysis, quantitative problem-solving and communication skills; critically validate AI-assisted work. Current school/program enrollment required. Application asks whether the Master’s degree in Data Science or related field will be completed by June 2030 at an accredited four-year institution. US-based applicants only; team-dependent remote or hybrid work in San Francisco, Palo Alto, Seattle or New York, and a commutable distance to an office may be required. Fully available for one 12-week cohort: May 17–August 6 or June 14–September 3, 2027. Apply once across USA/Canada for the relevant ML/DS track; multiple applications may delay recruitment. Application asks work authorization and sponsorship questions; sponsorship availability is not stated.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14, 2027",
+      "timingSourceUrl": "https://www.pinterestcareers.com/jobs/?gh_jid=8138097",
+      "payStatus": "paid",
+      "payBasis": "month",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Analyze product data to identify user trends and product opportunities.",
+        "Design metrics and evaluate A/B experiments and alternative experimentation methods.",
+        "Communicate insights with product, engineering, design and research teams."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a Master’s in statistics, mathematics, economics, applied sciences, computer science or a related field. Requires SQL and Python/R, large-data analysis, quantitative problem-solving and communication skills; critically validate AI-assisted work. Current school/program enrollment required. Application asks whether the Master’s degree in Data Science or related field will be completed by June 2030 at an accredited four-year institution. US-based applicants only; team-dependent remote or hybrid work in San Francisco, Palo Alto, Seattle or New York, and a commutable distance to an office may be required. Fully available for one 12-week cohort: May 17–August 6 or June 14–September 3, 2027. Apply once across USA/Canada for the relevant ML/DS track; multiple applications may delay recruitment. Application asks work authorization and sponsorship questions; sponsorship availability is not stated."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-23T17:07:30.235Z",
+        "sourceUrl": "https://www.pinterestcareers.com/jobs/?gh_jid=8138097",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Pinterest",
+      "role": "PhD Data Science Internship 2027 (USA)",
+      "link": "https://www.pinterestcareers.com/jobs/?gh_jid=8140169",
+      "loc": "San Francisco, CA; Palo Alto, CA; Seattle, WA; New York, NY; US-based remote/hybrid by team",
+      "ind": "Data & AI",
+      "desc": "Analyze product data to identify user trends and product opportunities. Design metrics and evaluate A/B experiments and alternative experimentation methods. Communicate insights with product, engineering, design and research teams.",
+      "pay": "$12,100/month",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "San Francisco, CA; Palo Alto, CA; Seattle, WA; New York, NY; US-based remote/hybrid by team",
+      "eligibility": "Currently pursuing a PhD in statistics, mathematics, economics, applied sciences, computer science or a related field. Requires SQL and Python/R, large-data analysis, quantitative problem-solving and communication skills; critically validate AI-assisted work. Current school/program enrollment required. Application asks whether the PhD degree in Data Science or related field will be completed by June 2030 at an accredited four-year institution. US-based applicants only; team-dependent remote or hybrid work in San Francisco, Palo Alto, Seattle or New York, and a commutable distance to an office may be required. Fully available for one 12-week cohort: May 17–August 6 or June 14–September 3, 2027. Apply once across USA/Canada for the relevant ML/DS track; multiple applications may delay recruitment. Application asks work authorization and sponsorship questions; sponsorship availability is not stated.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14, 2027",
+      "timingSourceUrl": "https://www.pinterestcareers.com/jobs/?gh_jid=8140169",
+      "payStatus": "paid",
+      "payBasis": "month",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Analyze product data to identify user trends and product opportunities.",
+        "Design metrics and evaluate A/B experiments and alternative experimentation methods.",
+        "Communicate insights with product, engineering, design and research teams."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing a PhD in statistics, mathematics, economics, applied sciences, computer science or a related field. Requires SQL and Python/R, large-data analysis, quantitative problem-solving and communication skills; critically validate AI-assisted work. Current school/program enrollment required. Application asks whether the PhD degree in Data Science or related field will be completed by June 2030 at an accredited four-year institution. US-based applicants only; team-dependent remote or hybrid work in San Francisco, Palo Alto, Seattle or New York, and a commutable distance to an office may be required. Fully available for one 12-week cohort: May 17–August 6 or June 14–September 3, 2027. Apply once across USA/Canada for the relevant ML/DS track; multiple applications may delay recruitment. Application asks work authorization and sponsorship questions; sponsorship availability is not stated."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-23T17:07:30.362Z",
+        "sourceUrl": "https://www.pinterestcareers.com/jobs/?gh_jid=8140169",
+        "reviewerType": "source_check"
       }
     }
   ]
