@@ -1,0 +1,14 @@
+{
+  "version": "2.7.7.54",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-10-21T18:25:50Z",
+  "reviewer": "Codex Internship Sourcing",
+  "sourceDigest": "6ffd59745ec999d2899a45dd4b4b82bb380af064bfb746fb89ca54bd63708fea",
+  "sourceFileCount": 227,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Reviewed current Privacy and Terms for thirteen employer-verified public internship additions only. All139 prior raw records and staged daily selections preserved. No applicant/private account data or new event/provider/consent/authentication/storage/retention behavior. Private employer evidence, native export, Golden decisions and queues stay outside the site. Only validated public fields and compact sourced summaries are released. Policy wording unchanged; engineering review, not legal clearance. Native and hosted verification remain separate. Local-only52 candidate is preserved in release history and superseded by53 before any push/deploy.",
+  "predecessor": "docs/privacy-reviews/2.7.7.51-pre-internships-20261021.json",
+  "author": "Codex",
+  "platform_signature": "-Codex"
+}

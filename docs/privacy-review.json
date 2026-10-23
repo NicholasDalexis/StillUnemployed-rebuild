@@ -1,14 +1,14 @@
 {
-  "version": "2.7.7.54",
+  "version": "2.7.7.56",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-21T18:25:50Z",
-  "reviewer": "Codex Internship Sourcing",
-  "sourceDigest": "6ffd59745ec999d2899a45dd4b4b82bb380af064bfb746fb89ca54bd63708fea",
+  "reviewedAt": "2026-10-23T17:24:54.336Z",
+  "reviewer": "Codex StillUnemployed",
+  "sourceDigest": "183cfbef557d4fe309add4434105a61f549993555e89c15fc0bdf84a563e3810",
   "sourceFileCount": 227,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Reviewed current Privacy and Terms for thirteen employer-verified public internship additions only. All139 prior raw records and staged daily selections preserved. No applicant/private account data or new event/provider/consent/authentication/storage/retention behavior. Private employer evidence, native export, Golden decisions and queues stay outside the site. Only validated public fields and compact sourced summaries are released. Policy wording unchanged; engineering review, not legal clearance. Native and hosted verification remain separate. Local-only52 candidate is preserved in release history and superseded by53 before any push/deploy.",
-  "predecessor": "docs/privacy-reviews/2.7.7.51-pre-internships-20261021.json",
+  "scope": "Reviewed Privacy and Terms for four verified public internship additions and same-batch static cleanup after prior retirements. All149 prior public objects and original verification dates preserved; four compact display summaries added. No auth, analytics, account, provider, consent, storage, retention, endpoint or applicant-data behavior changed. Private native export, source admission receipts, evidence and holds remain outside the website. Reviewed, no wording change needed; engineering review, not legal certification. Prior local55 history retained without claiming deployment.",
+  "predecessor": "docs/privacy-reviews/2.7.7.55-pre-four-20261023.json",
   "author": "Codex",
   "platform_signature": "-Codex"
 }
