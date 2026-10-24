@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.57",
+  "currentVersion": "2.7.7.58",
   "releases": [
+    {
+      "version": "2.7.7.58",
+      "date": "2026-10-24",
+      "title": "Twelve student internships",
+      "changes": [
+        "Add twelve original-employer/application-verified internships, preserving prior listings, eligibility, pay periods and deadline filtering."
+      ]
+    },
     {
       "version": "2.7.7.57",
       "date": "2026-10-23",
@@ -1582,7 +1590,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "fa9a21c160c745e2b1719faaeb23579766d72f542250b6ca6cb31e72194edad3",
+    "digest": "803a4d38b6df744dbbd583f73bc6f8a3523a3541475c97c8045a538effd9adb6",
     "fileCount": 227
   }
 }
