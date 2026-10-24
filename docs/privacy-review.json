@@ -1,14 +1,14 @@
 {
-  "version": "2.7.7.57",
+  "version": "2.7.7.58",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-24T00:15:22.486Z",
-  "reviewer": "Codex StillUnemployed",
-  "sourceDigest": "fa9a21c160c745e2b1719faaeb23579766d72f542250b6ca6cb31e72194edad3",
+  "reviewedAt": "2026-10-24T18:25:03.711Z",
+  "reviewer": "Codex Internship sourcing",
+  "sourceDigest": "803a4d38b6df744dbbd583f73bc6f8a3523a3541475c97c8045a538effd9adb6",
   "sourceFileCount": 227,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Reviewed Privacy and Terms for exact Marketing v2 two-date Daily Jobs staging.19 prior collections and153internships preserved. Existing public website API/static fallback omits future membership; existing server clock controls09:00Eastern activation. No auth, analytics, account, provider, consent, storage, retention or endpoint behavior changes; existing date/rank attribution only. Reviewed, no wording change needed; engineering review, not legal certification. v1 held, source Sheet and social schedules remain separate.",
-  "predecessor": "docs/privacy-reviews/2.7.7.56-pre-weekend-20261023.json",
+  "scope": "Reviewed Privacy and Terms for twelve factual student-listing additions and existing approved October24 daily activation. No application submissions, personal intake data, private evidence, new analytics/auth/storage/consent/providers or runtime behavior. Existing employer pay periods and deadline filters preserved. Reviewed, no wording change needed; engineering review, not legal certification. Fresh OAuth, physical iPhone and durable analytics writes not repeated.",
+  "predecessor": "docs/privacy-reviews/2.7.7.57-pre-internships-20261024.json",
   "author": "Codex",
   "platform_signature": "-Codex"
 }

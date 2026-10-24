@@ -1,0 +1,14 @@
+{
+  "version": "2.7.7.57",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-10-24T00:15:22.486Z",
+  "reviewer": "Codex StillUnemployed",
+  "sourceDigest": "fa9a21c160c745e2b1719faaeb23579766d72f542250b6ca6cb31e72194edad3",
+  "sourceFileCount": 227,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Reviewed Privacy and Terms for exact Marketing v2 two-date Daily Jobs staging.19 prior collections and153internships preserved. Existing public website API/static fallback omits future membership; existing server clock controls09:00Eastern activation. No auth, analytics, account, provider, consent, storage, retention or endpoint behavior changes; existing date/rank attribution only. Reviewed, no wording change needed; engineering review, not legal certification. v1 held, source Sheet and social schedules remain separate.",
+  "predecessor": "docs/privacy-reviews/2.7.7.56-pre-weekend-20261023.json",
+  "author": "Codex",
+  "platform_signature": "-Codex"
+}
