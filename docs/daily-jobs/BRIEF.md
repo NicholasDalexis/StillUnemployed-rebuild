@@ -89,3 +89,16 @@ Author: Codex. Source: Marketing marketing-wedfri-20261020-v1, packet SHA256528e
 Stage exact October21 Everlane/Bumble/Sierra/Baseten Office, October22 Plaid/NBCUniversal/Runway/829 Studios, and October23 ALO/Harvey/Baseten Recruiting/Airbyte ordered four at13:00UTC/9AM Eastern. All16 earlier collections remain structurally identical. Twelve current admitted identities and six before/at boundaries pass. Preserve all approved archival facts, pay periods and eligibility, including Everlane part-time20hours, Sierra NewGrad2027, Baseten Office five days onsite, NBCdegree/experience/auth/license/18+/24-7 shifts,829eligible states, ALO LA-area onsite and Airbyte US-only. Current canonical feed/moderation still wins; this data-only staging does not integrate or close SU-BUG-126. Production49's133internships/Sony history, source status, auth and other candidates remain intact. No source Sheet, social post/queue, schedule, provider, spend, ManyChat or runtime logic change. Future API/static fallback membership stays private until server due time; actual activation and social publication require later verification.
 
 -Codex
+
+
+<!-- weekend-v2-20261023 -->
+
+## Weekend continuation | 2026-10-23T20:15:07.700423-04:00
+
+Author: Codex. Timezone: America/New_York. Source: Marketing October23 corrected immutable v2 packet SHA2567b215e7d30d1d35a02c25ff98d39d86ee58c010e6cd9ab51d0f4d20acae9f919 and selections c1e1a524576a0a8840dad5761560f53ba1b7388570c81e02d01ae30a2862ac61, existing Nic-approved production continuation. Status:2.7.7.57 candidate; actual hosted release readback recorded separately.
+
+Stage exact October24 NBCSports/FanaticsCollectibles/NYCMayorEventsLead/NBCUCorporateEvents and October25 UniversalStudioGroup/NBCSportsTelemundo/UniversalPictures/AloRetailFP&A ordered four, both13:00UTC/9AM Eastern. All19October5–23 collections remain structurally identical;8current admitted canonical identities and4before/at boundaries verified. Preserve exact v2 snapshots: Fanatics inperson LA; CorporateEvents evenings/weekends/holidays,40%travel and4+office days; CreativePartnerships typically1–2years,18+/USauth/travel; UniversalPictures1+admin AND1+marketing experience with no invented time unit. Sports source identity744000156644670 remains canonical despite verified exact current employer redirect744000157120809. Current live catalog/moderation controls TLDR/Apply.
+
+v1 was held before staging and retained privately as historical input. Preserve153internships, every runtime/auth/analytics/checker and existing unimplemented qualification work. No sourceSheet/socialschedule/ManyChat/provider/spend/newtimer or runtime logic change. Future membership remains absent from public website API/static fallback until server due time; staging/local clock tests do not prove actual future activation or social delivery.
+
+-Codex

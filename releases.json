@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.56",
+  "currentVersion": "2.7.7.57",
   "releases": [
+    {
+      "version": "2.7.7.57",
+      "date": "2026-10-23",
+      "title": "Stage October 24–25 Daily Jobs",
+      "changes": [
+        "Stage exact Marketing corrected v2 October24–25 ordered four at09:00 America/New_York, preserving all19 prior collections and153internships. Future API/static membership stays hidden until server due time; source/runtime/auth/analytics/settings unchanged."
+      ]
+    },
     {
       "version": "2.7.7.56",
       "date": "2026-10-23",
@@ -1574,7 +1582,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "183cfbef557d4fe309add4434105a61f549993555e89c15fc0bdf84a563e3810",
+    "digest": "fa9a21c160c745e2b1719faaeb23579766d72f542250b6ca6cb31e72194edad3",
     "fileCount": 227
   }
 }
