@@ -1,0 +1,14 @@
+{
+  "version": "2.7.7.58",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-10-24T18:25:03.711Z",
+  "reviewer": "Codex Internship sourcing",
+  "sourceDigest": "803a4d38b6df744dbbd583f73bc6f8a3523a3541475c97c8045a538effd9adb6",
+  "sourceFileCount": 227,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Reviewed Privacy and Terms for twelve factual student-listing additions and existing approved October24 daily activation. No application submissions, personal intake data, private evidence, new analytics/auth/storage/consent/providers or runtime behavior. Existing employer pay periods and deadline filters preserved. Reviewed, no wording change needed; engineering review, not legal certification. Fresh OAuth, physical iPhone and durable analytics writes not repeated.",
+  "predecessor": "docs/privacy-reviews/2.7.7.57-pre-internships-20261024.json",
+  "author": "Codex",
+  "platform_signature": "-Codex"
+}

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-24T18:22:23.754Z",
+  "sourceExportedAt": "2026-10-25T15:22:27.867Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -3477,129 +3477,6 @@
           "Collaborate with engineering, product, sales and support teams.",
           "US-based current bachelor students; degree by June 2028; 12 weeks May/June 2027; arrangement confirmed at offer."
         ]
-      }
-    },
-    {
-      "co": "Sony Pictures Entertainment",
-      "role": "Intern, Casting, Sony Pictures Television - Spring 2027",
-      "link": "https://www.sonypicturesjobs.com/job/culver-city/intern-casting-sony-pictures-television-spring-2027/22978/101958159776",
-      "loc": "Culver City, CA",
-      "ind": "Film & Television",
-      "desc": "Support casting research, talent tracking and executive coordination for Sony Pictures Television scripted series.",
-      "pay": "$19/hour",
-      "style": "In-person",
-      "exp": "Not listed",
-      "state": "Culver City, CA",
-      "eligibility": "Available part-time 10–29 hours/week in person in Culver City; start/end dates flexible.\nPassion for casting and entertainment; Microsoft Office, web/social-media proficiency, talent judgment and strong written/verbal communication.\nCasting-office, agency or office experience preferred, not required. No completed-degree requirement or numerical professional experience minimum stated.",
-      "cycle": "Spring 2027; January 4 or 11–April 16, 2027",
-      "deadline": "Not listed",
-      "applicationsOpen": "Not listed",
-      "startDate": "January 4 or 11, 2027; dates flexible",
-      "timingSourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/intern-casting-sony-pictures-television-spring-2027/22978/101958159776",
-      "payStatus": "paid",
-      "payBasis": "hour",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Research actors and prepare lists for upcoming series.",
-        "Track emerging talent and support tests and table reads.",
-        "Assist executive scheduling, office coordination and data entry."
-      ],
-      "eligibilityFlags": [
-        "Available part-time 10–29 hours/week in person in Culver City; start/end dates flexible.",
-        "Passion for casting and entertainment; Microsoft Office, web/social-media proficiency, talent judgment and strong written/verbal communication.",
-        "Casting-office, agency or office experience preferred, not required. No completed-degree requirement or numerical professional experience minimum stated."
-      ],
-      "benefits": [
-        "Structured learning, executive engagement and networking opportunities. May qualify for comprehensive benefits; eligibility not guaranteed."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-10-16T17:09:24.905Z",
-        "sourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/intern-casting-sony-pictures-television-spring-2027/22978/101958159776",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Sony Pictures Entertainment",
-      "role": "Current Programming Intern, Sony Pictures Television – Spring 2027",
-      "link": "https://www.sonypicturesjobs.com/job/culver-city/current-programming-intern-sony-pictures-television-spring-2027/22978/101958159792",
-      "loc": "Culver City, CA",
-      "ind": "Film & Television",
-      "desc": "Support Sony Pictures Television current programming teams with show information, scheduling and studio coordination.",
-      "pay": "$19/hour",
-      "style": "In-person",
-      "exp": "Not listed",
-      "state": "Culver City, CA",
-      "eligibility": "Enrollment in an accredited college/university for the duration of the internship.\nAvailable part-time 10–29 hours/week in person in Culver City; start/end dates flexible.\nPassion for scripted television; excellent communication, discretion, organization and attention to detail. Airtable and previous entertainment internship experience preferred. No numerical professional experience minimum stated.",
-      "cycle": "Spring 2027; January 4 or 11–April 16, 2027",
-      "deadline": "Not listed",
-      "applicationsOpen": "Not listed",
-      "startDate": "January 4 or 11, 2027; dates flexible",
-      "timingSourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/current-programming-intern-sony-pictures-television-spring-2027/22978/101958159792",
-      "payStatus": "paid",
-      "payBasis": "hour",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Support assistants with calls, meeting notes and scheduling.",
-        "Maintain show information in Xpanse and Airtable.",
-        "Learn studio operations alongside current programming executives."
-      ],
-      "eligibilityFlags": [
-        "Enrollment in an accredited college/university for the duration of the internship.",
-        "Available part-time 10–29 hours/week in person in Culver City; start/end dates flexible.",
-        "Passion for scripted television; excellent communication, discretion, organization and attention to detail. Airtable and previous entertainment internship experience preferred. No numerical professional experience minimum stated."
-      ],
-      "benefits": [
-        "Structured learning, executive engagement and networking opportunities. May qualify for comprehensive benefits; eligibility not guaranteed."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-10-16T17:09:25.465Z",
-        "sourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/current-programming-intern-sony-pictures-television-spring-2027/22978/101958159792",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Sony Pictures Entertainment",
-      "role": "Intern, U.S. Business Affairs, Sony Pictures Television, Spring 2027",
-      "link": "https://www.sonypicturesjobs.com/job/culver-city/intern-u-s-business-affairs-sony-pictures-television-spring-2027/22978/101958159728",
-      "loc": "Culver City, CA",
-      "ind": "Legal & Business Affairs",
-      "desc": "Support Sony Pictures Television business affairs with agreement drafting, deal research and production-related business/legal analysis.",
-      "pay": "$19/hour",
-      "style": "Hybrid",
-      "exp": "Not listed",
-      "state": "Culver City, CA",
-      "eligibility": "Currently enrolled as a second-year law student (2L) at an ABA-accredited law school.\nAvailable part-time 10–29 hours/week with in-person work at the designated Culver City office; employer labels Hybrid.\nRelevant education or experience in agreements, legal and budgeting; Excel, analytical, presentation and communication skills. Ability to manage deadlines and multiple priorities. Previous studio entertainment experience preferred. No numerical professional experience minimum stated.",
-      "cycle": "Spring 2027; January 4 or 11–April 16, 2027",
-      "deadline": "Not listed",
-      "applicationsOpen": "Not listed",
-      "startDate": "January 4 or 11, 2027; dates flexible",
-      "timingSourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/intern-u-s-business-affairs-sony-pictures-television-spring-2027/22978/101958159728",
-      "payStatus": "paid",
-      "payBasis": "hour",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Research deal terms and summarize legal or business issues.",
-        "Draft and revise agreements, amendments and deal materials.",
-        "Review credits and organize meeting notes and digital documents."
-      ],
-      "eligibilityFlags": [
-        "Currently enrolled as a second-year law student (2L) at an ABA-accredited law school.",
-        "Available part-time 10–29 hours/week with in-person work at the designated Culver City office; employer labels Hybrid.",
-        "Relevant education or experience in agreements, legal and budgeting; Excel, analytical, presentation and communication skills. Ability to manage deadlines and multiple priorities. Previous studio entertainment experience preferred. No numerical professional experience minimum stated."
-      ],
-      "benefits": [
-        "Structured learning, executive engagement and networking opportunities. May qualify for comprehensive benefits; eligibility not guaranteed."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-10-16T17:09:25.983Z",
-        "sourceUrl": "https://www.sonypicturesjobs.com/job/culver-city/intern-u-s-business-affairs-sony-pictures-television-spring-2027/22978/101958159728",
-        "reviewerType": "source_check"
       }
     },
     {
