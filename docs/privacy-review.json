@@ -1,14 +1,14 @@
 {
-  "version": "2.7.7.59",
+  "version": "2.7.7.60",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-25T15:23:16Z",
-  "reviewer": "Codex Internship review",
-  "sourceDigest": "b931ea6dd97c3acf353d6496b24ada98e644c9163ec77d845a64d06e2b9d3c0c",
+  "reviewedAt": "2026-10-26T00:16:19.365Z",
+  "reviewer": "Codex StillUnemployed",
+  "sourceDigest": "f15d9e22334f1cc2fd814428b8ae0fbda46752d344e7772c823d485ab7a1d9b6",
   "sourceFileCount": 227,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Reviewed Privacy and Terms for three corroborated Sony Pictures internship retirements and existing approved October25 daily activation. No new data flows, auth, analytics, providers, storage, consent or runtime changes. All remaining approved objects and their original verification dates preserved. Reviewed, no wording change needed; engineering review, not legal certification. Fresh OAuth, physical iPhone, durable analytics writes, retention and deletion execution not repeated.",
-  "predecessor": "docs/privacy-reviews/2.7.7.58-pre-review-20261025.json",
+  "scope": "Reviewed Privacy and Terms for two approved future Daily Jobs collections. Existing21published snapshots and all raw internship approvals unchanged. No new auth, analytics, consent, storage, providers, personal data or runtime behavior. Reviewed, no wording change needed; scoped engineering review, not legal certification. Fresh OAuth, physical iPhone and durable analytics writes not repeated.",
+  "predecessor": "docs/privacy-reviews/2.7.7.59-pre-review-20261025.json",
   "author": "Codex",
   "platform_signature": "-Codex"
 }

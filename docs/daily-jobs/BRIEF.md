@@ -102,3 +102,14 @@ Stage exact October24 NBCSports/FanaticsCollectibles/NYCMayorEventsLead/NBCUCorp
 v1 was held before staging and retained privately as historical input. Preserve153internships, every runtime/auth/analytics/checker and existing unimplemented qualification work. No sourceSheet/socialschedule/ManyChat/provider/spend/newtimer or runtime logic change. Future membership remains absent from public website API/static fallback until server due time; staging/local clock tests do not prove actual future activation or social delivery.
 
 -Codex
+
+
+<!-- montue-20261025-v1 -->
+
+## Monday and Tuesday continuation | October 25, 2026, America/New_York
+
+Author: Codex. Source: Marketing marketing-montue-20261025-v1, immutable stage packet SHA2564b76d0f2151264f4a36d0880c600a64ac92e6fd5095c50201fc9f0479169b2e2, existing Nic-approved production continuation. Status:2.7.7.60 candidate; actual hosted release readback recorded separately.
+
+Stage exact October26 NBCUniversal GraphicsArtist/Epic FanEngagement/Reformation TalentAcquisition/Oscar PlanLoading and October27 Sony MarketingFinancialPlanning/Kikoff Rotational2027/Columbia FilmTV/Deepgram ExecutiveCoordinator, both13:00UTC/9AM Eastern. All21published collections remain structurally exact, with only these two scheduled objects appended. Preserve full approved snapshots, regional pay, education/experience and location/work-authorization restrictions. Current live feed/moderation continues to govern TLDR/Apply; this data-only change does not integrate unrelated qualification or SEO work. Preserve all162raw internship records and current161public objects from production59, source status, runtime/auth/analytics and other candidates. No sourceSheet, social queue, schedule, provider, spend or new gate. Future membership stays private until server due-time; actual future activation and social delivery remain later checks.
+
+-Codex

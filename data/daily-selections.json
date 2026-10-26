@@ -1355,6 +1355,134 @@
           }
         }
       ]
+    },
+    {
+      "date": "2026-10-26",
+      "kind": "jobs",
+      "state": "scheduled",
+      "publishAt": "2026-10-26T13:00:00.000Z",
+      "jobs": [
+        {
+          "id": "l2nf6saaakxr",
+          "link": "https://jobs.smartrecruiters.com/NBCUniversal3/744000156824539-graphics-artist",
+          "snapshot": {
+            "link": "https://jobs.smartrecruiters.com/NBCUniversal3/744000156824539-graphics-artist",
+            "co": "NBCUniversal",
+            "role": "Graphics Artist",
+            "pay": "$70,000–$95,000/year",
+            "loc": "New York, NY · On site",
+            "exp": "2+ years professional motion graphics; relevant bachelor's; reel required; 18+; unrestricted US work authorization; extended hours, weekends and holidays",
+            "ind": "Video & Creative",
+            "tldr": "• Create still and motion graphics for NBCUniversal broadcasts\n• Build motion titles, Photoshop composites and VFX\n• 2+ years; relevant bachelor’s and reel required\n• On site; 18+, unrestricted US authorization; extended/weekend/holiday hours"
+          }
+        },
+        {
+          "id": "4gu7xshc97jf",
+          "link": "https://job-boards.greenhouse.io/sonymusicentertainment/jobs/8860340002",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/sonymusicentertainment/jobs/8860340002",
+            "co": "Epic Records (Sony Music)",
+            "role": "Coordinator, Fan Engagement - Epic Records",
+            "pay": "$50,000/year base",
+            "loc": "Los Angeles, CA · Work arrangement not stated",
+            "exp": "1–3 years professional digital/social marketing; degree or equivalent work",
+            "ind": "Social",
+            "tldr": "• Build fan engagement for Epic Records artists\n• Manage social, web, email and SMS campaigns\n• Track campaign results and coordinate editorial calendars\n• 1–3 years digital/social marketing; degree or equivalent"
+          }
+        },
+        {
+          "id": "1ki9eru1533l79",
+          "link": "https://job-boards.greenhouse.io/reformation/jobs/8269012",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/reformation/jobs/8269012",
+            "co": "Reformation",
+            "role": "Talent Acquisition Coordinator",
+            "pay": "$55,000–$65,000/year base; 5% bonus eligibility",
+            "loc": "Los Angeles, CA · Hybrid, 4 office days/week",
+            "exp": "2+ years recruiting coordination/TA support; 1–2 years full-cycle recruiting",
+            "ind": "People & Recruiting",
+            "tldr": "• Coordinate recruiting and interviews for Reformation\n• Support candidates, offer letters and onboarding\n• Maintain Greenhouse workflows and recruiting reports\n• 2+ coordination years; 1–2 full-cycle; hybrid 4 office days"
+          }
+        },
+        {
+          "id": "jvdufn123zzj9",
+          "link": "https://job-boards.greenhouse.io/oscar/jobs/8286491",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/oscar/jobs/8286491",
+            "co": "Oscar Health",
+            "role": "Operations Analyst, Plan Loading",
+            "pay": "$62,100–$81,506.25/year base (CA/CT/NJ/NY/WA); $55,890–$73,335.63 elsewhere eligible",
+            "loc": "US remote except AK/DE/HI/LA/MT/ND/OK/WV/WY and territories; occasional travel",
+            "exp": "1+ year health-plan benefits, office tools and Excel/data analysis",
+            "ind": "Business & Operations",
+            "tldr": "• Configure and audit health-plan benefit data\n• Use data analysis to improve loading workflows\n• 1+ year benefits, office tools and Excel/data analysis\n• US remote except AK/DE/HI/LA/MT/ND/OK/WV/WY/territories; occasional travel"
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-10-27",
+      "kind": "jobs",
+      "state": "scheduled",
+      "publishAt": "2026-10-27T13:00:00.000Z",
+      "jobs": [
+        {
+          "id": "15m5jvg10tyqx5",
+          "link": "https://job-boards.greenhouse.io/sonymusicentertainment/jobs/8871782002",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/sonymusicentertainment/jobs/8871782002",
+            "co": "Sony Music",
+            "role": "Analyst, Marketing Financial Planning",
+            "pay": "$61,000–$66,000/year base",
+            "loc": "New York, NY · Work arrangement not stated",
+            "exp": "Up to 2 years; relevant bachelor's degree or equivalent experience",
+            "ind": "Finance & Accounting",
+            "tldr": "• Plan artist-campaign marketing budgets and forecasts\n• Track purchase orders, invoices and expense reconciliations\n• Maintain spending dashboards across Sony record labels\n• Up to 2 years; degree or equivalent; work mode unstated"
+          }
+        },
+        {
+          "id": "ucc2d61krenu0",
+          "link": "https://job-boards.greenhouse.io/kikoff/jobs/4449006009",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/kikoff/jobs/4449006009",
+            "co": "Kikoff",
+            "role": "Rotational Associate Manager 2027",
+            "pay": "$100,000–$125,000/year base",
+            "loc": "San Francisco, CA · Hybrid, 3 office days/week",
+            "exp": "2027 program for current undergraduate/master’s students and early-career professionals",
+            "ind": "Business & Operations",
+            "tldr": "• Rotate through product, growth and business functions\n• Build customer insights, campaigns and partnerships\n• Receive mentorship plus two year-long team rotations\n• 2027 program; students/early career; SF 3 office days/week"
+          }
+        },
+        {
+          "id": "dwzftscgluny",
+          "link": "https://job-boards.greenhouse.io/sonymusicentertainment/jobs/8880764002",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/sonymusicentertainment/jobs/8880764002",
+            "co": "Columbia Records (Sony Music)",
+            "role": "Coordinator, Film & TV – Columbia Records",
+            "pay": "$47,000–$50,000/year base",
+            "loc": "Los Angeles, CA · Work arrangement not stated",
+            "exp": "1–2 years of related experience; licensing familiarity a plus",
+            "ind": "Media & Production",
+            "tldr": "• Clear Columbia Records music for film and television\n• Track licensing deals, accounting and artist approvals\n• Maintain audio libraries, schedules and department travel\n• 1–2 related years; work arrangement not stated"
+          }
+        },
+        {
+          "id": "156yz9n1jnrnn8",
+          "link": "https://jobs.ashbyhq.com/deepgram/f07356f4-0b6c-422b-8dd0-a1f4216bea9b",
+          "snapshot": {
+            "link": "https://jobs.ashbyhq.com/deepgram/f07356f4-0b6c-422b-8dd0-a1f4216bea9b",
+            "co": "Deepgram",
+            "role": "Executive Coordinator",
+            "pay": "$85,000–$95,000/year base",
+            "loc": "Ann Arbor, MI · Hybrid; regular office presence required",
+            "exp": "One prior executive-support role required; 1–3 years preferred; daily AI-tool use",
+            "ind": "Business & Operations",
+            "tldr": "• Coordinate CEO/CTO calendars, travel and expenses\n• Run Ann Arbor office operations and leadership events\n• Use AI to improve scheduling and executive workflows\n• Ann Arbor commute; prior executive support; 1–3 years preferred"
+          }
+        }
+      ]
     }
   ]
 }
