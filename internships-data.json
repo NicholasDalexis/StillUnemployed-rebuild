@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-25T15:22:27.867Z",
+  "sourceExportedAt": "2026-10-26T18:19:55.559Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -8160,6 +8160,595 @@
           "Build ground-control and hardware-testing software.",
           "Design, write and test engineering solutions.",
           "Summer 2027; minimum 12 weeks; current university students; US export-control eligibility and technical skills required."
+        ]
+      }
+    },
+    {
+      "co": "Monumental Sports & Entertainment",
+      "role": "Internship: Business Operations (Part-Time/Seasonal)",
+      "link": "https://job-boards.greenhouse.io/monumentalsports/jobs/5271199007",
+      "loc": "Washington, DC",
+      "ind": "Business & Operations",
+      "desc": "Support sports business operations and administrative projects. Maintain reports, spreadsheets and meeting action items. Assist arena transformation and departmental initiatives.",
+      "pay": "$18.40/hour",
+      "style": "Not listed",
+      "exp": "See eligibility",
+      "state": "Washington, DC",
+      "eligibility": "Current bachelor’s/master’s student or recent graduate in business, sports management, operations or related field. Organization, discretion, communication and Microsoft Office required. Prior campus, internship or administrative experience preferred; Asana/Jira a plus. Exact application asks availability up to 25 hours/week October–May; year and exact start date not stated. Do not label as summer-only or remote.",
+      "cycle": "Part-time/seasonal; October–May",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/monumentalsports/jobs/5271199007",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Support sports business operations and administrative projects.",
+        "Maintain reports, spreadsheets and meeting action items.",
+        "Assist arena transformation and departmental initiatives."
+      ],
+      "eligibilityFlags": [
+        "Current bachelor’s/master’s student or recent graduate in business, sports management, operations or related field. Organization, discretion, communication and Microsoft Office required. Prior campus, internship or administrative experience preferred; Asana/Jira a plus. Exact application asks availability up to 25 hours/week October–May; year and exact start date not stated. Do not label as summer-only or remote."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-26T18:12:35.448Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/monumentalsports/jobs/5271199007",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "c5e29e36:f9694e3a",
+        "locationLabel": "Washington, DC",
+        "detailBullets": [
+          "Support sports business operations and administrative projects.",
+          "Maintain reports, spreadsheets and meeting action items.",
+          "Assist arena transformation and departmental initiatives.",
+          "Part-time October–May; up to 25 hours/week; relevant current students or recent graduates."
+        ]
+      }
+    },
+    {
+      "co": "Monumental Sports & Entertainment",
+      "role": "Internship: Sales Event Planning (Part-Time/Seasonal)",
+      "link": "https://job-boards.greenhouse.io/monumentalsports/jobs/5189905007",
+      "loc": "Washington, DC",
+      "ind": "Events & Experiential",
+      "desc": "Coordinate Wizards sales events, vendors and registrations. Track event budgets, promotional inventory and department resources. Analyze post-event data using Archtics and Salesforce.",
+      "pay": "$18.40/hour",
+      "style": "Not listed",
+      "exp": "See eligibility",
+      "state": "Washington, DC",
+      "eligibility": "Current undergraduate or graduate student. Microsoft Office/Google Drive, organization, teamwork, communication and problem solving required. Must lift/carry 25 pounds, climb stairs and stand for extended periods; reliable transportation/housing and evening/weekend/holiday flexibility required. Exact form requires cover letter and current college. No stated weekly hours, season/year or duration; do not infer Summer 2027.",
+      "cycle": "Part-time/seasonal; dates not listed",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/monumentalsports/jobs/5189905007",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Coordinate Wizards sales events, vendors and registrations.",
+        "Track event budgets, promotional inventory and department resources.",
+        "Analyze post-event data using Archtics and Salesforce."
+      ],
+      "eligibilityFlags": [
+        "Current undergraduate or graduate student. Microsoft Office/Google Drive, organization, teamwork, communication and problem solving required. Must lift/carry 25 pounds, climb stairs and stand for extended periods; reliable transportation/housing and evening/weekend/holiday flexibility required. Exact form requires cover letter and current college. No stated weekly hours, season/year or duration; do not infer Summer 2027."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-26T18:12:35.715Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/monumentalsports/jobs/5189905007",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "56eb3436:7b8ef502",
+        "locationLabel": "Washington, DC",
+        "detailBullets": [
+          "Coordinate Wizards sales events, vendors and registrations.",
+          "Track event budgets, promotional inventory and department resources.",
+          "Analyze post-event data using Archtics and Salesforce.",
+          "Part-time/seasonal; current undergraduate/graduate students; evening, weekend and holiday flexibility required."
+        ]
+      }
+    },
+    {
+      "co": "Monumental Sports & Entertainment",
+      "role": "Internship: Ticket Sales (Part-Time/Seasonal)",
+      "link": "https://job-boards.greenhouse.io/monumentalsports/jobs/5210364007",
+      "loc": "Washington, DC",
+      "ind": "Sales & Customer Success",
+      "desc": "Research and expand the Mystics group-sales database. Contact prospects and support ticket-sales initiatives. Prepare marketing materials and build customer relationships.",
+      "pay": "$18.40/hour",
+      "style": "Not listed",
+      "exp": "See eligibility",
+      "state": "Washington, DC",
+      "eligibility": "Current undergraduate or graduate student; minimum 20 hours/week. Application asks up to 25 hours/week September–May. Microsoft Office/Outlook, social tools, communication, sales interest and customer service skills required. Reliable transportation/housing and evenings/weekends/holidays as needed. Employer pays an hourly rate, not a commission-only role. Year and exact start date not stated.",
+      "cycle": "Part-time/seasonal; September–May",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/monumentalsports/jobs/5210364007",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Research and expand the Mystics group-sales database.",
+        "Contact prospects and support ticket-sales initiatives.",
+        "Prepare marketing materials and build customer relationships."
+      ],
+      "eligibilityFlags": [
+        "Current undergraduate or graduate student; minimum 20 hours/week. Application asks up to 25 hours/week September–May. Microsoft Office/Outlook, social tools, communication, sales interest and customer service skills required. Reliable transportation/housing and evenings/weekends/holidays as needed. Employer pays an hourly rate, not a commission-only role. Year and exact start date not stated."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-26T18:12:36.025Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/monumentalsports/jobs/5210364007",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "19673c95:97d06931",
+        "locationLabel": "Washington, DC",
+        "detailBullets": [
+          "Research and expand the Mystics group-sales database.",
+          "Contact prospects and support ticket-sales initiatives.",
+          "Prepare marketing materials and build customer relationships.",
+          "Part-time September–May; 20–25 hours/week; current students; evening, weekend and holiday flexibility required."
+        ]
+      }
+    },
+    {
+      "co": "Airbnb",
+      "role": "Strategic Finance & Analytics Intern (MBA)",
+      "link": "https://careers.airbnb.com/positions/8285171?gh_jid=8285171",
+      "loc": "Remote (US, excluding AK, MS, ND)",
+      "ind": "Finance & Accounting",
+      "desc": "Analyze business data and identify financial trends. Build forecasts, recommendations and strategic plans. Present actionable finance insights to business leaders.",
+      "pay": "$48/hour",
+      "style": "Remote",
+      "exp": "See eligibility",
+      "state": "Remote (US, excluding AK, MS, ND)",
+      "eligibility": "First-year full-time MBA student at accredited US business school, expected Spring 2028 graduation. Requires 3–5 professional years in FP&A, corporate development, consulting, PE, investment banking or business operations, quantitative analysis, SQL, financial modeling, visualization, AI judgment, project management and stakeholder communication. US work authorization required. Full-time May 24–August 13, 2027. Remote-eligible only where Airbnb has registered entities; current official footer excludes Alaska, Mississippi and North Dakota. Occasional office/offsite attendance by manager agreement. Cover letter required. Deadline Sunday November 1 at 11:45 PM PST is explicit employer wording, not board default.",
+      "cycle": "Summer 2027; May 24–August 13; full-time",
+      "deadline": "November 1, 2026, 11:45 PM PST (employer-stated)",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 24, 2027",
+      "timingSourceUrl": "https://careers.airbnb.com/positions/8285171?gh_jid=8285171",
+      "deadlineISO": "2026-11-01T23:45:00-08:00",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Analyze business data and identify financial trends.",
+        "Build forecasts, recommendations and strategic plans.",
+        "Present actionable finance insights to business leaders."
+      ],
+      "eligibilityFlags": [
+        "First-year full-time MBA student at accredited US business school, expected Spring 2028 graduation. Requires 3–5 professional years in FP&A, corporate development, consulting, PE, investment banking or business operations, quantitative analysis, SQL, financial modeling, visualization, AI judgment, project management and stakeholder communication. US work authorization required. Full-time May 24–August 13, 2027. Remote-eligible only where Airbnb has registered entities; current official footer excludes Alaska, Mississippi and North Dakota. Occasional office/offsite attendance by manager agreement. Cover letter required. Deadline Sunday November 1 at 11:45 PM PST is explicit employer wording, not board default."
+      ],
+      "benefits": [
+        "Mentorship, learning sessions and cohort events. May be eligible for benefits and Employee Travel Credits; not guaranteed."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-26T18:13:04.248Z",
+        "sourceUrl": "https://careers.airbnb.com/positions/8285171?gh_jid=8285171",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "1901856f:9a15e4f3",
+        "locationLabel": "Remote",
+        "detailBullets": [
+          "Analyze business data and identify financial trends.",
+          "Build forecasts, recommendations and strategic plans.",
+          "Present actionable finance insights to business leaders.",
+          "Full-time May 24–August 13, 2027; first-year MBA, Spring 2028 graduation; 3–5 professional years; November 1 deadline."
+        ]
+      }
+    },
+    {
+      "co": "Anduril Industries",
+      "role": "2027 Business Operations Intern",
+      "link": "https://boards.greenhouse.io/andurilindustries/jobs/5271826007?gh_jid=5271826007",
+      "loc": "Costa Mesa, CA; Seattle, WA",
+      "ind": "Business & Operations",
+      "desc": "Build repeatable analytics workflows and operational data pipelines. Develop dashboards to guide business decisions. Present insights and identify organizational process improvements.",
+      "pay": "$24–45/hour",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "Costa Mesa, CA; Seattle, WA",
+      "eligibility": "Pursuing bachelor’s/master’s in business operations, business analytics or related field; return to school for at least one quarter/semester after internship. Must be a US Person for export controls; clearance eligibility may be required. Twelve-week in-person Summer 2027 internship. Business analytics, enterprise data platforms, Excel and PowerPoint skills preferred. General full-time equity and benefits boilerplate is not guaranteed intern compensation.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://boards.greenhouse.io/andurilindustries/jobs/5271826007?gh_jid=5271826007",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build repeatable analytics workflows and operational data pipelines.",
+        "Develop dashboards to guide business decisions.",
+        "Present insights and identify organizational process improvements."
+      ],
+      "eligibilityFlags": [
+        "Pursuing bachelor’s/master’s in business operations, business analytics or related field; return to school for at least one quarter/semester after internship. Must be a US Person for export controls; clearance eligibility may be required. Twelve-week in-person Summer 2027 internship. Business analytics, enterprise data platforms, Excel and PowerPoint skills preferred. General full-time equity and benefits boilerplate is not guaranteed intern compensation."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-26T18:12:36.565Z",
+        "sourceUrl": "https://boards.greenhouse.io/andurilindustries/jobs/5271826007?gh_jid=5271826007",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "7e1e50fa:a484ceee",
+        "locationLabel": "Costa Mesa, CA; Seattle, WA",
+        "detailBullets": [
+          "Build repeatable analytics workflows and operational data pipelines.",
+          "Develop dashboards to guide business decisions.",
+          "Present insights and identify organizational process improvements.",
+          "Summer 2027; 12 weeks in person; relevant bachelor’s/master’s students returning to school; US Person export eligibility required."
+        ]
+      }
+    },
+    {
+      "co": "Anduril Industries",
+      "role": "2027 Finance Data Analyst Intern",
+      "link": "https://boards.greenhouse.io/andurilindustries/jobs/5269977007?gh_jid=5269977007",
+      "loc": "Costa Mesa, CA",
+      "ind": "Finance & Accounting",
+      "desc": "Automate month-end finance, reporting and planning workflows. Analyze financial warehouse data using SQL and Python. Build dashboards, AI tools and data-quality checks.",
+      "pay": "Pay not disclosed",
+      "style": "Not listed",
+      "exp": "See eligibility",
+      "state": "Costa Mesa, CA",
+      "eligibility": "Current bachelor’s/master’s in finance, accounting, economics, data science, statistics, computer science, information systems or related field, graduating December 2027–June 2028. SQL, Python, Excel, financial statements, AI-tool/prompt skills, attention to detail and stakeholder communication required. US work authorization required. Exact form additionally requires US security-clearance eligibility and export-control eligibility. No exact internship season, duration, weekly hours or work arrangement stated; do not borrow these from another Anduril requisition. No numerical pay disclosed; full-time benefit/equity boilerplate not an intern guarantee.",
+      "cycle": "2027; exact season not listed",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://boards.greenhouse.io/andurilindustries/jobs/5269977007?gh_jid=5269977007",
+      "payStatus": "not_disclosed",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Automate month-end finance, reporting and planning workflows.",
+        "Analyze financial warehouse data using SQL and Python.",
+        "Build dashboards, AI tools and data-quality checks."
+      ],
+      "eligibilityFlags": [
+        "Current bachelor’s/master’s in finance, accounting, economics, data science, statistics, computer science, information systems or related field, graduating December 2027–June 2028. SQL, Python, Excel, financial statements, AI-tool/prompt skills, attention to detail and stakeholder communication required. US work authorization required. Exact form additionally requires US security-clearance eligibility and export-control eligibility. No exact internship season, duration, weekly hours or work arrangement stated; do not borrow these from another Anduril requisition. No numerical pay disclosed; full-time benefit/equity boilerplate not an intern guarantee."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-26T18:12:47.055Z",
+        "sourceUrl": "https://boards.greenhouse.io/andurilindustries/jobs/5269977007?gh_jid=5269977007",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "50b220aa:c58bd44e",
+        "locationLabel": "Costa Mesa, CA",
+        "detailBullets": [
+          "Automate month-end finance, reporting and planning workflows.",
+          "Analyze financial warehouse data using SQL and Python.",
+          "Build dashboards, AI tools and data-quality checks.",
+          "2027 internship; related bachelor’s/master’s students graduating December 2027–June 2028; US clearance and export eligibility required."
+        ]
+      }
+    },
+    {
+      "co": "Anduril Industries",
+      "role": "2027 Supply Chain Intern",
+      "link": "https://boards.greenhouse.io/andurilindustries/jobs/5255827007?gh_jid=5255827007",
+      "loc": "Costa Mesa, CA; Fort Collins, CO; Quincy, MA; Santa Ana, CA; Waltham, MA",
+      "ind": "Business & Operations",
+      "desc": "Analyze materials demand, procurement and logistics performance. Improve supply-chain systems, data flows and process documentation. Build tools for supplier costs and operational scorecards.",
+      "pay": "$20–40/hour",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "Costa Mesa, CA; Fort Collins, CO; Quincy, MA; Santa Ana, CA; Waltham, MA",
+      "eligibility": "Pursuing bachelor’s/master’s in supply chain, business analytics, IT systems architecture, software engineering, computer science or related field; return to school for at least a quarter/semester afterward. Twelve-week in-person Summer 2027 internship. US Person/export-control eligibility required; clearance may be required by program. Programming, ERP/data/SQL/cloud/APIs/visualization experience preferred. General full-time equity and benefits are not guaranteed intern compensation.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://boards.greenhouse.io/andurilindustries/jobs/5255827007?gh_jid=5255827007",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Analyze materials demand, procurement and logistics performance.",
+        "Improve supply-chain systems, data flows and process documentation.",
+        "Build tools for supplier costs and operational scorecards."
+      ],
+      "eligibilityFlags": [
+        "Pursuing bachelor’s/master’s in supply chain, business analytics, IT systems architecture, software engineering, computer science or related field; return to school for at least a quarter/semester afterward. Twelve-week in-person Summer 2027 internship. US Person/export-control eligibility required; clearance may be required by program. Programming, ERP/data/SQL/cloud/APIs/visualization experience preferred. General full-time equity and benefits are not guaranteed intern compensation."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-26T18:12:47.547Z",
+        "sourceUrl": "https://boards.greenhouse.io/andurilindustries/jobs/5255827007?gh_jid=5255827007",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "a6dfa290:10d5479c",
+        "locationLabel": "Multiple locations",
+        "detailBullets": [
+          "Analyze materials demand, procurement and logistics performance.",
+          "Improve supply-chain systems, data flows and process documentation.",
+          "Build tools for supplier costs and operational scorecards.",
+          "Summer 2027; 12 weeks in person; related students returning to school; US Person export eligibility required."
+        ]
+      }
+    },
+    {
+      "co": "Astranis",
+      "role": "Software Developer, Network Software Intern (Summer 2027)",
+      "link": "https://job-boards.greenhouse.io/astranis/jobs/4705597006",
+      "loc": "San Francisco, CA",
+      "ind": "Software & Engineering",
+      "desc": "Build satellite-network software interfaces and backend workflows. Create tools for network operations teams. Define software requirements with multidisciplinary engineering teams.",
+      "pay": "$29/hour",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "San Francisco, CA",
+      "eligibility": "Currently pursuing B.S. in computer science, electrical/computer engineering or equivalent technical degree at a four-year university. Django/similar frameworks, relational SQL databases, UI prototyping and ability to design/write/test software listed; employer encourages applying without every criterion. Application requires minimum 12 weeks, five days/week onsite in San Francisco and commitment to 55 hours/week. US citizenship, lawful permanent residence, refugee/asylee or other protected-individual export-control status required. Summer only; do not claim compatible with a full class schedule.",
+      "cycle": "Summer 2027; minimum 12 weeks; 55 hours/week",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/astranis/jobs/4705597006",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build satellite-network software interfaces and backend workflows.",
+        "Create tools for network operations teams.",
+        "Define software requirements with multidisciplinary engineering teams."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing B.S. in computer science, electrical/computer engineering or equivalent technical degree at a four-year university. Django/similar frameworks, relational SQL databases, UI prototyping and ability to design/write/test software listed; employer encourages applying without every criterion. Application requires minimum 12 weeks, five days/week onsite in San Francisco and commitment to 55 hours/week. US citizenship, lawful permanent residence, refugee/asylee or other protected-individual export-control status required. Summer only; do not claim compatible with a full class schedule."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-26T18:12:47.827Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/astranis/jobs/4705597006",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "f9b30c60:c59e3ee4",
+        "locationLabel": "San Francisco, CA",
+        "detailBullets": [
+          "Build satellite-network software interfaces and backend workflows.",
+          "Create tools for network operations teams.",
+          "Define software requirements with multidisciplinary engineering teams.",
+          "Summer 2027; minimum 12 weeks; 55 hours/week in person; related university students; US export-control eligibility required."
+        ]
+      }
+    },
+    {
+      "co": "DLR Group",
+      "role": "Electrical Engineering Intern | Summer 2027",
+      "link": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441346008",
+      "loc": "Denver, CO; Phoenix, AZ",
+      "ind": "Engineering",
+      "desc": "Design electrical systems with licensed engineers. Develop Revit construction documents and coordinate building designs. Attend project meetings and potential construction-site visits.",
+      "pay": "Suggested $20–26/hour",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "Denver, CO; Phoenix, AZ",
+      "eligibility": "Completed at least one year at an ABET-accredited electrical or architectural engineering program. BIM/Revit MEP experience or interest required; FE exam and architectural building design interest preferred. Full-time May 18–August 6, 2027; participation for the entire program required. Not remote; company follows four days in-office with optional offsite Friday. US work authorization without present/future school or employment visa sponsorship required. Form asks about current class standing, GPA, BIM skills and relocation at own expense. EPX mentorship, project work and weekly learning sessions; ordinary employee benefits are not guaranteed intern benefits.",
+      "cycle": "Summer 2027; May 18–August 6; full-time",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 18, 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441346008",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Design electrical systems with licensed engineers.",
+        "Develop Revit construction documents and coordinate building designs.",
+        "Attend project meetings and potential construction-site visits."
+      ],
+      "eligibilityFlags": [
+        "Completed at least one year at an ABET-accredited electrical or architectural engineering program. BIM/Revit MEP experience or interest required; FE exam and architectural building design interest preferred. Full-time May 18–August 6, 2027; participation for the entire program required. Not remote; company follows four days in-office with optional offsite Friday. US work authorization without present/future school or employment visa sponsorship required. Form asks about current class standing, GPA, BIM skills and relocation at own expense. EPX mentorship, project work and weekly learning sessions; ordinary employee benefits are not guaranteed intern benefits."
+      ],
+      "benefits": [
+        "EPX mentorship, project work, weekly learning sessions and professional connections."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-26T18:12:48.150Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441346008",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "5d4b8a9d:7b0c3481",
+        "locationLabel": "Denver, CO; Phoenix, AZ",
+        "detailBullets": [
+          "Design electrical systems with licensed engineers.",
+          "Develop Revit construction documents and coordinate building designs.",
+          "Attend project meetings and potential construction-site visits.",
+          "Full-time May 18–August 6, 2027; one completed ABET engineering year; US work authorization without sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "DLR Group",
+      "role": "Mechanical Engineering Intern | Summer 2027",
+      "link": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441813008",
+      "loc": "Charlotte, NC; Durham, NC",
+      "ind": "Engineering",
+      "desc": "Design mechanical systems with licensed engineers. Develop HVAC, plumbing and fire-protection designs. Create Revit documents and coordinate building projects.",
+      "pay": "Paid; amount not disclosed",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "Charlotte, NC; Durham, NC",
+      "eligibility": "Completed at least one year at an ABET-accredited mechanical or architectural engineering program. BIM/Revit MEP experience or interest required; FE exam, architectural design interest and third-year standing preferred. Full-time May 18–August 6, 2027; participation for the entire program required. Not remote; company follows four days in-office with optional offsite Friday. US work authorization without present/future school or employment visa sponsorship required. Form asks about current class standing, GPA, BIM skills and relocation at own expense. EPX mentorship, project work and weekly learning sessions; ordinary employee benefits are not guaranteed intern benefits.",
+      "cycle": "Summer 2027; May 18–August 6; full-time",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 18, 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441813008",
+      "payStatus": "paid",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Design mechanical systems with licensed engineers.",
+        "Develop HVAC, plumbing and fire-protection designs.",
+        "Create Revit documents and coordinate building projects."
+      ],
+      "eligibilityFlags": [
+        "Completed at least one year at an ABET-accredited mechanical or architectural engineering program. BIM/Revit MEP experience or interest required; FE exam, architectural design interest and third-year standing preferred. Full-time May 18–August 6, 2027; participation for the entire program required. Not remote; company follows four days in-office with optional offsite Friday. US work authorization without present/future school or employment visa sponsorship required. Form asks about current class standing, GPA, BIM skills and relocation at own expense. EPX mentorship, project work and weekly learning sessions; ordinary employee benefits are not guaranteed intern benefits."
+      ],
+      "benefits": [
+        "EPX mentorship, project work, weekly learning sessions and professional connections."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-26T18:12:48.404Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441813008",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "43090b93:16c435e7",
+        "locationLabel": "Charlotte, NC; Durham, NC",
+        "detailBullets": [
+          "Design mechanical systems with licensed engineers.",
+          "Develop HVAC, plumbing and fire-protection designs.",
+          "Create Revit documents and coordinate building projects.",
+          "Full-time May 18–August 6, 2027; one completed ABET engineering year; US work authorization without sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "DLR Group",
+      "role": "Civil Engineering Intern | Summer 2027",
+      "link": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441775008",
+      "loc": "Orlando, FL",
+      "ind": "Engineering",
+      "desc": "Develop civil building-system designs with integrated project teams. Create Civil 3D and Revit models and documents. Support calculations, code research and site visits.",
+      "pay": "Paid; amount not disclosed",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "Orlando, FL",
+      "eligibility": "Completed at least one year at an ABET-accredited civil engineering program. Revit/drafting, communication, technology, organization, multitasking and teamwork required. Third-year standing, sustainability and landscape/building systems interest preferred. Full-time May 18–August 6, 2027; participation for the entire program required. Not remote; company follows four days in-office with optional offsite Friday. US work authorization without present/future school or employment visa sponsorship required. Form asks about current class standing, GPA, BIM skills and relocation at own expense. EPX mentorship, project work and weekly learning sessions; ordinary employee benefits are not guaranteed intern benefits.",
+      "cycle": "Summer 2027; May 18–August 6; full-time",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 18, 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441775008",
+      "payStatus": "paid",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop civil building-system designs with integrated project teams.",
+        "Create Civil 3D and Revit models and documents.",
+        "Support calculations, code research and site visits."
+      ],
+      "eligibilityFlags": [
+        "Completed at least one year at an ABET-accredited civil engineering program. Revit/drafting, communication, technology, organization, multitasking and teamwork required. Third-year standing, sustainability and landscape/building systems interest preferred. Full-time May 18–August 6, 2027; participation for the entire program required. Not remote; company follows four days in-office with optional offsite Friday. US work authorization without present/future school or employment visa sponsorship required. Form asks about current class standing, GPA, BIM skills and relocation at own expense. EPX mentorship, project work and weekly learning sessions; ordinary employee benefits are not guaranteed intern benefits."
+      ],
+      "benefits": [
+        "EPX mentorship, project work, weekly learning sessions and professional connections."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-26T18:12:48.747Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5441775008",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "190f2717:5e12610b",
+        "locationLabel": "Orlando, FL",
+        "detailBullets": [
+          "Develop civil building-system designs with integrated project teams.",
+          "Create Civil 3D and Revit models and documents.",
+          "Support calculations, code research and site visits.",
+          "Full-time May 18–August 6, 2027; one completed ABET civil-engineering year; US work authorization without sponsorship."
+        ]
+      }
+    },
+    {
+      "co": "TikTok",
+      "role": "Product Manager Intern (PGC) - 2027 Summer",
+      "link": "https://lifeattiktok.com/search/7673365923163638069",
+      "loc": "San Jose, CA",
+      "ind": "Product Management",
+      "desc": "Plan product initiatives with engineering and design teams. Translate user research into product requirements. Analyze success metrics and guide product launches.",
+      "pay": "$35/hour",
+      "style": "Not listed",
+      "exp": "See eligibility",
+      "state": "San Jose, CA",
+      "eligibility": "Currently pursuing related bachelor’s degree; related master’s preferred. Twelve weeks Summer 2027. Product-management/design foundations, data analysis, requirements gathering, analytical/design tools and communication from coursework, projects or internships qualify. Full product lifecycle and roadmap experience preferred. Applications rolling; maximum two positions across company and affiliates globally, considered in submission order. Availability must be on resume. San Jose requisition A176419. Employer account required to apply. Work arrangement not stated.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://lifeattiktok.com/search/7673365923163638069",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Plan product initiatives with engineering and design teams.",
+        "Translate user research into product requirements.",
+        "Analyze success metrics and guide product launches."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing related bachelor’s degree; related master’s preferred. Twelve weeks Summer 2027. Product-management/design foundations, data analysis, requirements gathering, analytical/design tools and communication from coursework, projects or internships qualify. Full product lifecycle and roadmap experience preferred. Applications rolling; maximum two positions across company and affiliates globally, considered in submission order. Availability must be on resume. San Jose requisition A176419. Employer account required to apply. Work arrangement not stated."
+      ],
+      "benefits": [
+        "Day-one health/life insurance and wellbeing benefits; 10 paid holidays annually; sick time per hire-half-year rules. Non-100%-remote interns may qualify for housing allowance; conditional, not guaranteed."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-26T18:12:21.636Z",
+        "sourceUrl": "https://lifeattiktok.com/search/7673365923163638069",
+        "reviewerType": "source_check"
+      },
+      "presentation": {
+        "sourceKey": "d50017b1:a5a85475",
+        "locationLabel": "San Jose, CA",
+        "detailBullets": [
+          "Plan product initiatives with engineering and design teams.",
+          "Translate user research into product requirements.",
+          "Analyze success metrics and guide product launches.",
+          "Summer 2027; 12 weeks; related bachelor’s students, master’s preferred; rolling applications; employer account required."
         ]
       }
     }

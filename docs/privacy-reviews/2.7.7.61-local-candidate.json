@@ -1,0 +1,14 @@
+{
+  "version": "2.7.7.61",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-10-26T18:20:09.219Z",
+  "reviewer": "Codex StillUnemployed",
+  "sourceDigest": "71680f9dfe9e57f7cea56eeca1f4baabb1565aa35945e7b1187509e5c149c6ff",
+  "sourceFileCount": 227,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Reviewed complete Privacy and Terms for 12 official employer internship additions. Public listing facts and compact presentation only. All162 prior raw approvals retained unchanged, expired Google remains runtime-filtered. No private sourcing/Slack/Instagram evidence is published. No runtime, auth, analytics, consent, storage, provider or legal wording change. Reviewed, no wording change needed. Scoped engineering review, not legal certification. Fresh OAuth, physical iPhone and durable analytics writes not repeated.",
+  "predecessor": "docs/privacy-reviews/2.7.7.60-pre-internships-20261026.json",
+  "author": "Codex",
+  "platform_signature": "-Codex"
+}
