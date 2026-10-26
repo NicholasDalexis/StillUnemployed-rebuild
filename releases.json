@@ -1,7 +1,39 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.60",
+  "currentVersion": "2.7.7.63",
   "releases": [
+    {
+      "version": "2.7.7.63",
+      "date": "2026-10-26",
+      "title": "Twelve verified student opportunities",
+      "changes": [
+        "Complete12internship batch with source-bound facts and validated compact presentation. Local candidates61and62were not released; final fixes use supported Remote label and in-person phrasing. Preserve162prior raw records, staged daily selections and existing runtime deadline filtering. No runtime, auth, analytics, data storage, provider or legal wording change."
+      ],
+      "public": {
+        "title": "New student opportunities",
+        "changes": [
+          "Explore 12 newly verified internships across sports, business, finance, engineering and product."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.62",
+      "date": "2026-10-26",
+      "title": "Twelve student internships, final display QA",
+      "changes": [
+        "Complete12internship source-to-public batch after correcting the compact Remote label caught by local tests. Candidate61was local-only and never released. Preserve162prior raw approvals, all current daily collections and tomorrow staged selection; Google expired identity remains filtered. No runtime or data-use change."
+      ],
+      "public": false
+    },
+    {
+      "version": "2.7.7.61",
+      "date": "2026-10-26",
+      "title": "Twelve student internships verified",
+      "changes": [
+        "Admit 12 exact student requisitions from the October26 full native export and fresh employer/application receipts. Preserve 162 raw prior records, with the existing expired Google identity still runtime-filtered. No Jobs, legal wording, runtime, authentication, analytics, storage, provider or schedule change."
+      ],
+      "public": false
+    },
     {
       "version": "2.7.7.60",
       "date": "2026-10-25",
@@ -1606,7 +1638,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "f15d9e22334f1cc2fd814428b8ae0fbda46752d344e7772c823d485ab7a1d9b6",
+    "digest": "7c478394461aceface315fecc53b69db4ae16bcd1216e2377dca61a422578b20",
     "fileCount": 227
   }
 }
