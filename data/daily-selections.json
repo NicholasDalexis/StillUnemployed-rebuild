@@ -1483,6 +1483,198 @@
           }
         }
       ]
+    },
+    {
+      "date": "2026-10-28",
+      "kind": "jobs",
+      "state": "scheduled",
+      "publishAt": "2026-10-28T13:00:00.000Z",
+      "jobs": [
+        {
+          "id": "1gdmw1t5xglfu",
+          "link": "https://job-boards.greenhouse.io/thenewyorktimes/jobs/4744216005",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/thenewyorktimes/jobs/4744216005",
+            "co": "The New York Times",
+            "role": "Junior Campaign Manager",
+            "pay": "$60,000–$70,000/year base",
+            "loc": "New York, NY · Hybrid, typically 3 office days/week",
+            "exp": "Related bachelor’s; analytical/project experience; prior internship or entry-level ad ops preferred; NYC/Tri-State commute; submit own application work, no substantive GenAI content",
+            "ind": "Growth & CRM",
+            "tldr": "• Launch and optimize digital advertising campaigns\n• Monitor performance and build campaign reports\n• Related bachelor’s; ad-ops internship experience preferred\n• NYC hybrid, typically 3 office days; own application work"
+          }
+        },
+        {
+          "id": "3ivig615vairw",
+          "link": "https://job-boards.greenhouse.io/braze/jobs/8192090",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/braze/jobs/8192090",
+            "co": "Braze",
+            "role": "Talent Development Operations & Program Specialist",
+            "pay": "$67,000–$81,000/year base",
+            "loc": "New York, NY · Work arrangement not stated",
+            "exp": "1–3 professional years; LMS/HR systems, facilitation and global cohort coordination",
+            "ind": "People & Recruiting",
+            "tldr": "• Coordinate global onboarding and learning programs\n• Facilitate orientation and administer learning systems\n• Track cohorts, feedback, program data and vendor invoices\n• 1–3 professional years; NYC; work mode not stated"
+          }
+        },
+        {
+          "id": "1s2fby712w9ac5",
+          "link": "https://job-boards.greenhouse.io/oscar/jobs/8303593",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/oscar/jobs/8303593",
+            "co": "Oscar Health",
+            "role": "Actuarial Analyst, Valuation",
+            "pay": "$79,488–$104,328/year base",
+            "loc": "New York, NY · Hybrid, 3 office days/week including Thursday",
+            "exp": "STEM bachelor’s; 2+ related years; at least 2 actuarial exams passed; Thursday required in office; other two office days flexible",
+            "ind": "Finance & Accounting",
+            "tldr": "• Maintain health-insurance valuation and claims models\n• Support regulatory filings and accrual recommendations\n• STEM bachelor’s, 2+ related years, 2 actuarial exams\n• NYC hybrid, 3 office days including Thursday"
+          }
+        },
+        {
+          "id": "1b1utt16dfyv5",
+          "link": "https://job-boards.greenhouse.io/sonymusicentertainment/jobs/8560257002",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/sonymusicentertainment/jobs/8560257002",
+            "co": "Milan Records (Sony Music)",
+            "role": "Specialist, Soundtracks Production - Milan Records",
+            "pay": "$70,350/year base",
+            "loc": "Los Angeles, CA · Work arrangement not stated",
+            "exp": "No numeric experience minimum stated; strong project coordination and soundtrack interest",
+            "ind": "Media & Production",
+            "tldr": "• Collect soundtrack mixes, track lists and credits\n• Support soundtrack email, video and commerce campaigns\n• Maintain website, YouTube and release marketing assets\n• Strong coordination and soundtrack interest; work mode unstated"
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-10-29",
+      "kind": "jobs",
+      "state": "scheduled",
+      "publishAt": "2026-10-29T13:00:00.000Z",
+      "jobs": [
+        {
+          "id": "xvdztosgx5w4",
+          "link": "https://jobs.ashbyhq.com/plaid/f2a756cd-28c8-4e94-b99b-3b5c16751552",
+          "snapshot": {
+            "link": "https://jobs.ashbyhq.com/plaid/f2a756cd-28c8-4e94-b99b-3b5c16751552",
+            "co": "Plaid",
+            "role": "Employee Experience Coordinator",
+            "pay": "$97,200–$123,600/year salary, Zone 1",
+            "loc": "New York, NY · Hybrid, onsite Tuesday–Thursday",
+            "exp": "1–3 years events, employee experience, admin, HR or workplace experience; event planning and execution; Lift up to 50 lb; maximum 3 applications per 60 days and 12-month wait to reapply after consideration for the same role",
+            "ind": "Business & Operations",
+            "tldr": "• Coordinate employee events, vendors and logistics\n• Track budgets, timelines and employee communications\n• 1–3 relevant years plus event planning and execution\n• NYC onsite Tue–Thu; must lift up to 50 lb"
+          }
+        },
+        {
+          "id": "ic645rv9onum",
+          "link": "https://job-boards.greenhouse.io/thenewyorktimes/jobs/4741029005",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/thenewyorktimes/jobs/4741029005",
+            "co": "The New York Times",
+            "role": "Analyst, Technical Trainer",
+            "pay": "$110,000–$120,000/year base",
+            "loc": "New York, NY · Hybrid, typically 3 office days/week",
+            "exp": "2+ years information-security training; cybersecurity basics, threat-model guidance and public speaking; On-call rotation; approximately 10% annual travel; submit own application work, no substantive GenAI content",
+            "ind": "Education & Community",
+            "tldr": "• Lead employee security and technology training\n• Create workshops, guides, videos and phishing simulations\n• 2+ years information-security training; on-call rotation\n• NYC hybrid, typically 3 days; ~10% travel; own application work"
+          }
+        },
+        {
+          "id": "o7tjgvt14c2t",
+          "link": "https://job-boards.greenhouse.io/sonymusicentertainment/jobs/8806820002",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/sonymusicentertainment/jobs/8806820002",
+            "co": "Ceremony of Roses (Sony)",
+            "role": "Retail & Licensing Coordinator - Ceremony Of Roses",
+            "pay": "$50,000–$55,000/year base",
+            "loc": "Los Angeles, CA · Work arrangement not stated",
+            "exp": "1–2 years product development, contract management and royalty reporting; Microsoft Office; Asana is a plus; Music and cultural knowledge expected",
+            "ind": "Business & Operations",
+            "tldr": "• Coordinate licensed-merchandise product submissions\n• Track artist samples, inventory and creative assets\n• Build retail pitch materials and commercial-team support\n• 1–2 years product development, contracts and royalties; LA"
+          }
+        },
+        {
+          "id": "11m2ulz165evh6",
+          "link": "https://jobs.ashbyhq.com/cognition/781253e9-294d-4820-b465-dcb00d92476c",
+          "snapshot": {
+            "link": "https://jobs.ashbyhq.com/cognition/781253e9-294d-4820-b465-dcb00d92476c",
+            "co": "Cognition",
+            "role": "Workplace & Engagement Coordinator",
+            "pay": "$80,000–$110,000/year base",
+            "loc": "New York, NY · Onsite",
+            "exp": "No numeric minimum; front-desk, office coordination, hospitality or rapid-growth experience is a plus; Lift up to 35 lb; on feet throughout the day",
+            "ind": "Business & Operations",
+            "tldr": "• Welcome employees, candidates and office guests\n• Coordinate mail, meals, supplies and office logistics\n• Support onboarding, interviews and employee events\n• Experience is a plus; onsite NYC; lift up to 35 lb and stand"
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-10-30",
+      "kind": "jobs",
+      "state": "scheduled",
+      "publishAt": "2026-10-30T13:00:00.000Z",
+      "jobs": [
+        {
+          "id": "1iio62fxmmpin",
+          "link": "https://jobs.ashbyhq.com/notion/4f678608-f9f7-455d-b81c-9433ec974d0e",
+          "snapshot": {
+            "link": "https://jobs.ashbyhq.com/notion/4f678608-f9f7-455d-b81c-9433ec974d0e",
+            "co": "Notion",
+            "role": "Recruiting Coordinator - AMER",
+            "pay": "Estimated $85,000–$95,000/year base",
+            "loc": "San Francisco, CA / New York, NY · Hybrid, Mon/Tue/Thu in office",
+            "exp": "6–12 months in recruiting coordination or interview scheduling; Full-time",
+            "ind": "People & Recruiting",
+            "tldr": "• Coordinate high-volume interviews and candidate communication\n• Partner with recruiters and hiring managers\n• Improve scheduling and recruiting workflows\n• 6–12 months; SF/NYC office Monday, Tuesday and Thursday"
+          }
+        },
+        {
+          "id": "1sgobzvuiz636",
+          "link": "https://jobs.smartrecruiters.com/NBCUniversal3/744000156590272-data-analyst-digital-media-sales-nbcu-local",
+          "snapshot": {
+            "link": "https://jobs.smartrecruiters.com/NBCUniversal3/744000156590272-data-analyst-digital-media-sales-nbcu-local",
+            "co": "NBCUniversal (NBCU Local)",
+            "role": "Data Analyst - Digital Media Sales, NBCU Local",
+            "pay": "$62,000–$72,000/year",
+            "loc": "Remote, US · Eastern hours; NYC area preferred",
+            "exp": "2+ analytics/BI/data-operations years; bachelor’s or equivalent; 18+; unrestricted US work authorization; support Eastern business hours",
+            "ind": "Data & AI",
+            "tldr": "• Build Excel reporting tools for local-media sales\n• Maintain Python/pandas reporting and automation workflows\n• Develop Tableau/DOMO dashboards and troubleshoot data\n• 2+ analytics years; US remote/Eastern hours; unrestricted US authorization"
+          }
+        },
+        {
+          "id": "oc91762uxy9e",
+          "link": "https://job-boards.greenhouse.io/mbooth/jobs/8657381002",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/mbooth/jobs/8657381002",
+            "co": "M Booth",
+            "role": "Assistant Influencer Strategist",
+            "pay": "$49,000–$55,000/year",
+            "loc": "New York, NY · Hybrid, 2 in-person days/week",
+            "exp": "2–3 influencer-marketing years; bachelor’s degree or equivalent; NYC or commutable hub; two in-person days may be office, client office, on the road or an industry event",
+            "ind": "Influencer",
+            "tldr": "• Research creators and cultural trends for brand programs\n• Coordinate influencer partnerships, contracts and activations\n• Review content and build campaign recaps with client teams\n• 2–3 influencer years; bachelor’s/equivalent; NYC hybrid two days"
+          }
+        },
+        {
+          "id": "bu0zgw13m8uor",
+          "link": "https://job-boards.greenhouse.io/sonymusicentertainment/jobs/8833857002",
+          "snapshot": {
+            "link": "https://job-boards.greenhouse.io/sonymusicentertainment/jobs/8833857002",
+            "co": "Ceremony of Roses (Sony Music)",
+            "role": "Strategic Partnerships Coordinator - Ceremony Of Roses",
+            "pay": "$50,000–$55,000/year base",
+            "loc": "Los Angeles, CA · Office willingness required; frequency unstated",
+            "exp": "No numeric experience minimum stated; organized invoicing/product/shipping coordination",
+            "ind": "Business & Operations",
+            "tldr": "• Coordinate product-supply deals and delivery timelines\n• Create and track invoices through payment\n• Manage product/shipping diligence and account-team support\n• LA-based office willingness; no numeric experience minimum stated"
+          }
+        }
+      ]
     }
   ]
 }
