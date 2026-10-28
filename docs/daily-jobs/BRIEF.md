@@ -113,3 +113,14 @@ Author: Codex. Source: Marketing marketing-montue-20261025-v1, immutable stage p
 Stage exact October26 NBCUniversal GraphicsArtist/Epic FanEngagement/Reformation TalentAcquisition/Oscar PlanLoading and October27 Sony MarketingFinancialPlanning/Kikoff Rotational2027/Columbia FilmTV/Deepgram ExecutiveCoordinator, both13:00UTC/9AM Eastern. All21published collections remain structurally exact, with only these two scheduled objects appended. Preserve full approved snapshots, regional pay, education/experience and location/work-authorization restrictions. Current live feed/moderation continues to govern TLDR/Apply; this data-only change does not integrate unrelated qualification or SEO work. Preserve all162raw internship records and current161public objects from production59, source status, runtime/auth/analytics and other candidates. No sourceSheet, social queue, schedule, provider, spend or new gate. Future membership stays private until server due-time; actual future activation and social delivery remain later checks.
 
 -Codex
+
+
+<!-- wedfri-20261027-v1 -->
+
+## Wednesday through Friday continuation | October27,2026, America/New_York
+
+Author: Codex. Source: Marketing marketing-wedfri-20261027-v1, immutable stage SHA2569e98aada6ffdccce831380a5691fa0d4a57c32e41a3b0b96ab284ac918fc611c, existing Nic-approved production continuation. Status:2.7.7.64 candidate; hosted release evidence recorded separately.
+
+Stage exact October28 NYTJuniorCampaign/BrazeTalentDevelopment/OscarActuarial/MilanSoundtracks; October29 PlaidEmployeeExperience/NYTTechnicalTrainer/CeremonyRetailLicensing/CognitionWorkplace; October30 NotionRecruiting/NBCULocalDataAnalyst/MBoothInfluencer/CeremonyPartnerships, each13:00UTC/9AM Eastern. Preserve all23prior collections and all174raw internship records/current173public objects. Full approved snapshots, regional compensation/estimated-pay labels, eligibility, qualifications and source work-mode wording remain exact; current catalog/moderation controls TLDR/Apply. No runtime/auth/analytics/sourceSheet/social/schedule/provider or unrelated candidate change. Future website API/fallback membership stays hidden until server due-time. Actual activation and social publication remain future checker work. Rasputin filing stays with Marketing.
+
+-Codex

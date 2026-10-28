@@ -1,7 +1,15 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.63",
+  "currentVersion": "2.7.7.64",
   "releases": [
+    {
+      "version": "2.7.7.64",
+      "date": "2026-10-27",
+      "title": "Wednesday through Friday daily selections",
+      "changes": [
+        "Stage the approved October28–30 ordered daily fours at9AM Eastern. Preserve23published collections and production63 internship/runtime state. Source marketing-wedfri-20261027-v1; future activation pending."
+      ]
+    },
     {
       "version": "2.7.7.63",
       "date": "2026-10-26",
@@ -1638,7 +1646,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "7c478394461aceface315fecc53b69db4ae16bcd1216e2377dca61a422578b20",
+    "digest": "c21b5395b16a85768ed0bd45806439b725b8d19ffd263ce5947565b2b045c400",
     "fileCount": 227
   }
 }
