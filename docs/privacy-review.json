@@ -1,14 +1,14 @@
 {
-  "version": "2.7.7.64",
+  "version": "2.7.7.66",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-28T00:31:05.074Z",
+  "reviewedAt": "2026-10-29T05:01:44.278Z",
   "reviewer": "Codex StillUnemployed",
-  "sourceDigest": "c21b5395b16a85768ed0bd45806439b725b8d19ffd263ce5947565b2b045c400",
-  "sourceFileCount": 227,
+  "sourceDigest": "568f6a860038f792b7c6b49b8495b9a0bb042cd5b124bc0c5413c0b9f17e549f",
+  "sourceFileCount": 228,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Reviewed Privacy and Terms for three approved future Daily Jobs selections. All23historical snapshots and174raw internship records preserved. No new runtime, auth, analytics, consent, storage, provider or personal-data behavior. Reviewed, no wording change needed. Scoped engineering review, not legal certification. FreshOAuth, physicaliPhone and durableanalytics not repeated.",
-  "predecessor": "docs/privacy-reviews/2.7.7.63-pre-review-20261027.json",
+  "scope": "Reviewed Privacy and Terms for eleven source-verified student/fellowship admissions,36corrected employer deadline instants and display checksums, removal of two confirmed closed raw snapshot identities, and operator-only branch lifecycle handling. Unaffected source facts,26daily staging objects and runtime auth/analytics/consent/storage/provider/permission/user preferences remain unchanged. Netlify availability checks remain explicitly unactivated. No new data collection, service, secret, schedule or send. Reviewed, no wording change needed; not legal certification. FreshOAuth/physicaliPhone/analyticswrites not repeated. Normal build refreshed only the static published fallback from23to24 exact approved collections; all23historicalobjects and26private stagedobjects remain exact, October29/30 not exposed.",
+  "predecessor": "docs/privacy-reviews/2.7.7.64-pre-maintenance-20261029.json",
   "author": "Codex",
   "platform_signature": "-Codex"
 }

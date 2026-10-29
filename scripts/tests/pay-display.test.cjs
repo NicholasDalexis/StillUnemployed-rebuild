@@ -79,7 +79,11 @@ test('current internship pay labels are compact and formatting leaves all source
     const options = Object.freeze({ basis:job.payBasis, status:job.payStatus });
     const label = Pay.compact(job.pay, options);
     assert(label.length <= 36, job.co + ': ' + label);
-    assert.doesNotMatch(label, /not listed|not stated|amount not disclosed/i, job.co + ': ' + label);
+    // An employer amount with no stated period must keep that uncertainty.
+    // Generic placeholder removal must not erase the explicit unknown-unit
+    // disclosure (DLR's new admission exposes this existing source contract).
+    if (/time unit not listed/i.test(job.pay)) assert.match(label, /time unit not listed/i, job.co + ': ' + label);
+    else assert.doesNotMatch(label, /not listed|not stated|amount not disclosed/i, job.co + ': ' + label);
     if (job.payBasis !== 'hour' && job.payBasis !== 'not_listed') assert.doesNotMatch(label, /\d\.\d/, job.co + ': ' + label);
     if (job.payBasis === 'not_listed') assert.doesNotMatch(label, /\/(?:hour|week|month|year|program)\b/, job.co);
     assert.equal(Pay.compact(job.pay, options), label, 'pure repeated formatting');
