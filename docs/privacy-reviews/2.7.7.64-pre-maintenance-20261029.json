@@ -1,0 +1,14 @@
+{
+  "version": "2.7.7.64",
+  "status": "local-reviewed",
+  "reviewedAt": "2026-10-28T00:31:05.074Z",
+  "reviewer": "Codex StillUnemployed",
+  "sourceDigest": "c21b5395b16a85768ed0bd45806439b725b8d19ffd263ce5947565b2b045c400",
+  "sourceFileCount": 227,
+  "privacyChanged": false,
+  "termsChanged": false,
+  "scope": "Reviewed Privacy and Terms for three approved future Daily Jobs selections. All23historical snapshots and174raw internship records preserved. No new runtime, auth, analytics, consent, storage, provider or personal-data behavior. Reviewed, no wording change needed. Scoped engineering review, not legal certification. FreshOAuth, physicaliPhone and durableanalytics not repeated.",
+  "predecessor": "docs/privacy-reviews/2.7.7.63-pre-review-20261027.json",
+  "author": "Codex",
+  "platform_signature": "-Codex"
+}

@@ -1,7 +1,35 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.64",
+  "currentVersion": "2.7.7.66",
   "releases": [
+    {
+      "version": "2.7.7.66",
+      "date": "2026-10-29",
+      "title": "Current internships and deadline maintenance",
+      "changes": [
+        "Publish eleven freshly verified native student/fellowship admissions; preserve full employer conditions and all prior unaffected facts.",
+        "Correct thirty-six Sony machine and displayed deadlines from current employer evidence; remove confirmed Hydrite and Sephora closures, retain NEON exclusion and all daily staging.",
+        "Add tested operator release-ref lifecycle checks for missing/existing/conflicting branches and real authorization denials. Netlify availability verifier remains explicitly unactivated; no activation, email or schedule change."
+      ],
+      "public": {
+        "title": "More internships, clearer deadlines",
+        "changes": [
+          "Explore 11 newly checked internships and fellowships across events, engineering, recruiting and video.",
+          "Sony internship deadlines now include the exact application time."
+        ]
+      }
+    },
+    {
+      "version": "2.7.7.65",
+      "date": "2026-10-27",
+      "title": "Superseded unpublished deadline candidate",
+      "changes": [
+        "Historical candidate 2.7.7.65 stopped on an update of a missing release branch. It never deployed; preserve that failed outcome. Rebuilt maintenance package follows separately from current main and fresh native evidence."
+      ],
+      "status": "superseded-never-deployed",
+      "deployed": false,
+      "supersededBy": "2.7.7.66"
+    },
     {
       "version": "2.7.7.64",
       "date": "2026-10-27",
@@ -1646,7 +1674,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "c21b5395b16a85768ed0bd45806439b725b8d19ffd263ce5947565b2b045c400",
-    "fileCount": 227
+    "digest": "568f6a860038f792b7c6b49b8495b9a0bb042cd5b124bc0c5413c0b9f17e549f",
+    "fileCount": 228
   }
 }

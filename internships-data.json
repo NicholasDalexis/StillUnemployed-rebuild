@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-26T18:19:55.559Z",
+  "sourceExportedAt": "2026-10-29T04:52:21.108Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -1200,45 +1200,6 @@
         "status": "open",
         "checkedAt": "2026-09-28T01:40:22.332Z",
         "sourceUrl": "https://boards-api.greenhouse.io/v1/boards/gallup/jobs/4394610009?questions=true",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Hydrite",
-      "role": "Marketing Intern (Summer 2027)",
-      "link": "https://job-boards.greenhouse.io/hydritechemicalco/jobs/8185945",
-      "loc": "Brookfield, WI",
-      "ind": "Brand / Marketing",
-      "desc": "Support Hydrite marketing with content writing, graphics, website updates, product photography and events.",
-      "pay": "Paid; amount not disclosed",
-      "style": "",
-      "exp": "Not listed",
-      "state": "Brookfield, WI",
-      "eligibility": "Pursuing Marketing, Communications, Graphic Design, Digital Media, PR, Web Design or related degree. Microsoft Office proficiency and valid driver's license with excellent record required; Adobe Creative Suite preferred. Application asks US authorization without present or future sponsorship.",
-      "cycle": "Summer 2027",
-      "deadline": "Not listed",
-      "applicationsOpen": "Not listed",
-      "startDate": "Summer 2027; exact dates not listed",
-      "timingSourceUrl": "https://job-boards.greenhouse.io/hydritechemicalco/jobs/8185945",
-      "payStatus": "paid",
-      "payBasis": "not_listed",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Write website, email and marketing content.",
-        "Design social, print and digital graphics.",
-        "Support product photography and event coordination."
-      ],
-      "eligibilityFlags": [
-        "Pursuing Marketing, Communications, Graphic Design, Digital Media, PR, Web Design or related degree. Microsoft Office proficiency and valid driver's license with excellent record required; Adobe Creative Suite preferred. Application asks US authorization without present or future sponsorship."
-      ],
-      "benefits": [
-        "Professional development workshops, networking, project showcase, paid volunteer time and company events; specific cash pay not disclosed."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-09-28T01:40:22.475Z",
-        "sourceUrl": "https://boards-api.greenhouse.io/v1/boards/hydritechemicalco/jobs/8185945?questions=true",
         "reviewerType": "source_check"
       }
     },
@@ -2498,52 +2459,6 @@
         "status": "open",
         "checkedAt": "2026-10-13T22:05:43.846Z",
         "sourceUrl": "https://jobs.whitney.org/apply/CuF0WKRJaP/Spring-2027-Marketing-Internship",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Sephora",
-      "role": "Intern, Product Management, Connecting Clients, Channels and Fulfillment (Applied AI & Automation)",
-      "link": "https://jobs.sephora.com/USA/job/Remote-Intern%2C-Product-Management%2C-Connecting-Clients%2C-Channels-and-Fulfillment-CA-USA_519958/1371172755/",
-      "loc": "Remote, US; FSC SF/NY/DC",
-      "ind": "Artificial Intelligence",
-      "desc": "Build machine-learning and agentic AI proofs of concept for Sephora business challenges.",
-      "pay": "$30.00/hour",
-      "style": "Remote",
-      "exp": "Not listed",
-      "state": "Remote, US; FSC SF/NY/DC",
-      "eligibility": "Currently pursuing Bachelor's, Master's or Ph.D. in Computer Science, Machine Learning, Artificial Intelligence, Data Science, Engineering, Statistics or related quantitative field.\nStrong Python and SQL; demonstrated ML/deep-learning model building/evaluation and experience with LLM applications, RAG, embeddings, vector databases, tool calling or agentic frameworks.\nGraduating in 2027 or 2028 (undergraduate or graduate degree).\n36 hours/week, Monday–Friday; work schedule must align with 9–5 PM Pacific Standard Time (employer wording).\nMust permanently reside and work in the United States; available June 14–August 20, 2027.\nMust be open to relocating to the San Francisco Bay Area upon graduation for consideration for full-time hybrid positions; this is a future-employment consideration, not a promise of conversion.",
-      "cycle": "Summer 2027; June 14–August 20",
-      "deadline": "Not listed",
-      "applicationsOpen": "Not listed",
-      "startDate": "2027-06-14",
-      "timingSourceUrl": "https://jobs.sephora.com/USA/job/Remote-Intern%2C-Product-Management%2C-Connecting-Clients%2C-Channels-and-Fulfillment-CA-USA_519958/1371172755/",
-      "startDateISO": "2027-06-14",
-      "payStatus": "paid",
-      "payBasis": "hour",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Design and evaluate machine-learning models for business use cases.",
-        "Build retrieval, tool-calling and agentic AI workflows.",
-        "Develop Python and SQL proofs of concept."
-      ],
-      "eligibilityFlags": [
-        "Currently pursuing Bachelor's, Master's or Ph.D. in Computer Science, Machine Learning, Artificial Intelligence, Data Science, Engineering, Statistics or related quantitative field.",
-        "Strong Python and SQL; demonstrated ML/deep-learning model building/evaluation and experience with LLM applications, RAG, embeddings, vector databases, tool calling or agentic frameworks.",
-        "Graduating in 2027 or 2028 (undergraduate or graduate degree).",
-        "36 hours/week, Monday–Friday; work schedule must align with 9–5 PM Pacific Standard Time (employer wording).",
-        "Must permanently reside and work in the United States; available June 14–August 20, 2027.",
-        "Must be open to relocating to the San Francisco Bay Area upon graduation for consideration for full-time hybrid positions; this is a future-employment consideration, not a promise of conversion."
-      ],
-      "benefits": [
-        "Weekly virtual workshops, networking and career panels; hands-on projects.",
-        "Optional intern summer shutdown July 6–9, 2027; paid/unpaid shutdown status not stated."
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-10-14T02:44:17.500Z",
-        "sourceUrl": "https://jobs.sephora.com/USA/job/Remote-Intern%2C-Product-Management%2C-Connecting-Clients%2C-Channels-and-Fulfillment-CA-USA_519958/1371172755/",
         "reviewerType": "source_check"
       }
     },
@@ -4080,10 +3995,11 @@
       "state": "San Mateo, CA",
       "eligibility": "Currently pursuing a Bachelor's degree in Computer Science, Computer Engineering, Software Engineering, or a related field.\nProficiency in at least one programming language, such as Java, Kotlin, Python, or C++.\nStrong foundation in data structures, algorithms, object-oriented programming, and software design principles.\nBasic understanding of databases, APIs, and backend software development.\nSelf-motivated with a strong sense of ownership, curiosity, and willingness to learn new technologies.\nStrong problem-solving and communication skills, with the ability to collaborate effectively in a team environment.\nFamiliarity with microservice architectures, distributed systems, or cloud technologies is a plus.\nExperience with technologies such as Spring Boot, AWS, Docker, or Kubernetes is a plus.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221802004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -4113,12 +4029,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:24.313Z",
+        "checkedAt": "2026-10-29T04:17:35.576Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221802004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "51ab921e:cc885072",
+        "sourceKey": "8cb1b82e:99d5f562",
         "locationLabel": "San Mateo, CA",
         "detailBullets": [
           "Build personalized game discovery services.",
@@ -4141,10 +4057,11 @@
       "state": "San Mateo, CA",
       "eligibility": "Pursuing a master's or doctoral degree in Computer Science, Artificial Intelligence, Machine Learning, Software Engineering, or a related field, with graduation expected between December 2027 and Spring 2028.\nStrong Python skills and a solid foundation in software design, data structures, debugging, and testing.\nHands-on experience building or evaluating machine learning or large language model applications through research, coursework, internships, or personal projects.\nFamiliarity with REST APIs, Git, cloud services, and data stores; experience with retrieval systems or vector search is a plus.\nAbility to explain technical choices clearly, incorporate feedback, and work effectively with a collaborative engineering team.\nInterest in developer productivity and responsible AI, with a willingness to learn unfamiliar systems and tools.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree - Master's\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221766004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -4172,12 +4089,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:37.589Z",
+        "checkedAt": "2026-10-29T04:17:35.571Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221766004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "fb5f548e:5a75c6d2",
+        "sourceKey": "e2ef8d5e:d5640242",
         "locationLabel": "San Mateo, CA",
         "detailBullets": [
           "Prototype AI developer tools.",
@@ -4200,10 +4117,11 @@
       "state": "Los Angeles, CA; San Mateo, CA",
       "eligibility": "Currently pursuing an undergraduate degree in Computer Science, Computer Engineering, or a related field.\nWorking knowledge of HTML, CSS, and JavaScript, with the ability to build and explain a small interactive web page or application.\nBasic familiarity with React components, props, and state through coursework or personal projects, with a willingness to learn TypeScript in a production codebase.\nComfort reading JSON and making simple API requests, along with introductory experience using Git or another version control system.\nCuriosity about how data, permissions, and shared components affect user interfaces, with a willingness to ask questions when requirements are unclear.\nClear communication, collaborative problem-solving skills, and openness to feedback and code review.\nJava experience and MVC design pattern familiarity are a plus.\nInterest in testing, accessibility, and clear user experiences is beneficial, with related coursework or project experience considered a plus.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221826004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -4233,12 +4151,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:24.759Z",
+        "checkedAt": "2026-10-29T04:17:35.680Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221826004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "7411e665:fb328c69",
+        "sourceKey": "98d9d2f1:72848255",
         "locationLabel": "Multiple locations",
         "detailBullets": [
           "Build React audience-management interfaces.",
@@ -4261,10 +4179,11 @@
       "state": "San Mateo, CA",
       "eligibility": "Currently pursuing a Master’s degree in Computer Science, Machine Learning, Electrical Engineering, Robotics, or a related field.\nStrong foundation in machine learning, computer vision, or natural language processing.\nProficiency in Python programming and familiarity with modern ML libraries.\nHands-on experience with deep learning frameworks such as PyTorch or TensorFlow.\nStrong problem-solving skills, curiosity, and the ability to collaborate effectively as part of a research team.\nCoursework or prior experience in areas such as self-supervised learning, contrastive learning, state-space models, multimodal AI, or vision-language models is a plus.\nProficiency in data analysis, signal processing, or statistical modeling is desirable.\nInterest in audio, gaming, game engines, or the intersection of machine learning and game technology is highly desirable.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree - Master’s\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221769004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -4294,12 +4213,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:44.732Z",
+        "checkedAt": "2026-10-29T04:17:35.795Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221769004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "b224f238:77398cbc",
+        "sourceKey": "835da018:2b13d17c",
         "locationLabel": "San Mateo, CA",
         "detailBullets": [
           "Research multimodal game anomaly detection.",
@@ -4322,10 +4241,11 @@
       "state": "San Mateo, CA",
       "eligibility": "Currently pursuing a PhD in Computer Science, Machine Learning, Computer Vision, Natural Language Processing or a related field, ideally in the later stages of your program.\nStrong research background in machine learning, computer vision, multimodal learning or related areas, with experience independently exploring open-ended research problems.\nProficiency in Python programming and hands-on experience with deep learning frameworks such as PyTorch or TensorFlow.\nExperience designing experiments, evaluating machine learning models, and interpreting research results.\nStrong problem-solving, communication, and collaboration skills, including the ability to seek, receive and incorporate feedback from researchers and engineers.\nPublication record in relevant conferences (e.g. NeurIPS, ICML, ICLR, CVPR, ACL or EMNLP).\nInterest in gaming, game engines, or the intersection of machine learning and game technology is highly desirable.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree - PhD\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221745004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -4354,12 +4274,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:45.286Z",
+        "checkedAt": "2026-10-29T04:17:35.907Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221745004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "88096960:6c53bc",
+        "sourceKey": "77588300:4ead007c",
         "locationLabel": "San Mateo, CA",
         "detailBullets": [
           "Research anomalous gameplay behavior.",
@@ -4382,10 +4302,11 @@
       "state": "San Mateo, CA",
       "eligibility": "Marketing or Advertising emphasis preferred.\nKnowledge of Excel and PowerPoint.\nPassion for entertainment and gaming is highly recommended.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. MBA\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221783004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -4410,12 +4331,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:23.120Z",
+        "checkedAt": "2026-10-29T04:17:35.920Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221783004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "284cbaad:ead96aa9",
+        "sourceKey": "1604959:2bc81815",
         "locationLabel": "San Mateo, CA",
         "detailBullets": [
           "Analyze player audiences and campaign insights.",
@@ -4438,10 +4359,11 @@
       "state": "San Mateo, CA",
       "eligibility": "Currently pursuing a BS in Computer Science, Computer Engineering, Software Engineering, or a related technical field.\nStrong interest in software quality engineering, test automation, and software development.\nProgramming or scripting exposure using Python, JavaScript, Node.js, Java, C++, or another programming language.\nFamiliarity with UI automation tools such as Selenium WebDriver, Appium, Playwright, or Cypress.\nExposure to testing web, mobile, desktop, or other non-PC applications and devices.\nFamiliarity with web technologies such as JavaScript, HTML, and CSS.\nBasic understanding of APIs, client-server applications, or RESTful services.\nExposure to version-control systems, preferably Git.\nStrong analytical, troubleshooting, and problem-solving skills, with an interest in learning new technologies and testing practices.\nStrong verbal and written communication skills and the ability to collaborate effectively with team members at different levels.\nPrevious internship, coursework, or project experience involving software testing or test automation is a plus.\nExperience in Project Development or Testing is beneficial.\nExposure to CI/CD and development tools such as Jenkins, CircleCI, GitHub Actions, or Docker is a plus.\nCoursework, projects, or practical exposure related to artificial intelligence, machine learning, or generative AI is beneficial.\nFamiliarity with AI-assisted development tools for coding, debugging, test-case generation, or test automation is a plus.\nInterest in applying AI/ML techniques to improve test coverage, defect analysis, failure triage, and automation efficiency is beneficial.\nExposure to testing AI-powered features or evaluating AI-generated outputs for quality, reliability, accuracy, and edge cases is a plus.\nInterest in gaming, game consoles, digital entertainment, or the PlayStation ecosystem is a plus.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221796004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -4481,12 +4403,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:25.961Z",
+        "checkedAt": "2026-10-29T04:17:35.963Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221796004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "f58a6d38:59b24d74",
+        "sourceKey": "7a96b318:51d91794",
         "locationLabel": "San Mateo, CA",
         "detailBullets": [
           "Test PlayStation experiences across platforms.",
@@ -4509,10 +4431,11 @@
       "state": "San Diego, CA; San Mateo, CA",
       "eligibility": "Currently pursuing a Master’s in Computer Science, Computer Engineering, Software Engineering, or a related technical field.\nStrong interest in software quality engineering, test automation, and software development.\nProgramming or scripting exposure using Python, JavaScript, Node.js, Java, C++, or another programming language.\nFamiliarity with UI automation tools such as Selenium WebDriver, Appium, Playwright, or Cypress.\nExposure to testing web, mobile, desktop, or other non-PC applications and devices.\nFamiliarity with web technologies such as JavaScript, HTML, and CSS.\nBasic understanding of APIs, client-server applications, or RESTful services.\nExposure to version-control systems, preferably Git.\nStrong analytical, troubleshooting, and problem-solving skills, with an interest in learning new technologies and testing practices.\nStrong verbal and written communication skills and the ability to collaborate effectively with team members at different levels.\nPrevious internship, coursework, or project experience involving software testing or test automation is a plus.\nExperience in Project Development or Testing is beneficial.\nExposure to CI/CD and development tools such as Jenkins, CircleCI, GitHub Actions, or Docker is a plus.\nCoursework, projects, or practical exposure related to artificial intelligence, machine learning, or generative AI is beneficial.\nFamiliarity with AI-assisted development tools for coding, debugging, test-case generation, or test automation is a plus.\nInterest in applying AI/ML techniques to improve test coverage, defect analysis, failure triage, and automation efficiency is beneficial.\nExposure to testing AI-powered features or evaluating AI-generated outputs for quality, reliability, accuracy, and edge cases is a plus.\nInterest in gaming, game consoles, digital entertainment, or the PlayStation ecosystem is a plus.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree – Master's\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221823004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -4552,12 +4475,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:34.079Z",
+        "checkedAt": "2026-10-29T04:17:36.043Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221823004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "24296b36:f429307a",
+        "sourceKey": "bde857a6:416e2c0a",
         "locationLabel": "Multiple locations",
         "detailBullets": [
           "Test customer-facing PlayStation applications.",
@@ -4580,10 +4503,11 @@
       "state": "San Mateo, CA",
       "eligibility": "Currently pursuing a Master’s degree in Computer Science, Computer Engineering, or a closely related field.\nStrong Python programming skills.\nExperience with a test automation framework such as pytest.\nExperience with Git for version control and CI tools like Github Actions or Jenkins.\nInterest in writing code, troubleshooting technical issues, and improving software quality.\nInterest in or experience with video, streaming, or media technology is a plus.\nFamiliarity with JIRA and Agile is a plus.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced degree- Masters\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221778004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -4612,12 +4536,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:34.539Z",
+        "checkedAt": "2026-10-29T04:17:36.052Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221778004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "a869bb1b:3d9623af",
+        "sourceKey": "d542408f:4862aab3",
         "locationLabel": "San Mateo, CA",
         "detailBullets": [
           "Automate video playback tests.",
@@ -4640,10 +4564,11 @@
       "state": "San Mateo, CA",
       "eligibility": "Programming experience in popular test scripting languages.\nGood understanding of object-oriented principles.\nGood understanding of the software development life cycle and testing methodologies.\nExperience with test automation is a plus.\nProficiency with JavaScript and Python is preferred.\nKnowledge of HTML5 and CSS3 features and modern browser architecture is beneficial.\nFamiliarity with version control (ex. GitHub) is a plus.\nExperience testing single-page web applications is a plus.\nExperience working and testing REST API's is beneficial.\nExperience with Agile/Scrum software development methodologies and an understanding of engineering best practices is preferred.\nExcellent communication skills and a good sense of humor!\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221820004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -4676,12 +4601,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:34.922Z",
+        "checkedAt": "2026-10-29T04:17:36.103Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221820004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "a25bcfa3:d4b1efff",
+        "sourceKey": "1ad4a957:35859e83",
         "locationLabel": "San Mateo, CA",
         "detailBullets": [
           "Test console stores and applications.",
@@ -4704,10 +4629,11 @@
       "state": "San Mateo, CA",
       "eligibility": "Pursuing or possessing a Bachelor’s or higher degree in Computer Science, Electrical Engineering, Applied Physics or related field.\nProficiency in C++ and Python programming.\nExperience writing software in both Windows and Linux systems.\nStrong verbal and written communication skills, with the ability to collaborate effectively with team members at all levels.\nMotivation to learn new technologies, solve technical challenges, and contribute to software development projects.\nExperience/interest in compilers, language design, and/or the LLVM project is a plus.\nData analysis and relational database experience is beneficial.\nExperience developing automation using Jenkins is a plus.\nKnowledge of collaborative software engineering best practice including usage of Source Control Management systems, Continuous Integration/Deployment frameworks is beneficial.\nAGILE/Scrum training is a plus.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221775004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -4739,12 +4665,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:35.424Z",
+        "checkedAt": "2026-10-29T04:17:36.190Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221775004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "f69c095:768c1069",
+        "sourceKey": "f4aa5461:b79b6655",
         "locationLabel": "San Mateo, CA",
         "detailBullets": [
           "Improve PlayStation compiler tools.",
@@ -4767,10 +4693,11 @@
       "state": "Los Angeles, CA",
       "eligibility": "Bachelor's degree in computer science or equivalent.\nCurrently pursuing a Master’s degree in Computer Science or a related field.\nExperience in React, JavaScript, or Java application development.\nFamiliarity with agile software development practices and collaborative engineering workflows.\nExperience using source control tools like Git and SVN.\nExperience working in a team-focused software development environment.\nStrong communication and problem-solving skills, curiosity, and a willingness to learn and contribute.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree - Master’s\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221729004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -4799,12 +4726,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:25.173Z",
+        "checkedAt": "2026-10-29T04:17:36.325Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221729004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "a6e68a94:8db8668",
+        "sourceKey": "e287e834:da2be6c8",
         "locationLabel": "Los Angeles, CA",
         "detailBullets": [
           "Develop personalized creative web applications.",
@@ -4827,10 +4754,11 @@
       "state": "San Diego, CA",
       "eligibility": "Currently pursuing a Master’s degree in Computer Science or Software Engineering.\nExperience with React, JavaScript, Java, and web applications.\nExperience with Python programming language.\nAbility to collaborate effectively with geographically remote and culturally diverse teams.\nInterest in gaming and related social features.\nExperience with SQL is a plus.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree - Master’s\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221814004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -4858,12 +4786,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:36.271Z",
+        "checkedAt": "2026-10-29T04:17:36.457Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221814004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "1010f3d1:b4b0a3a5",
+        "sourceKey": "5e5b36bd:f6954151",
         "locationLabel": "San Diego, CA",
         "detailBullets": [
           "Build PlayStation application features.",
@@ -4886,10 +4814,11 @@
       "state": "Aliso Viejo, CA",
       "eligibility": "Currently pursuing a Bachelor's degree in Computer Science, Software Engineering, or related field.\nProficiency with C/C++ programming languages.\nKnowledge of software methodologies, including object-oriented programming and functional programming.\nFamiliarity with concepts of agile development methodology.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221739004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -4915,12 +4844,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:43.766Z",
+        "checkedAt": "2026-10-29T04:17:36.462Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221739004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "26720034:3df7f928",
+        "sourceKey": "969b80d4:d3fda908",
         "locationLabel": "Aliso Viejo, CA",
         "detailBullets": [
           "Develop real-time video streaming software.",
@@ -4943,10 +4872,11 @@
       "state": "San Diego, CA",
       "eligibility": "Currently pursuing a Bachelor's degree in Computer Science, Engineering, or a related field.\nFamiliarity with Golang, PYTHON, or similar languages, with an interest in building scalable, real-time microservices and REST APIs.\nExperience with SQL and data modelling across different databases. Familiarity with additional reporting databases such as Oracle and Snowflake is a plus.\nUnderstanding of software development principles, design best practices, and architecture standards.\nStrong communication skills and the ability to collaborate with technical and non-technical teams in a global environment.\nInterest in exploring new technologies and continuously developing technical skills.\nFamiliarity with cloud platforms, including hybrid cloud/on-prem environments in AWS.\nUnderstanding of governance standards within controlled/compliance-based environments, particularly Sarbanes Oxley.\nExperience designing, building, or maintaining single-page applications using React or similar frameworks is a plus.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221754004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -4977,12 +4907,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:23.838Z",
+        "checkedAt": "2026-10-29T04:17:36.584Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221754004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "7a1cd18a:1cbd156e",
+        "sourceKey": "1ed08b5a:91641b7e",
         "locationLabel": "San Diego, CA",
         "detailBullets": [
           "Build real-time financial microservices.",
@@ -5005,10 +4935,11 @@
       "state": "Aliso Viejo, CA",
       "eligibility": "Currently pursuing a Bachelor's degree in Computer Science, Software Engineering, or related field.\nExperience with front-end development using HTML, CSS, and JavaScript.\nFamiliarity with modern frameworks such as React and tools like Git.\nBasic understanding of REST APIs and web application architecture.\nExposure to Node.js or other backend technologies.\nStrong problem-solving skills, attention to detail, and the ability to communicate and collaborate effectively with a team.\nInterest in using AI assisted development tools to build, prototype, and solve engineering problems more effectively.\nFamiliarity with foundational AI/ML concepts is a plus.\nHands-on experience with generative AI tools, models, or frameworks (e.g., Claude, Codex, Cursor) is a plus.\nUnderstanding of containerization and orchestration platforms such as Docker and Kubernetes is a plus.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221763004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -5040,12 +4971,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:43.340Z",
+        "checkedAt": "2026-10-29T04:17:36.571Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221763004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "86cce113:2aeed527",
+        "sourceKey": "aa547807:5542ee4b",
         "locationLabel": "Aliso Viejo, CA",
         "detailBullets": [
           "Build internal React applications.",
@@ -5068,10 +4999,11 @@
       "state": "San Mateo, CA",
       "eligibility": "Proficiency in Java for developing data processing pipelines and real-time streaming applications.\nExperience with Apache Kafka.\nExperience using Docker, Jenkins, and Kubernetes for CICD.\nProficiency with Git for version control and collaborative development.\nStrong problem-solving, analytical, and communication skills, with the ability to collaborate and document technical work.\nExperience with SQL (MySQL) or NoSQL (DynamoDB, Aerospike, Cassandra, Couchbase) databases is a plus.\nFamiliarity with building scalable, fault-tolerant data pipelines is a plus.\nUnderstanding of Data Mesh and Data Fabric principles is beneficial.\nKnowledge of data processing frameworks such as Apache Spark or Apache Flink is a plus.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate Degree\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221724004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -5102,12 +5034,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:25.524Z",
+        "checkedAt": "2026-10-29T04:17:36.713Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221724004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "6cedb6f7:1712af13",
+        "sourceKey": "97cb3e1b:f49c2ba7",
         "locationLabel": "San Mateo, CA",
         "detailBullets": [
           "Automate large-scale data pipelines.",
@@ -5130,10 +5062,11 @@
       "state": "San Mateo, CA",
       "eligibility": "Currently pursuing an undergraduate degree in a related technical field.\nGood written and verbal communication skills, with the ability to collaborate effectively with team members.\nAbility and willingness to quickly learn new technologies, including unit testing frameworks and CI/CD.\nFamiliarity with backend software development (e.g. Java).\nExperience with back end services is a plus.\nKnowledge of Java and Asynchronous Web Application Programming is a plus.\nFamiliarity with NoSQL and SQL databases is a plus.\nExperience with Kubernetes and AWS is a plus.\nFamiliarity with Automated Testing is a plus.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate Degree\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221817004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -5164,12 +5097,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:37.139Z",
+        "checkedAt": "2026-10-29T04:17:36.847Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221817004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "8c1e156b:955e01e7",
+        "sourceKey": "b4c8ce5f:77a2698b",
         "locationLabel": "San Mateo, CA",
         "detailBullets": [
           "Maintain PlayStation backend microservices.",
@@ -5192,10 +5125,11 @@
       "state": "San Mateo, CA",
       "eligibility": "Currently pursuing an undergraduate degree in Computer Science or a related field.\nGood understanding of object-oriented design and programming, with exposure to Java highly desired.\nUnderstanding of database concepts, including familiarity with relational and non-relational systems.\nKnowledge of and some experience in developing web server applications.\nInterest in writing high-quality, well-architected code and applying software development best practices.\nStrong written and verbal communication skills, with a willingness to ask questions, collaborate, and seek guidance.\nKnowledge of design and architectural patterns is a plus.\nExperience with Amazon Web Services (AWS) is a plus.\nPrior exposure to backend services development is a plus.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221787004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -5226,12 +5160,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:36.742Z",
+        "checkedAt": "2026-10-29T04:17:36.847Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221787004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "7a0cdb74:18f4fb38",
+        "sourceKey": "643a494:79e7a658",
         "locationLabel": "San Mateo, CA",
         "detailBullets": [
           "Develop large-scale gaming backend services.",
@@ -5254,10 +5188,11 @@
       "state": "San Mateo, CA",
       "eligibility": "Currently pursuing a Bachelor's degree in Computer Science, Computer Engineering, Software Engineering, or a related technical field.\nExperience programming in at least one language such as C++, Java, Kotlin, or JavaScript.\nUnderstanding of fundamental software engineering concepts, including data structures, algorithms, object-oriented programming, and debugging.\nStrong problem-solving skills, a willingness to learn new technologies, and an interest in software development for gaming platforms and consumer devices.\nAbility to communicate and collaborate effectively as part of a software engineering team.\nInterest in working in an Agile/Scrum development environment.\nExperience developing applications or software for Android is a plus.\nExperience with Java, Kotlin, C++, JavaScript, or Android development tools is beneficial.\nExperience with UI or application development is a plus.\nFamiliarity with Git or other version control systems is beneficial.\nExperience developing software applications through coursework, personal projects, or previous internships is a plus.\nFamiliarity with Agile or Scrum software development is beneficial.\nInterest in PlayStation, PlayStation Portal, gaming technology, or consumer electronics is a plus.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221793004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -5292,12 +5227,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:45.687Z",
+        "checkedAt": "2026-10-29T04:17:37.003Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221793004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "f399dd0b:1524fc87",
+        "sourceKey": "6e1e24ff:80fddaab",
         "locationLabel": "San Mateo, CA",
         "detailBullets": [
           "Develop PlayStation Portal software features.",
@@ -5320,10 +5255,11 @@
       "state": "San Mateo, CA",
       "eligibility": "Currently pursuing an undergraduate degree in Computer Science or related degree.\nFamiliarity with Python or TypeScript/JavaScript.\nBasic understanding of REST APIs, Git and CI/CD.\nComfortable working in Linux and Windows-based development environments.\nStrong software debugging, analytical, and problem-solving skills.\nAbility to work independently, take ownership of tasks, and collaborate effectively with team members.\nInterest in experimentation and the ability to communicate complex ideas and analysis clearly, both verbally and in writing.\nAbility to write clean, maintainable, and well-documented code.\nWillingness to participate in code reviews, team discussions, and knowledge-sharing sessions.\nBroad understanding of microservice architecture is a plus.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221799004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -5355,12 +5291,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:35.906Z",
+        "checkedAt": "2026-10-29T04:17:36.989Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221799004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "d1a6a253:aef2fef",
+        "sourceKey": "23158ec7:32e06073",
         "locationLabel": "San Mateo, CA",
         "detailBullets": [
           "Build automated testing tools.",
@@ -5383,10 +5319,11 @@
       "state": "Los Angeles, CA; San Mateo, CA",
       "eligibility": "Currently pursuing an MBA at an accredited university.\nKnowledge of the video game and/or digital entertainment industry.\nExperience conducting research and data analysis to support business strategy and planning.\nStrong structured problem-solving skills, with the ability to evaluate complex and ambiguous business questions.\nStrong interpersonal, written, and verbal communication skills, with the ability to manage priorities and meet fixed deadlines.\nA proactive, self-motivated approach, with the ability to identify, propose, and manage projects with minimal supervision.\nAdvanced proficiency in Excel and PowerPoint.\nPrior work experience in corporate strategy, management consulting, investment banking, commercial strategy, or product marketing is a plus.\nExperience using AI tools to support research, analysis, synthesis, or the development of business recommendations is a plus.\nExperience with market sizing, business-model evaluation, consumer strategy, commercial strategy, or financial analysis is beneficial.\nFamiliarity with database-driven analytics and visualization tools (e.g., Tableau, R, Power BI, MicroStrategy) is a plus.\nFamiliarity with emerging technologies, business models, and consumer trends shaping gaming and digital entertainment is beneficial.\nEligibility\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. MBA\nA cover letter is encouraged but not required.\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221790004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -5421,12 +5358,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:23.518Z",
+        "checkedAt": "2026-10-29T04:17:37.043Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221790004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "e123822b:6c6167b7",
+        "sourceKey": "d3d2c49f:2383cf1b",
         "locationLabel": "Multiple locations",
         "detailBullets": [
           "Research gaming trends and business opportunities.",
@@ -5449,10 +5386,11 @@
       "state": "Aliso Viejo, CA",
       "eligibility": "Pursuing an undergraduate degree in Information Systems, Computer Science, Engineering, or a related field, with an interest in technical project or program management.\nBasic knowledge of IT concepts, including network, storage, cloud, and information security.\nSelf-motivated and able to take ownership of assigned work.\nStrong communication skills, both verbal and written.\nEnthusiasm for learning and working with cross-functional teams to achieve project goals.\nComfort with ambiguity and the ability to bring structure to complex challenges.\nA customer-first mindset with a positive, solutions-oriented approach.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221742004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -5481,12 +5419,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:44.277Z",
+        "checkedAt": "2026-10-29T04:17:37.175Z",
         "sourceUrl": "https://job-boards.greenhouse.io/usinternshipspubliccareerssite/jobs/6221742004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "e4e6b0d6:1044bb6a",
+        "sourceKey": "d2e18446:de9a50ba",
         "locationLabel": "Aliso Viejo, CA",
         "detailBullets": [
           "Support technical project planning.",
@@ -5509,10 +5447,11 @@
       "state": "Burbank, CA",
       "eligibility": "Currently pursuing an undergraduate degree in a related field, such as game development, production, or project management.\nStrong collaboration and communication skills, with the ability to work effectively with different teams.\nA proactive approach to problem-solving, with the ability to take initiative while knowing when to seek guidance.\nInterest in project management, game development processes, and improving team workflows.\nAlignment with our Insomniac Code—respectfully working together to deliver exceptional player experiences.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227083004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -5539,12 +5478,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:46.023Z",
+        "checkedAt": "2026-10-29T04:17:37.370Z",
         "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227083004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "74955386:398989c2",
+        "sourceKey": "61d87576:455f6072",
         "locationLabel": "Burbank, CA",
         "detailBullets": [
           "Track game-development tasks and milestones.",
@@ -5567,10 +5506,11 @@
       "state": "Burbank, CA",
       "eligibility": "Currently pursuing a B.F.A. in Computer Art, Illustration, Game Design, Product Design, or equivalent.\nSix to twelve months of related experience and/or training is beneficial.\nStrong foundation skills and production design skills.\nProficiency in Maya, Photoshop, and a real-time toolset such as Unreal or Unity.\nCreative, self-motivated, and responsible, with the ability to contribute in a collaborative, fast-paced studio environment.\nPassion for video games and art, with an interest in learning visual effects techniques used in game development.\nEligibility:\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate- Graduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates.\nMust be available for the entire 12-week internship period.\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States. Role-specific requirements above control over the general program page. Work arrangement/weekly hours and session year are not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "Not listed",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6228743004",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -5598,12 +5538,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-19T21:50:46.335Z",
+        "checkedAt": "2026-10-29T04:17:37.371Z",
         "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6228743004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "f0a6791b:fb473097",
+        "sourceKey": "58be6e8f:d1ca6fb",
         "locationLabel": "Burbank, CA",
         "detailBullets": [
           "Create visual effects for AAA games.",
@@ -5626,11 +5566,11 @@
       "state": "Burbank, CA",
       "eligibility": "Recently completed or currently pursuing a bachelor’s or higher degree in accessibility, inclusive design, game design, interaction design, UX design, or a related field. \nInterest in accessibility, inclusive design, user research, and creating better gaming experiences for players with disabilities. \nStrong verbal and written communication skills, with the ability to document observations, summarize information, and present findings to small internal groups with guidance. \nStrong organizational skills, attention to detail, and the ability to follow instructions, ask questions, and manage assigned tasks. \nFoundational ability to work with percentages, rates, and basic descriptive data, including reading tables and charts. \nWorking knowledge of Microsoft Office or Google Workspace. \nCuriosity, problem-solving skills, and a willingness to learn from feedback and collaborate with cross-functional teams. \nInterest in learning about video game production processes and accessibility features in games. \nCoursework, portfolio projects, volunteer work, or professional experience demonstrating an interest in accessible design, inclusive game experiences, accessibility standards, or designing for people with disabilities is preferred. \nExperience using accessibility features in games is a plus. \nFamiliarity with survey tools such as Qualtrics or SurveyMonkey is a plus, with training provided as needed. \nInterest in developing quantitative research skills is encouraged. \n\nEligibility \n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced Degree- Master's or PhD \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication form screening questions (not inferred answers):\nDo you have a demonstrated interest in video games and player experience, or experience contributing to a game project?*\nHave you contributed to accessibility or disability-inclusive design or research through coursework, a project, volunteer work, or professional experience?*\nCan you work 40 hours per week for the full internship, including 2-3 days per week at the Insomniac Games' Burbank studio and relocate before the start date if needed?*\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227618004",
-      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -5669,12 +5609,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-20T15:35:35.233Z",
+        "checkedAt": "2026-10-29T04:17:37.394Z",
         "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227618004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "d2888b1d:bcca5429",
+        "sourceKey": "373464df:9eaa683",
         "locationLabel": "Burbank, CA",
         "detailBullets": [
           "Review gameplay for accessibility barriers.",
@@ -5697,11 +5637,11 @@
       "state": "Burbank, CA",
       "eligibility": "Currently pursuing a Bachelor's degree in Computer, Traditional, or Experimental Animation. Students majoring in Art, Illustration, or Graphic Design with animation experience will also be considered. \nSix to twelve months of related experience and/or training is beneficial but not required for currently enrolled students. \nA creative, self-motivated, and responsible approach to learning and completing assigned work. \nPassion for video games and animation, with a willingness to learn new techniques and contribute to team projects. \nIntroductory 3D animation experience, drawing skills and previous experience with Maya are preferred. \n\nEligibility \n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate  \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication form screening questions (not inferred answers):\nDo you have experience animating in Maya or similar software? *\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226213004",
-      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -5731,12 +5671,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-20T15:35:35.751Z",
+        "checkedAt": "2026-10-29T04:17:37.507Z",
         "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226213004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "db422a1a:c0196e0e",
+        "sourceKey": "5034bac8:7342d554",
         "locationLabel": "Burbank, CA",
         "detailBullets": [
           "Animate gameplay characters, props and cinematics.",
@@ -5759,11 +5699,11 @@
       "state": "Burbank, CA",
       "eligibility": "Currently pursuing a Bachelor's degree working towards Character Art. \nSix to twelve months of related experience and/or training is beneficial but not required for currently enrolled students. \nA creative, self-motivated, and responsible approach to learning and completing assigned work. \nPassion for video games and animation, with an interest in character modeling, texturing, and game development. \nPython skills and previous experience with Maya are preferred. \n\nEligibility \n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226237004",
-      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -5791,12 +5731,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-20T15:35:36.237Z",
+        "checkedAt": "2026-10-29T04:17:37.559Z",
         "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226237004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "d3dd9db4:1a906120",
+        "sourceKey": "94040872:42b2d6e6",
         "locationLabel": "Burbank, CA",
         "detailBullets": [
           "Model and texture characters and props.",
@@ -5819,11 +5759,11 @@
       "state": "Burbank, CA",
       "eligibility": "Currently pursuing a Bachelor's degree working towards Character Rigging. Computer Science majors with rigging experience will also be considered. \nSix to twelve months of related experience and/or training is beneficial but not required for currently enrolled students. \nA creative, self-motivated, and responsible approach to learning and completing assigned work. \nPassion for video games and animation, with an interest in character rigging and game development. \nPython skills and previous experience with Maya are preferred. \n\nEligibility:\n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226243004",
-      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -5851,12 +5791,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-20T15:35:36.573Z",
+        "checkedAt": "2026-10-29T04:17:37.629Z",
         "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226243004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "6a413a85:b179b971",
+        "sourceKey": "2b9b4537:26d2e05b",
         "locationLabel": "Burbank, CA",
         "detailBullets": [
           "Build animation rigs for game assets.",
@@ -5879,11 +5819,11 @@
       "state": "Burbank, CA",
       "eligibility": "Currently pursuing a Bachelor’s degree in a related field at an accredited university. \nStrong 2D artistic skills and an understanding of foundational art principles. \nAbility to apply design, perspective, composition, color theory, lighting, anatomy, detail distribution, and visual balance to concept artwork. \nCreative problem-solving skills, with the ability to translate ideas into visual concepts that support game development. \nStrong communication and collaboration skills, with a willingness to receive direction, incorporate feedback, and work closely with a team. \nA self-motivated, creative, and responsible approach to learning and completing assigned work. \nAbility to manage tasks and meet deadlines in a collaborative production environment. \nPassion for video games and art, with an interest in learning how concept art contributes to AAA game development. \n3D experience is a strong plus. \n\nEligibility \n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "November 21, 2026 (date-only; Eastern board default)",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226354004",
-      "deadlineISO": "2026-11-21T23:59:59-05:00",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -5915,12 +5855,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-20T15:35:46.754Z",
+        "checkedAt": "2026-10-29T04:17:37.637Z",
         "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226354004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "e9b16436:1e4b6bda",
+        "sourceKey": "a1713c3f:3c0f9cb3",
         "locationLabel": "Burbank, CA",
         "detailBullets": [
           "Create concept sketches and production paintings.",
@@ -5943,11 +5883,11 @@
       "state": "Burbank, CA",
       "eligibility": "Currently pursuing an undergraduate degree at a college or university, with an emphasis on audio production, recording or engineering, preferably within the game development field. \nStrong interest in game dialogue, audio production, and storytelling through video games. \nFamiliarity with audio production and editing software such as Pro Tools, Reaper, and similar DAWs. \nUnderstanding of signal flow, audio editing and mastering techniques. \nStrong attention to detail, communication, and collaboration skills, with a self-motivated and responsible approach to learning. \nPassion for video games and an understanding of what makes them fun (or not). \nAdditional experience with field recording and microphone setups, dialogue editing, sound effect creation and editing, and post-processing is a plus. \nUnderstanding and experience with Wwise or other middleware solutions is strongly preferred. \n\nEligibility: \n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication form screening questions (not inferred answers):\nAre you available to work for the full duration of the 12-week internship program?*\nAre you able to work fully on-site (in person) at the designated office location for the entire duration of the internship?*\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6228761004",
-      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -5981,12 +5921,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-20T15:35:47.245Z",
+        "checkedAt": "2026-10-29T04:17:37.662Z",
         "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6228761004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "cd632ed6:84e3d102",
+        "sourceKey": "fd1d2e54:d91c0b98",
         "locationLabel": "Burbank, CA",
         "detailBullets": [
           "Coordinate voice-over recording sessions.",
@@ -6009,11 +5949,11 @@
       "state": "Burbank, CA",
       "eligibility": "Currently enrolled at a college or university studying a related Arts field. No prior professional experience or training required. \nA creative, self-motivated, and responsible approach to learning and completing assigned work. \nPassion for video games and art, with an interest in environment modeling, texturing, and game development. \nWillingness to learn new tools and techniques and collaborate with experienced artists. \nPython skills and previous experience with Maya are preferred. \n\nEligibility:\n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication form screening questions (not inferred answers):\nAre you able and willing to work fully on-site at the designated office location for the duration of the internship?*\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "November 21, 2026 (date-only; Eastern board default)",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6221850004",
-      "deadlineISO": "2026-11-21T23:59:59-05:00",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -6043,12 +5983,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-20T15:35:47.645Z",
+        "checkedAt": "2026-10-29T04:17:37.882Z",
         "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6221850004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "4e36218c:1d62f218",
+        "sourceKey": "3acc9295:e739dca1",
         "locationLabel": "Burbank, CA",
         "detailBullets": [
           "Model environments and props from references.",
@@ -6071,11 +6011,11 @@
       "state": "Burbank, CA",
       "eligibility": "Currently pursuing a Game Design degree at a college or university. Master's candidates may also apply. \nSix to twelve months of related experience and/or training is beneficial but not required for currently enrolled students. \nBasic familiarity with a 3D package such as Maya or 3DSMax is required; experience with Maya is preferred. \nScripting experience is required, preferably visual scripting, although knowledge of programming or scripting languages is also acceptable. \nFamiliarity with development tools such as Unity, Unreal Engine, Maya, or other 3D modeling software. \nStrong technical skills, including visual scripting or programming experience. \nStrong attention to detail, creativity, and an understanding of game design fundamentals. \nA self-motivated and responsible approach to learning, with the ability to articulate creative goals and turn ideas into actionable solutions. \nPassion for next-gen video games, with knowledge of the gaming industry and narrative action games. \nPrevious experience with level-editing tools, such as Unreal, Unity, or Hammer is a plus. \n\nEligibility: \n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication form screening questions (not inferred answers):\nHave you ever built the blockout or first iteration of a playable level?*\nHave you created gameplay scripts in programs like Blueprint or C# that perform gameplay functions in a level or, alternatively, used either to create gameplay mechanics?*\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226630004",
-      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -6111,12 +6051,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-20T15:35:48.085Z",
+        "checkedAt": "2026-10-29T04:17:37.881Z",
         "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226630004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "fbeef46e:4e7316c2",
+        "sourceKey": "31bac79c:ef1f10d8",
         "locationLabel": "Burbank, CA",
         "detailBullets": [
           "Create and implement gameplay content.",
@@ -6266,11 +6206,11 @@
       "state": "Burbank, CA",
       "eligibility": "Currently pursuing a degree in Writing, Game Design, or equivalent. \nSix to twelve months of related experience and/or training is beneficial but not required for currently enrolled students. \nStrong critical thinking and writing skills, with the ability to develop, evaluate, and refine creative ideas. \nA creative, self-motivated, and responsible approach to learning and completing assigned work. \nPassion for writing video games, with an interest in storytelling, character development, and collaborative game production. \n\nEligibility:\n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate  \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication form screening questions (not inferred answers):\nScreenplay Samples*\nDo you have student game development experience or collaborative group experience?*\nScreenplay samples are required with the application.\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227611004",
-      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -6302,12 +6242,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-20T15:36:03.521Z",
+        "checkedAt": "2026-10-29T04:17:37.883Z",
         "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227611004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "44ef0f9d:36509d9",
+        "sourceKey": "6c05095f:465a38b3",
         "locationLabel": "Burbank, CA",
         "detailBullets": [
           "Develop game stories and character arcs.",
@@ -6330,11 +6270,11 @@
       "state": "Burbank, CA",
       "eligibility": "Currently pursuing or have completed a bachelor’s or master’s degree in Psychology, Human-Computer Interaction, Human Factors, Cognitive Science, or a related field; or equivalent relevant experience gained through work, research projects, community work, or independent study. \nExperience contributing to a game project or a demonstrated passion for games and player experience. \nFamiliarity with research methods such as surveys, interviews, usability testing, or observation through coursework, projects, or practical experience. \nCuriosity about how people work, with an empathetic listening style and the ability to ask clear, neutral follow-up questions. \nStrong written and verbal communication skills, with the ability to organize research findings and share insights clearly. \nStrong organizational skills and attention to detail when working with research participants, study materials, and data. \nWillingness to learn unfamiliar tools and collaborate with researchers, tool owners, and game development teams. \nFamiliarity with Jira, Miro, Confluence, survey platforms, or similar tools is a plus. Prior experience with specific studio tools is not required. \n\nEligibility: \n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Advanced degree- Master's\nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nApplication form screening questions (not inferred answers):\nDo you have a demonstrated interest in games and player experience, or experience contributing to a game project?*\nDo you have familiarity with at least one research method (surveys, interviews, usability testing, or observation) through coursework, projects, or practical experience?*\nAre you able to work from the Insomniac Games' Burbank studio 2-3 days per week during the internship and relocating before the start date if needed?*\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227520004",
-      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -6369,12 +6309,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-20T15:36:03.970Z",
+        "checkedAt": "2026-10-29T04:17:38.101Z",
         "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6227520004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "508b97be:e7f60af2",
+        "sourceKey": "d32c3c2c:4673fa88",
         "locationLabel": "Burbank, CA",
         "detailBullets": [
           "Research internal development tools and workflows.",
@@ -6397,11 +6337,11 @@
       "state": "Burbank, CA",
       "eligibility": "Strong skills in modeling, baking and UV layout using Maya, Max, or equivalent. \nStrong skills in texture and material creation using Photoshop, Substance Painter, Substance Designer. \nExperience with ZBrush. \nAbility to review 3D assets, identify areas for improvement, and communicate clear, actionable feedback. \nStrong written and verbal communication skills, including the ability to interpret technical information, prepare documentation, and present ideas clearly. \nStrong organizational and time management skills, with the ability to prioritize tasks, manage multiple assignments, and meet deadlines. \nAbility to solve practical problems, follow written and verbal instructions, and collaborate effectively with artists and external partners. \nFoundational mathematical skills, including percentages, proportions, basic algebra, and geometry. \nWillingness to receive direction, incorporate feedback, and work closely with a team. \nExperience with vehicles and weapons is a plus. \n\nEligibility:\n\nStudents with expected graduation between May 2026 and December 2029 from an accredited university. Undergraduate  \nAble to work during one of the following periods: May 17th - August 6th or June 14th - September 3rd. Relocation assistance is available for eligible candidates. \nMust be available for the entire 12-week internship period. \n\nAt this time, SIE will only consider applicants who are authorized to work for any employer in the United States and who will not require work visa sponsorship from SIE now or in the future to maintain their authorization to work in the United States.\nThe dedicated role eligibility and screening above control over the generic program page. Session year is not stated.",
       "cycle": "Summer; 12 weeks (year not stated in role)",
-      "deadline": "November 20, 2026 (date-only; Eastern board default)",
+      "deadline": "November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)",
       "applicationsOpen": "Not listed",
       "startDate": "May 17 or June 14 (year not stated); through August 6 or September 3",
       "timingSourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226349004",
-      "deadlineISO": "2026-11-20T23:59:59-05:00",
+      "deadlineISO": "2026-11-20T20:00:00-05:00",
       "payStatus": "paid",
       "payBasis": "hour",
       "collegeCredit": "not_listed",
@@ -6434,12 +6374,12 @@
       ],
       "verification": {
         "status": "open",
-        "checkedAt": "2026-10-20T15:36:04.333Z",
+        "checkedAt": "2026-10-29T04:17:38.086Z",
         "sourceUrl": "https://job-boards.greenhouse.io/insomniac/jobs/6226349004",
         "reviewerType": "source_check"
       },
       "presentation": {
-        "sourceKey": "adfb774:1eef81e0",
+        "sourceKey": "fdc6c7b2:d6352c26",
         "locationLabel": "Burbank, CA",
         "detailBullets": [
           "Prepare briefs for external art vendors.",
@@ -8750,6 +8690,435 @@
           "Analyze success metrics and guide product launches.",
           "Summer 2027; 12 weeks; related bachelor’s students, master’s preferred; rolling applications; employer account required."
         ]
+      }
+    },
+    {
+      "co": "Brooklyn Sports & Entertainment",
+      "role": "Events Seasonal Internship 2026-2027",
+      "link": "https://bkse.com/careers/job/7998659003?gh_jid=7998659003&gh_jid=7998659003",
+      "loc": "Brooklyn, NY",
+      "ind": "Events",
+      "desc": "Support basketball and non-basketball event planning across multiple venues. Coordinate event documentation, inventory, walk-throughs and outside partners. Assist on-site setup, breakdown and day-to-day event operations.",
+      "pay": "$18/hour",
+      "style": "Hybrid; onsite venue work required",
+      "exp": "See eligibility",
+      "state": "Brooklyn, NY",
+      "eligibility": "College seniors, graduate students or recent graduates; US work authorization for any employer. 20–40 hours weekly, onsite work at Brooklyn venues required, nights/weekends/holidays as needed. Employer description mentions some remote days, but the application asks willingness to work onsite full-time in Brooklyn; confirm the exact arrangement with the employer.",
+      "cycle": "November 2026–May 2027; academic-calendar flexibility",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "November 2026",
+      "timingSourceUrl": "https://bkse.com/careers/job/7998659003?gh_jid=7998659003&gh_jid=7998659003",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Support basketball and non-basketball event planning across multiple venues.",
+        "Coordinate event documentation, inventory, walk-throughs and outside partners.",
+        "Assist on-site setup, breakdown and day-to-day event operations."
+      ],
+      "eligibilityFlags": [
+        "College seniors, graduate students or recent graduates; US work authorization for any employer. 20–40 hours weekly, onsite work at Brooklyn venues required, nights/weekends/holidays as needed. Employer description mentions some remote days, but the application asks willingness to work onsite full-time in Brooklyn; confirm the exact arrangement with the employer."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-29T04:41:03.589Z",
+        "sourceUrl": "https://bkse.com/careers/job/7998659003?gh_jid=7998659003&gh_jid=7998659003",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "SeatGeek",
+      "role": "Software Engineer - Internship",
+      "link": "https://seatgeek.com/jobs/8227553?gh_jid=8227553",
+      "loc": "New York, NY",
+      "ind": "Software Engineering",
+      "desc": "Build software across backend, frontend, mobile or platform teams. Collaborate with engineers on tested, reliable product features. Develop technical skills through practical projects and team mentorship.",
+      "pay": "$55/hour",
+      "style": "Hybrid",
+      "exp": "See eligibility",
+      "state": "New York, NY",
+      "eligibility": "Current CS or related student graduating Spring/Summer 2028. Built and tested software expected. 40 hours/week, NYC hybrid at least 50% with three-day-office statement retained.",
+      "cycle": "12-week summer internship; year and dates not stated",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://seatgeek.com/jobs/8227553?gh_jid=8227553",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build software across backend, frontend, mobile or platform teams.",
+        "Collaborate with engineers on tested, reliable product features.",
+        "Develop technical skills through practical projects and team mentorship."
+      ],
+      "eligibilityFlags": [
+        "Current CS or related student graduating Spring/Summer 2028. Built and tested software expected. 40 hours/week, NYC hybrid at least 50% with three-day-office statement retained."
+      ],
+      "benefits": [
+        "Housing stipend; $360 per quarter for live-event tickets; monthly commuter card; Headspace; free office lunch and snacks; weekly intern events."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-29T04:41:51.877Z",
+        "sourceUrl": "https://seatgeek.com/jobs/8227553?gh_jid=8227553",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "SeatGeek",
+      "role": "Security Engineer - Internship",
+      "link": "https://seatgeek.com/jobs/8248151?gh_jid=8248151",
+      "loc": "New York, NY",
+      "ind": "Security Engineering",
+      "desc": "Support threat modeling, secure code reviews and security assessments. Build security tooling and controls across AWS systems. Help detection engineering, vulnerability management and incident response.",
+      "pay": "$55/hour",
+      "style": "Hybrid",
+      "exp": "See eligibility",
+      "state": "New York, NY",
+      "eligibility": "Graduating Spring/Summer 2028; programming proficiency in at least two languages and coding interview required. NYC office at least three days weekly; 40 hours/week. Security tools, threat modeling or cloud experience preferred.",
+      "cycle": "Internship; season and duration not stated",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://seatgeek.com/jobs/8248151?gh_jid=8248151",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Support threat modeling, secure code reviews and security assessments.",
+        "Build security tooling and controls across AWS systems.",
+        "Help detection engineering, vulnerability management and incident response."
+      ],
+      "eligibilityFlags": [
+        "Graduating Spring/Summer 2028; programming proficiency in at least two languages and coding interview required. NYC office at least three days weekly; 40 hours/week. Security tools, threat modeling or cloud experience preferred."
+      ],
+      "benefits": [
+        "Housing stipend; $360 per quarter for live-event tickets; monthly commuter card; Headspace; free office lunch and snacks; weekly intern events."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-29T04:42:03.023Z",
+        "sourceUrl": "https://seatgeek.com/jobs/8248151?gh_jid=8248151",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Notion",
+      "role": "Software Engineer Intern (Winter 2027)",
+      "link": "https://jobs.ashbyhq.com/notion/e66c6658-9e65-4c58-8db2-844628b6e8f8",
+      "loc": "New York, NY; San Francisco, CA",
+      "ind": "Software Engineering",
+      "desc": "Build, test and document features across Notion’s product stack. Use AI-first tools to prototype and improve product capabilities. Collaborate with engineers to debug software and solve user problems.",
+      "pay": "Estimated $57/hour bachelor’s; $61/hour master’s",
+      "style": "Hybrid",
+      "exp": "See eligibility",
+      "state": "New York, NY; San Francisco, CA",
+      "eligibility": "Pursuing relevant bachelor’s/master’s; graduate before December 2027. Previous internship and AI prototyping experience required. Work from NYC or SF; Monday/Tuesday/Thursday anchor days. Sponsorship asked about, not promised.",
+      "cycle": "Winter 2027; January 25–April 16",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "January 25, 2027",
+      "timingSourceUrl": "https://jobs.ashbyhq.com/notion/e66c6658-9e65-4c58-8db2-844628b6e8f8",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build, test and document features across Notion’s product stack.",
+        "Use AI-first tools to prototype and improve product capabilities.",
+        "Collaborate with engineers to debug software and solve user problems."
+      ],
+      "eligibilityFlags": [
+        "Pursuing relevant bachelor’s/master’s; graduate before December 2027. Previous internship and AI prototyping experience required. Work from NYC or SF; Monday/Tuesday/Thursday anchor days. Sponsorship asked about, not promised."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-29T04:39:37.515Z",
+        "sourceUrl": "https://jobs.ashbyhq.com/notion/e66c6658-9e65-4c58-8db2-844628b6e8f8",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Notion",
+      "role": "Software Engineer Intern (Summer 2027)",
+      "link": "https://jobs.ashbyhq.com/notion/3fba1c39-c5cb-47d7-9ad2-1cec4d7e9d0c",
+      "loc": "New York, NY; San Francisco, CA",
+      "ind": "Software Engineering",
+      "desc": "Build, test and document features across Notion’s product stack. Use AI-first tools to prototype and improve product capabilities. Collaborate with engineers to debug software and solve user problems.",
+      "pay": "Estimated $57/hour bachelor’s; $61/hour master’s",
+      "style": "Hybrid",
+      "exp": "See eligibility",
+      "state": "New York, NY; San Francisco, CA",
+      "eligibility": "Pursuing relevant bachelor’s/master’s; graduate before Summer 2028. Previous internship and AI prototyping experience required. Work from NYC or SF; Monday/Tuesday/Thursday anchor days. Sponsorship asked about, not promised.",
+      "cycle": "Summer 2027; May 17–August 6 or June 14–September 3",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14, 2027",
+      "timingSourceUrl": "https://jobs.ashbyhq.com/notion/3fba1c39-c5cb-47d7-9ad2-1cec4d7e9d0c",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build, test and document features across Notion’s product stack.",
+        "Use AI-first tools to prototype and improve product capabilities.",
+        "Collaborate with engineers to debug software and solve user problems."
+      ],
+      "eligibilityFlags": [
+        "Pursuing relevant bachelor’s/master’s; graduate before Summer 2028. Previous internship and AI prototyping experience required. Work from NYC or SF; Monday/Tuesday/Thursday anchor days. Sponsorship asked about, not promised."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-29T04:39:47.300Z",
+        "sourceUrl": "https://jobs.ashbyhq.com/notion/3fba1c39-c5cb-47d7-9ad2-1cec4d7e9d0c",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Notion",
+      "role": "Software Engineer Intern, Mobile (Winter 2027)",
+      "link": "https://jobs.ashbyhq.com/notion/2b587e66-deac-421a-a824-9415ba78b5a7",
+      "loc": "New York, NY; San Francisco, CA",
+      "ind": "Software Engineering",
+      "desc": "Build and improve Notion’s mobile applications with engineering mentors. Develop, test and debug Android or iOS product features. Collaborate with mobile engineers on practical user-facing projects.",
+      "pay": "Estimated $57/hour bachelor’s; $61/hour master’s",
+      "style": "Hybrid",
+      "exp": "See eligibility",
+      "state": "New York, NY; San Francisco, CA",
+      "eligibility": "Pursuing relevant bachelor’s/master’s; graduate before December 2027. Previous mobile internship, mobile-app coding and modern-language skills required. NYC or SF; Monday/Tuesday/Thursday anchor days.",
+      "cycle": "Winter 2027; January 25–April 16; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "January 25, 2027",
+      "timingSourceUrl": "https://jobs.ashbyhq.com/notion/2b587e66-deac-421a-a824-9415ba78b5a7",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build and improve Notion’s mobile applications with engineering mentors.",
+        "Develop, test and debug Android or iOS product features.",
+        "Collaborate with mobile engineers on practical user-facing projects."
+      ],
+      "eligibilityFlags": [
+        "Pursuing relevant bachelor’s/master’s; graduate before December 2027. Previous mobile internship, mobile-app coding and modern-language skills required. NYC or SF; Monday/Tuesday/Thursday anchor days."
+      ],
+      "benefits": [
+        "Twelve-week mobile mentorship; other intern benefits not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-29T04:40:03.757Z",
+        "sourceUrl": "https://jobs.ashbyhq.com/notion/2b587e66-deac-421a-a824-9415ba78b5a7",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Ramp",
+      "role": "Software Engineering Intern, Frontend",
+      "link": "https://jobs.ashbyhq.com/ramp/a13ae586-f4cb-4385-8822-c42b9b54ed74",
+      "loc": "New York, NY",
+      "ind": "Software Engineering",
+      "desc": "Build user-facing product experiences across Ramp’s financial platform. Collaborate with designers and engineers on frontend architecture. Ship reliable JavaScript features with strong visual and product details.",
+      "pay": "$12,500/month plus housing stipend",
+      "style": "Hybrid",
+      "exp": "See eligibility",
+      "state": "New York, NY",
+      "eligibility": "Current relevant BS or higher, graduating December 2027 or later. Strong JavaScript, shipped projects and product/design details. React/TypeScript preferred. NYC work/relocation required. MacBook, housing stipend and NYC meals stated for interns; generic full-time benefits not guaranteed.",
+      "cycle": "Internship; season, dates and duration not stated",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://jobs.ashbyhq.com/ramp/a13ae586-f4cb-4385-8822-c42b9b54ed74",
+      "payStatus": "paid",
+      "payBasis": "month",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build user-facing product experiences across Ramp’s financial platform.",
+        "Collaborate with designers and engineers on frontend architecture.",
+        "Ship reliable JavaScript features with strong visual and product details."
+      ],
+      "eligibilityFlags": [
+        "Current relevant BS or higher, graduating December 2027 or later. Strong JavaScript, shipped projects and product/design details. React/TypeScript preferred. NYC work/relocation required. MacBook, housing stipend and NYC meals stated for interns; generic full-time benefits not guaranteed."
+      ],
+      "benefits": [
+        "Housing stipend, MacBook, NYC catered lunch/dinner Monday–Friday and coworker coffee reimbursement. Generic full-time benefits not guaranteed."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-29T04:40:26.334Z",
+        "sourceUrl": "https://jobs.ashbyhq.com/ramp/a13ae586-f4cb-4385-8822-c42b9b54ed74",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Ramp",
+      "role": "Software Engineering Intern, Backend",
+      "link": "https://jobs.ashbyhq.com/ramp/acf6b28d-767f-483f-8ff2-114620cd7e04",
+      "loc": "New York, NY",
+      "ind": "Software Engineering",
+      "desc": "Build backend services supporting Ramp’s financial products. Collaborate with engineers on product requirements and system design. Ship reliable projects using strong programming and computer-science fundamentals.",
+      "pay": "$12,500/month plus housing stipend",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "New York, NY",
+      "eligibility": "Current relevant BS or higher, graduating December 2027 or later. CS foundations, programming and shipped projects required. NYC office/relocation required. Required builder-quiz response in application. MacBook, housing stipend and NYC meals stated; full-time employee benefits not guaranteed.",
+      "cycle": "12- or 16-week co-op; season and start date not stated",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://jobs.ashbyhq.com/ramp/acf6b28d-767f-483f-8ff2-114620cd7e04",
+      "payStatus": "paid",
+      "payBasis": "month",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build backend services supporting Ramp’s financial products.",
+        "Collaborate with engineers on product requirements and system design.",
+        "Ship reliable projects using strong programming and computer-science fundamentals."
+      ],
+      "eligibilityFlags": [
+        "Current relevant BS or higher, graduating December 2027 or later. CS foundations, programming and shipped projects required. NYC office/relocation required. Required builder-quiz response in application. MacBook, housing stipend and NYC meals stated; full-time employee benefits not guaranteed."
+      ],
+      "benefits": [
+        "Housing stipend; MacBook; catered lunch and dinner in NYC Monday–Friday. Generic full-time benefits are not guaranteed internship benefits."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-29T04:40:38.052Z",
+        "sourceUrl": "https://jobs.ashbyhq.com/ramp/acf6b28d-767f-483f-8ff2-114620cd7e04",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "DLR Group",
+      "role": "Talent Acquisition Intern",
+      "link": "https://job-boards.greenhouse.io/dlrgroup/jobs/5463666008",
+      "loc": "Chicago, IL; Columbus, OH; Denver, CO; Minneapolis, MN; Orlando, FL; Seattle, WA",
+      "ind": "Human Resources",
+      "desc": "Support recruiters with candidate screening, tracking and recruiting coordination. Prepare recruiting metrics, reports and campus recruiting activities. Learn talent acquisition through supervised team projects.",
+      "pay": "$20–26 (time unit not listed)",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "Chicago, IL; Columbus, OH; Denver, CO; Minneapolis, MN; Orlando, FL; Seattle, WA",
+      "eligibility": "Current bachelor’s in HR, Business, Communications, Psychology, Marketing or related field. Excel, communication, organization and teamwork. In-person; flexibility around academic commitments. No present or future school/employment visa sponsorship. Pay unit not disclosed; do not infer hourly.",
+      "cycle": "Internship; 20–40 hours weekly, academic flexibility",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5463666008",
+      "payStatus": "paid",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Support recruiters with candidate screening, tracking and recruiting coordination.",
+        "Prepare recruiting metrics, reports and campus recruiting activities.",
+        "Learn talent acquisition through supervised team projects."
+      ],
+      "eligibilityFlags": [
+        "Current bachelor’s in HR, Business, Communications, Psychology, Marketing or related field. Excel, communication, organization and teamwork. In-person; flexibility around academic commitments. No present or future school/employment visa sponsorship. Pay unit not disclosed; do not infer hourly."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-29T04:42:09.533Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/dlrgroup/jobs/5463666008",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Anduril Industries",
+      "role": "2027 Technical Program Manager Intern",
+      "link": "https://boards.greenhouse.io/andurilindustries/jobs/5268864007?gh_jid=5268864007",
+      "loc": "Costa Mesa, CA; Honolulu, HI; Reston, VA; Seattle, WA; Washington, DC",
+      "ind": "Technical Program Management",
+      "desc": "Coordinate engineering projects, milestones and customer requirements. Collaborate across product, engineering, operations and business teams. Develop technical plans, reports and cross-functional project documentation.",
+      "pay": "$28–45/hour",
+      "style": "In-person",
+      "exp": "See eligibility",
+      "state": "Costa Mesa, CA; Honolulu, HI; Reston, VA; Seattle, WA; Washington, DC",
+      "eligibility": "Pursuing bachelor’s/master’s in Electrical, Computer Science, Aerospace, Mechanical Engineering or related field; returning for at least one quarter/semester after internship. US Person required for export access; clearance eligibility may be required by program. Twelve weeks in person. Generic full-time benefits not guaranteed to interns.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://boards.greenhouse.io/andurilindustries/jobs/5268864007?gh_jid=5268864007",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Coordinate engineering projects, milestones and customer requirements.",
+        "Collaborate across product, engineering, operations and business teams.",
+        "Develop technical plans, reports and cross-functional project documentation."
+      ],
+      "eligibilityFlags": [
+        "Pursuing bachelor’s/master’s in Electrical, Computer Science, Aerospace, Mechanical Engineering or related field; returning for at least one quarter/semester after internship. US Person required for export access; clearance eligibility may be required by program. Twelve weeks in person. Generic full-time benefits not guaranteed to interns."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-29T04:42:36.987Z",
+        "sourceUrl": "https://boards.greenhouse.io/andurilindustries/jobs/5268864007?gh_jid=5268864007",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Semafor",
+      "role": "Video Producer Fellowship",
+      "link": "https://job-boards.greenhouse.io/semafor/jobs/4724245005",
+      "loc": "New York, NY",
+      "ind": "Video / Production",
+      "desc": "Produce and edit videos across Semafor’s news coverage. Turn reporters’ stories into scripts for social video. Support research, production logistics and event interview clips.",
+      "pay": "$29/hour",
+      "style": "In-person",
+      "exp": "Entry level; no numeric years stated",
+      "state": "New York, NY",
+      "eligibility": "Paid entry-level Newsroom Fellow on the video team. Strong Adobe Premiere Pro and After Effects experience, video-platform knowledge and interest in business journalism/world events required. Editing and writing exercise during interview. Must retain the right to work where living; role is in NYC offices. No degree, current-enrollment or graduation-cohort requirement stated. Preserve Fellowship title; no student-only eligibility inferred.",
+      "cycle": "Fellowship; start, duration and hours not stated",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/semafor/jobs/4724245005",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Produce and edit videos across Semafor’s news coverage.",
+        "Turn reporters’ stories into scripts for social video.",
+        "Support research, production logistics and event interview clips."
+      ],
+      "eligibilityFlags": [
+        "Paid entry-level Newsroom Fellow on the video team. Strong Adobe Premiere Pro and After Effects experience, video-platform knowledge and interest in business journalism/world events required. Editing and writing exercise during interview. Must retain the right to work where living; role is in NYC offices. No degree, current-enrollment or graduation-cohort requirement stated. Preserve Fellowship title; no student-only eligibility inferred."
+      ],
+      "benefits": [
+        "Not listed; full-time salaried PTO policy is not an intern/fellow guarantee."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-29T04:42:41.543Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/semafor/jobs/4724245005",
+        "reviewerType": "source_check"
       }
     }
   ]

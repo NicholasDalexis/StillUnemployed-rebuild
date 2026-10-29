@@ -838,5 +838,115 @@
       "Communicate insights with product, engineering, design and research teams.",
       "Summer 2027, 12 weeks; current PhD students; May 17 or June 14 start; US-based."
     ]
+  },
+  "https://bkse.com/careers/job/7998659003?gh_jid=7998659003&gh_jid=7998659003": {
+    "sourceKey": "c10ca277:ca82590b",
+    "locationLabel": "Brooklyn, NY",
+    "detailBullets": [
+      "Help plan basketball and venue events.",
+      "Coordinate event documents, inventory and outside partners.",
+      "Support event setup, breakdown and daily operations.",
+      "November–May; seniors, graduates or graduate students; 20–40 hours/week; nights/weekends; US work authorization required."
+    ]
+  },
+  "https://seatgeek.com/jobs/8227553?gh_jid=8227553": {
+    "sourceKey": "5735d502:201a8c86",
+    "locationLabel": "New York, NY",
+    "detailBullets": [
+      "Build backend, frontend, mobile or platform software.",
+      "Test reliable product features with engineering teams.",
+      "Develop technical skills through hands-on projects.",
+      "12 weeks; graduating Spring/Summer 2028; 40 hours/week; summer year not stated."
+    ]
+  },
+  "https://seatgeek.com/jobs/8248151?gh_jid=8248151": {
+    "sourceKey": "44491f04:331543e0",
+    "locationLabel": "New York, NY",
+    "detailBullets": [
+      "Support threat modeling and secure code reviews.",
+      "Build security tooling across AWS systems.",
+      "Help detect vulnerabilities and respond to incidents.",
+      "Graduating Spring/Summer 2028; two programming languages; 40 hours/week; season and duration not stated."
+    ]
+  },
+  "https://jobs.ashbyhq.com/notion/e66c6658-9e65-4c58-8db2-844628b6e8f8": {
+    "sourceKey": "955ea735:4913211",
+    "locationLabel": "Multiple locations",
+    "detailBullets": [
+      "Build and test features across Notion’s product stack.",
+      "Prototype product capabilities with AI-first tools.",
+      "Debug software and solve user problems.",
+      "January 25–April 16, 2027; graduation before December 2027; prior internship and AI prototyping required."
+    ]
+  },
+  "https://jobs.ashbyhq.com/notion/3fba1c39-c5cb-47d7-9ad2-1cec4d7e9d0c": {
+    "sourceKey": "63f56a31:8417ba0d",
+    "locationLabel": "Multiple locations",
+    "detailBullets": [
+      "Build and test features across Notion’s product stack.",
+      "Prototype product capabilities with AI-first tools.",
+      "Debug software and solve user problems.",
+      "May–August or June–September 2027; graduation before Summer 2028; prior internship and AI prototyping required."
+    ]
+  },
+  "https://jobs.ashbyhq.com/notion/2b587e66-deac-421a-a824-9415ba78b5a7": {
+    "sourceKey": "9304e8ed:14e63e61",
+    "locationLabel": "Multiple locations",
+    "detailBullets": [
+      "Build and improve Notion’s mobile applications.",
+      "Develop, test and debug Android or iOS features.",
+      "Collaborate with engineers on user-facing mobile projects.",
+      "January 25–April 16, 2027; graduation before December 2027; prior mobile internship required."
+    ]
+  },
+  "https://jobs.ashbyhq.com/ramp/a13ae586-f4cb-4385-8822-c42b9b54ed74": {
+    "sourceKey": "e7a7441:e8c33fdd",
+    "locationLabel": "New York, NY",
+    "detailBullets": [
+      "Build user-facing financial product experiences.",
+      "Shape frontend architecture with designers and engineers.",
+      "Ship JavaScript features with strong visual details.",
+      "Current relevant degree; graduating December 2027 or later; NYC work/relocation required; dates not stated."
+    ]
+  },
+  "https://jobs.ashbyhq.com/ramp/acf6b28d-767f-483f-8ff2-114620cd7e04": {
+    "sourceKey": "38a787a7:a4ae2ecb",
+    "locationLabel": "New York, NY",
+    "detailBullets": [
+      "Build backend services for financial products.",
+      "Plan requirements and systems with engineering teams.",
+      "Ship projects using strong computer-science fundamentals.",
+      "12- or 16-week co-op; graduating December 2027 or later; NYC relocation and builder quiz required."
+    ]
+  },
+  "https://job-boards.greenhouse.io/dlrgroup/jobs/5463666008": {
+    "sourceKey": "87491d09:38f48865",
+    "locationLabel": "Multiple locations",
+    "detailBullets": [
+      "Support recruiting coordination and candidate screening.",
+      "Prepare recruiting metrics, reports and campus activities.",
+      "Learn talent acquisition through supervised projects.",
+      "Current relevant bachelor’s student; 20–40 hours/week; no school/employment visa sponsorship; pay time unit not stated."
+    ]
+  },
+  "https://boards.greenhouse.io/andurilindustries/jobs/5268864007?gh_jid=5268864007": {
+    "sourceKey": "346440cf:83c39a4b",
+    "locationLabel": "Multiple locations",
+    "detailBullets": [
+      "Coordinate engineering projects, milestones and customer requirements.",
+      "Work across product, engineering, operations and business.",
+      "Prepare technical plans and project documentation.",
+      "Summer 2027; 12 weeks; returning to study afterward; US Person required; program may require clearance eligibility."
+    ]
+  },
+  "https://job-boards.greenhouse.io/semafor/jobs/4724245005": {
+    "sourceKey": "62ac6b8d:25af1639",
+    "locationLabel": "New York, NY",
+    "detailBullets": [
+      "Produce and edit news videos.",
+      "Turn reporters’ stories into social-video scripts.",
+      "Support research, production logistics and interview clips.",
+      "Paid entry-level fellowship; Premiere Pro and After Effects required; degree, start date and duration not specified."
+    ]
   }
 }
