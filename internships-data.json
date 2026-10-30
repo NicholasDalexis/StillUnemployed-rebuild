@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-30T11:19:19.820Z",
+  "sourceExportedAt": "2026-10-30T17:25:45.110Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -10325,6 +10325,123 @@
         "status": "open",
         "checkedAt": "2026-10-30T11:05:15.950Z",
         "sourceUrl": "https://nba.wd108.myworkdayjobs.com/nbacareers/job/New-York-USA/Undergraduate-and-Graduate---Artificial-Intelligence-Specialty-Intern_JR001115",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Microsoft",
+      "role": "Product Management Intern",
+      "link": "https://apply.careers.microsoft.com/careers/job/1970393557044772",
+      "loc": "Cambridge, MA, United States",
+      "ind": "Product & Project Management",
+      "desc": "Analyze customer needs and market research; define metrics, OKRs and priorities; collaborate with engineering, design and marketing to develop accessible product solutions.",
+      "pay": "Pay not disclosed",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Cambridge, MA, United States",
+      "eligibility": "Currently pursuing Bachelor, Master or Doctorate; at least one semester/term remaining after internship. Preferred CS/Engineering/related degree and product/service/project/program management, software development or equivalent experience. Hybrid: three days/week in Cambridge office. Travel less than 25%. Exact cycle, start, duration and weekly hours not stated.",
+      "cycle": "Not listed",
+      "deadline": "Ongoing until filled",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://apply.careers.microsoft.com/careers/job/1970393557044772",
+      "payStatus": "not_disclosed",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Research customer needs and product opportunities.",
+        "Define priorities, success metrics and product roadmaps.",
+        "Collaborate with engineering, design and marketing teams."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing Bachelor, Master or Doctorate; at least one semester/term remaining after internship. Preferred CS/Engineering/related degree and product/service/project/program management, software development or equivalent experience. Hybrid: three days/week in Cambridge office. Travel less than 25%. Exact cycle, start, duration and weekly hours not stated."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T17:09:55.734Z",
+        "sourceUrl": "https://apply.careers.microsoft.com/careers/job/1970393557044772",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Microsoft",
+      "role": "Software Engineer: Security & Identity Intern Opportunities for University Students, Cambridge",
+      "link": "https://apply.careers.microsoft.com/careers/job/1970393557044765",
+      "loc": "Cambridge, MA, United States",
+      "ind": "Software Engineering",
+      "desc": "Build secure identity, authentication, governance and compliance services; implement technical solutions and improve code quality, reliability, observability and performance.",
+      "pay": "$5,690–11,210/month",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Cambridge, MA, United States",
+      "eligibility": "Currently pursuing Bachelor or Master in Computer Science or related technical field; at least one semester/term remaining after internship. Preferred 1+ year programming, 6+ months team projects, 1+ year data structures/algorithms and security/identity skills. Preferred experience is not a required numerical minimum. Hybrid: three days/week in Cambridge office. Travel less than 25%. Exact cycle, start, duration and weekly hours not stated. Preferred: 1+ year programming and data structures/algorithms, 6+ months team projects; cybersecurity/OS/networking, identity/access controls, C#/Java/Go/Rust/Python and secure-coding interests. Separate SF Bay Area/NYC pay range $7,410–12,250/month is not the Cambridge range. Applications processed September–April; this is not an internship start date or deadline.",
+      "cycle": "Not listed",
+      "deadline": "Ongoing until filled",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://apply.careers.microsoft.com/careers/job/1970393557044765",
+      "payStatus": "paid",
+      "payBasis": "month",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build secure identity and authentication services.",
+        "Implement technical solutions and improve code quality.",
+        "Improve service reliability, observability and performance."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing Bachelor or Master in Computer Science or related technical field; at least one semester/term remaining after internship. Preferred 1+ year programming, 6+ months team projects, 1+ year data structures/algorithms and security/identity skills. Preferred experience is not a required numerical minimum. Hybrid: three days/week in Cambridge office. Travel less than 25%. Exact cycle, start, duration and weekly hours not stated. Preferred: 1+ year programming and data structures/algorithms, 6+ months team projects; cybersecurity/OS/networking, identity/access controls, C#/Java/Go/Rust/Python and secure-coding interests. Separate SF Bay Area/NYC pay range $7,410–12,250/month is not the Cambridge range. Applications processed September–April; this is not an internship start date or deadline."
+      ],
+      "benefits": [
+        "Certain roles may be eligible for benefits and other compensation; not guaranteed."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T17:09:55.734Z",
+        "sourceUrl": "https://apply.careers.microsoft.com/careers/job/1970393557044765",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Meta",
+      "role": "Production Engineer Intern",
+      "link": "https://www.metacareers.com/profile/job_details/1609178343953401/",
+      "loc": "Bellevue, WA; Menlo Park, CA; New York, NY",
+      "ind": "Software Engineering",
+      "desc": "Develop infrastructure and production services across Meta products; write/review code, capacity plans and documentation; debug complex systems with production engineering teams.",
+      "pay": "$7,313–11,293/month",
+      "style": "Not listed",
+      "exp": "1+ year with development languages",
+      "state": "Bellevue, WA; Menlo Park, CA; New York, NY",
+      "eligibility": "Currently enrolled full-time in Bachelor or Master in Computer Science or related field; experience in UNIX-like or Windows OS and coding in at least one language; 1+ year with development languages; work authorization at hire and maintained during employment; intent to return to full-time degree program afterward. Preferred networking/service-architecture knowledge. Required OS experience: UNIX-like or Windows; coding in at least one language and 1+ year with new development languages (Python, Hack/PHP, C++, Java, Rust, GoLang). Preferred TCP/IP networking and service-architecture knowledge. Work arrangement and exact cycle/start/duration/hours not stated.",
+      "cycle": "Not listed",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://www.metacareers.com/profile/job_details/1609178343953401/",
+      "payStatus": "paid",
+      "payBasis": "month",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop infrastructure and production services.",
+        "Write and review code, documentation and capacity plans.",
+        "Debug complex systems alongside production engineering teams."
+      ],
+      "eligibilityFlags": [
+        "Currently enrolled full-time in Bachelor or Master in Computer Science or related field; experience in UNIX-like or Windows OS and coding in at least one language; 1+ year with development languages; work authorization at hire and maintained during employment; intent to return to full-time degree program afterward. Preferred networking/service-architecture knowledge. Required OS experience: UNIX-like or Windows; coding in at least one language and 1+ year with new development languages (Python, Hack/PHP, C++, Java, Rust, GoLang). Preferred TCP/IP networking and service-architecture knowledge. Work arrangement and exact cycle/start/duration/hours not stated."
+      ],
+      "benefits": [
+        "Benefits offered; see employer benefits page."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T17:17:59.218Z",
+        "sourceUrl": "https://www.metacareers.com/profile/job_details/1609178343953401/",
         "reviewerType": "source_check"
       }
     }

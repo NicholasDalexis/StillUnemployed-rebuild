@@ -1268,5 +1268,35 @@
       "Evaluate models and document responsible AI workflows.",
       "June 7–August 13, 2027; relevant graduate students or rising undergraduate seniors; undergraduate $32/hour, graduate $40/hour."
     ]
+  },
+  "https://apply.careers.microsoft.com/careers/job/1970393557044772": {
+    "sourceKey": "e21b8ef1:6e41c635",
+    "locationLabel": "Cambridge, MA",
+    "detailBullets": [
+      "Research customer needs and product opportunities.",
+      "Define priorities, success metrics and product roadmaps.",
+      "Collaborate with engineering, design and marketing teams.",
+      "Currently pursuing a bachelor’s, master’s or doctorate; at least one term left after the internship."
+    ]
+  },
+  "https://apply.careers.microsoft.com/careers/job/1970393557044765": {
+    "sourceKey": "457c4306:9e1a7fb2",
+    "locationLabel": "Cambridge, MA",
+    "detailBullets": [
+      "Build secure identity and authentication services.",
+      "Implement technical solutions and improve code quality.",
+      "Improve service reliability, observability and performance.",
+      "Pursuing a bachelor’s or master’s in CS or related field; at least one term left after the internship."
+    ]
+  },
+  "https://www.metacareers.com/profile/job_details/1609178343953401/": {
+    "sourceKey": "ba429ff:2227f19b",
+    "locationLabel": "Bellevue, WA; Menlo Park, CA; New York, NY",
+    "detailBullets": [
+      "Develop infrastructure and production services.",
+      "Write and review code, documentation and capacity plans.",
+      "Debug complex systems alongside production engineering teams.",
+      "Full-time CS or related bachelor’s/master’s student; 1+ year programming, work authorization and return to degree required."
+    ]
   }
 }

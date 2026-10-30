@@ -1,14 +1,14 @@
 {
-  "version": "2.7.7.68",
+  "version": "2.7.7.69",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-30T11:23:28.188Z",
+  "reviewedAt": "2026-10-30T17:36:07.012Z",
   "reviewer": "Codex",
-  "sourceDigest": "bbdd9562c27bbf83708ab9a5f317814a6bd05e599c4f4d9ce8a550096850336c",
+  "sourceDigest": "329945511e9d2f00529de09e78e084eda2cc351ca7ac2a84fd42213988f1163e",
   "sourceFileCount": 228,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Nine verified NBA internships, including date-only employer deadline, explicit observed countdown warning and board-default Eastern cutoff. Existing privacy and terms wording reviewed; no new tracking, account, provider or collection behavior.",
-  "predecessor": "docs/privacy-reviews/2.7.7.64-pre-maintenance-20261029.json",
+  "scope": "Three verified Microsoft and Meta internships with key eligibility visible; existing privacy and terms reviewed. No change to accounts, analytics, data collection, service providers or application behavior.",
+  "predecessor": "docs/privacy-reviews/2.7.7.68-pre-three-internships.json",
   "author": "Codex",
   "platform_signature": "-Codex"
 }
