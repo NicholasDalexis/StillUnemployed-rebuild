@@ -1904,7 +1904,7 @@
         var cardLoc = window.SUStates ? window.SUStates.cardLocation(j.loc) : j.loc;
         var deadline=window.SUJobDeadlines?window.SUJobDeadlines.facts(j):null;
         var metaTop = j.internship ? internshipLocation(j) : [cardLoc, j.style, (j.exp && j.exp !== 'See posting' ? j.exp : null)].filter(Boolean).join('  ·  ');
-        if(deadline&&deadline.label)metaTop+=' · Apply by '+(j.deadline||j.deadlineISO);
+        if(deadline&&deadline.label)metaTop+=' · Apply by '+window.SUJobDeadlines.displayLabel(j,j.deadline||j.deadlineISO);
 
         var noteStyle = '--rot:' + rot + 'deg; cursor:pointer; position:relative; background:' + bg +
           '; color:' + ink + '; border-radius:3px; padding:30px 24px 22px; box-sizing:border-box; display:flex; ' +
@@ -2511,7 +2511,7 @@
               (dj.pay ? '<div style="font-family: \'Archivo Black\', sans-serif; font-weight: 900; font-size: 20px; color: #2C2118; margin-top: 10px;">' + esc(cardPay(dj)) + '</div>' : '') +
               (dmeta ? '<div style="font-family: var(--su-body); font-size: 13.5px; color: #6F5E45; margin-top: 5px;">' + esc(dmeta) + '</div>' : '') +
               (dj.employerIndustry ? '<p class="su-job-deadline">Employer industry: '+esc(dj.employerIndustry)+'</p>' : '') +
-              (window.SUJobDeadlines && window.SUJobDeadlines.facts(dj).label ? '<p class="su-job-deadline">Apply by '+esc(window.SUJobDeadlines.facts(dj).label)+(safeUrl(dj.timingSourceUrl)?' · <a href="'+esc(safeUrl(dj.timingSourceUrl))+'" target="_blank" rel="noopener noreferrer">Employer timing</a>':'')+'</p>' : '') +
+              (window.SUJobDeadlines && window.SUJobDeadlines.facts(dj).label ? '<p class="su-job-deadline">Apply by '+esc(window.SUJobDeadlines.displayLabel(dj,window.SUJobDeadlines.facts(dj).label))+(safeUrl(dj.timingSourceUrl)?' · <a href="'+esc(safeUrl(dj.timingSourceUrl))+'" target="_blank" rel="noopener noreferrer">Employer timing</a>':'')+'</p>' : '') +
               (dj.savedUnavailable ? '<p class="su-saved-availability">'+(dj.confirmedClosed?'No longer available. You saved this job, so it stays here.':dj.savedElsewhere?'Saved from the '+(dj.internship?'internships':'jobs')+' board. Check the employer for current availability.':'This listing is off the current board. Your saved copy stays here; check the employer for availability.')+'</p>' : '') +
               payDisclosure(dj) +
               // TL;DR label (handwritten + swoosh)

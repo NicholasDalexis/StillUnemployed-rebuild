@@ -1,7 +1,24 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.66",
+  "currentVersion": "2.7.7.67",
   "releases": [
+    {
+      "version": "2.7.7.67",
+      "date": "2026-10-29",
+      "title": "Qualified internship additions and concise deadline labels",
+      "changes": [
+        "Publish all 23 actually admitted internships from the original proposal set using complete native source and exact employer verification receipts. Preserve all 182 prior eligible public objects and source dates; retired Google listing remains excluded.",
+        "Shorten redundant Sony deadline provenance copy in visible labels only. Preserve all 41 machine cutoffs, historical releases, daily staging, auth and analytics behavior.",
+        "Keep URL validation intact; canonical Gemini source correction restores the feed on 2.7.7.66 before this release. Preserve the explicit unknown-period pay disclosure alongside the amount-length check."
+      ],
+      "public": {
+        "title": "More internships to explore",
+        "changes": [
+          "23 more internships, with pay and application details up front.",
+          "Cleaner application-deadline labels."
+        ]
+      }
+    },
     {
       "version": "2.7.7.66",
       "date": "2026-10-29",
@@ -1674,7 +1691,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "568f6a860038f792b7c6b49b8495b9a0bb042cd5b124bc0c5413c0b9f17e549f",
+    "digest": "191a4308ca973032657300d1c891f20e09f6cf0bcaf57ea63e04528498f766db",
     "fileCount": 228
   }
 }

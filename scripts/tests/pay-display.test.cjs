@@ -32,6 +32,7 @@ test('employer-confirmed basis is added while amounts alone never invent a curre
   assert.equal(Pay.compact('$75,600', { basis:'not_listed' }), '$75,600');
   assert.equal(Pay.compact('$45-55', { basis:'hour', status:'paid' }), '$45–55/hour');
   assert.equal(Pay.compact('$85,000 (time unit not listed)', { basis:'annual' }), '$85,000 (time unit not listed)');
+  assert.equal(Pay.compact('$107,400–158,000 (time unit not listed)', { basis:'not_listed' }), '$107,400–158,000 (time unit not listed)');
 });
 
 test('known currencies are retained or normalized without turning non-USD pay into dollars', () => {
@@ -78,7 +79,10 @@ test('current internship pay labels are compact and formatting leaves all source
   for (const job of feed.jobs) {
     const options = Object.freeze({ basis:job.payBasis, status:job.payStatus });
     const label = Pay.compact(job.pay, options);
-    assert(label.length <= 36, job.co + ': ' + label);
+    // Bound the amount, while retaining the explicit unknown-period disclosure.
+    // Do not round an unqualified employer amount into an annual-looking K range
+    // merely to fit the label budget (DoorDash has two six-figure endpoints).
+    assert(label.replace(/ \(time unit not listed\)$/i, '').length <= 36, job.co + ': ' + label);
     // An employer amount with no stated period must keep that uncertainty.
     // Generic placeholder removal must not erase the explicit unknown-unit
     // disclosure (DLR's new admission exposes this existing source contract).
