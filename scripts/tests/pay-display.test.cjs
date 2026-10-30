@@ -67,6 +67,7 @@ test('short qualifiers preserve limits and estimates while program duration stay
 });
 
 test('separate student rates share one compact envelope only with matching basis and currency', () => {
+  assert.equal(Pay.compact('Undergraduate: $32/hour\nGraduate: $40/hour', { basis:'hour' }), '$32–40/hour');
   assert.equal(Pay.compact('$32.50/hour undergraduate; $40.00/hour graduate', { basis:'hour' }), '$32.50–40/hour');
   assert.equal(Pay.compact('$21/hour undergraduate; $23/hour graduate, postgraduate or MBA'), '$21–23/hour');
   assert.equal(Pay.compact('$20/hour; $800/week'), '$20/hour; $800/week');
