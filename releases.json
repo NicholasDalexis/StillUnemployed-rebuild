@@ -7,7 +7,8 @@
       "date": "2026-10-30",
       "title": "Add three verified internships",
       "changes": [
-        "Publish two Microsoft internships and one Meta internship from the verified source, preserving all existing public records and employer-specific pay and eligibility."
+        "Publish two Microsoft internships and one Meta internship from the verified source, preserving all existing public records and employer-specific pay and eligibility.",
+        "Show key student eligibility and locations in the three internship details."
       ],
       "public": {
         "title": "Three more internships",
@@ -1720,7 +1721,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "155a5cac7d108a4d58b9c2469ccc46f0fcdd42f5dac3ab1d96894f8f81549eff",
+    "digest": "329945511e9d2f00529de09e78e084eda2cc351ca7ac2a84fd42213988f1163e",
     "fileCount": 228
   }
 }

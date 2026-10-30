@@ -1,13 +1,13 @@
 {
   "version": "2.7.7.69",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-30T17:31:43.809Z",
+  "reviewedAt": "2026-10-30T17:36:07.012Z",
   "reviewer": "Codex",
-  "sourceDigest": "155a5cac7d108a4d58b9c2469ccc46f0fcdd42f5dac3ab1d96894f8f81549eff",
+  "sourceDigest": "329945511e9d2f00529de09e78e084eda2cc351ca7ac2a84fd42213988f1163e",
   "sourceFileCount": 228,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Three verified Microsoft and Meta internships; existing privacy and terms reviewed. No change to accounts, analytics, data collection, service providers or application behavior.",
+  "scope": "Three verified Microsoft and Meta internships with key eligibility visible; existing privacy and terms reviewed. No change to accounts, analytics, data collection, service providers or application behavior.",
   "predecessor": "docs/privacy-reviews/2.7.7.68-pre-three-internships.json",
   "author": "Codex",
   "platform_signature": "-Codex"
