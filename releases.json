@@ -8,7 +8,7 @@
       "title": "Add nine NBA internships",
       "changes": [
         "Publish nine source-verified NBA internships while preserving prior eligible listings, source facts, dates and releases. The employer announced October 31 but an October 30 morning countdown suggested an earlier cutoff; retain the observed warning and mark the date-only Eastern cutoff as a board default.",
-        "Correct display of explicitly listed undergraduate and graduate hourly rates and explain the separate rates in the AI internship detail while preserving exact employer pay."
+        "Correct display of explicitly listed undergraduate and graduate hourly rates and explain eligibility and separate rates in the AI internship detail while preserving exact employer pay."
       ],
       "public": {
         "title": "Nine NBA internships",
@@ -1706,7 +1706,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "58636cc7ab85ab7cf94865ae7971a84e262c426ecf0ff90cfa70640a8028ca01",
+    "digest": "bbdd9562c27bbf83708ab9a5f317814a6bd05e599c4f4d9ce8a550096850336c",
     "fileCount": 228
   }
 }
