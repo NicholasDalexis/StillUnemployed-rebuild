@@ -58,9 +58,20 @@
     }
     return {state:'unknown',label:text||raw};
   }
+  // Presentation only: the known Sony evidence note duplicates an explicit EST
+  // cutoff. Remove it only when the written cutoff and machine offset agree.
+  // Keep source fields, expiry semantics and every other condition unchanged.
+  function displayLabel(job,label){
+    label=String(label||'');
+    var source=String(job&&job.deadline||'').trim(),marker=' (employer API explicit -05:00 offset)';
+    if(!source.endsWith(marker))return label;
+    var visible=source.slice(0,-marker.length),raw=String(job.deadlineISO||''),written=writtenDeadline(visible,job.deadlineTimezone);
+    if(!/\bEST$/.test(visible)||!raw.endsWith('-05:00')||!written||written.invalid||!Number.isFinite(Date.parse(raw))||Date.parse(written.value)!==Date.parse(raw))return label;
+    return label===source||label===source+' · UTC-05:00'?visible:label;
+  }
   function accepting(job,now){return !/^(?:paused|on hold|hiring paused|closed|expired|dead|inactive|no)$/i.test(String(job&&job.applicationStatus||'').trim())&&['expired','unknown'].indexOf(facts(job,now).state)<0;}
   // Current discovery excludes elapsed deadlines. Raw snapshots and saved
   // history remain readable and never become proof of employer closure.
   function current(jobs,now){return jobs.filter(function(job){return facts(job,now).state!=='expired';});}
-  return {facts:facts,accepting:accepting,current:current,calendar:calendar,day:day,defaultTimezone:DEFAULT_ZONE};
+  return {facts:facts,displayLabel:displayLabel,accepting:accepting,current:current,calendar:calendar,day:day,defaultTimezone:DEFAULT_ZONE};
 });

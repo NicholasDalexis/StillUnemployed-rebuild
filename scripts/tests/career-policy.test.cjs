@@ -32,6 +32,23 @@ test('explicit employer time or timezone overrides default, invalid dates fail A
  assert(!D.accepting({deadlineISO:'2026-02-30'}));assert(!D.accepting({deadlineISO:'2026-10-14',deadlineTimezone:'bad-zone'}));
  assert(D.accepting({deadline:'Rolling; not stated'}));assert(!D.accepting({applicationStatus:'paused'}));
 });
+test('deadline presentation hides only redundant proven EST provenance without changing cutoff or source',()=>{
+ const job={deadline:'November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)',deadlineISO:'2026-11-20T20:00:00-05:00',timingSourceUrl:'https://example.com/employer-timing',eligibility:'Employer body uses November 21; API supplies an explicit -05:00 instant.'};
+ const before=structuredClone(job),instant=Date.parse(job.deadlineISO),facts=D.facts(job,instant-1);
+ assert.equal(D.displayLabel(job,job.deadline),'November 20, 2026, 8:00 PM EST');
+ assert.equal(D.displayLabel(job,facts.label),'November 20, 2026, 8:00 PM EST');
+ assert.deepEqual(job,before);assert.deepEqual(D.facts(job,instant-1),facts);
+ assert.equal(D.facts(job,instant-1).state,'open');assert.equal(D.facts(job,instant).state,'expired');
+ assert.equal(D.accepting(job,instant-1),true);assert.equal(D.accepting(job,instant),false);
+});
+test('deadline presentation preserves contradictions, ambiguity and meaningful employer conditions',()=>{
+ const source='November 20, 2026, 8:00 PM EST (employer API explicit -05:00 offset)';
+ for(const job of [{deadline:source,deadlineISO:'2026-11-20T21:00:00-05:00'},{deadline:source,deadlineISO:'2026-11-20T20:00:00-04:00'},{deadline:source},{deadline:source+'; rolling review',deadlineISO:'2026-11-20T20:00:00-05:00'},{deadline:'October 30, 2026, 5 PM PST (employer wording); rolling review'},{deadline:'November 1, 2026',deadlineISO:'2026-11-01'},{deadline:'November 1, 2026, 1:30 AM ET'},{deadline:'Spring: October 16, 2026; Summer: March 19, 2027'}]){
+  const label=D.facts(job,Date.parse('2026-10-01T00:00:00Z')).label;
+  assert.equal(D.displayLabel(job,job.deadline),job.deadline);
+  assert.equal(D.displayLabel(job,label),label);
+ }
+});
 test('editorial ranking is stable, never annualizes hourly/OTE/estimates and never drops jobs',()=>{
  const rows=[{co:'Small',pay:'$70K'},{co:'Small',pay:'$81K'},{co:'Small',pay:'$150/hour'},{co:'Google',pay:'$60K'},{co:'Small',pay:'$140K OTE'},{co:'Small',pay:'$130K (estimated)'}];
  const ranked=X.defaultOrder(rows,false);assert.equal(ranked.length,rows.length);assert.equal(ranked[0],rows[3]);assert.equal(ranked[1],rows[1]);assert.deepEqual(ranked.slice(2),[rows[0],rows[2],rows[4],rows[5]]);

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "status": "verified",
-  "sourceExportedAt": "2026-10-29T04:52:21.108Z",
+  "sourceExportedAt": "2026-10-30T01:43:18.346Z",
   "jobs": [
     {
       "co": "Roblox",
@@ -1052,76 +1052,6 @@
         "status": "open",
         "checkedAt": "2026-09-27T19:24:36.117Z",
         "sourceUrl": "https://careersus-shure.icims.com/jobs/5003/user-experience-design-%28ux%29-intern/job",
-        "reviewerType": "source_check"
-      }
-    },
-    {
-      "co": "Google",
-      "role": "Technical Program Manager Intern, BS/MS, Summer 2027",
-      "link": "https://www.google.com/about/careers/applications/jobs/results/80582381009806022-technical-program-manager-intern-bsms-summer-2027",
-      "loc": "Mountain View, CA, USA; Ann Arbor, MI, USA; Atlanta, GA, USA; Austin, TX, USA; Boulder, CO, USA; Bellevue, WA, USA; Cambridge, MA, USA; Chicago, IL, USA; Irvine, CA, USA; Kirkland, WA, USA; Los Angeles, CA, USA; Madison, WI, USA; New York, NY, USA; Palo Alto, CA, USA; Portland, OR, USA; Pittsburgh, PA, USA; Raleigh, NC, USA; Durham, NC, USA; Reston, VA, USA; Redmond, WA, USA; Redwood City, CA, USA; San Diego, CA, USA; Goleta, CA, USA; San Bruno, CA, USA; Seattle, WA, USA; San Francisco, CA, USA; San Jose, CA, USA; Santa Cruz, CA, USA; South San Francisco, CA, USA; Sunnyvale, CA, USA; Washington D.C., DC, USA",
-      "ind": "Creative Tech",
-      "desc": "Work with Google Engineering teams to design, develop, implement, launch, and support services, and enhancements to existing services. Develop and execute plans under a set of implementation and delivery time constraints, optimizing for a blend of cost, schedule, and features.",
-      "pay": "$94K-125K (pay period not listed)",
-      "style": "",
-      "exp": "Not listed",
-      "state": "Mountain View, CA, USA; Ann Arbor, MI, USA; Atlanta, GA, USA; Austin, TX, USA; Boulder, CO, USA; Bellevue, WA, USA; Cambridge, MA, USA; Chicago, IL, USA; Irvine, CA, USA; Kirkland, WA, USA; Los Angeles, CA, USA; Madison, WI, USA; New York, NY, USA; Palo Alto, CA, USA; Portland, OR, USA; Pittsburgh, PA, USA; Raleigh, NC, USA; Durham, NC, USA; Reston, VA, USA; Redmond, WA, USA; Redwood City, CA, USA; San Diego, CA, USA; Goleta, CA, USA; San Bruno, CA, USA; Seattle, WA, USA; San Francisco, CA, USA; San Jose, CA, USA; Santa Cruz, CA, USA; South San Francisco, CA, USA; Sunnyvale, CA, USA; Washington D.C., DC, USA",
-      "eligibility": "Minimum qualifications:\nCurrently pursuing a Bachelor’s or Master's degree in Computer Science, or a related field.\nExperience with one or more general purpose programming languages including: Java, C/C++, Go, or Python.\nExperience leading entrepreneurial efforts, outreach within organizations or project management experience through class projects, clubs, or internships.\nPreferred qualifications:\nCurrently attending a degree program in the US and available to work full time for 12 weeks outside of university term time.\nIn their penultimate academic year or returning to a degree program after completion of the internship.\nExperience writing code and contributing to open source projects.\nAbility to take an analytical and solution-oriented approach.\nExcellent written and verbal communication, problem-solving, and collaboration skills.\n\ninfo_outline\nX\nPlease complete your application before\n October 23, 2026.\nApplications will be reviewed on a rolling basis and it’s in a candidate’s best interest to apply early.\nTiming on when you can hear back will vary and can take upwards of 90+ days. If you haven’t heard from us in three months about your application, we likely proceeded with other candidates for the role. \nParticipation in the internship program requires that you are located in the United States for the duration of the internship program.\nThis internship is intended for students in their penultimate academic year or returning to a degree program after completion of the internship and who are pursuing a Bachelor's or Master's degree program in Computer Science or a related field.\nGoogle is a global company and, in order to facilitate efficient collaboration and communication globally, English proficiency is a requirement for this internship program.\nTo start the application process, you will need an updated CV or resume and a current unofficial or official transcript in English. Click on the “Apply” button on this page and provide the required materials in the appropriate sections (PDFs preferred):\nIn the “Resume Section:” attach an updated CV or resume.\nPlease ensure you’ve listed your anticipated graduation date (in MM/YY)\nIn the “Education Section:” attach a current or recent unofficial or official transcript in English.\nUnder “Degree Status,” select “Now attending” to upload a transcript.\nIn accordance with Washington state law, we are highlighting our comprehensive benefits package, which is available to all eligible US based Interns. Benefits for this role include: \nHealth, dental, vision insurance\nSick Time: 40 hours/year (increased to 69 hours/year for Seattle) including 5 discretionary sick days per instance \nHolidays: 13 paid days per year\nThis role may also be located in our Playa Vista, CA campus.\nApplicants in the County of Los Angeles: Qualified applications with arrest or conviction records will be considered for employment in accordance with the Los Angeles County Fair Chance Ordinance for Employers and the California Fair Chance Act.\nApplicants in San Francisco: Qualified applications with arrest or conviction records will be considered for employment in accordance with the San Francisco Fair Chance Ordinance for Employers and the California Fair Chance Act.\n",
-      "cycle": "Summer 2027",
-      "deadline": "2026-10-23",
-      "applicationsOpen": "Not listed",
-      "startDate": "Summer 2027",
-      "timingSourceUrl": "https://www.google.com/about/careers/applications/jobs/results/80582381009806022-technical-program-manager-intern-bsms-summer-2027",
-      "deadlineISO": "2026-10-23",
-      "payStatus": "paid",
-      "payBasis": "not_listed",
-      "collegeCredit": "not_listed",
-      "applicationStatus": "open",
-      "duties": [
-        "Work with Google Engineering teams to design, develop, implement, launch, and support services, and enhancements to existing services.",
-        "Develop and execute plans under a set of implementation and delivery time constraints, optimizing for a blend of cost, schedule, and features.",
-        "Collect and analyze relevant data and take actions accordingly."
-      ],
-      "eligibilityFlags": [
-        "Minimum qualifications:",
-        "Currently pursuing a Bachelor’s or Master's degree in Computer Science, or a related field.",
-        "Experience with one or more general purpose programming languages including: Java, C/C++, Go, or Python.",
-        "Experience leading entrepreneurial efforts, outreach within organizations or project management experience through class projects, clubs, or internships.",
-        "Preferred qualifications:",
-        "Currently attending a degree program in the US and available to work full time for 12 weeks outside of university term time.",
-        "In their penultimate academic year or returning to a degree program after completion of the internship.",
-        "Experience writing code and contributing to open source projects.",
-        "Ability to take an analytical and solution-oriented approach.",
-        "Excellent written and verbal communication, problem-solving, and collaboration skills.",
-        "info_outline",
-        "X",
-        "Please complete your application before",
-        "October 23, 2026.",
-        "Applications will be reviewed on a rolling basis and it’s in a candidate’s best interest to apply early.",
-        "Timing on when you can hear back will vary and can take upwards of 90+ days. If you haven’t heard from us in three months about your application, we likely proceeded with other candidates for the role.",
-        "Participation in the internship program requires that you are located in the United States for the duration of the internship program.",
-        "This internship is intended for students in their penultimate academic year or returning to a degree program after completion of the internship and who are pursuing a Bachelor's or Master's degree program in Computer Science or a related field.",
-        "Google is a global company and, in order to facilitate efficient collaboration and communication globally, English proficiency is a requirement for this internship program.",
-        "To start the application process, you will need an updated CV or resume and a current unofficial or official transcript in English. Click on the “Apply” button on this page and provide the required materials in the appropriate sections (PDFs preferred):",
-        "In the “Resume Section:” attach an updated CV or resume.",
-        "Please ensure you’ve listed your anticipated graduation date (in MM/YY)",
-        "In the “Education Section:” attach a current or recent unofficial or official transcript in English.",
-        "Under “Degree Status,” select “Now attending” to upload a transcript.",
-        "In accordance with Washington state law, we are highlighting our comprehensive benefits package, which is available to all eligible US based Interns. Benefits for this role include:",
-        "Health, dental, vision insurance",
-        "Sick Time: 40 hours/year (increased to 69 hours/year for Seattle) including 5 discretionary sick days per instance",
-        "Holidays: 13 paid days per year",
-        "This role may also be located in our Playa Vista, CA campus.",
-        "Applicants in the County of Los Angeles: Qualified applications with arrest or conviction records will be considered for employment in accordance with the Los Angeles County Fair Chance Ordinance for Employers and the California Fair Chance Act.",
-        "Applicants in San Francisco: Qualified applications with arrest or conviction records will be considered for employment in accordance with the San Francisco Fair Chance Ordinance for Employers and the California Fair Chance Act."
-      ],
-      "benefits": [
-        "See employer posting"
-      ],
-      "verification": {
-        "status": "open",
-        "checkedAt": "2026-10-15T01:05:33.059+00:00",
-        "sourceUrl": "https://www.google.com/about/careers/applications/jobs/results/80582381009806022-technical-program-manager-intern-bsms-summer-2027",
         "reviewerType": "source_check"
       }
     },
@@ -9118,6 +9048,903 @@
         "status": "open",
         "checkedAt": "2026-10-29T04:42:41.543Z",
         "sourceUrl": "https://job-boards.greenhouse.io/semafor/jobs/4724245005",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Gemini",
+      "role": "Software Engineering Intern (Winter 2027)",
+      "link": "https://job-boards.greenhouse.io/gemini/jobs/8214272",
+      "loc": "New York, New York",
+      "ind": "Software Engineering",
+      "desc": "Develop software products and features in small teams. Work with senior engineers on technical challenges. Participate in design, testing and code review.",
+      "pay": "$50/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "New York, New York",
+      "eligibility": "Currently pursuing associate’s, bachelor’s or master’s in CS, Computer Engineering or related field. January–April 2027, 3 days/week in NYC office; form asks relocation willingness. Blockchain/Web3 interest, software/coding fundamentals and collaboration skills.",
+      "cycle": "Winter 2027; January–April",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "January 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/gemini/jobs/8214272",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop software products and features in small teams.",
+        "Work with senior engineers on technical challenges.",
+        "Participate in design, testing and code review."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing associate’s, bachelor’s or master’s in CS, Computer Engineering or related field. January–April 2027, 3 days/week in NYC office; form asks relocation willingness. Blockchain/Web3 interest, software/coding fundamentals and collaboration skills."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T01:18:54.889Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/gemini/jobs/8214272",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Epic Games",
+      "role": "Level Design Intern (R27427)",
+      "link": "https://epicgames.com/careers/jobs/6173450004?gh_jid=6173450004",
+      "loc": "Cary, NC",
+      "ind": "Game / Level Design",
+      "desc": "Design gameplay spaces for an unannounced Fortnite-ecosystem project. Use Unreal Engine modular kits to build locations. Collaborate across disciplines and incorporate design feedback.",
+      "pay": "Pay not disclosed",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Cary, NC",
+      "eligibility": "Unreal Engine experience required; prop placement, lighting, atmosphere and design markup; BR/multiplayer-game knowledge, communication and feedback skills. Legally authorized in posting location. R27427 is an unannounced Fortnite-ecosystem gameplay project, distinct from R27413 landmarks/POIs role.  Form asks 40-hour Monday–Friday availability and relevant project/work samples.",
+      "cycle": "2027; flexible start",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://epicgames.com/careers/jobs/6173450004?gh_jid=6173450004",
+      "payStatus": "not_disclosed",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Design gameplay spaces for an unannounced Fortnite-ecosystem project.",
+        "Use Unreal Engine modular kits to build locations.",
+        "Collaborate across disciplines and incorporate design feedback."
+      ],
+      "eligibilityFlags": [
+        "Unreal Engine experience required; prop placement, lighting, atmosphere and design markup; BR/multiplayer-game knowledge, communication and feedback skills. Legally authorized in posting location. R27427 is an unannounced Fortnite-ecosystem gameplay project, distinct from R27413 landmarks/POIs role.  Form asks 40-hour Monday–Friday availability and relevant project/work samples."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:48:09.165Z",
+        "sourceUrl": "https://www.epicgames.com/site/careers/jobs/6173450004?gh_jid=6173450004",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Epic Games",
+      "role": "Frontend Programmer Intern (R27429)",
+      "link": "https://epicgames.com/careers/jobs/6173862004?gh_jid=6173862004",
+      "loc": "Cary, NC",
+      "ind": "Software Engineering",
+      "desc": "Develop frontend systems and user experiences. Collaborate with game and engineering teams. Test and iterate features using team feedback.",
+      "pay": "Pay not disclosed",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Cary, NC",
+      "eligibility": "Currently pursuing CS or related degree; frontend development skills and work samples; legally authorized in posting location. Requisition R27429. Form asks 40-hour Monday–Friday availability and relevant project/work samples.",
+      "cycle": "2027; flexible start",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://epicgames.com/careers/jobs/6173862004?gh_jid=6173862004",
+      "payStatus": "not_disclosed",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop frontend systems and user experiences.",
+        "Collaborate with game and engineering teams.",
+        "Test and iterate features using team feedback."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing CS or related degree; frontend development skills and work samples; legally authorized in posting location. Requisition R27429. Form asks 40-hour Monday–Friday availability and relevant project/work samples."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:48:10.245Z",
+        "sourceUrl": "https://www.epicgames.com/site/careers/jobs/6173862004?gh_jid=6173862004",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Pinterest",
+      "role": "Master's Machine Learning Internship 2027 (USA)",
+      "link": "https://www.pinterestcareers.com/jobs/?gh_jid=8138090",
+      "loc": "San Francisco, CA, US; Palo Alto, CA, US; Seattle, WA, US; New York, NY, US",
+      "ind": "Machine Learning / AI",
+      "desc": "Apply machine learning to Pinterest product challenges. Develop and evaluate models with engineering teams. Use systems programming and ML frameworks on real projects.",
+      "pay": "$11,000/month",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "San Francisco, CA, US; Palo Alto, CA, US; Seattle, WA, US; New York, NY, US",
+      "eligibility": "Currently pursuing Master’s in CS, ML, NLP, Statistics, Information Sciences or related field. Form asks Master’s by June 2030 at an accredited four-year institution. US-based applicants only; team may be remote or hybrid near SF/Palo Alto/NYC/Seattle for collaboration. 12 weeks: May 17–August 6 or June 14–September 3, 2027. Systems language and ML framework skills; apply only once within USA/Canada.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May 17 or June 14, 2027",
+      "timingSourceUrl": "https://www.pinterestcareers.com/jobs/?gh_jid=8138090",
+      "payStatus": "paid",
+      "payBasis": "month",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Apply machine learning to Pinterest product challenges.",
+        "Develop and evaluate models with engineering teams.",
+        "Use systems programming and ML frameworks on real projects."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing Master’s in CS, ML, NLP, Statistics, Information Sciences or related field. Form asks Master’s by June 2030 at an accredited four-year institution. US-based applicants only; team may be remote or hybrid near SF/Palo Alto/NYC/Seattle for collaboration. 12 weeks: May 17–August 6 or June 14–September 3, 2027. Systems language and ML framework skills; apply only once within USA/Canada."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:50:24.820Z",
+        "sourceUrl": "https://www.pinterestcareers.com/jobs/8138090/masters-machine-learning-internship-2027-usa/?gh_jid=8138090",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Epic Games",
+      "role": "Level Design Intern (R27413)",
+      "link": "https://epicgames.com/careers/jobs/6148799004?gh_jid=6148799004",
+      "loc": "Cary, NC",
+      "ind": "Game / Level Design",
+      "desc": "Develop Fortnite landmarks and points of interest. Use Unreal Engine modular kits to design locations. Collaborate with level designers and environment artists.",
+      "pay": "Pay not disclosed",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Cary, NC",
+      "eligibility": "Unreal Engine experience required; prop placement, lighting, atmosphere/design markup; BattleRoyale/multiplayer knowledge; communication and constructive-feedback skills. Legally authorized in posting location. R27413 explicitly focuses Fortnite landmarks/POIs with level designers/environment artists, distinct from R27427 unannounced project. Form asks 40-hour Monday–Friday availability and relevant project/work samples.",
+      "cycle": "2027; flexible start",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://epicgames.com/careers/jobs/6148799004?gh_jid=6148799004",
+      "payStatus": "not_disclosed",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop Fortnite landmarks and points of interest.",
+        "Use Unreal Engine modular kits to design locations.",
+        "Collaborate with level designers and environment artists."
+      ],
+      "eligibilityFlags": [
+        "Unreal Engine experience required; prop placement, lighting, atmosphere/design markup; BattleRoyale/multiplayer knowledge; communication and constructive-feedback skills. Legally authorized in posting location. R27413 explicitly focuses Fortnite landmarks/POIs with level designers/environment artists, distinct from R27427 unannounced project. Form asks 40-hour Monday–Friday availability and relevant project/work samples."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:48:11.451Z",
+        "sourceUrl": "https://www.epicgames.com/site/careers/jobs/6148799004?gh_jid=6148799004",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Figma",
+      "role": "PhD Intern, AI Applied Scientist (2027)",
+      "link": "https://boards.greenhouse.io/figma/jobs/6207801004?gh_jid=6207801004",
+      "loc": "San Francisco, CA • New York, NY",
+      "ind": "Machine Learning / AI",
+      "desc": "Research AI methods for design and creative products. Develop and evaluate agentic systems and models. Collaborate with researchers and research engineers.",
+      "pay": "$74/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "San Francisco, CA • New York, NY",
+      "eligibility": "Fourth- or fifth-year PhD student in AI, ML, Computer Vision, NLP, HCI or related field; AI publication/research track record, Python and ML frameworks. Winter or Summer 2027 in SF or NYC hub offices; precise attendance frequency not stated. In-person onboarding and camera-on interviews required, with accommodations available. Maximum 5 applications in 30 days; no reapplication while active or within 90 days of rejection.",
+      "cycle": "Winter or Summer 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://boards.greenhouse.io/figma/jobs/6207801004?gh_jid=6207801004",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Research AI methods for design and creative products.",
+        "Develop and evaluate agentic systems and models.",
+        "Collaborate with researchers and research engineers."
+      ],
+      "eligibilityFlags": [
+        "Fourth- or fifth-year PhD student in AI, ML, Computer Vision, NLP, HCI or related field; AI publication/research track record, Python and ML frameworks. Winter or Summer 2027 in SF or NYC hub offices; precise attendance frequency not stated. In-person onboarding and camera-on interviews required, with accommodations available. Maximum 5 applications in 30 days; no reapplication while active or within 90 days of rejection."
+      ],
+      "benefits": [
+        "Housing stipend and travel reimbursement, subject to employer policy."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:49:36.303Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/figma/jobs/6207801004?gh_jid=6207801004",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Epic Games",
+      "role": "Data Science Intern (R27453)",
+      "link": "https://epicgames.com/careers/jobs/6202675004?gh_jid=6202675004",
+      "loc": "Cary, NC",
+      "ind": "Data Science",
+      "desc": "Analyze transaction, account and gameplay data for abuse. Build statistical or ML detection models. Create monitoring and document methods and results.",
+      "pay": "Pay not disclosed",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Cary, NC",
+      "eligibility": "Python/pandas/scikit-learn, SQL, statistics and ML fundamentals; communication and fraud/abuse research interest.  Legally authorized in posting location. R27453.  Form asks 40-hour Monday–Friday availability and relevant project/work samples.",
+      "cycle": "2027; flexible start",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://epicgames.com/careers/jobs/6202675004?gh_jid=6202675004",
+      "payStatus": "not_disclosed",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Analyze transaction, account and gameplay data for abuse.",
+        "Build statistical or ML detection models.",
+        "Create monitoring and document methods and results."
+      ],
+      "eligibilityFlags": [
+        "Python/pandas/scikit-learn, SQL, statistics and ML fundamentals; communication and fraud/abuse research interest.  Legally authorized in posting location. R27453.  Form asks 40-hour Monday–Friday availability and relevant project/work samples."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:48:26.378Z",
+        "sourceUrl": "https://www.epicgames.com/site/careers/jobs/6202675004?gh_jid=6202675004",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Epic Games",
+      "role": "Tools Programmer Intern (R27410)",
+      "link": "https://epicgames.com/careers/jobs/6147167004?gh_jid=6147167004",
+      "loc": "Cary, NC",
+      "ind": "Software Engineering",
+      "desc": "Build internal tools for Fortnite and Unreal workflows. Write tests and improve development platforms. Instrument telemetry and streamline developer workflows.",
+      "pay": "Pay not disclosed",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Cary, NC",
+      "eligibility": "C# experience; C++ familiarity or willingness to learn; GUI/UX and game-development interest. Legally authorized in posting location. Exact R27410, distinct from R27446 and Graphics6232770004. Form asks 40-hour Monday–Friday availability and relevant project/work samples.",
+      "cycle": "2027; flexible start",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://epicgames.com/careers/jobs/6147167004?gh_jid=6147167004",
+      "payStatus": "not_disclosed",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build internal tools for Fortnite and Unreal workflows.",
+        "Write tests and improve development platforms.",
+        "Instrument telemetry and streamline developer workflows."
+      ],
+      "eligibilityFlags": [
+        "C# experience; C++ familiarity or willingness to learn; GUI/UX and game-development interest. Legally authorized in posting location. Exact R27410, distinct from R27446 and Graphics6232770004. Form asks 40-hour Monday–Friday availability and relevant project/work samples."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:48:27.531Z",
+        "sourceUrl": "https://www.epicgames.com/site/careers/jobs/6147167004?gh_jid=6147167004",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Epic Games",
+      "role": "Product Management Intern (R27422)",
+      "link": "https://epicgames.com/careers/jobs/6161289004?gh_jid=6161289004",
+      "loc": "Cary, NC",
+      "ind": "Product Management",
+      "desc": "Improve Fortnite engagement reporting and PM workflows. Analyze cohorts and develop strategic recommendations. Present insights to product and business leadership.",
+      "pay": "Pay not disclosed",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Cary, NC",
+      "eligibility": "Current MBA student with prior product, strategy, analytics, consulting or similar experience. AI/LLM workflow and analytical skills; cross-functional/executive communication. Legally authorized in posting location. R27422, distinct from TechnicalProductManagement6178818004. Form asks 40-hour Monday–Friday availability and relevant project/work samples.",
+      "cycle": "2027; flexible start",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://epicgames.com/careers/jobs/6161289004?gh_jid=6161289004",
+      "payStatus": "not_disclosed",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Improve Fortnite engagement reporting and PM workflows.",
+        "Analyze cohorts and develop strategic recommendations.",
+        "Present insights to product and business leadership."
+      ],
+      "eligibilityFlags": [
+        "Current MBA student with prior product, strategy, analytics, consulting or similar experience. AI/LLM workflow and analytical skills; cross-functional/executive communication. Legally authorized in posting location. R27422, distinct from TechnicalProductManagement6178818004. Form asks 40-hour Monday–Friday availability and relevant project/work samples."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:48:28.634Z",
+        "sourceUrl": "https://www.epicgames.com/site/careers/jobs/6161289004?gh_jid=6161289004",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Epic Games",
+      "role": "Tools Programmer Intern (R27446)",
+      "link": "https://epicgames.com/careers/jobs/6200355004?gh_jid=6200355004",
+      "loc": "Cary, NC",
+      "ind": "Software Engineering",
+      "desc": "Develop engine features and content-architecture tools. Help configure content packaging, distribution and streaming. Resolve bugs and improve Unreal Engine workflows.",
+      "pay": "Pay not disclosed",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Cary, NC",
+      "eligibility": "Strong C++, OOP/algorithms/data structures, debugging and Windows development. Unreal experience a plus, not required. Legally authorized in posting location. R27446 ContentArchitecture/UnrealEngine content packaging/distribution/streaming is distinct from R27410 BuildOperations/Fortnite internal tools and existing Graphics6232770004. Form asks 40-hour Monday–Friday availability and relevant project/work samples.",
+      "cycle": "2027; flexible start",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://epicgames.com/careers/jobs/6200355004?gh_jid=6200355004",
+      "payStatus": "not_disclosed",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop engine features and content-architecture tools.",
+        "Help configure content packaging, distribution and streaming.",
+        "Resolve bugs and improve Unreal Engine workflows."
+      ],
+      "eligibilityFlags": [
+        "Strong C++, OOP/algorithms/data structures, debugging and Windows development. Unreal experience a plus, not required. Legally authorized in posting location. R27446 ContentArchitecture/UnrealEngine content packaging/distribution/streaming is distinct from R27410 BuildOperations/Fortnite internal tools and existing Graphics6232770004. Form asks 40-hour Monday–Friday availability and relevant project/work samples."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:48:29.715Z",
+        "sourceUrl": "https://www.epicgames.com/site/careers/jobs/6200355004?gh_jid=6200355004",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Epic Games",
+      "role": "Machine Learning Intern (R27116)",
+      "link": "https://epicgames.com/careers/jobs/6138134004?gh_jid=6138134004",
+      "loc": "Multiple locations: California, New York City, Washington; other North American/European regions",
+      "ind": "Machine Learning / AI",
+      "desc": "Research machine learning across Epic’s ecosystem. Develop methods with researchers and engineers. Apply experimental work to creator and player technologies.",
+      "pay": "$139,029–166,834/year (NYC); $122,345–146,814/year (CA); $111,223–133,468/year (WA)",
+      "style": "Not listed",
+      "exp": "Not listed",
+      "state": "Multiple locations: California, New York City, Washington; other North American/European regions",
+      "eligibility": "Current PhD or PhD completed within 12 months in CS, Mathematics, AI or related field. Publications; deep-learning implementation, foundation-model post-training, AI coding and experimental engineering skills. 5–12 months initially; flexible 2026/2027 starts; 20-hour part-time or 40-hour full-time. Select North American/European regions, explicitly including CA, NYC and WA. Existing right to work for the full internship required; no visa sponsorship/support. Locale-specific annual base pay, not internship total.",
+      "cycle": "Flexible 2026/2027; 5–12 months",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://epicgames.com/careers/jobs/6138134004?gh_jid=6138134004",
+      "payStatus": "paid",
+      "payBasis": "annualized_year",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Research machine learning across Epic’s ecosystem.",
+        "Develop methods with researchers and engineers.",
+        "Apply experimental work to creator and player technologies."
+      ],
+      "eligibilityFlags": [
+        "Current PhD or PhD completed within 12 months in CS, Mathematics, AI or related field. Publications; deep-learning implementation, foundation-model post-training, AI coding and experimental engineering skills. 5–12 months initially; flexible 2026/2027 starts; 20-hour part-time or 40-hour full-time. Select North American/European regions, explicitly including CA, NYC and WA. Existing right to work for the full internship required; no visa sponsorship/support. Locale-specific annual base pay, not internship total."
+      ],
+      "benefits": [
+        "Research publication opportunities; generic employee benefits subject to employer plan and eligibility."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:48:30.980Z",
+        "sourceUrl": "https://www.epicgames.com/site/careers/jobs/6138134004?gh_jid=6138134004",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Epic Games",
+      "role": "SDET Intern (R27474)",
+      "link": "https://epicgames.com/careers/jobs/6219626004?gh_jid=6219626004",
+      "loc": "Cary, NC",
+      "ind": "Software Quality / Test Engineering",
+      "desc": "Develop software testing capabilities with engineering teams. Investigate defects and improve quality workflows. Contribute automated tests and collaborate on fixes.",
+      "pay": "Pay not disclosed",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Cary, NC",
+      "eligibility": "Pursuing CS/related degree. Personal-project repository or demo portfolio required. OOP language such as Python/C++/C#, basic unit/integration testing, versioncontrol, interest in AI code/content generation. Clear communication and technical feedback skills. Legally authorized in posting location. R27474. Form asks 40-hour Monday–Friday availability and relevant project/work samples.",
+      "cycle": "2027; flexible start",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://epicgames.com/careers/jobs/6219626004?gh_jid=6219626004",
+      "payStatus": "not_disclosed",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop software testing capabilities with engineering teams.",
+        "Investigate defects and improve quality workflows.",
+        "Contribute automated tests and collaborate on fixes."
+      ],
+      "eligibilityFlags": [
+        "Pursuing CS/related degree. Personal-project repository or demo portfolio required. OOP language such as Python/C++/C#, basic unit/integration testing, versioncontrol, interest in AI code/content generation. Clear communication and technical feedback skills. Legally authorized in posting location. R27474. Form asks 40-hour Monday–Friday availability and relevant project/work samples."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:48:32.181Z",
+        "sourceUrl": "https://www.epicgames.com/site/careers/jobs/6219626004?gh_jid=6219626004",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Roblox",
+      "role": "[2027] Data Scientist - PhD Intern",
+      "link": "https://careers.roblox.com/jobs/8242619?gh_jid=8242619",
+      "loc": "San Mateo, CA, United States",
+      "ind": "Data Science",
+      "desc": "Use data science to study platform and user challenges. Develop quantitative models and analyses. Collaborate with technical and product partners.",
+      "pay": "$66/hour",
+      "style": "Hybrid",
+      "exp": "At least 1 year via research or prior internship",
+      "state": "San Mateo, CA, United States",
+      "eligibility": "Possess or pursue a quantitative PhD; at least 1 year in causal inference, ML or experiment design via research/prior internship. SQL/Python/R and big-data query/processing skills. Form asks age 18+, US authorization and 40-hour/week availability at San Mateo HQ. Office Tuesday–Thursday, optional Monday/Friday unless otherwise stated. Certain visa categories/future H-1B sponsorship may not be supported.",
+      "cycle": "2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://careers.roblox.com/jobs/8242619?gh_jid=8242619",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Use data science to study platform and user challenges.",
+        "Develop quantitative models and analyses.",
+        "Collaborate with technical and product partners."
+      ],
+      "eligibilityFlags": [
+        "Possess or pursue a quantitative PhD; at least 1 year in causal inference, ML or experiment design via research/prior internship. SQL/Python/R and big-data query/processing skills. Form asks age 18+, US authorization and 40-hour/week availability at San Mateo HQ. Office Tuesday–Thursday, optional Monday/Friday unless otherwise stated. Certain visa categories/future H-1B sponsorship may not be supported."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:50:17.370Z",
+        "sourceUrl": "https://careers.roblox.com/jobs/8242619?gh_jid=8242619",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Roblox",
+      "role": "[2027] Applied Scientist - PhD Intern",
+      "link": "https://careers.roblox.com/jobs/8242621?gh_jid=8242621",
+      "loc": "San Mateo, CA, United States",
+      "ind": "Machine Learning / AI",
+      "desc": "Own applied ML research from experimentation to production. Develop algorithms for Roblox research areas. Collaborate and potentially publish research findings.",
+      "pay": "$72/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "San Mateo, CA, United States",
+      "eligibility": "Possess or pursue CS/engineering/related PhD with aligned thesis; deep relevant expertise, programming/large-scale systems and multiple peer-reviewed publications/presentations. Winter, Summer or Fall 2027, 12 or 16 weeks. Form asks age 18+, US authorization and 40 hours/week at San Mateo HQ. Office Tuesday–Thursday, optional Monday/Friday. Certain visas/future H-1B sponsorship may not be supported.",
+      "cycle": "2027; Winter, Summer or Fall; 12 or 16 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://careers.roblox.com/jobs/8242621?gh_jid=8242621",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Own applied ML research from experimentation to production.",
+        "Develop algorithms for Roblox research areas.",
+        "Collaborate and potentially publish research findings."
+      ],
+      "eligibilityFlags": [
+        "Possess or pursue CS/engineering/related PhD with aligned thesis; deep relevant expertise, programming/large-scale systems and multiple peer-reviewed publications/presentations. Winter, Summer or Fall 2027, 12 or 16 weeks. Form asks age 18+, US authorization and 40 hours/week at San Mateo HQ. Office Tuesday–Thursday, optional Monday/Friday. Certain visas/future H-1B sponsorship may not be supported."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:50:02.137Z",
+        "sourceUrl": "https://careers.roblox.com/jobs/8242621?gh_jid=8242621",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Coinbase",
+      "role": "Data Science Intern",
+      "link": "https://www.coinbase.com/careers/positions/8175462?gh_jid=8175462",
+      "loc": "Hybrid - New York, NY",
+      "ind": "Data Science",
+      "desc": "Analyze data and develop quantitative insights. Collaborate with product and technical teams. Present findings and support data-informed decisions.",
+      "pay": "$50/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Hybrid - New York, NY",
+      "eligibility": "Currently pursuing BA/BS or graduate degree in a quantitative discipline, or equivalent experience. Statistical/data-analysis coursework or projects, SQL/Python and experimentation interest. NYC hybrid; 12-week Summer 2027. Maximum 3 applications in 6 months; form asks age 18+ and work authorization/sponsorship.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://www.coinbase.com/careers/positions/8175462?gh_jid=8175462",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Analyze data and develop quantitative insights.",
+        "Collaborate with product and technical teams.",
+        "Present findings and support data-informed decisions."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing BA/BS or graduate degree in a quantitative discipline, or equivalent experience. Statistical/data-analysis coursework or projects, SQL/Python and experimentation interest. NYC hybrid; 12-week Summer 2027. Maximum 3 applications in 6 months; form asks age 18+ and work authorization/sponsorship."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:50:48.329Z",
+        "sourceUrl": "https://www.coinbase.com/careers/positions/8175462?gh_jid=8175462",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Coinbase",
+      "role": "Machine Learning Engineer Intern",
+      "link": "https://www.coinbase.com/careers/positions/8175441?gh_jid=8175441",
+      "loc": "Hybrid - San Francisco, CA",
+      "ind": "Machine Learning / AI",
+      "desc": "Build and operate ML models and pipelines. Own a research-to-production project. Present results to engineering and product stakeholders.",
+      "pay": "$60/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "Hybrid - San Francisco, CA",
+      "eligibility": "Currently pursuing PhD with published/in-progress ML/deeplearning research. PyTorch/TensorFlow, Python and softwareengineering fundamentals. SF hybrid;3application/6month limit.  Form asks age 18+ and work authorization/sponsorship.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://www.coinbase.com/careers/positions/8175441?gh_jid=8175441",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Build and operate ML models and pipelines.",
+        "Own a research-to-production project.",
+        "Present results to engineering and product stakeholders."
+      ],
+      "eligibilityFlags": [
+        "Currently pursuing PhD with published/in-progress ML/deeplearning research. PyTorch/TensorFlow, Python and softwareengineering fundamentals. SF hybrid;3application/6month limit.  Form asks age 18+ and work authorization/sponsorship."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:50:49.158Z",
+        "sourceUrl": "https://www.coinbase.com/careers/positions/8175441?gh_jid=8175441",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Coinbase",
+      "role": "Associate Product Manager Intern",
+      "link": "https://www.coinbase.com/careers/positions/8168322?gh_jid=8168322",
+      "loc": "San Francisco, CA; New York, NY (team-dependent)",
+      "ind": "Product Management",
+      "desc": "Define product requirements and drive a launch. Conduct user research and shape product strategy. Measure results and iterate with engineering and design.",
+      "pay": "$55/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "San Francisco, CA; New York, NY (team-dependent)",
+      "eligibility": "Prior product/technical internship or project experience shipping a feature, crypto/blockchain experience and quantitative aptitude. ProductGroupTeamsSF; EAACoreTeamNYC explicitly described. Hybrid, not unrestricted remote.3application/6month limit.  Form asks age 18+ and work authorization/sponsorship.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://www.coinbase.com/careers/positions/8168322?gh_jid=8168322",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Define product requirements and drive a launch.",
+        "Conduct user research and shape product strategy.",
+        "Measure results and iterate with engineering and design."
+      ],
+      "eligibilityFlags": [
+        "Prior product/technical internship or project experience shipping a feature, crypto/blockchain experience and quantitative aptitude. ProductGroupTeamsSF; EAACoreTeamNYC explicitly described. Hybrid, not unrestricted remote.3application/6month limit.  Form asks age 18+ and work authorization/sponsorship."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:50:47.503Z",
+        "sourceUrl": "https://www.coinbase.com/careers/positions/8168322?gh_jid=8168322",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "DoorDash",
+      "role": "Electrical Engineer, Intern - Labs (Summer 2027)",
+      "link": "https://job-boards.greenhouse.io/doordashusa/jobs/8274095",
+      "loc": "Oakland, CA",
+      "ind": "Electrical Engineering",
+      "desc": "Own a hardware project from requirements through bench validation. Develop charger prototypes, motor-control circuits or hardware test benches. Present engineering results to the DoorDash Labs team.",
+      "pay": "$107,400–158,000 (time unit not listed)",
+      "style": "In-person",
+      "exp": "No more than 2 years full-time experience",
+      "state": "Oakland, CA",
+      "eligibility": "Pursuing BS/MS in Electrical Engineering or equivalent; graduating Fall 2027–Summer 2028; no more than 2 years full-time work experience. May/June 2027 start; onsite Oakland. Power electronics, motor control, circuits/PCB and hands-on lab skills. Form asks prior internship/relevant full-time experience.",
+      "cycle": "Summer 2027",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "May or June 2027",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/doordashusa/jobs/8274095",
+      "payStatus": "paid",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Own a hardware project from requirements through bench validation.",
+        "Develop charger prototypes, motor-control circuits or hardware test benches.",
+        "Present engineering results to the DoorDash Labs team."
+      ],
+      "eligibilityFlags": [
+        "Pursuing BS/MS in Electrical Engineering or equivalent; graduating Fall 2027–Summer 2028; no more than 2 years full-time work experience. May/June 2027 start; onsite Oakland. Power electronics, motor control, circuits/PCB and hands-on lab skills. Form asks prior internship/relevant full-time experience."
+      ],
+      "benefits": [
+        "Employer describes benefits for regular employees; intern applicability not stated."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:46:12.954Z",
+        "sourceUrl": "https://careersatdoordash.com/jobs/electrical-engineer-labs-intern-summer-2027/8274095/",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "SeatGeek",
+      "role": "Data Analyst - Internship",
+      "link": "https://seatgeek.com/jobs/8247554?gh_jid=8247554",
+      "loc": "New York, New York",
+      "ind": "Data / Analytics",
+      "desc": "Conduct exploratory analysis and build data models. Create dashboards in Looker and Mixpanel. Partner with business, product, design and UX stakeholders.",
+      "pay": "$45/hour",
+      "style": "Hybrid",
+      "exp": "Not listed",
+      "state": "New York, New York",
+      "eligibility": "Currently enrolled college student graduating spring/summer 2028, ideally a quantitative discipline; SQL and analytical/communication skills. NYC hybrid: body states 50% onsite, footer requires at least 3 days/week, and form asks willingness to relocate and attend at least 50% of the week. 40-hour week.",
+      "cycle": "Summer 2027; 12 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://seatgeek.com/jobs/8247554?gh_jid=8247554",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Conduct exploratory analysis and build data models.",
+        "Create dashboards in Looker and Mixpanel.",
+        "Partner with business, product, design and UX stakeholders."
+      ],
+      "eligibilityFlags": [
+        "Currently enrolled college student graduating spring/summer 2028, ideally a quantitative discipline; SQL and analytical/communication skills. NYC hybrid: body states 50% onsite, footer requires at least 3 days/week, and form asks willingness to relocate and attend at least 50% of the week. 40-hour week."
+      ],
+      "benefits": [
+        "Housing stipend; $360/quarter event-ticket allowance; commuter card; Headspace; office lunch/snacks; planned events."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:49:00.059Z",
+        "sourceUrl": "https://seatgeek.com/jobs/8247554?gh_jid=8247554",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Epic Games",
+      "role": "Engine Programmer Intern (R27452)",
+      "link": "https://epicgames.com/careers/jobs/6202659004?gh_jid=6202659004",
+      "loc": "Cary, NC",
+      "ind": "Software Engineering",
+      "desc": "Support engine and Fortnite Online systems and features. Develop and improve game-engine programming capabilities. Collaborate with experienced engineers on production systems.",
+      "pay": "Pay not disclosed",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Cary, NC",
+      "eligibility": "Bachelor’s degree in Computer Science or related discipline required. C++/object-oriented programming, networking, REST and resilient backend services; Java a plus; Unreal/UEFN and work samples strongly desired. Flexible start in 2027. Legal authorization in posting location; form asks 40-hour Monday–Friday availability and project samples.",
+      "cycle": "2027; flexible start",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "Not listed",
+      "timingSourceUrl": "https://epicgames.com/careers/jobs/6202659004?gh_jid=6202659004",
+      "payStatus": "not_disclosed",
+      "payBasis": "not_listed",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Support engine and Fortnite Online systems and features.",
+        "Develop and improve game-engine programming capabilities.",
+        "Collaborate with experienced engineers on production systems."
+      ],
+      "eligibilityFlags": [
+        "Bachelor’s degree in Computer Science or related discipline required. C++/object-oriented programming, networking, REST and resilient backend services; Java a plus; Unreal/UEFN and work samples strongly desired. Flexible start in 2027. Legal authorization in posting location; form asks 40-hour Monday–Friday availability and project samples."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:47:37.409Z",
+        "sourceUrl": "https://www.epicgames.com/site/careers/jobs/6202659004?gh_jid=6202659004",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "Goodie Bag",
+      "role": "Social Media Content Creator & Video Editing Intern",
+      "link": "https://www.goodiebag.co/social-content-and-video-intern",
+      "loc": "Colorado Front Range; Charlotte, NC; Charleston, SC; Milwaukee, WI; Madison, WI; New York, NY",
+      "ind": "Social Media / Content",
+      "desc": "Create and edit Reels, TikToks, Stories and graphics. Manage social accounts and the content calendar with founders. Track performance and support local-market launches.",
+      "pay": "$800/month for 6 months ($4,800 total)",
+      "style": "Remote",
+      "exp": "Not listed",
+      "state": "Colorado Front Range; Charlotte, NC; Charleston, SC; Milwaukee, WI; Madison, WI; New York, NY",
+      "eligibility": "Must already live in Colorado’s Front Range, Charlotte, Charleston, Milwaukee, Madison or New York City; remote only within these markets. Minimum 10 hours/week, flexible schedule, 6 months starting ASAP. Links to work samples on both Instagram and TikTok required. Content creation/editing, writing, design, analytics and organization skills.",
+      "cycle": "Six months; minimum 10 hours/week",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "ASAP",
+      "timingSourceUrl": "https://www.goodiebag.co/social-content-and-video-intern",
+      "payStatus": "paid",
+      "payBasis": "month",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Create and edit Reels, TikToks, Stories and graphics.",
+        "Manage social accounts and the content calendar with founders.",
+        "Track performance and support local-market launches."
+      ],
+      "eligibilityFlags": [
+        "Must already live in Colorado’s Front Range, Charlotte, Charleston, Milwaukee, Madison or New York City; remote only within these markets. Minimum 10 hours/week, flexible schedule, 6 months starting ASAP. Links to work samples on both Instagram and TikTok required. Content creation/editing, writing, design, analytics and organization skills."
+      ],
+      "benefits": [
+        "Unlimited goodie bags; swag; potential performance incentive if content goes viral, no amount guaranteed."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:56:45.729Z",
+        "sourceUrl": "https://www.goodiebag.co/social-content-and-video-intern",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "National Life Group",
+      "role": "Digital Marketing Intern – Summer 2027",
+      "link": "https://job-boards.greenhouse.io/nationallifeinsurancecompany/jobs/4403684009",
+      "loc": "Addison, TX; Montpelier, VT",
+      "ind": "Marketing / Social Media",
+      "desc": "Design social graphics and visual assets. Support TikTok, Instagram, Facebook and LinkedIn content. Help develop short-form video and social campaigns.",
+      "pay": "$19–28/hour",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Addison, TX; Montpelier, VT",
+      "eligibility": "Current related-degree college student. Onsite core days Monday–Thursday in Addison, TX or Montpelier, VT; core days subject to change. Canva/Adobe and social visual-content skills. No visa sponsorship.",
+      "cycle": "Summer 2027; June 1–August 6; 10 weeks",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "2027-06-01",
+      "timingSourceUrl": "https://job-boards.greenhouse.io/nationallifeinsurancecompany/jobs/4403684009",
+      "payStatus": "paid",
+      "payBasis": "hour",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Design social graphics and visual assets.",
+        "Support TikTok, Instagram, Facebook and LinkedIn content.",
+        "Help develop short-form video and social campaigns."
+      ],
+      "eligibilityFlags": [
+        "Current related-degree college student. Onsite core days Monday–Thursday in Addison, TX or Montpelier, VT; core days subject to change. Canva/Adobe and social visual-content skills. No visa sponsorship."
+      ],
+      "benefits": [
+        "Not listed"
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:49:36.859Z",
+        "sourceUrl": "https://job-boards.greenhouse.io/nationallifeinsurancecompany/jobs/4403684009",
+        "reviewerType": "source_check"
+      }
+    },
+    {
+      "co": "JLL",
+      "role": "Graphic Design Summer 2027 Internship - Chicago, IL",
+      "link": "https://jll.wd1.myworkdayjobs.com/en-US/jllcareers/job/Chicago-IL/Graphic-Design-Summer-2027-Internship---Chicago--IL_REQ531511",
+      "loc": "Chicago, IL",
+      "ind": "Graphic Design",
+      "desc": "Develop branding and marketing visual concepts. Produce print/digital layouts and presentation materials. Work with designers, production and project-management teams.",
+      "pay": "$7,268–10,884/year (employer-stated; not converted)",
+      "style": "In-person",
+      "exp": "Not listed",
+      "state": "Chicago, IL",
+      "eligibility": "Pursuing or completed bachelor’s in visual communications/graphic design; strong portfolio; Adobe Creative Cloud, Miro and Office 365. Permanent US work authorization; no sponsorship. Structured location and explicit final body location: onsite Chicago. Body also retains a generic [Onsite or Remote] placeholder. June 7–August 13, 2027; no relocation/housing assistance.",
+      "cycle": "Summer 2027; June 7–August 13",
+      "deadline": "Not listed",
+      "applicationsOpen": "Not listed",
+      "startDate": "2027-06-07",
+      "timingSourceUrl": "https://jll.wd1.myworkdayjobs.com/en-US/jllcareers/job/Chicago-IL/Graphic-Design-Summer-2027-Internship---Chicago--IL_REQ531511",
+      "payStatus": "paid",
+      "payBasis": "annualized_year",
+      "collegeCredit": "not_listed",
+      "applicationStatus": "open",
+      "duties": [
+        "Develop branding and marketing visual concepts.",
+        "Produce print/digital layouts and presentation materials.",
+        "Work with designers, production and project-management teams."
+      ],
+      "eligibilityFlags": [
+        "Pursuing or completed bachelor’s in visual communications/graphic design; strong portfolio; Adobe Creative Cloud, Miro and Office 365. Permanent US work authorization; no sponsorship. Structured location and explicit final body location: onsite Chicago. Body also retains a generic [Onsite or Remote] placeholder. June 7–August 13, 2027; no relocation/housing assistance."
+      ],
+      "benefits": [
+        "No relocation assistance or housing. Generic employee benefit list is not an intern-specific guarantee."
+      ],
+      "verification": {
+        "status": "open",
+        "checkedAt": "2026-10-30T00:51:35.480Z",
+        "sourceUrl": "https://jll.wd1.myworkdayjobs.com/en-US/jllcareers/job/Chicago-IL/Graphic-Design-Summer-2027-Internship---Chicago--IL_REQ531511",
         "reviewerType": "source_check"
       }
     }

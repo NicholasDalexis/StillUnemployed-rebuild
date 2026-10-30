@@ -1,13 +1,13 @@
 {
-  "version": "2.7.7.66",
+  "version": "2.7.7.67",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-29T05:01:44.278Z",
-  "reviewer": "Codex StillUnemployed",
-  "sourceDigest": "568f6a860038f792b7c6b49b8495b9a0bb042cd5b124bc0c5413c0b9f17e549f",
+  "reviewedAt": "2026-10-30T01:52:37.063Z",
+  "reviewer": "Codex",
+  "sourceDigest": "191a4308ca973032657300d1c891f20e09f6cf0bcaf57ea63e04528498f766db",
   "sourceFileCount": 228,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "Reviewed Privacy and Terms for eleven source-verified student/fellowship admissions,36corrected employer deadline instants and display checksums, removal of two confirmed closed raw snapshot identities, and operator-only branch lifecycle handling. Unaffected source facts,26daily staging objects and runtime auth/analytics/consent/storage/provider/permission/user preferences remain unchanged. Netlify availability checks remain explicitly unactivated. No new data collection, service, secret, schedule or send. Reviewed, no wording change needed; not legal certification. FreshOAuth/physicaliPhone/analyticswrites not repeated. Normal build refreshed only the static published fallback from23to24 exact approved collections; all23historicalobjects and26private stagedobjects remain exact, October29/30 not exposed.",
+  "scope": "23 qualified public internship facts and presentation-only deadline cleanup; no new collection, account, analytics, sharing or provider behavior. Privacy and Terms reviewed; no wording change needed. Source-only Gemini URL correction retained existing URL security.",
   "predecessor": "docs/privacy-reviews/2.7.7.64-pre-maintenance-20261029.json",
   "author": "Codex",
   "platform_signature": "-Codex"

@@ -87,6 +87,18 @@ function ui(rows, options = {}) {
   };
 }
 
+test('actual internship cards and TLDR hide redundant deadline provenance while retaining raw evidence and employer timing link',()=>{
+  const year=new Date().getUTCFullYear()+1,cutoff=`November 20, ${year}, 8:00 PM EST`;
+  const row=listing({deadline:cutoff+' (employer API explicit -05:00 offset)',deadlineISO:`${year}-11-20T20:00:00-05:00`}),before=structuredClone(row),b=ui([row]);
+  assert(b.card(row.link).textContent.includes('Apply by '+cutoff));
+  assert(!b.card(row.link).textContent.includes('employer API'));
+  const dialog=b.detail(row.link),deadline=dialog.querySelector('.su-job-deadline');
+  assert(deadline.textContent.includes('Apply by '+cutoff));
+  assert(!deadline.textContent.includes('employer API'));assert(!deadline.textContent.includes('UTC-05:00'));
+  assert.equal(deadline.querySelector('a').getAttribute('href'),row.timingSourceUrl);
+  assert.equal(b.app.jobs[0].deadline,row.deadline);assert.equal(b.app.jobs[0].deadlineISO,row.deadlineISO);assert.deepEqual(row,before);
+});
+
 test('internship cards and details share compact pay while source amounts and units remain unchanged across all themes', () => {
   const values = [
     { pay:'$22.50/hour', payBasis:'hour', display:'$22.50/hour' }, { pay:'$1,100/week', payBasis:'week', display:'$1,100/week' },
