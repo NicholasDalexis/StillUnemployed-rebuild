@@ -1,7 +1,22 @@
 {
   "schemaVersion": 1,
-  "currentVersion": "2.7.7.67",
+  "currentVersion": "2.7.7.68",
   "releases": [
+    {
+      "version": "2.7.7.68",
+      "date": "2026-10-30",
+      "title": "Add nine NBA internships",
+      "changes": [
+        "Publish nine source-verified NBA internships while preserving prior eligible listings, source facts, dates and releases. The employer announced October 31 but an October 30 morning countdown suggested an earlier cutoff; retain the observed warning and mark the date-only Eastern cutoff as a board default.",
+        "Correct display of explicitly listed undergraduate and graduate hourly rates and explain eligibility and separate rates in the AI internship detail while preserving exact employer pay."
+      ],
+      "public": {
+        "title": "Nine NBA internships",
+        "changes": [
+          "Explore nine NBA internships and check the employer for the latest application deadline."
+        ]
+      }
+    },
     {
       "version": "2.7.7.67",
       "date": "2026-10-29",
@@ -1691,7 +1706,7 @@
   ],
   "sourceFingerprint": {
     "algorithm": "sha256-public-source-v1",
-    "digest": "191a4308ca973032657300d1c891f20e09f6cf0bcaf57ea63e04528498f766db",
+    "digest": "bbdd9562c27bbf83708ab9a5f317814a6bd05e599c4f4d9ce8a550096850336c",
     "fileCount": 228
   }
 }

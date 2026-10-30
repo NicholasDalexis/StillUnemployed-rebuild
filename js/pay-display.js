@@ -64,6 +64,10 @@
     if (options.status === 'unpaid' || /^unpaid\b/i.test(value)) return 'Unpaid';
     if (options.status === 'not_disclosed') return 'Pay not disclosed';
     if (!value || !/\d/.test(value)) return options.status === 'paid' || /^paid\b/i.test(value) ? '$ Paid' : 'Pay not disclosed';
+    // A few employers put the student level before each explicitly hourly rate.
+    // Normalize this exact two-rate form for display; the source pay is untouched.
+    var studentRates = value.match(/^Undergraduate:\s*(\$[\d,.]+(?:\/hour|\s+per\s+hour))\s*;?\s*Graduate:\s*(\$[\d,.]+(?:\/hour|\s+per\s+hour))$/i);
+    if (studentRates) value = studentRates[1] + ' undergraduate; ' + studentRates[2] + ' graduate';
     // Semicolon-separated student rates become a compact envelope. Their exact
     // qualification-specific rates and all caveats remain in the original pay.
     var parts = value.replace(/\([^)]*\)/g, '').split(';');

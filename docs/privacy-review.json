@@ -1,13 +1,13 @@
 {
-  "version": "2.7.7.67",
+  "version": "2.7.7.68",
   "status": "local-reviewed",
-  "reviewedAt": "2026-10-30T01:52:37.063Z",
+  "reviewedAt": "2026-10-30T11:23:28.188Z",
   "reviewer": "Codex",
-  "sourceDigest": "191a4308ca973032657300d1c891f20e09f6cf0bcaf57ea63e04528498f766db",
+  "sourceDigest": "bbdd9562c27bbf83708ab9a5f317814a6bd05e599c4f4d9ce8a550096850336c",
   "sourceFileCount": 228,
   "privacyChanged": false,
   "termsChanged": false,
-  "scope": "23 qualified public internship facts and presentation-only deadline cleanup; no new collection, account, analytics, sharing or provider behavior. Privacy and Terms reviewed; no wording change needed. Source-only Gemini URL correction retained existing URL security.",
+  "scope": "Nine verified NBA internships, including date-only employer deadline, explicit observed countdown warning and board-default Eastern cutoff. Existing privacy and terms wording reviewed; no new tracking, account, provider or collection behavior.",
   "predecessor": "docs/privacy-reviews/2.7.7.64-pre-maintenance-20261029.json",
   "author": "Codex",
   "platform_signature": "-Codex"
